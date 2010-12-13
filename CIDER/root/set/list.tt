@@ -1,0 +1,17 @@
+<h2>Your sets</h2>
+
+[% sets = c.user.sets %]
+
+[% IF sets %]
+<p>To view or edit a set, click its name.</p>
+  <ul>
+  [% FOREACH set = sets %]
+    <li><a href="[% c.uri_for( c.controller('Set').action_for('detail'), [set.id] ) %]">[% set.name %]</a> </li>
+  [% END %]
+  </ul>
+[% ELSE %]
+<p>You do not have any sets.</p>
+[% END %]
+
+<h3>Create a new set</h3>
+[% form %]

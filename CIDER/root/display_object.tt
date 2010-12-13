@@ -1,0 +1,39 @@
+[%#
+Template for displaying a single object in hierarchical list view.
+%]
+
+[%
+USE scalar;
+object_id = object.id;
+%]
+
+[%# Visually indent this object to the appropriate level. %]
+[%# XXX Do a FOR loop here, from 0..$level. Dunno syntax. %]
+
+<p>
+[% IF object.number_of_children > 0 %]
+    [% INCLUDE collapse_button.tt %] [% INCLUDE expand_button.tt %]
+[% END %]
+
+[%# Display the object's title, hyperlinked to its CIDER detail page. %]
+<a href="[% c.uri_for( c.controller('Object').action_for('detail'), [object_id] ) %]">[% object.title %]</a>
+</p>
+
+[%# This div is where the response to a display-kids call will get written %]
+<div id="children_of_[% object.id %]" style="display:none;" class="children">
+</div>
+
+[%#
+# If the user has requested to see this object's children, display them.
+IF expanded_objects_includes.$object_id;
+    sub_level = level + 1;
+    FOREACH sub_object = object.children;
+        INCLUDE display_object.tt object = sub_object
+                                  level  = sub_level;
+    END;
+END;
+%]
+
+<style>
+.children { margin-left: 25px; }
+</style>

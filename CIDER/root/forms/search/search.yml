@@ -1,0 +1,12 @@
+method: post
+
+elements:
+    - type: Text
+      label: 'In any field:'
+      name: query
+      id: query
+      constraints:
+        - type: Required
+
+    - type: Submit
+      value: Search

@@ -1,0 +1,11 @@
+method: post
+
+elements:
+    - type: Text
+      label: Name
+      name: name
+      id: name
+      constraints:
+        - type: Required
+
+    - type: Submit

@@ -1,0 +1,90 @@
+body {
+    width: 700px;
+    margin: auto;
+    margin-top: 10px;
+    position: relative;
+}
+
+div#sidebar {
+    width: 200px;
+}
+
+div#banner {
+    border-bottom: 1px solid black;
+}
+
+div#content {
+    width: 500px;
+    position: absolute;
+    top: 60;
+    left: 201;
+    border-left: 1px solid gray;
+    padding-left: 10px;
+}
+
+.success {
+    background: palegreen;
+    padding: 5px;
+    margin: 5px;
+}
+
+.error_message {
+    color: red;
+}
+
+div.error {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+label {
+    display: block;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+legend {
+    font-weight: bold;
+}
+
+fieldset.repeatable label {
+    display: inline;
+    font-weight: normal;
+}
+
+fieldset.checkboxgroup legend, fieldset.repeatable legend, fieldset.radiogroup legend {
+    font-weight: bold;
+    padding-left: 0;
+}
+
+fieldset.checkboxgroup, fieldset.repeatable, fieldset.radiogroup {
+    border: 0;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.checkboxgroup label {
+    display: inline;
+    font-weight: normal;
+}
+
+.radiogroup label {
+    display: inline;
+    font-weight: normal;
+}
+
+.text input {
+    width: 40em;
+}
+
+.text input#username {
+    width: 20em;
+}
+
+.password input {
+    width: 20em;
+}
+
+.text input.name {
+    width: 20em;
+}

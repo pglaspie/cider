@@ -1,0 +1,25 @@
+[% IF c.user %]
+<p>
+Welcome, [% c.user.username %]. <a href="[% c.uri_for( c.controller('Auth').action_for('logout') ) %]">Log out</a>
+</p>
+
+<p>
+<a href="[% c.uri_for( c.controller('List').action_for('index') ) %]">Browse object list</a>
+</p>
+
+<p>
+<a href="[% c.uri_for( c.controller('Search').action_for('search') ) %]">Search</a>
+</p>
+
+<p>
+<a href="[% c.uri_for( c.controller('Set').action_for('list') ) %]">Your sets</a>
+</p>
+[% ELSE %]
+<p>
+Welcome to CIDER.
+</p>
+
+<p>
+Please log in using the controls at right.
+</p>
+[% END %]

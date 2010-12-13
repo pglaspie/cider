@@ -1,0 +1,1 @@
+<span id="collapse_button_[% object.id %]" onclick="handle_collapse_click([% object.id %])" style="display: none;"><a href="#">[-]</a></span>

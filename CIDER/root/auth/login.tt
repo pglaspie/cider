@@ -1,0 +1,15 @@
+<h1>CIDER prototype: December 2010</h1>
+
+<p>
+This is an early prototype of CIDER, intended to assist Appleseed and Tufts DCA in iteratively developing this software together.
+</p>
+
+<p>
+This is a work in progress; several features are not yet completely implemented, and the site's user interface is still very raw.
+</p>
+
+<h2>Log in</h2>
+
+<p>(For now, just use the username <code>test</code>, with password <code>test</code>.)</p>
+
+[% form %]

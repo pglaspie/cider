@@ -1,0 +1,18 @@
+method: post
+
+elements:
+    - type: Text
+      label: Username
+      name: username
+      id: username
+      constraints:
+        - type: Required
+
+    - type: Password
+      label: Password
+      name: password
+      id: password
+      constraints:
+        - type: Required
+
+    - type: Submit

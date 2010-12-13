@@ -1,0 +1,125 @@
+method: post
+
+model_config:
+    resultset: Object
+
+elements:
+    - type: Text
+      label: Title
+      name: title
+      id: title
+      constraints:
+        - type: Required
+
+    - type: Text
+      label: Number
+      name: number
+      id: number
+      constraints:
+        - type: Required
+
+    - type: Select
+      label: Personal Name
+      name: personal_name
+      id: personal_name
+
+    - type: Select
+      label: Corporate Name
+      name: corporate_name
+      id: corporate_name
+
+    - type: Select
+      label: Topic Term
+      name: topic_term
+      id: topic_term
+
+    - type: Select
+      label: Geographic Term
+      name: geographic_term
+      id: geographic_term
+
+    - type: Textarea
+      label: Notes
+      name: notes
+      id: notes
+        
+    - type: Hidden
+      name: parent
+      id: parent
+
+    - type: Fieldset
+      legend: Inclusive Date
+      elements:
+          - type: Text
+            label: From
+            name: date_from
+            id: date_from
+            constraints:
+              - type: Required
+
+          - type: Text
+            label: To
+            name: date_to
+            constraints:
+              - type: Required
+            id: date_to
+
+    - type: Fieldset
+      legend: Bulk Date
+      elements:
+          - type: Text
+            label: From
+            name: bulk_date_from
+            id: bulk_date_from
+
+          - type: Text
+            label: To
+            name: bulk_date_to
+            id: bulk_date_to
+
+    - type: Select
+      label: Record Creator
+      name: record_creator
+      id: record_creator
+
+    - type: Text
+      label: History
+      name: history
+      id: history
+
+    - type: Text
+      label: Scope
+      name: scope
+      id: scope
+      constraints:
+        - type: Required
+
+    - type: Text
+      label: Organization
+      name: organization
+      id: organization
+
+    - type: Select
+      label: Processing Status
+      name: processing_status
+      id: processing_status
+      options:
+        - [ 1, 'Status One' ]
+        - [ 2, 'Status Two' ]
+        - [ 3, 'Status Three' ]
+        
+    - type: Textarea
+      label: Processing Notes
+      name: processing_notes
+      id: processing_notes
+
+    - type: Radiogroup
+      name: has_physical_documentation
+      label: Has physical documentation?
+      id: has_physical_documentation
+      options:
+        - [ '1', 'Yes' ]
+        - [ '0', 'No' ]
+      
+    - type: Submit
+    

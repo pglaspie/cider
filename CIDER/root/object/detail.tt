@@ -1,0 +1,89 @@
+[% USE scalar %]
+
+[% ancestors = object.ancestors %]
+<p>Return to:
+<a href="[% c.uri_for( c.controller('List').action_for('index') ) %]">Object root</a>
+[% IF ancestors %]
+  [% FOREACH ancestor = ancestors %]
+    <a href="[% c.uri_for( c.controller('Object').action_for('detail'), [ancestor.id] ) %]">[% ancestor.title %]</a>
+  [% END %]
+[% END %]
+</p>
+
+<h2>[% object.title %]</h2>
+
+[% IF we_just_picked_this_up %]
+<div class="success">
+<p>To finish moving this object, navigate to a different object (or <a href="[% c.uri_for('/') %]">the object root</a>) however you like, and then click the button that says "Make [% object.title %] a child of this object".</p>
+</div>
+[% END %]
+
+[% form %]
+
+<h3>Delete this object</h3>
+<p>To permamently delete this object, click the button below.</p>
+<p>[% INCLUDE object/delete_object_button.tt %]</p>
+
+<h3>Children</h3>
+[% IF object.children %]
+  <p>This object contains these objects as children:</p>
+  <ul>
+  [% FOREACH child = object.children %]
+    <li>[% INCLUDE display_object.tt object = child %]</li>
+  [% END %]
+  </ul>
+[% ELSE %]
+  <p>This object contains no child objects.</p>
+[% END %]
+
+[%### Stuff to handle object-moving. %]
+[% IF held_object && held_object.id != object.id && !held_object.has_ancestor( object ) %]
+[%### "Drop" the currently held object, making it a child of the current
+      object. %]
+<form method="post" action="[% c.uri_for_action( c.controller('Object').action_for('drop_held_object_here'), [object.id] ) %]">
+<input type="submit" name="Drop" value="Make [% held_object.title %] a child of this object" />
+</form>
+[% END %]
+
+[% IF !held_object || held_object.id != object.id %]
+[%### "Pick up" the current object, storing it in the session's 'held_object'
+      space. %]
+<form method="post" action="[% c.uri_for_action( c.controller('Object').action_for('pick_up'), [object.id] ) %]">
+<input type="submit" name="Take" value="Move [% object.title %] to a new parent." />
+</form>
+[% END %]
+
+<form method="post" action="[% c.uri_for_action( c.controller('Object').action_for('create') ) %]">
+<p>Create a new
+<select id="child_type" name="type">
+<option vaulue="collection">collection</option>
+<option vaulue="series">series</option>
+<option vaulue="item">item</option>
+</select>
+as a child of this object. <input type="submit" name="go" value="Go" /></p>
+<input type="hidden" name="parent_id" value="[% object.id %]" />
+</form>
+
+<h3>Sets</h3>
+[% IF object.scalar.sets.count %]
+<p>This object belongs to the following sets:</p>
+<ul>
+  [% FOREACH set = object.sets %]
+  <li><a href="[% c.uri_for( c.controller('Set').action_for('detail'), [set.id] ) %]">[% set.name %]</a></li>
+  [% END %]
+</ul>
+[% ELSE %]
+<p>This object does not belong to any of your sets.</p>
+[% END %]
+
+<form action="[% c.uri_for_action( c.controller('Object').action_for('add_to_set'), [object.id] ) %]">
+<p>
+Add object to:
+<select name="set_id">
+[% FOREACH set = c.user.sets_not_containing( object ) %]
+<option value="[% set.id %]">[% set.name %]</option>
+[% END %]
+<option value="NEW">New set...</option> 
+</select>
+<input type="submit" name="Submit" value="Add" />
+</form>

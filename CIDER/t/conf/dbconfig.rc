@@ -1,0 +1,4 @@
+schema_class CIDER::Schema
+connect_info dbi:SQLite:t/db/cider.db
+connect_info 
+connect_info

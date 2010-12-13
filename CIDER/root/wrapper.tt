@@ -1,0 +1,20 @@
+<html>
+    <head>
+      <title>[% page.title || "CIDER" %]</title>
+      <link rel="stylesheet" href="[% c.uri_for('/static/css/style.css') %]" media="all">
+       <script type="text/javascript" src="http://jqueryjs.googlecode.com/files/jquery-1.2.6.min.js"></script>
+       <script type="text/javascript">var base_uri = "[% c.uri_for('/') %]";</script>
+       <script type="text/javascript" src="[% c.uri_for('/static/js/cider.js') %]"></script>
+     </head>
+     <body>
+       <div id="banner">
+         <h1>CIDER (prototype draft, 12/2010)</h1>
+       </div>
+      <div id="sidebar">
+        [% INCLUDE sidebar.tt %]
+      </div>
+      <div id="content">
+        [% content %]
+      </div>
+    </body>
+</html>

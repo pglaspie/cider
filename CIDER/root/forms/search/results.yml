@@ -1,0 +1,13 @@
+method: post
+
+elements:
+
+    - type: Text
+      label: Create a new set from these search results, named: 
+      name: name
+      id: name
+      constraints:
+        - type: Required
+
+    - type: Submit
+      value: Create Set

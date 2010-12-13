@@ -1,0 +1,8 @@
+<h2>Search results</h2>
+
+<p>Your search query ([% query %]) returned [% objects.size %] objects.</p>
+
+[% FOREACH object = objects %]
+[% INCLUDE display_object.tt %]
+<hr />
+[% END %]
