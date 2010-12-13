@@ -18,8 +18,9 @@
 [% ELSIF !set.is_homogenous %]
 <p>You can't batch-edit the objects in this set, because it contains more than one kind of object.</p>
 [% ELSE %]
-[% INCLUDE set/batch_edit.tt %]
-[% INCLUDE set/search_and_replace.tt %]
+[%# XXX The following stuff isn't implemented yet... %]
+[%# INCLUDE set/batch_edit.tt %]
+[%# INCLUDE set/search_and_replace.tt %]
 [% END %]
 
 <h2>Delete this set</h2>
