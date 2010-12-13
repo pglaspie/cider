@@ -48,8 +48,8 @@ sub populate_schema {
     $schema->populate(
         'User',
         [
-            [qw/id username/],
-            [1, 'alice'],
+            [qw/id username password/],
+            [1, 'alice', 'foo',],
         ]
     );
 

@@ -66,9 +66,9 @@ $importer->import_from_csv( $handle );
 @collections = $schema->resultset('Object')->root_objects;
 is ( scalar @collections, 3,
      "After import, there are three root objects." );
-is ( $collections[0]->title, 'Renamed collection',
+is ( $collections[1]->title, 'Renamed collection',
      "After import, the modified collection has been renamed.");
-is ( $collections[1]->title, 'Test Collection without kids',
+is ( $collections[2]->title, 'Test Collection without kids',
      "After import, the untouched collection has the expected name.");
-is ( $collections[2]->title, 'Brand-new collection',
+is ( $collections[0]->title, 'Brand-new collection',
      "After import, the new collection has the expected name.");
