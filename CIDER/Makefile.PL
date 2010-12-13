@@ -19,7 +19,9 @@ requires 'Text::CSV';
 requires 'Text::CSV::Slurp';
 requires 'KinoSearch' => '0.31';
 requires 'SQL::Translator' => '0.11006';
-requires 'Helper::ResultSet::SetOperations';
+requires 'Catalyst::Authentication::Store::DBIx::Class';
+requires 'CatalystX::Component::Traits' => '0.16';
+requires 'HTML::FormFu::Model::DBIC';
 requires 'namespace::autoclean';
 requires 'Config::General'; # This should reflect the config file format you've chosen
                  # See Catalyst::Plugin::ConfigLoader for supported formats
