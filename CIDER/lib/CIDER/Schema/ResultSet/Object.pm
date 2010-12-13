@@ -14,35 +14,11 @@ sub root_objects {
     );
 
     if ( wantarray ) {
-        return map { $_->type_object } $resultset->all;
+        return $resultset->all;
     }
     else {
         return $resultset;
     }
-}
-
-# TO DO: move these to ResultSet::TypeObject?
-
-sub update {
-    my $self = shift;
-
-    my $ret = $self->next::method( @_ );
-
-    # TO DO: update audit trail?
-
-    $self->result_source->schema->indexer->update_rs( $self );
-
-    return $ret;
-}
-
-sub delete {
-    my $self = shift;
-
-    my $ret = $self->next::method( @_ );
-
-    $self->result_source->schema->indexer->remove_rs( $self );
-
-    return $ret;
 }
 
 1;

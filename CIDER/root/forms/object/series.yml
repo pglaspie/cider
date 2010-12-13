@@ -1,39 +1,74 @@
 method: post
 
-form_error_message: Sorry, there was in error in your submission. Please see below.
-
 model_config:
-    resultset: Series
-
-default_args:
-    elements:
-        Textarea:
-            rows: 8
+    resultset: Object
 
 elements:
-    - type: Hidden
-      name: id
-
     - type: Text
-      label: Series Number
-      name: number
-      id: number
-      constraints:
-        - type: Required
-        - type: DBIC::Unique
-          resultset: Object
-          id_field: id
-          message: Number is already in use
-
-    - type: Text
-      label: Series Title
+      label: Title
       name: title
       id: title
       constraints:
         - type: Required
 
-# Start Date (derived)
-# End Date (derived)
+    - type: Text
+      label: Number
+      name: number
+      id: number
+      constraints:
+        - type: Required
+
+    - type: Text
+      label: Accession Number
+      name: accesion_number
+      constraints:
+        - type: Required
+
+    - type: Select
+      label: Personal Name
+      name: personal_name
+      id: personal_name
+
+    - type: Select
+      label: Corporate Name
+      name: corporate_name
+      id: corporate_name
+
+    - type: Select
+      label: Topic Term
+      name: topic_term
+      id: topic_term
+
+    - type: Select
+      label: Geographic Term
+      name: geographic_term
+      id: geographic_term
+
+    - type: Textarea
+      label: Notes
+      name: notes
+      id: notes
+        
+    - type: Hidden
+      name: parent
+      id: parent
+
+    - type: Fieldset
+      legend: Inclusive Date
+      elements:      
+          - type: Text
+            label: From
+            name: date_from
+            id: date_from
+            constraints:
+              - type: Required
+
+          - type: Text
+            label: To
+            name: date_to
+            id: date_to
+            constraints:
+              - type: Required
 
     - type: Fieldset
       legend: Bulk Date
@@ -42,40 +77,41 @@ elements:
             label: From
             name: bulk_date_from
             id: bulk_date_from
-            constraint: &Date
-              type: Callback
-              callback: 'CIDER::Logic::Utils::iso_8601_date'
-              message: ISO 8601 date must be YYYY, YYYY-MM, or YYYY-MM-DD
 
           - type: Text
             label: To
             name: bulk_date_to
             id: bulk_date_to
-            constraint: *Date
 
-# Restrictions (derived)
+    - type: Text
+      name: volume_count
+      label: Extent
+    - type: Text
+      name: volume_extent
+      label: Extent
+    - type: Select
+      name: volume_unit
+      options:
+        - [ '', '- Type of unit -' ]
+        - [ 'box', 'Box' ]
+        - [ 'cd_dvd', 'CD / DVD' ]
+        - [ 'binder_folder', 'Binder / Folder' ]
+        - [ 'file_directory', 'File / Directory' ]
+        - [ 'bytes', 'Bytes' ]
+        - [ 'other', 'Other' ]
+
+    - type: Textarea
+      label: Restrictions
+      name: restrictions
+      id: restrictions
+      constraints:
+        - type: Required
 
     - type: Textarea
       label: Description
       name: description
       id: description
-
-    - type: Textarea
-      label: Arrangement
-      name: arrangement
-
-    - type: Textarea
-      label: Notes
-      name: notes
-      id: notes
-        
-# Extent (derived)
-
-# Accession Number(s) (derived)
-
-    - type: Hidden
-      name: parent
-
+      constraints:
+        - type: Required
 
     - type: Submit
-      name: submit

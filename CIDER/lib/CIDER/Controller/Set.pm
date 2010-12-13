@@ -30,12 +30,10 @@ sub set :Chained('/') :CaptureArgs(1) {
 
     $c->stash->{ set } = $set;
 }
-
+         
 sub detail :Chained('set') :PathPart('') :Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->forward( $c->controller( 'Object' )
-                     ->action_for( '_setup_export_templates' ) );
 }
 
 sub list :Path('list') :Args(0) :FormConfig('set/create') {
@@ -45,12 +43,20 @@ sub list :Path('list') :Args(0) :FormConfig('set/create') {
 
     if ( $form->submitted_and_valid ) {
         my $name = $form->param( 'name' );
+        $c->log->debug("*******NAME is: $name");
+    
         my $rs = $c->model( 'CIDERDB::ObjectSet' );
+        $c->log->debug("*******RS: $rs");
+        use Data::Dumper; $c->log->debug(Dumper( {
+            name => $name,
+            owner => $c->user->id,
+        }));
 
         $rs->create( {
             name => $name,
             owner => $c->user->id,
         } );
+        $c->log->debug('*******HOOBA SCOOBA');
     }
 }
 
@@ -74,94 +80,26 @@ sub remove_object :Args(1) :Chained('set') {
                        . $set->id
                        . ", but it wasn't there." );
     }
-
-    $c->res->redirect(
-        $c->uri_for( $self->action_for( 'detail' ), [$set->id] ) );
+    
+    $c->response->redirect(
+        $c->uri_for( $c->controller( 'Set' )->action_for( 'detail' ),
+                     [$set->id],
+                 )
+    );
 }
 
 sub delete :Chained('set') :Args(0) {
     my ( $self, $c ) = @_;
 
     $c->stash->{ set }->delete;
-    $c->res->redirect( $c->uri_for( $self->action_for( 'list' ) ) );
-}
-
-sub batch_edit :Chained('set') :Args(0) {
-    my ( $self, $c ) = @_;
-
-    my $set = $c->stash->{ set };
-    $set->set_field( $c->req->params->{ field },
-                     $c->req->params->{ value } );
-
-    $c->flash->{ we_just_did_batch_edit } = 1;
-
-    $c->res->redirect(
-        $c->uri_for( $self->action_for( 'detail' ), [$set->id] ) );
-}
-
-sub search_and_replace :Chained('set') :Args(0) {
-    my ( $self, $c ) = @_;
-
-    my $set = $c->stash->{ set };
-
-    my $field = $c->req->params->{ field };
-    my $old   = $c->req->params->{ old_value };
-    my $new   = $c->req->params->{ new_value };
-
-    unless ( $c->req->params->{ confirm } ) {
-        my $rs = $set->search_in_field( $field, $old );
-        if ( $rs->count ) {
-            my @replace = ();
-            for my $obj ( $rs->all ) {
-                my $old_value = $obj->$field;
-                my $new_value = $old_value;
-                $new_value =~ s/$old/$new/g;
-                push @replace, {
-                    obj => $obj,
-                    old => $old_value,
-                    new => $new_value,
-                };
-            }
-
-            $c->stash->{ replace } = \@replace;
-            $c->stash->{ field } = $field;
-            $c->stash->{ old_value } = $old;
-            $c->stash->{ new_value } = $new;
-        } 
-        else {
-            $c->flash->{ we_just_did_search_and_replace } = 1;
-            $c->flash->{ count } = 0;
-
-            $c->res->redirect(
-                $c->uri_for( $self->action_for( 'detail' ), [$set->id] ) );
-        }
-    }
-    else {
-        my $count = $set->search_and_replace( {
-            field => $field,
-            old   => $old,
-            new   => $new
-        } );
-
-        $c->flash->{ we_just_did_search_and_replace } = 1;
-        $c->flash->{ count } = $count;
-
-        $c->res->redirect(
-            $c->uri_for( $self->action_for( 'detail' ), [$set->id] ) );
-    }
-}
-
-sub export :Chained('set') :Args(0) {
-    my ( $self, $c ) = @_;
-
-    $c->stash->{ objects } = [ $c->stash->{ set }->objects ];
-
-    $c->forward( $c->controller( 'Object' )->action_for( '_export' ) );
+    $c->response->redirect(
+        $c->uri_for( $c->controller( 'Set' )->action_for( 'list' ) )
+    );
 }
 
 =head1 AUTHOR
 
-Jason McIntosh, Doug Orleans
+Jason McIntosh
 
 =head1 LICENSE
 

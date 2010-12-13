@@ -5,7 +5,11 @@ use base 'Catalyst::Model::DBIC::Schema';
 
 __PACKAGE__->config(
     schema_class => 'CIDER::Schema',
-    traits => [ qw( SchemaProxy ) ],
+    connect_info => {
+        dsn => 'dbi:mysql:cider',
+        user => 'root',
+        password => '',
+    }
 );
 
 =head1 NAME

@@ -1,5 +1,0 @@
-[% page.title = 'Edit ' _ list_name %]
-
-<h2>[% page.title %]</h2>
-
-[% form %]

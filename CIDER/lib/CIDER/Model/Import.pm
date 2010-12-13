@@ -2,41 +2,21 @@ package CIDER::Model::Import;
 use Moose;
 use namespace::autoclean;
 
-extends 'Catalyst::Model';
+extends 'Catalyst::Model::Adaptor';
 
-use CIDER::Logic::Importer;
-
-has 'rngschema_file' => (
-    is => 'rw',
-    isa => 'Str',
+# The args to pass to the searcher constuctor -- most crucially the path to
+__PACKAGE__->config(
+    schema_class => 'CIDER::Schema',
+    connect_info => [ 'dbi:SQLite:t/db/cider.db', '', '' ],
 );
 
-has schema => (
-    is => 'ro',
-    isa => 'DBIx::Class::Schema',
+__PACKAGE__->config(
+    class => 'CIDER::Importer',
+    args  => {
+        schema_class => __PACKAGE__->config->{ schema_class },
+        connect_info => __PACKAGE__->config->{ connect_info },
+    },
 );
-
-sub ACCEPT_CONTEXT {
-    my $self = shift;
-    my ( $c ) = @_;
-
-    my $schema = $c->model( 'CIDERDB' )->schema;
-
-    return $self->meta->clone_object(
-        $self,
-        schema => $schema,
-        rngschema_file => $c->config->{ home } . '/schema/cider-import.rng',
-    );
-}
-
-sub importer {
-    my $self = shift;
-
-    return CIDER::Logic::Importer->new(
-        schema => $self->schema,
-        rngschema_file => $self->rngschema_file,
-    );
-}
 
 __PACKAGE__->meta->make_immutable;
 

@@ -1,0 +1,16 @@
+<form>
+<p>
+Set every object's
+<select name="field">
+[% IF set.objects.0.type eq 'collection' %]
+  [% INCLUDE set/collection_options.tt %]
+[% ELSIF set.objects.0.type eq 'series' %]
+  [% INCLUDE set/series_options.tt %]
+[% ELSE %]
+  [% INCLUDE set/item_options.tt %]
+[% END %]
+</select>
+field to
+<input type="text" name="new_value" />.
+</p>
+</form>

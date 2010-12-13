@@ -13,6 +13,7 @@ use Catalyst::Runtime 5.80;
 #                 directory
 
 use Catalyst qw/
+    -Debug
     ConfigLoader
     Static::Simple
 
@@ -21,12 +22,6 @@ use Catalyst qw/
     Session
     Session::Store::File
     Session::State::Cookie
-
-    Scheduler
-
-    StackTrace
-
-    Unicode::Encoding
 /;
 
 extends 'Catalyst';
@@ -43,21 +38,13 @@ $VERSION = eval $VERSION;
 # with an external configuration file acting as an override for
 # local deployment.
 
-if ( defined $ENV{CIDER_SITE_CONFIG} ) {
-    __PACKAGE__->config( 'Plugin::ConfigLoader' => {
-        file => $ENV{CIDER_SITE_CONFIG},
-    } );
-}
-
 __PACKAGE__->config(
     name => 'CIDER',
     # Disable deprecated behavior needed by old applications
     disable_component_resolution_regex_fallback => 1,
 
     default_view => 'TT',
-
-    encoding => 'utf-8',
-
+    
     authentication => {
         realms => {
             default => {
@@ -67,12 +54,10 @@ __PACKAGE__->config(
         },
     },
     'Plugin::Session' => {
+        storage => '/tmp/cider_session',
         flash_to_stash => 1,
         expires => 1000000,
         cookie_expires => 1000000,
-    },
-    stacktrace => {
-        verbose => 2,
     },
     'Controller::HTML::FormFu' => {
         model_stash => {
@@ -101,9 +86,9 @@ CIDER - Catalyst based application
 
 L<CIDER::Controller::Root>, L<Catalyst>
 
-=head1 AUTHORS
+=head1 AUTHOR
 
-Jason McIntosh, Doug Orleans
+Jason McIntosh
 
 =head1 LICENSE
 

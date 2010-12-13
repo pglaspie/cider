@@ -2,34 +2,22 @@ package CIDERTest;
 use strict;
 use warnings;
 
-$SIG{ __WARN__ } = sub { require Carp; Carp::confess };
-
-use base qw( Exporter );
-our @EXPORT    = qw( elt );
-our @EXPORT_OK = qw( elt );
-
 use FindBin;
 
 $ENV{CIDER_SITE_CONFIG} = "$FindBin::Bin/conf/cider.conf";
-#$ENV{CIDER_DEBUG}       = 0;
+$ENV{CIDER_DEBUG}       = 0;
 
-use utf8;
 use Carp qw(croak);
 use English;
-use File::Path qw(make_path remove_tree);
 
 use CIDER::Schema;
-use CIDER::Logic::Indexer;
-
-# TO DO: get these from the config file?
-my $db_dir    = "$FindBin::Bin/db";
-my $db_file   = "$db_dir/cider.db";
-my $dsn       = "dbi:SQLite:$db_file";
-my $index_dir = "$FindBin::Bin/db/index";
 
 sub init_schema {
     my $self = shift;
     my %args = @_;
+
+    my $db_dir  = "$FindBin::Bin/db";
+    my $db_file = "$db_dir/cider.db";
 
     if (-e $db_file) {
         unlink $db_file
@@ -37,78 +25,31 @@ sub init_schema {
     }
 
     my $schema = CIDER::Schema->
-        connect( $dsn, '', '', {
-            sqlite_unicode => 1,
-            on_connect_call => 'use_foreign_keys',
-        });
+        connect("dbi:SQLite:$db_file", '', '',);
 
-    # Create the index directory if it doesn't already exist.
-    make_path( $index_dir );
+    $schema->deploy;
+    __PACKAGE__->populate_schema($schema);
 
-    $schema->search_index( $index_dir );
+    return $schema;
+}
 
-    # The default dir for deploy is "./", which means that if you run
-    # the tests from CIDER_HOME it tries to read cider.sql to get the
-    # deployment statements rather than generating them for SQLite.
-    # So we have to specify the dir here, even though it actually uses
-    # the path in the $dsn to write the SQLite file...
-    $schema->deploy( undef, $db_dir );
+sub populate_schema {
+    my $self   = shift;
+    my $schema = shift;
 
     $schema->populate(
-        'AuditTrail',
+        'RecordCreator',
         [
             [qw/id/],
             [1],
-            [2],
-            [3],
-            [4],
-            [5],
-            [6],
-            [7],
-        ]
-    );
-
-    $schema->populate(
-        'RecordContextType',
-        [
-            [qw/id name/],
-            [1, 'corporateBody'],
-            [2, 'family'],
-            [3, 'person'],
-        ]
-    );
-
-    $schema->populate(
-        'RecordContext',
-        [
-            [qw/id record_id name_entry rc_type date_from history audit_trail/],
-            [1, 'RCR00001', 'Context 1', 1, '1900', 'History 1', 6],
-            [2, 'RCR00002', 'Context 2', 1, '2000', 'History 2', 7],
-        ]
-    );
-
-    $schema->populate(
-        'RecordContextSource',
-        [
-            [qw/record_context source/],
-            [1, 'Source 1'],
-            [2, 'Source 2'],
-        ]
-    );
-
-    $schema->populate(
-        'Staff',
-        [
-            [qw/id first_name last_name/],
-            [1, 'Alice', 'Nelson'],
         ]
     );
 
     $schema->populate(
         'User',
         [
-            [qw/id username password staff/],
-            [1, 'alice', 'foo', 1],
+            [qw/id username/],
+            [1, 'alice'],
         ]
     );
 
@@ -122,127 +63,61 @@ sub init_schema {
     );
 
     $schema->populate(
-        'Documentation',
-        [
-            [qw/id name description/],
-            [1, 'yes', 'Has physical documentation'],
-            [2, 'no', 'Does not have physical documentation'],
-        ]
-    );
-
-    $schema->populate(
         'ProcessingStatus',
         [
-            [qw/id name description/],
-            [1, 'minimal', 'Minimal processing'],
+            [qw/id name/],
+            [1, 'Test Status'],
         ]
     );
 
     $schema->populate(
-        'PublicationStatus',
+        'ItemType',
         [
             [qw/id name/],
-            [1, 'draft'],
-        ]
-    );
-
-    $schema->populate(
-        'DCType',
-        [
-            [qw/id name/],
-            [1, 'Text'],
-            [2, 'Image'],
-        ]
-    );
-
-    $schema->populate(
-        'RelationshipPredicate',
-        [
-            [qw/id predicate/],
-            [1, 'fedora-model:hasModel'],
-            [2, 'rel:hasDescription'],
-            [3, 'rel:isSubsetOf'],
-        ]
-    );
-
-    $schema->populate(
-        'RecordContextRelationshipType',
-        [
-            [qw/id name/],
-            [1, 'reportsTo'],
-        ]
-    );
-
-    $schema->populate(
-        'StabilizationProcedure',
-        [
-            [qw/id code name/],
-            [1, 'ACC-007', 'Digital Media Stabilization'],
+            [1, 'Test Type'],
         ]
     );
 
     $schema->populate(
         'AuthorityName',
         [
-            [qw/id name/],
-            [1, 'Test Name', ''],
-        ]
-    );
-
-    $schema->populate(
-        'GeographicTerm',
-        [
-            [qw/id name/],
-            [1, 'Test Geographic Term'],
-        ]
-    );
-
-    $schema->populate(
-        'TopicTerm',
-        [
-            [qw/id name/],
-            [1, 'Test Topic Term'],
+            [qw/id value/],
+            [1, 'Test Status'],
         ]
     );
 
     $schema->populate(
         'Object',
         [
-            [qw/id parent number title audit_trail/],
-            [1, undef, 'n1', 'Test Collection with kids', 1],
-            [2, undef, 'n2', 'Test Collection without kids', 2],
-            [3, 1, 'n3', 'Test Series 1', 3],
-            [4, 3, 'n4', 'Test Item 1', 4],
-            [5, 3, 'n5', 'Test Item 2', 5],
-        ]
-    );
-
-    $schema->populate(
-        'Collection',
-        [
-            [qw/id notes
-                documentation processing_status/],
-            [1, 'Test notes.  Unicode: « ☃ ° » yay.',
-             1, 1],
-            [2, 'Test notes.',
-             1, 1],
-        ]
-    );
-
-    $schema->populate(
-        'Series',
-        [
-            [qw/id description/],
-            [3, 'Test description.'],
-        ]
-    );
-
-    $schema->populate(
-        'Item',
-        [
-            [qw/id description date_from date_to dc_type/],
-            [4, 'Test description.', '2000-01-01', '2008-01-01', 1],
-            [5, 'Test description.', '2002-01-01', '2010-01-01', 1],
+            [qw/id parent number title personal_name corporate_name
+               topic_term geographic_term notes date_from date_to
+               record_creator
+               type/],
+            [1, undef, 12345, 'Test Collection with kids', 1, undef,
+             undef, undef, 'Test notes.', '2000-01-01', '2010-01-01',
+             1,
+             undef
+         ],
+            [2, undef, 12345, 'Test Collection without kids', 2, undef,
+             undef, undef, 'Test notes.', '2000-01-01', '2010-01-01',
+             1,
+             undef
+         ],
+            [3, 1, 12345, 'Test Series 1', 1, undef,
+             undef, undef, 'Test notes.', '2000-01-01', '2010-01-01',
+             undef,
+             undef,
+         ],
+            [4, 3, 12345, 'Test Item 1', 1 , undef,
+             undef, undef, 'Test notes.', '2000-01-01', '2010-01-01',
+             undef,
+             1,
+         ],
+            [5, 3, 12345, 'Test Item 2', 1 , undef,
+             undef, undef, 'Test notes.', '2000-01-01', '2010-01-01',
+             undef,
+             1,
+         ],
         ]
     );
 
@@ -255,102 +130,6 @@ sub init_schema {
         ]
     );
 
-    $schema->populate(
-        'Log',
-        [
-            [qw/audit_trail staff action timestamp/],
-            [1, 1, 'create', '2011-01-01'],
-            [1, 1, 'update', '2011-01-02'],
-            [1, 1, 'update', '2011-03-01'],
-            [1, 1, 'export', '2011-04-01'],
-            [1, 1, 'export', '2011-05-01'],
-        ]
-    );
-
-    $schema->populate(
-        'CollectionMaterial',
-        [
-            [qw/collection material/],
-            [1, 'Test Material 1'],
-            [1, 'Test Material 2'],
-        ]
-    );
-
-    $schema->populate(
-        'CollectionLanguage',
-        [
-            [qw/collection language/],
-            [1, 'eng'],
-        ]
-    );
-
-    $schema->populate(
-        'CollectionRecordContext',
-        [
-            [qw/collection is_primary record_context/],
-            [1, 1, 1],
-            [2, 1, 1],
-            [2, 0, 2],
-        ]
-    );
-
-    $schema->populate(
-        'ItemAuthorityName',
-        [
-            [qw/item role name/],
-            [4, 'personal_name', 1],
-            [5, 'personal_name', 1],
-        ]
-    );
-
-    $schema->populate(
-        'UnitType',
-        [
-         [qw/id name volume/],
-         [1, '1.2 cu. ft. box', 1.2],
-         [2, 'Bound volume', undef],
-         [3, 'Digital objects', undef],
-        ]
-    );
-
-    $schema->populate(
-        'Location',
-        [
-         [qw/id barcode unit_type/],
-         [1, '8001', 1],
-         [2, '8002', 1],
-         [3, '8003', 1],
-         [4, '8004', 1],
-         [5, '8005', 1],
-         [6, '9001', 2],
-         [7, '9002', 2],
-         [8, '9003', 2],
-         [9, '11', 3],
-         [10, '12', 3],
-         [11, '13', 3],
-         [12, '21', 3],
-         [13, '22', 3],
-        ]
-    );
-
-    $schema->populate(
-        'LocationTitle',
-        [
-         [qw/id location title/],
-         [1, 1, 'John Doe Papers'],
-         [2, 1, 'Jane Doe Papers'],
-        ]
-    );
-
-    $schema->indexer->make_index;       # This clobbers any existing index.
-
-    return $schema;
-}
-
-use XML::LibXML;
-
-sub elt {
-    return XML::LibXML->new->parse_balanced_chunk( @_ )->firstChild;
 }
 
 1;
@@ -367,7 +146,7 @@ CIDERTest
     use CIDERTest;
     use Test::More;
 
-    my $schema = CIDERTest->init_schema;
+    my $schema = CIDERTest->init_schema();
 
 =head1 DESCRIPTION
 
@@ -380,16 +159,25 @@ who stole it in turn from DBIC...)
 
 =head2 init_schema
 
-    my $schema = CIDERTest->init_schema;
+    my $schema = CIDERTest->init_schema();
 
-This method removes the test SQLite database in t/db/cider.db
-and then creates a new database populated with default test data.
-It also (re)creates the search index in t/db/index.
+This method removes the test SQLite database in t/TestSite/db/mhs.db
+and then creates a new, empty database.
 
-=head1 FUNCTIONS
+This method will call deploy_schema() to create the db schema,
+and populate_schema() to insert default data.
 
-=head2 elt
+=head2 deploy_schema
 
-    my $elt = elt '<foo><bar/><baz>Garply</baz></foo>';
+    CIDERTest->deploy_schema( $schema );
 
-This function parses a single XML element from a string.
+This method calls $schema->deploy() to create the db schema based on the DBIC
+schema.
+
+=head2 populate_schema
+
+  CIDERTest->populate_schema( $schema );
+
+After you deploy your schema you can use this method to populate
+the tables with test data.
+

@@ -1,13 +1,10 @@
 [% USE scalar %]
-
-[% page.title = set.name %]
-
-<h2>[% page.title %]</h2>
+<h2>[% set.name %]</h2>
 
 [% IF set.scalar.objects.count %]
 <p>This set contains the following objects:</p>
 <ul>
-  [% FOREACH object = set.contents %]
+  [% FOREACH object = set.objects %]
     <li>[% INCLUDE display_object.tt %] [% INCLUDE set/remove_from_set_button.tt %] </li>
   [% END %]
 </ul>
@@ -21,29 +18,10 @@
 [% ELSIF !set.is_homogenous %]
 <p>You can't batch-edit the objects in this set, because it contains more than one kind of object.</p>
 [% ELSE %]
-[% INCLUDE set/batch_edit_fragment.tt %]
-<hr />
-[% INCLUDE set/search_and_replace_fragment.tt %]
+[% INCLUDE set/batch_edit.tt %]
+[% INCLUDE set/search_and_replace.tt %]
 [% END %]
 
 <h2>Delete this set</h2>
-<p>To permanently remove this set from your list, click the button below. (Deleting a set does not otherwise affect the objects it contains.)</p>
+<p>To permamently remove this set from your list, click the button below. (Deleteing a set does not otherwise affect the objects it contains.)</p>
 <p>[% INCLUDE set/delete_set_button.tt %]</p>
-
-<h2>Export</h2>
-
-<form action="[% c.uri_for_action( c.controller('Set').action_for('export'), [set.id] ) %]">
-Export
-<select name="descendants">
-<option value="0" selected>this set</option>
-<option value="1">this set and all its objects' descendants</option>
-</select>
-in
-<select name="template">
-[% FOREACH template_file = template_files %]
-  <option value="[% template_file %]">[% template_file %]</option>
-[% END %]
-</select>
-format.
-<input type="submit" value="Go" />
-</form>

@@ -1,13 +1,11 @@
-[% page.title = 'Browse objects' %]
-
-<h2>[% page.title %]</h2>
+<h2>Browse objects</h2>
 
 <form method="post" action="[% c.uri_for_action( c.controller('Object').action_for('create') ) %]">
 <p>Create a new, top-level
 <select id="child_type" name="type">
-<option value="collection">collection</option>
-<option value="series">series</option>
-<option value="item">item</option>
+<option vaulue="collection">collection</option>
+<option vaulue="series">series</option>
+<option vaulue="item">item</option>
 </select>. <input type="submit" name="go" value="Go" /></p>
 </form>
 
@@ -15,7 +13,7 @@
 [% IF held_object && held_object.parent %]
 [%### Offer to "Drop" the currently held object, making it a new top-level
       object. %]
-<form method="post" action="[% c.uri_for_action( c.controller('Object').action_for('drop_held_object_here'), [''] ) %]">
+<form method="post" action="[% c.uri_for_action( c.controller('Object').action_for('drop_held_object_here'), [object.id] ) %]">
 <input type="submit" name="Drop" value="Make [% held_object.title %] a top-level object." />
 </form>
 [% END %]

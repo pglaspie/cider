@@ -1,5 +1,0 @@
-[% page.title = 'Create a new record context' %]
-
-<h2>[% page.title %]</h2>
-
-[% form %]

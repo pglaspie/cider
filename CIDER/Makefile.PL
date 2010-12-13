@@ -11,36 +11,19 @@ all_from 'lib/CIDER.pm';
 
 requires 'Catalyst::Runtime' => '5.80029';
 requires 'Catalyst::Plugin::ConfigLoader';
-requires 'Catalyst::Plugin::Session::State::Cookie';
-requires 'Catalyst::Plugin::Session::Store::File';
-requires 'Catalyst::Plugin::Scheduler';
-requires 'Catalyst::Plugin::StackTrace';
 requires 'Catalyst::Plugin::Static::Simple';
-requires 'Catalyst::Plugin::Unicode::Encoding';
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Model::Adaptor';
-requires 'Catalyst::Model::DBIC::Schema' => '0.50';
-requires 'Catalyst::View::TT';
 requires 'Moose';
-requires 'Class::Method::Modifiers';
 requires 'Text::CSV';
 requires 'Text::CSV::Slurp';
 requires 'KinoSearch' => '0.31';
 requires 'SQL::Translator' => '0.11006';
-requires 'Catalyst::Authentication::Store::DBIx::Class';
-requires 'CatalystX::Component::Traits' => '0.16';
-requires 'Catalyst::Controller::HTML::FormFu';
-requires 'HTML::FormFu::Model::DBIC' => '0.09002';
+requires 'Helper::ResultSet::SetOperations';
 requires 'namespace::autoclean';
-requires 'DBIx::Class' => '0.08195';
-requires 'DBIx::Class::TimeStamp';
-requires 'Locale::Codes';
-requires 'Config::General';
-requires 'XML::LibXML';
-requires 'String::CamelCase';
-requires 'DateTime::Format::ISO8601';
+requires 'Config::General'; # This should reflect the config file format you've chosen
+                 # See Catalyst::Plugin::ConfigLoader for supported formats
 test_requires 'Test::More' => '0.88';
-test_requires 'Test::Exception';
 catalyst;
 
 install_script glob('script/*.pl');
