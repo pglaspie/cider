@@ -1,5 +1,7 @@
 method: post
 
+form_error_message: Sorry, there was in error in your submission. Please see below.
+
 model_config:
     resultset: Object
 
@@ -20,7 +22,7 @@ elements:
 
     - type: Text
       label: Accession Number
-      name: accesion_number
+      name: accession_number
       constraints:
         - type: Required
 
@@ -99,13 +101,6 @@ elements:
         - [ 'file_directory', 'File / Directory' ]
         - [ 'bytes', 'Bytes' ]
         - [ 'other', 'Other' ]
-
-    - type: Textarea
-      label: Restrictions
-      name: restrictions
-      id: restrictions
-      constraints:
-        - type: Required
 
     - type: Textarea
       label: Description

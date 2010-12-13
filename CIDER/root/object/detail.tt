@@ -5,7 +5,7 @@
 <a href="[% c.uri_for( c.controller('List').action_for('index') ) %]">Object root</a>
 [% IF ancestors %]
   [% FOREACH ancestor = ancestors %]
-    <a href="[% c.uri_for( c.controller('Object').action_for('detail'), [ancestor.id] ) %]">[% ancestor.title %]</a>
+    &rarr; <a href="[% c.uri_for( c.controller('Object').action_for('detail'), [ancestor.id] ) %]">[% ancestor.title %]</a>
   [% END %]
 [% END %]
 </p>
@@ -15,6 +15,12 @@
 [% IF we_just_picked_this_up %]
 <div class="success">
 <p>To finish moving this object, navigate to a different object (or <a href="[% c.uri_for('/') %]">the object root</a>) however you like, and then click the button that says "Make [% object.title %] a child of this object".</p>
+</div>
+[% END %]
+
+[% IF we_just_created_this %]
+<div class="success">
+<p>You have successfully created a new [% object.cider_type %] with the title <em>[% object.title %]</em>.</p>
 </div>
 [% END %]
 

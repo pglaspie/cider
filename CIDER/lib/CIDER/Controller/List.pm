@@ -37,6 +37,9 @@ sub index :Path :Args(0) {
     }
 
     $c->stash->{ template } = 'object_list.tt';
+
+    $c->forward( $c->controller('Object')->action_for('set_up_held_object'));
+
 }
 
 sub children :Args(1) :Path('children') {
