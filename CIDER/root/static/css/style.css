@@ -32,6 +32,12 @@ div#content {
     color: red;
 }
 
+div.form_error_message {
+    background: pink;
+    padding: 5px;
+    margin: 5px;
+}
+
 div.error {
     margin-top: 30px;
     margin-bottom: 30px;

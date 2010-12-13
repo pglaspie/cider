@@ -30,9 +30,14 @@ sub object :Chained('/') :CaptureArgs(1) {
     
     $c->stash->{ object } = $object;
 
+    $c->forward( 'set_up_held_object' );
+}
+
+sub set_up_held_object :Private {
+    my ( $self, $c ) = @_;
     if ( my $held_object_id = $c->session->{ held_object_id } ) {
         my $held_object = $c->model( 'CIDERDB::Object' )
-                            ->find( $held_object_id );
+            ->find( $held_object_id );
         $c->stash->{ held_object } = $held_object;
     }
 }
@@ -50,10 +55,13 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
 
     $form->process;
 
+    $c->log->debug("Has the object form been submitted?");
     if ( $form->submitted_and_valid ) {
+        $c->log->debug("Why yes, it has.");
         $form->model->update( $object );
     }
     elsif ( not $form->submitted ) {
+        $c->log->debug("no, it has not.");
         $form->model->default_values( $object );
     }
 
@@ -90,6 +98,20 @@ sub create_collection :Path('create/collection') :Args(0) :FormConfig('object/co
     $c->forward('_create');
 }
 
+sub create_series :Path('create/series') :Args(0) :FormConfig('object/series') {
+    my ( $self, $c ) = @_;
+
+    $c->stash->{ object_type } = 'series';
+    $c->forward('_create');
+}
+
+sub create_item :Path('create/item') :Args(0) :FormConfig('object/item') {
+    my ( $self, $c ) = @_;
+
+    $c->stash->{ object_type } = 'item';
+    $c->forward('_create');
+}
+
 sub create :Path('create') :Args(0) {
     my ( $self, $c ) = @_;
 
@@ -117,9 +139,14 @@ sub _create :Private {
 
     my $object_rs = scalar($c->model( 'CIDERDB' )->resultset( 'Object' ));
 
+    $self->_build_authority_fields( $c, $form );
+    $self->_build_record_creator_field( $c, $form );
+    
     if ( $form->submitted_and_valid ) {
         my $object = $form->model->create( );
 
+        $c->flash->{ we_just_created_this } = 1;
+        
         $c->response->redirect(
             $c->uri_for( $c->controller( 'Object' )->action_for( 'detail' ),
                          [$object->id],
@@ -164,16 +191,28 @@ sub drop_held_object_here :Chained('object') :Args(0) {
     my ( $self, $c ) = @_;
 
     my $new_child = $c->stash->{ held_object };
-    $new_child->parent( $c->stash->{ object }->id );
+    if ( $c->stash->{ object } ) {
+        $new_child->parent( $c->stash->{ object }->id );
+    }
+    else {
+        $new_child->parent( undef );
+    }
     $new_child->update;
 
     delete $c->session->{ held_object_id };
     
-    $c->response->redirect(
-        $c->uri_for( $c->controller( 'Object' )->action_for( 'detail' ),
-                     [$c->stash->{ object }->id],
-                 )
-    );
+    if ( $c->stash->{ object } ) {
+        $c->response->redirect(
+            $c->uri_for( $c->controller( 'Object' )->action_for( 'detail' ),
+                         [$c->stash->{ object }->id],
+                     )
+        );
+    }
+    else {
+        $c->response->redirect(
+            $c->uri_for( $c->controller( 'List' )->action_for( 'index' ) )
+        );
+    }
 }
 
 sub _build_authority_fields {

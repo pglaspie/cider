@@ -1,5 +1,7 @@
 method: post
 
+form_error_message: Sorry, there was in error in your submission. Please see below.
+
 model_config:
     resultset: Object
 
