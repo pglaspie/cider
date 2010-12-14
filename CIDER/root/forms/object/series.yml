@@ -87,10 +87,10 @@ elements:
 
     - type: Text
       name: volume_count
-      label: Extent
+      label: Volume Count
     - type: Text
       name: volume_extent
-      label: Extent
+      label: Volume Extent
     - type: Select
       name: volume_unit
       options:
