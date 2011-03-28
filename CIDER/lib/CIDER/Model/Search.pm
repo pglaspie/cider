@@ -2,7 +2,7 @@ package CIDER::Model::Search;
 use Moose;
 use namespace::autoclean;
 
-extends 'Catalyst::Model::Adaptor';
+extends 'Catalyst::Model::Factory';
 
 # The args to pass to the searcher constuctor -- most crucially the path to
 # the index directory -- are located in the app config file.
