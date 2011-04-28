@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl
+#!/usr/bin/perl
 
 use warnings;
 use strict;
@@ -8,7 +8,11 @@ use KinoSearch::Plan::FullTextType;
 use KinoSearch::Analysis::PolyAnalyzer;
 use KinoSearch::Index::Indexer;
 
-use lib '/Users/jmac/Tufts/CIDER stuff/CIDER/lib';
+use FindBin;
+use lib (
+    "$FindBin::Bin/CIDER/lib"
+);     
+
 use CIDER::Schema;
 
 warn "Initializing...\n";
