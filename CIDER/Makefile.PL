@@ -23,6 +23,7 @@ requires 'Catalyst::Authentication::Store::DBIx::Class';
 requires 'CatalystX::Component::Traits' => '0.16';
 requires 'HTML::FormFu::Model::DBIC';
 requires 'namespace::autoclean';
+requires 'DBIx::Class::TimeStamp';
 requires 'Config::General'; # This should reflect the config file format you've chosen
                  # See Catalyst::Plugin::ConfigLoader for supported formats
 test_requires 'Test::More' => '0.88';

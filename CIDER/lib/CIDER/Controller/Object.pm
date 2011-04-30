@@ -144,6 +144,7 @@ sub _create :Private {
     
     if ( $form->submitted_and_valid ) {
         my $object = $form->model->create( );
+        $object->creator( $c->user->id );
 
         $c->flash->{ we_just_created_this } = 1;
         
