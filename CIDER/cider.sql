@@ -87,9 +87,9 @@ CREATE TABLE `log` (
   PRIMARY KEY (`id`),
   KEY `user` (`user`),
   KEY `object` (`object`),
-  CONSTRAINT `log_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`),
-  CONSTRAINT `log_ibfk_2` FOREIGN KEY (`object`) REFERENCES `object` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  CONSTRAINT `log_ibfk_2` FOREIGN KEY (`object`) REFERENCES `object` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `log_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -172,7 +172,7 @@ CREATE TABLE `object` (
   CONSTRAINT `object_ibfk_7` FOREIGN KEY (`date_qualifier`) REFERENCES `item_date_qualifier` (`id`),
   CONSTRAINT `object_ibfk_8` FOREIGN KEY (`type`) REFERENCES `item_type` (`id`),
   CONSTRAINT `object_ibfk_9` FOREIGN KEY (`format`) REFERENCES `item_format` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -337,4 +337,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-04-29 11:17:41
+-- Dump completed on 2011-04-29 22:54:06
