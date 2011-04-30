@@ -668,6 +668,40 @@ __PACKAGE__->has_many(
 
 __PACKAGE__->many_to_many('sets' => 'object_set_objects', 'object_set');
 
+=head2 logs
+
+Type: has_many
+
+Related object: L<CIDER::Schema::Result::Log>
+
+=cut
+
+__PACKAGE__->has_many(
+    logs => "CIDER::Schema::Result::Log",
+    'object',
+);
+
+
+=head2 creation_log
+
+Type: has_one
+
+Related object: L<CIDER::Schema::Result::Log>
+
+=cut
+
+__PACKAGE__->has_one(
+    creation_log => "CIDER::Schema::Result::Log",
+    'object',
+    { where => { action => 'create' },
+      proxy => {
+          creator => 'user',
+          creation_timestamp => 'timestamp',
+      },
+    },
+);
+
+
 sub inflate_result {
     my $self = shift;
 
@@ -762,5 +796,12 @@ sub cider_type {
 
     return $type;
 }
+
+sub date_created {
+    my $self = shift;
+
+    return $self->creation_timestamp->truncate( to => 'day' );
+}
+
 
 1;
