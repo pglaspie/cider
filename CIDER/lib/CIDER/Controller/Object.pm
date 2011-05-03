@@ -55,13 +55,10 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
 
     $form->process;
 
-    $c->log->debug("Has the object form been submitted?");
     if ( $form->submitted_and_valid ) {
-        $c->log->debug("Why yes, it has.");
         $form->model->update( $object );
     }
     elsif ( not $form->submitted ) {
-        $c->log->debug("no, it has not.");
         $form->model->default_values( $object );
     }
 
@@ -157,8 +154,6 @@ sub _create :Private {
     elsif ( not $form->submitted ) {
         my $parent_id = $c->stash->{ parent_id };
 
-        $c->log->debug( "*****Parent: $parent_id" );
-        
         if ( $parent_id ) {
             my $parent_field = $form->get_field( { name => 'parent' } );
             $parent_field->value ( $parent_id );
