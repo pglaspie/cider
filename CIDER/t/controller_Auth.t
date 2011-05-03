@@ -7,9 +7,26 @@ if ($@) {
     plan skip_all => 'Test::WWW::Mechanize::Catalyst required';
     exit 0;
 }
-use_ok( 'CIDER::Controller::Auth' );
+
+use FindBin;
+use lib (
+    "$FindBin::Bin/lib",
+    "$FindBin::Bin/../lib",
+);
+use CIDERTest;
+my $schema = CIDERTest->init_schema;
 
 ok( my $mech = Test::WWW::Mechanize::Catalyst->new, 'Created mech object' );
 
-$mech->get_ok( 'http://localhost/auth' );
+use_ok( 'CIDER::Controller::Auth' );
+
+$mech->get_ok( '/auth' );
+
+$mech->submit_form_ok( { with_fields => {
+    username => 'alice',
+    password => 'foo',
+} } );
+
+$mech->content_contains( 'Welcome, alice.' );
+
 done_testing();
