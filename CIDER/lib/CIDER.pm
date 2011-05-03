@@ -13,7 +13,6 @@ use Catalyst::Runtime 5.80;
 #                 directory
 
 use Catalyst qw/
-    -Debug
     ConfigLoader
     Static::Simple
 
@@ -37,6 +36,16 @@ $VERSION = eval $VERSION;
 # details given here can function as a default configuration,
 # with an external configuration file acting as an override for
 # local deployment.
+
+if ( defined $ENV{CIDER_SITE_CONFIG} ) {
+    __PACKAGE__
+        ->config( 'Plugin::ConfigLoader' => {
+            file => $ENV{CIDER_SITE_CONFIG},
+            driver => {
+                'General' => { -IncludeAgain => 1 }
+            },
+        } );
+}
 
 __PACKAGE__->config(
     name => 'CIDER',
