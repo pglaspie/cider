@@ -18,6 +18,7 @@ my $schema = CIDERTest->init_schema;
 
 use Test::More qw(no_plan);
 
+$schema->user( 1 );
 my $obj = $schema->resultset( 'Object' )->create( {
     number    => 12345,
     title     => 'Test Item 3',
@@ -27,7 +28,6 @@ my $obj = $schema->resultset( 'Object' )->create( {
 
 ok( $obj, 'Created test item 3.' );
 
-$obj->creator( 1 );
 is( $obj->creator->id, 1, 'Created by user 1.' );
 
 use DateTime;
