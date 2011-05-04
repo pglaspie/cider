@@ -130,6 +130,17 @@ sub populate_schema {
         ]
     );
 
+    $schema->populate(
+        'Log',
+        [
+            [qw/user object action timestamp/],
+            [1, 1, 'create', '2011-01-01'],
+            [1, 1, 'update', '2011-01-02'],
+            [1, 1, 'update', '2011-03-01'],
+            [1, 1, 'export', '2011-04-01'],
+            [1, 1, 'export', '2011-05-01'],
+        ]
+    );
 }
 
 1;
