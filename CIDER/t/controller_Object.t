@@ -45,5 +45,13 @@ $mech->content_contains( 'You have successfully created' );
 my $rs = $schema->resultset( 'Collection' )->search( { number => '69105' } );
 is( $rs->first->creator->username, 'alice', 'Creator is alice.' );
 
+$mech->submit_form_ok( { with_fields => {
+    number => '42',
+} }, 'Submitted update form' );
+
+$rs = $schema->resultset( 'Collection' )->search( { number => '42' } );
+use DateTime;
+is( $rs->first->modification_logs->first->date, DateTime->today,
+    'Date modified is today.' );
 
 done_testing();

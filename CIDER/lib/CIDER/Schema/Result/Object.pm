@@ -681,7 +681,6 @@ __PACKAGE__->has_many(
     'object',
 );
 
-
 =head2 creation_log
 
 Type: has_one
@@ -696,9 +695,37 @@ __PACKAGE__->has_one(
     { where => { action => 'create' },
       proxy => {
           creator => 'user',
-          creation_timestamp => 'timestamp',
+          date_created => 'date',
       },
     },
+);
+
+=head2 modification_logs
+
+Type: has_many
+
+Related object: L<CIDER::Schema::Result::Log>
+
+=cut
+
+__PACKAGE__->has_many(
+    modification_logs => "CIDER::Schema::Result::Log",
+    'object',
+    { where => { action => 'update' } },
+);
+
+=head2 export_logs
+
+Type: has_many
+
+Related object: L<CIDER::Schema::Result::Log>
+
+=cut
+
+__PACKAGE__->has_many(
+    export_logs => "CIDER::Schema::Result::Log",
+    'object',
+    { where => { action => 'export' } },
 );
 
 
@@ -809,11 +836,33 @@ sub insert {
     return $self;
 }
 
-sub date_created {
+sub update {
     my $self = shift;
 
-    return $self->creation_timestamp->truncate( to => 'day' );
+    $self->next::method( @_ );
+
+    my $user = $self->result_source->schema->user;
+
+    $self->add_to_modification_logs( { user => $user } ) if defined( $user );
+
+    return $self;
 }
 
+sub export {
+    my $self = shift;
+
+    my $user = $self->result_source->schema->user;
+
+    $self->add_to_export_logs( { user => $user } ) if defined( $user );
+}
+
+sub date_available {
+    my $self = shift;
+
+    my $rs = $self->export_logs->search( undef, {
+        order_by => { -desc => 'timestamp' }
+    } );
+    return $rs->first->date;
+}
 
 1;

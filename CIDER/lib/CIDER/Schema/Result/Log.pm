@@ -103,5 +103,10 @@ __PACKAGE__->belongs_to(
   },
 );
 
+sub date {
+    my $self = shift;
+
+    return $self->timestamp->truncate( to => 'day' );
+}
 
 1;
