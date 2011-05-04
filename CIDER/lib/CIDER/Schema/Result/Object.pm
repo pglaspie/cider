@@ -797,6 +797,18 @@ sub cider_type {
     return $type;
 }
 
+sub insert {
+    my $self = shift;
+
+    $self->next::method( @_ );
+
+    my $user = $self->result_source->schema->user;
+
+    $self->creator( $user ) if defined( $user );
+
+    return $self;
+}
+
 sub date_created {
     my $self = shift;
 

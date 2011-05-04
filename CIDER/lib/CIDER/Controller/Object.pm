@@ -134,14 +134,11 @@ sub _create :Private {
 
     my $form = $c->stash->{ form };
 
-    my $object_rs = scalar($c->model( 'CIDERDB' )->resultset( 'Object' ));
-
     $self->_build_authority_fields( $c, $form );
     $self->_build_record_creator_field( $c, $form );
     
     if ( $form->submitted_and_valid ) {
         my $object = $form->model->create( );
-        $object->creator( $c->user->id );
 
         $c->flash->{ we_just_created_this } = 1;
         
