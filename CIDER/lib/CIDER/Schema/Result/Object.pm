@@ -110,12 +110,6 @@ __PACKAGE__->table("object");
   is_nullable: 0
   size: 255
 
-=head2 date_qualifier
-
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 1
-
 =head2 type
 
   data_type: 'integer'
@@ -298,6 +292,11 @@ __PACKAGE__->table("object");
   data_type: 'text'
   is_nullable: 1
 
+=head2 circa
+
+  data_type: 'boolean'
+  is_nullable: 0
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -335,8 +334,6 @@ __PACKAGE__->add_columns(
   { data_type => "text", is_nullable => 1 },
   "location",
   { data_type => "char", is_nullable => 1, size => 255 },
-  "date_qualifier",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "type",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "format",
@@ -401,6 +398,8 @@ __PACKAGE__->add_columns(
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "notes",
   { data_type => "text", is_nullable => 1 },
+  "circa",
+  { data_type => "boolean", is_nullable => 0 },
 );
 __PACKAGE__->set_primary_key("id");
 

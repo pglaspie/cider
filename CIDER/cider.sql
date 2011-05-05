@@ -30,20 +30,6 @@ CREATE TABLE `authority_name` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `item_date_qualifier`
---
-
-DROP TABLE IF EXISTS `item_date_qualifier`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `item_date_qualifier` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` char(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `item_format`
 --
 
@@ -89,7 +75,7 @@ CREATE TABLE `log` (
   KEY `object` (`object`),
   CONSTRAINT `log_ibfk_2` FOREIGN KEY (`object`) REFERENCES `object` (`id`) ON DELETE CASCADE,
   CONSTRAINT `log_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -117,7 +103,6 @@ CREATE TABLE `object` (
   `volume_unit` char(16) DEFAULT NULL,
   `description` text,
   `location` char(255) DEFAULT NULL,
-  `date_qualifier` int(11) DEFAULT NULL,
   `type` int(11) DEFAULT NULL,
   `format` int(11) DEFAULT NULL,
   `funder` char(128) DEFAULT NULL,
@@ -150,13 +135,13 @@ CREATE TABLE `object` (
   `topic_term` int(11) DEFAULT NULL,
   `geographic_term` int(11) DEFAULT NULL,
   `notes` text,
+  `circa` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `parent` (`parent`),
   KEY `personal_name` (`personal_name`),
   KEY `corporate_name` (`corporate_name`),
   KEY `topic_term` (`topic_term`),
   KEY `geographic_term` (`geographic_term`),
-  KEY `date_qualifier` (`date_qualifier`),
   KEY `type` (`type`),
   KEY `format` (`format`),
   KEY `processing_status` (`processing_status`),
@@ -169,10 +154,9 @@ CREATE TABLE `object` (
   CONSTRAINT `object_ibfk_4` FOREIGN KEY (`topic_term`) REFERENCES `authority_name` (`id`),
   CONSTRAINT `object_ibfk_5` FOREIGN KEY (`geographic_term`) REFERENCES `authority_name` (`id`),
   CONSTRAINT `object_ibfk_6` FOREIGN KEY (`processing_status`) REFERENCES `processing_status` (`id`),
-  CONSTRAINT `object_ibfk_7` FOREIGN KEY (`date_qualifier`) REFERENCES `item_date_qualifier` (`id`),
   CONSTRAINT `object_ibfk_8` FOREIGN KEY (`type`) REFERENCES `item_type` (`id`),
   CONSTRAINT `object_ibfk_9` FOREIGN KEY (`format`) REFERENCES `item_format` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -337,4 +321,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-04-29 22:54:06
+-- Dump completed on 2011-05-05 14:23:45
