@@ -56,23 +56,6 @@ elements:
       id: parent
 
     - type: Fieldset
-      legend: Inclusive Date
-      elements:      
-          - type: Text
-            label: From
-            name: date_from
-            id: date_from
-            constraints:
-              - type: Required
-
-          - type: Text
-            label: To
-            name: date_to
-            id: date_to
-            constraints:
-              - type: Required
-
-    - type: Fieldset
       legend: Bulk Date
       elements:            
           - type: Text

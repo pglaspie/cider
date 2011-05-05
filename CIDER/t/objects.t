@@ -42,7 +42,8 @@ isa_ok ($series_1, 'CIDER::Schema::Result::Series',
 my @items = $series_1->children;
 is (scalar @items, 2, 'There are two child item.');
 
-my $item_1 = $items[0];
+my ( $item_1, $item_2 ) = @items;
+
 is ( $item_1->title, 'Test Item 1',
      "The item's name is correct."
  );
@@ -53,6 +54,27 @@ isa_ok ($item_1, 'CIDER::Schema::Result::Item',
 is ( $item_1->parent->id, $series_1->id,
      "The series is the parent of the item."
  );
+
+use DateTime;
+
+is( $item_1->date_from,
+    DateTime->new( year => 2000, month => 1, day => 1 ),
+    "Item 1's date_from is correct." );
+
+is( $item_2->date_to,
+    DateTime->new( year => 2010, month => 1, day => 1 ),
+    "Item 2's date_to is correct." );
+
+$item_2->date_to( DateTime->new( year => 2011, month => 1, day => 1 ) );
+$item_2->update;
+is( $item_2->date_to->year, 2011,
+    "Item 2's new date_to is correct." );
+
+is( $collection_1->date_from, $item_1->date_from,
+    "The collection's date_from is the earliest date_from of its subitems.");
+
+is( $collection_1->date_to, $item_2->date_to,
+    "The collection's date_to is the latest date_to of its subitems.");
 
 my $collection_2 = $collections[1];
 $series_1->parent( $collection_2 );
