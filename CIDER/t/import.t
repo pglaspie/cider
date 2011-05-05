@@ -38,14 +38,14 @@ my $data = [
     {
         id => 1,
         title => 'Renamed collection',
-        record_creator => 1,
+        record_context => 1,
         date_from => '2000-01-01',
         date_to   => '2010-01-01',
         number    => 1,
     },
     {
         title => 'Brand-new collection',
-        record_creator => 1,
+        record_context => 1,
         date_from => '2000-01-01',
         date_to   => '2010-01-01',
         number    => 41,

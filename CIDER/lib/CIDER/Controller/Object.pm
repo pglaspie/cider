@@ -51,7 +51,7 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
     $form->load_config_filestem( "object/$type" );
 
     $self->_build_authority_fields( $c, $form );
-    $self->_build_record_creator_field( $c, $form );
+    $self->_build_record_context_field( $c, $form );
 
     $form->process;
 
@@ -135,7 +135,7 @@ sub _create :Private {
     my $form = $c->stash->{ form };
 
     $self->_build_authority_fields( $c, $form );
-    $self->_build_record_creator_field( $c, $form );
+    $self->_build_record_context_field( $c, $form );
     
     if ( $form->submitted_and_valid ) {
         my $object = $form->model->create( );
@@ -229,12 +229,12 @@ sub _build_authority_fields {
     }
 }
 
-sub _build_record_creator_field {
+sub _build_record_context_field {
     my ( $self, $c, $form ) = @_;
 
-    my $field_object = $form->get_field( { name => 'record_creator' } );
+    my $field_object = $form->get_field( { name => 'record_context' } );
     if ( $field_object ) {
-        my @records = $c->model( 'CIDERDB::RecordCreator' )->search(
+        my @records = $c->model( 'CIDERDB::RecordContext' )->search(
             {},
             {   order_by => 'name',
             }
@@ -250,7 +250,7 @@ sub _build_record_creator_field {
 
 =head1 AUTHOR
 
-Jason McIntosh
+Jason McIntosh, Doug Orleans
 
 =head1 LICENSE
 
