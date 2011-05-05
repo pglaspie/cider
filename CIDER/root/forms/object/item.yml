@@ -52,6 +52,10 @@ elements:
     - type: Fieldset
       legend: Inclusive Date
       elements:            
+          - type: Checkbox
+            label: Circa
+            name: circa
+
           - type: Text
             label: From
             name: date_from
@@ -65,14 +69,6 @@ elements:
             id: date_to
             constraints:
               - type: Required
-
-          - type: Select
-            label: Date Qualifier
-            name: date_qualfier
-            options:
-              - [ 1, 'Qualifier One' ]
-              - [ 2, 'Qualifier Two' ]
-              - [ 3, 'Qualifier Three' ]
               
     - type: Text
       name: location
