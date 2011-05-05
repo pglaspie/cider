@@ -399,7 +399,7 @@ __PACKAGE__->add_columns(
   "notes",
   { data_type => "text", is_nullable => 1 },
   "circa",
-  { data_type => "boolean", is_nullable => 0 },
+  { data_type => "boolean", is_nullable => 0, default_value => 0 },
 );
 __PACKAGE__->set_primary_key("id");
 
@@ -532,26 +532,6 @@ __PACKAGE__->belongs_to(
   "processing_status",
   "CIDER::Schema::Result::ProcessingStatus",
   { id => "processing_status" },
-  {
-    is_deferrable => 1,
-    join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
-  },
-);
-
-=head2 date_qualifier
-
-Type: belongs_to
-
-Related object: L<CIDER::Schema::Result::ItemDateQualifier>
-
-=cut
-
-__PACKAGE__->belongs_to(
-  "date_qualifier",
-  "CIDER::Schema::Result::ItemDateQualifier",
-  { id => "date_qualifier" },
   {
     is_deferrable => 1,
     join_type     => "LEFT",
