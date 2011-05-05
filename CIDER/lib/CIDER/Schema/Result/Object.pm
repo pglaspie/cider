@@ -4,6 +4,8 @@ use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
+use Class::Method::Modifiers qw(around);
+use List::Util qw(min max);
 
 __PACKAGE__->load_components("InflateColumn::DateTime");
 
@@ -26,12 +28,12 @@ __PACKAGE__->table("object");
 =head2 date_from
 
   data_type: 'date'
-  is_nullable: 0
+  is_nullable: 1
 
 =head2 date_to
 
   data_type: 'date'
-  is_nullable: 0
+  is_nullable: 1
 
 =head2 bulk_date_from
 
@@ -303,9 +305,9 @@ __PACKAGE__->add_columns(
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "date_from",
-  { data_type => "date", is_nullable => 0 },
+  { data_type => "date", is_nullable => 1 },
   "date_to",
-  { data_type => "date", is_nullable => 0 },
+  { data_type => "date", is_nullable => 1 },
   "bulk_date_from",
   { data_type => "date", is_nullable => 1 },
   "bulk_date_to",
@@ -842,6 +844,27 @@ sub date_available {
         order_by => { -desc => 'timestamp' }
     } );
     return $rs->first->date;
+}
+
+=head2 date_from
+=head2 date_to
+
+Collections, series, and items with children do not have dates.  The
+date_from and date_to accessors return the earliest/latest dates of
+an object's children.
+
+=cut
+
+for my $method ( qw(date_from date_to) ) {
+    around $method => sub {
+        my ( $orig, $self ) = ( shift, shift );
+
+        my $date = $orig->( $self, @_ );
+        return $date if defined $date;
+
+        my @dates = map { $_->$method } $self->children;
+        return ( $method eq 'date_from' ) ? min @dates : max @dates;
+    };
 }
 
 1;

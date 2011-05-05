@@ -15,6 +15,7 @@ requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Model::Adaptor';
 requires 'Moose';
+requires 'Class::Method::Modifiers';
 requires 'Text::CSV';
 requires 'Text::CSV::Slurp';
 requires 'KinoSearch' => '0.31';

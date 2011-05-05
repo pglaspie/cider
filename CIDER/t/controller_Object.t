@@ -35,8 +35,6 @@ $mech->content_contains( 'Create a new collection' );
 $mech->submit_form_ok( { with_fields => {
     title => 'New test collection',
     number => '69105',
-    date_from => '2000-01-01',
-    date_to => '2010-01-01',
     scope => 'oscillo',
 } }, 'Submitted creation form' );
 
