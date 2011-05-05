@@ -38,7 +38,7 @@ sub populate_schema {
     my $schema = shift;
 
     $schema->populate(
-        'RecordCreator',
+        'RecordContext',
         [
             [qw/id/],
             [1],
@@ -91,7 +91,7 @@ sub populate_schema {
         [
             [qw/id parent number title personal_name corporate_name
                topic_term geographic_term notes date_from date_to
-               record_creator
+               record_context
                type/],
             [1, undef, 12345, 'Test Collection with kids', 1, undef,
              undef, undef, 'Test notes.', undef, undef,

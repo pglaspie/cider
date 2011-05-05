@@ -87,11 +87,11 @@ DROP TABLE IF EXISTS `object`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `object` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `date_from` date NOT NULL,
-  `date_to` date NOT NULL,
+  `date_from` date DEFAULT NULL,
+  `date_to` date DEFAULT NULL,
   `bulk_date_from` date DEFAULT NULL,
   `bulk_date_to` date DEFAULT NULL,
-  `record_creator` int(11) DEFAULT NULL,
+  `record_context` int(11) DEFAULT NULL,
   `history` text,
   `scope` char(255) DEFAULT NULL,
   `organization` char(255) DEFAULT NULL,
@@ -145,10 +145,10 @@ CREATE TABLE `object` (
   KEY `type` (`type`),
   KEY `format` (`format`),
   KEY `processing_status` (`processing_status`),
-  KEY `record_creator` (`record_creator`),
+  KEY `record_creator` (`record_context`),
+  CONSTRAINT `object_ibfk_12` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`),
   CONSTRAINT `object_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `object` (`id`),
   CONSTRAINT `object_ibfk_11` FOREIGN KEY (`processing_status`) REFERENCES `processing_status` (`id`),
-  CONSTRAINT `object_ibfk_12` FOREIGN KEY (`record_creator`) REFERENCES `record_creator` (`id`),
   CONSTRAINT `object_ibfk_2` FOREIGN KEY (`personal_name`) REFERENCES `authority_name` (`id`),
   CONSTRAINT `object_ibfk_3` FOREIGN KEY (`corporate_name`) REFERENCES `authority_name` (`id`),
   CONSTRAINT `object_ibfk_4` FOREIGN KEY (`topic_term`) REFERENCES `authority_name` (`id`),
@@ -208,13 +208,13 @@ CREATE TABLE `processing_status` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `record_creator`
+-- Table structure for table `record_context`
 --
 
-DROP TABLE IF EXISTS `record_creator`;
+DROP TABLE IF EXISTS `record_context`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `record_creator` (
+CREATE TABLE `record_context` (
   `id` int(11) NOT NULL,
   `name` char(128) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -321,4 +321,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-05-05 14:23:45
+-- Dump completed on 2011-05-05 17:34:09

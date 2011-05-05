@@ -63,9 +63,9 @@ elements:
             id: bulk_date_to
 
     - type: Select
-      label: Record Creator
-      name: record_creator
-      id: record_creator
+      label: Record Context
+      name: record_context
+      id: record_context
 
     - type: Text
       label: History

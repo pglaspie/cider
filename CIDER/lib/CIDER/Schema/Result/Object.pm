@@ -45,7 +45,7 @@ __PACKAGE__->table("object");
   data_type: 'date'
   is_nullable: 1
 
-=head2 record_creator
+=head2 record_context
 
   data_type: 'integer'
   is_foreign_key: 1
@@ -312,7 +312,7 @@ __PACKAGE__->add_columns(
   { data_type => "date", is_nullable => 1 },
   "bulk_date_to",
   { data_type => "date", is_nullable => 1 },
-  "record_creator",
+  "record_context",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "history",
   { data_type => "text", is_nullable => 1 },
@@ -582,18 +582,18 @@ __PACKAGE__->belongs_to(
   },
 );
 
-=head2 record_creator
+=head2 record_context
 
 Type: belongs_to
 
-Related object: L<CIDER::Schema::Result::RecordCreator>
+Related object: L<CIDER::Schema::Result::RecordContext>
 
 =cut
 
 __PACKAGE__->belongs_to(
-  "record_creator",
-  "CIDER::Schema::Result::RecordCreator",
-  { id => "record_creator" },
+  "record_context",
+  "CIDER::Schema::Result::RecordContext",
+  { id => "record_context" },
   { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
 );
 
@@ -715,7 +715,7 @@ sub inflate_result {
 
     my $result = $self->next::method(@_);
 
-    if ( $result->record_creator ) {
+    if ( $result->record_context ) {
         $self->ensure_class_loaded( 'CIDER::Schema::Result::Collection' );
         bless $result, 'CIDER::Schema::Result::Collection';
     }
