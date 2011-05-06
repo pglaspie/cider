@@ -1,6 +1,7 @@
 package CIDER::Controller::Object;
 use Moose;
 use namespace::autoclean;
+use Locale::Language;
 
 BEGIN {extends 'Catalyst::Controller::HTML::FormFu'; }
 
@@ -51,6 +52,7 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
     $form->load_config_filestem( "object/$type" );
 
     $self->_build_authority_fields( $c, $form );
+    $self->_build_language_field( $c, $form );
     $self->_build_record_context_field( $c, $form );
 
     $form->process;
@@ -135,6 +137,7 @@ sub _create :Private {
     my $form = $c->stash->{ form };
 
     $self->_build_authority_fields( $c, $form );
+    $self->_build_language_field( $c, $form );
     $self->_build_record_context_field( $c, $form );
     
     if ( $form->submitted_and_valid ) {
@@ -155,6 +158,8 @@ sub _create :Private {
             my $parent_field = $form->get_field( { name => 'parent' } );
             $parent_field->value ( $parent_id );
         }
+
+        $form->default_values( { language => 'eng' } );
     }
 }
 
@@ -244,6 +249,20 @@ sub _build_record_context_field {
             push @options, [ $record->id, $record->name ];
         }
         $field_object->options( \@options );
+    }
+}
+
+sub _build_language_field {
+    my ( $self, $c, $form ) = @_;
+
+    my $field = $form->get_field( 'language' );
+
+    if ( $field ) {
+        my @options = map {
+            [ language2code( $_, LOCALE_LANG_ALPHA_3 ), $_ ]
+        } all_language_names;
+
+        $field->options( \@options );
     }
 }
 

@@ -6,6 +6,7 @@ use warnings;
 use base 'DBIx::Class::Core';
 use Class::Method::Modifiers qw(around);
 use List::Util qw(min max);
+use Locale::Language;
 
 __PACKAGE__->load_components("InflateColumn::DateTime");
 
@@ -298,6 +299,14 @@ __PACKAGE__->table("object");
 
   data_type: 'boolean'
   is_nullable: 0
+  default_value: 0
+
+=head2 language
+
+  data_type: 'char'
+  is_nullable: 0
+  size: 3
+  default_value: 'eng'
 
 =cut
 
@@ -402,6 +411,8 @@ __PACKAGE__->add_columns(
   { data_type => "text", is_nullable => 1 },
   "circa",
   { data_type => "boolean", is_nullable => 0, default_value => 0 },
+  "language",
+  { data_type => "char", is_nullable => 0, size => 3, default_value => 'eng' },
 );
 __PACKAGE__->set_primary_key("id");
 
@@ -865,6 +876,20 @@ for my $method ( qw(date_from date_to) ) {
         my @dates = map { $_->$method } $self->children;
         return ( $method eq 'date_from' ) ? min @dates : max @dates;
     };
+}
+
+=head2 language_name
+
+Returns the full English name of the language of an object.  (As
+opposed to the 'language' field, which contains the three-letter ISO
+language code.)
+
+=cut
+
+sub language_name {
+    my $self = shift;
+
+    return code2language( $self->language, LOCALE_LANG_ALPHA_3 );
 }
 
 1;
