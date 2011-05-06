@@ -45,6 +45,11 @@ elements:
       name: notes
       id: notes
         
+    - type: Select
+      label: Language
+      name: language
+      id: language
+
     - type: Hidden
       name: parent
       id: parent

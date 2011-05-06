@@ -28,6 +28,9 @@ isa_ok ($collection_1, 'CIDER::Schema::Result::Collection',
      'Collection'
  );
 
+is( $collection_1->language_name, 'English',
+    'The collection language is English.' );
+
 my @series = $collection_1->children;
 is (scalar @series, 1, 'There is one child series.');
 
@@ -84,4 +87,3 @@ is (scalar($collection_2->children), 1,
     'After moving, there is one child series in the second collection.');
 is (scalar($collection_1->children), 0,
     'After moving, there are no child series in the first collection.');
-

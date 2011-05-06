@@ -32,6 +32,8 @@ $mech->submit_form_ok( { with_fields => { type => 'collection' } },
 
 $mech->content_contains( 'Create a new collection' );
 
+$mech->content_contains( 'Esperanto', 'Language list is populated.' );
+
 $mech->submit_form_ok( { with_fields => {
     title => 'New test collection',
     number => '69105',
