@@ -43,20 +43,12 @@ sub list :Path('list') :Args(0) :FormConfig('set/create') {
 
     if ( $form->submitted_and_valid ) {
         my $name = $form->param( 'name' );
-        $c->log->debug("*******NAME is: $name");
-    
         my $rs = $c->model( 'CIDERDB::ObjectSet' );
-        $c->log->debug("*******RS: $rs");
-        use Data::Dumper; $c->log->debug(Dumper( {
-            name => $name,
-            owner => $c->user->id,
-        }));
 
         $rs->create( {
             name => $name,
             owner => $c->user->id,
         } );
-        $c->log->debug('*******HOOBA SCOOBA');
     }
 }
 
@@ -99,7 +91,7 @@ sub delete :Chained('set') :Args(0) {
 
 =head1 AUTHOR
 
-Jason McIntosh
+Jason McIntosh, Doug Orleans
 
 =head1 LICENSE
 
