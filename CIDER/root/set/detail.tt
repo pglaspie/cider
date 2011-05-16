@@ -1,5 +1,8 @@
 [% USE scalar %]
-<h2>[% set.name %]</h2>
+
+[% page.title = set.name %]
+
+<h2>[% page.title %]</h2>
 
 [% IF set.scalar.objects.count %]
 <p>This set contains the following objects:</p>

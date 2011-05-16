@@ -1,4 +1,6 @@
-<h2>Your sets</h2>
+[% page.title = 'Your sets' %]
+
+<h2>[% page.title %]</h2>
 
 [% sets = c.user.sets %]
 
