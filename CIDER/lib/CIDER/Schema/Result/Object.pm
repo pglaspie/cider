@@ -111,7 +111,7 @@ __PACKAGE__->table("object");
 
   data_type: 'char'
   is_nullable: 0
-  size: 255
+  size: 16
 
 =head2 type
 
@@ -344,7 +344,7 @@ __PACKAGE__->add_columns(
   "description",
   { data_type => "text", is_nullable => 1 },
   "location",
-  { data_type => "char", is_nullable => 1, size => 255 },
+  { data_type => "char", is_foreign_key => 1, is_nullable => 1, size => 16 },
   "type",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "format",
@@ -718,6 +718,18 @@ __PACKAGE__->has_many(
     export_logs => "CIDER::Schema::Result::Log",
     'object',
     { where => { action => 'export' } },
+);
+
+=head2 location
+
+Type: belongs_to
+
+Related object: L<CIDER::Schema::Result::Location>
+
+=cut
+
+__PACKAGE__->belongs_to(
+    location => "CIDER::Schema::Result::Location",
 );
 
 

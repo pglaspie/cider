@@ -97,27 +97,27 @@ sub populate_schema {
              undef, undef, 'Test notes.', undef, undef,
              1,
              undef
-         ],
+            ],
             [2, undef, 12345, 'Test Collection without kids', 2, undef,
              undef, undef, 'Test notes.', undef, undef,
              1,
              undef
-         ],
+            ],
             [3, 1, 12345, 'Test Series 1', 1, undef,
              undef, undef, 'Test notes.', undef, undef,
              undef,
              undef,
-         ],
+            ],
             [4, 3, 12345, 'Test Item 1', 1 , undef,
              undef, undef, 'Test notes.', '2000-01-01', '2008-01-01',
              undef,
              1,
-         ],
+            ],
             [5, 3, 12345, 'Test Item 2', 1 , undef,
              undef, undef, 'Test notes.', '2002-01-01', '2010-01-01',
              undef,
              1,
-         ],
+            ],
         ]
     );
 
@@ -141,6 +141,46 @@ sub populate_schema {
             [1, 1, 'export', '2011-05-01'],
         ]
     );
+
+    $schema->populate(
+        'LocationUnitType',
+        [
+         [qw/id name volume/],
+         [1, '1.2 cu. ft. box', 1.2],
+         [2, 'bound volume', undef],
+         [3, 'digital object', undef],
+        ]
+    );
+
+    $schema->populate(
+        'Location',
+        [
+         [qw/barcode unit_type/],
+         ['8001', 1],
+         ['8002', 1],
+         ['8003', 1],
+         ['8004', 1],
+         ['8005', 1],
+         ['9001', 2],
+         ['9002', 2],
+         ['9003', 2],
+         ['11', 3],
+         ['12', 3],
+         ['13', 3],
+         ['21', 3],
+         ['22', 3],
+        ]
+    );
+
+    $schema->populate(
+        'LocationTitle',
+        [
+         [qw/id location title/],
+         [1, '8001', 'John Doe Papers'],
+         [2, '8001', 'Jane Doe Papers'],
+        ]
+    );
+
 }
 
 1;
