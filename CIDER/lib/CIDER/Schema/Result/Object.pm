@@ -86,22 +86,6 @@ __PACKAGE__->table("object");
   data_type: 'text'
   is_nullable: 1
 
-=head2 volume_count
-
-  data_type: 'integer'
-  is_nullable: 1
-
-=head2 volume_extent
-
-  data_type: 'integer'
-  is_nullable: 1
-
-=head2 volume_unit
-
-  data_type: 'char'
-  is_nullable: 1
-  size: 16
-
 =head2 description
 
   data_type: 'text'
@@ -335,12 +319,6 @@ __PACKAGE__->add_columns(
   { data_type => "enum", extra => { list => [0, 1] }, is_nullable => 1 },
   "processing_notes",
   { data_type => "text", is_nullable => 1 },
-  "volume_count",
-  { data_type => "integer", is_nullable => 1 },
-  "volume_extent",
-  { data_type => "integer", is_nullable => 1 },
-  "volume_unit",
-  { data_type => "char", is_nullable => 1, size => 16 },
   "description",
   { data_type => "text", is_nullable => 1 },
   "location",

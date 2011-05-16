@@ -180,9 +180,6 @@ CREATE TABLE `object` (
   `processing_status` tinyint(4) DEFAULT NULL,
   `has_physical_documentation` enum('0','1') DEFAULT NULL,
   `processing_notes` text,
-  `volume_count` int(11) DEFAULT NULL,
-  `volume_extent` int(11) DEFAULT NULL,
-  `volume_unit` char(16) DEFAULT NULL,
   `description` text,
   `location` char(16) DEFAULT NULL,
   `type` int(11) DEFAULT NULL,
@@ -230,10 +227,10 @@ CREATE TABLE `object` (
   KEY `processing_status` (`processing_status`),
   KEY `record_creator` (`record_context`),
   KEY `location` (`location`),
-  CONSTRAINT `object_ibfk_13` FOREIGN KEY (`location`) REFERENCES `location` (`barcode`),
   CONSTRAINT `object_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `object` (`id`),
   CONSTRAINT `object_ibfk_11` FOREIGN KEY (`processing_status`) REFERENCES `processing_status` (`id`),
   CONSTRAINT `object_ibfk_12` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`),
+  CONSTRAINT `object_ibfk_13` FOREIGN KEY (`location`) REFERENCES `location` (`barcode`),
   CONSTRAINT `object_ibfk_2` FOREIGN KEY (`personal_name`) REFERENCES `authority_name` (`id`),
   CONSTRAINT `object_ibfk_3` FOREIGN KEY (`corporate_name`) REFERENCES `authority_name` (`id`),
   CONSTRAINT `object_ibfk_4` FOREIGN KEY (`topic_term`) REFERENCES `authority_name` (`id`),
@@ -406,4 +403,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-05-16 13:19:43
+-- Dump completed on 2011-05-16 13:26:22
