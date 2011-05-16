@@ -78,4 +78,28 @@ __PACKAGE__->has_many(
     titles => 'CIDER::Schema::Result::LocationTitle',
 );
 
+=head2 collection_numbers
+
+Type: has_many
+
+Related object: L<CIDER::Schema::Result::LocationCollectionNumber>
+
+=cut
+
+__PACKAGE__->has_many(
+    collection_numbers => 'CIDER::Schema::Result::LocationCollectionNumber',
+);
+
+=head2 series_numbers
+
+Type: has_many
+
+Related object: L<CIDER::Schema::Result::LocationSeriesNumber>
+
+=cut
+
+__PACKAGE__->has_many(
+    series_numbers => 'CIDER::Schema::Result::LocationSeriesNumber',
+);
+
 1;

@@ -74,6 +74,40 @@ CREATE TABLE `location` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `location_collection_number`
+--
+
+DROP TABLE IF EXISTS `location_collection_number`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `location_collection_number` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `location` char(16) NOT NULL,
+  `number` char(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `location` (`location`),
+  CONSTRAINT `location_collection_number_ibfk_1` FOREIGN KEY (`location`) REFERENCES `location` (`barcode`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `location_series_number`
+--
+
+DROP TABLE IF EXISTS `location_series_number`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `location_series_number` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `location` char(16) NOT NULL,
+  `number` char(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `location` (`location`),
+  CONSTRAINT `location_series_number_ibfk_1` FOREIGN KEY (`location`) REFERENCES `location` (`barcode`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `location_title`
 --
 
@@ -372,4 +406,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-05-16 12:54:42
+-- Dump completed on 2011-05-16 13:19:43
