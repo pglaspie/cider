@@ -72,24 +72,7 @@ elements:
               
     - type: Text
       name: location
-      label: Location barcode
-
-    - type: Text
-      name: volume_count
-      label: Volume Count
-    - type: Text
-      name: volume_extent
-      label: Volume Extent
-    - type: Select
-      name: volume_unit
-      options:
-        - [ '', '- Type of unit -' ]
-        - [ 'box', 'Box' ]
-        - [ 'cd_dvd', 'CD / DVD' ]
-        - [ 'binder_folder', 'Binder / Folder' ]
-        - [ 'file_directory', 'File / Directory' ]
-        - [ 'bytes', 'Bytes' ]
-        - [ 'other', 'Other' ]
+      label: Location Barcode
 
     - type: Select
       label: Type
