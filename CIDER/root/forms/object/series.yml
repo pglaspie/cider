@@ -68,23 +68,6 @@ elements:
             name: bulk_date_to
             id: bulk_date_to
 
-    - type: Text
-      name: volume_count
-      label: Volume Count
-    - type: Text
-      name: volume_extent
-      label: Volume Extent
-    - type: Select
-      name: volume_unit
-      options:
-        - [ '', '- Type of unit -' ]
-        - [ 'box', 'Box' ]
-        - [ 'cd_dvd', 'CD / DVD' ]
-        - [ 'binder_folder', 'Binder / Folder' ]
-        - [ 'file_directory', 'File / Directory' ]
-        - [ 'bytes', 'Bytes' ]
-        - [ 'other', 'Other' ]
-
     - type: Textarea
       label: Description
       name: description
