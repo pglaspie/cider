@@ -1,4 +1,6 @@
-<h2>Search results</h2>
+[% page.title = 'Search results' %]
+
+<h2>[% page.title %]</h2>
 
 <p>Your search query ([% query %]) returned [% objects.size %] objects.</p>
 

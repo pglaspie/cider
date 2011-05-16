@@ -1,3 +1,5 @@
-<h2>Create a new [% object_type %]</h2>
+[% page.title = 'Create a new ' _ object_type %]
+
+<h2>[% page.title %]</h2>
 
 [% form %]

@@ -1,3 +1,5 @@
+[% page.title = object.title %]
+
 [% USE scalar %]
 
 [% ancestors = object.ancestors %]
@@ -10,7 +12,7 @@
 [% END %]
 </p>
 
-<h2>[% object.title %]</h2>
+<h2>[% page.title %]</h2>
 
 [% IF we_just_picked_this_up %]
 <div class="success">
