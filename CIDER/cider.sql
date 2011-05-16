@@ -58,6 +58,54 @@ CREATE TABLE `item_type` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `location`
+--
+
+DROP TABLE IF EXISTS `location`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `location` (
+  `barcode` char(16) NOT NULL,
+  `unit_type` int(11) NOT NULL,
+  PRIMARY KEY (`barcode`),
+  KEY `unit_type` (`unit_type`),
+  CONSTRAINT `location_ibfk_1` FOREIGN KEY (`unit_type`) REFERENCES `location_unit_type` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `location_title`
+--
+
+DROP TABLE IF EXISTS `location_title`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `location_title` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `location` char(16) NOT NULL,
+  `title` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `location` (`location`),
+  CONSTRAINT `location_title_ibfk_1` FOREIGN KEY (`location`) REFERENCES `location` (`barcode`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `location_unit_type`
+--
+
+DROP TABLE IF EXISTS `location_unit_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `location_unit_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` char(255) NOT NULL,
+  `volume` decimal(5,2) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `log`
 --
 
@@ -75,7 +123,7 @@ CREATE TABLE `log` (
   KEY `object` (`object`),
   CONSTRAINT `log_ibfk_2` FOREIGN KEY (`object`) REFERENCES `object` (`id`) ON DELETE CASCADE,
   CONSTRAINT `log_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,7 +150,7 @@ CREATE TABLE `object` (
   `volume_extent` int(11) DEFAULT NULL,
   `volume_unit` char(16) DEFAULT NULL,
   `description` text,
-  `location` char(255) DEFAULT NULL,
+  `location` char(16) DEFAULT NULL,
   `type` int(11) DEFAULT NULL,
   `format` int(11) DEFAULT NULL,
   `funder` char(128) DEFAULT NULL,
@@ -147,6 +195,8 @@ CREATE TABLE `object` (
   KEY `format` (`format`),
   KEY `processing_status` (`processing_status`),
   KEY `record_creator` (`record_context`),
+  KEY `location` (`location`),
+  CONSTRAINT `object_ibfk_13` FOREIGN KEY (`location`) REFERENCES `location` (`barcode`),
   CONSTRAINT `object_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `object` (`id`),
   CONSTRAINT `object_ibfk_11` FOREIGN KEY (`processing_status`) REFERENCES `processing_status` (`id`),
   CONSTRAINT `object_ibfk_12` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`),
@@ -157,7 +207,7 @@ CREATE TABLE `object` (
   CONSTRAINT `object_ibfk_6` FOREIGN KEY (`processing_status`) REFERENCES `processing_status` (`id`),
   CONSTRAINT `object_ibfk_8` FOREIGN KEY (`type`) REFERENCES `item_type` (`id`),
   CONSTRAINT `object_ibfk_9` FOREIGN KEY (`format`) REFERENCES `item_format` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -322,4 +372,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-05-06 11:09:02
+-- Dump completed on 2011-05-16 12:54:42
