@@ -2,4 +2,19 @@
 
 <h2>[% page.title %]</h2>
 
+[% IF item %]
+<div class="success">
+<p>
+You have successfully updated
+
+<a href="[%
+c.uri_for( c.controller('Object').action_for('detail'), [item.id] )
+%]">[% item.title %]</a>,
+
+but no location with barcode <em>[% barcode %]</em> exists.  Please
+create a location below.
+</p>
+</div>
+[% END %]
+
 [% form %]

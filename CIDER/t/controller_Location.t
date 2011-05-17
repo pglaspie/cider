@@ -46,11 +46,29 @@ is( $mech->uri->path, '/location/8001',
 $mech->get_ok( '/location/123/create' );
 $mech->submit_form_ok( { with_fields => {
     'titles_1.title' => 'Title 123',
-    'titles_2.title' => 'Second Title',
     unit_type => 1,
 } }, 'Create new location.' );
 
-$mech->content_contains( 'Title 123', 'First location title was set.' );
+$mech->content_contains( 'Title 123', 'Location title was set.' );
+
+$mech->submit_form_ok( { with_fields => {
+    'titles_2.title' => 'Second Title',
+} }, 'Set second title.' );
 $mech->content_contains( 'Second Title', 'Second location title was set.' );
+
+$mech->get( '/object/4/' );
+$mech->submit_form_ok( { with_fields => {
+    location => '1234',
+} }, 'Update an item with a new location barcode.' );
+$mech->content_contains( 'successfully', 'Successful update.' );
+is( $mech->uri->path, '/location/1234/create',
+    'Redirected to create location.' );
+
+$mech->submit_form_ok( { with_fields => {
+    'titles_1.title' => 'Title 1234',
+    unit_type => 1,
+} }, 'Create new location.' );
+$mech->content_contains( 'successfully', 'Successful creation.' );
+$mech->content_contains( 'Test Item 1', 'Links back to item.' );
 
 done_testing();

@@ -4,7 +4,17 @@
 
 [% IF we_just_created_this %]
 <div class="success">
-<p>You have successfully created a new location with barcode <em>[% location.barcode %]</em>.</p>
+<p>
+You have successfully created a new location with barcode
+<em>[% location.barcode %]</em>.
+
+[% IF item %]
+It has been set as the location of <a href="[%
+c.uri_for( c.controller('Object').action_for('detail'), [item.id] )
+%]">[% item.title %]</a>.
+[% END %]
+
+</p>
 </div>
 [% END %]
 
