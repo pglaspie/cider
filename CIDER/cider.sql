@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `authority_name`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `authority_name` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `value` char(255) DEFAULT NULL,
+  `value` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -157,7 +157,7 @@ CREATE TABLE `log` (
   KEY `object` (`object`),
   CONSTRAINT `log_ibfk_2` FOREIGN KEY (`object`) REFERENCES `object` (`id`) ON DELETE CASCADE,
   CONSTRAINT `log_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -298,7 +298,7 @@ DROP TABLE IF EXISTS `record_context`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `record_context` (
   `id` int(11) NOT NULL,
-  `name` char(128) DEFAULT NULL,
+  `name` varchar(128) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -403,4 +403,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-05-16 22:35:34
+-- Dump completed on 2011-05-17 14:50:49

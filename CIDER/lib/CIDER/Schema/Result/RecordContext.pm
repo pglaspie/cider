@@ -22,13 +22,19 @@ __PACKAGE__->table("record_context");
   data_type: 'integer'
   is_nullable: 0
 
+=head2 name
+
+  data_type: 'varchar'
+  is_nullable: 0
+  size: 128
+
 =cut
 
 __PACKAGE__->add_columns(
     "id",
     { data_type => "integer", is_nullable => 0 },
     "name",
-    { data_type => "char", is_nullable => 1, size=>128 },
+    { data_type => "varchar", is_nullable => 0, size=>128 },
 );
 __PACKAGE__->set_primary_key("id");
 
