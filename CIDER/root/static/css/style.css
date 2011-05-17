@@ -65,8 +65,8 @@ fieldset.checkboxgroup legend, fieldset.repeatable legend, fieldset.radiogroup l
 
 fieldset.checkboxgroup, fieldset.repeatable, fieldset.radiogroup {
     border: 0;
-    margin-left: 0;
-    padding-left: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .checkboxgroup label {
@@ -93,4 +93,8 @@ fieldset.checkboxgroup, fieldset.repeatable, fieldset.radiogroup {
 
 .text input.name {
     width: 20em;
+}
+
+.submit {
+    margin-top: 20px;
 }

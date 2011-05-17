@@ -5,7 +5,7 @@ use warnings;
 use FindBin;
 
 $ENV{CIDER_SITE_CONFIG} = "$FindBin::Bin/conf/cider.conf";
-$ENV{CIDER_DEBUG}       = 0;
+#$ENV{CIDER_DEBUG}       = 0;
 
 use Carp qw(croak);
 use English;
@@ -40,8 +40,8 @@ sub populate_schema {
     $schema->populate(
         'RecordContext',
         [
-            [qw/id/],
-            [1],
+            [qw/id name/],
+            [1, 'Context 1'],
         ]
     );
 

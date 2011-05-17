@@ -1,0 +1,11 @@
+[% page.title = 'Location ' _ location.barcode %]
+
+<h2>[% page.title %]</h2>
+
+[% IF we_just_created_this %]
+<div class="success">
+<p>You have successfully created a new location with barcode <em>[% location.barcode %]</em>.</p>
+</div>
+[% END %]
+
+[% form %]
