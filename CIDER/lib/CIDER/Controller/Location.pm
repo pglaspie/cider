@@ -80,11 +80,24 @@ sub create :Chained('location') :Args(0) :FormConfig('location') {
 
         my $loc = $form->model->create;
 
+        if ( my $item_id = $form->param_value( 'item' ) ) {
+            my $item = $c->model( 'CIDERDB::Object' )->find( $item_id );
+            $item->location( $barcode );
+            $item->update;
+            $c->flash->{ item } = $item;
+        }
+
         $c->flash->{ we_just_created_this } = 1;
         
         $c->response->redirect(
             $c->uri_for( $c->controller( 'Location' )->action_for( 'detail' ),
                          [$barcode] ) );
+    }
+    elsif ( not $form->submitted ) {
+        if ( defined ( my $item = $c->flash->{ item } ) ) {
+            $form->default_values( { item => $item->id } );
+#            $c->stash->{ item } = $item;
+        }
     }
 }
 

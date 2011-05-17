@@ -56,6 +56,21 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
     $form->process;
 
     if ( $form->submitted_and_valid ) {
+        my $barcode = $form->param_value( 'location' );
+        if ( defined $barcode ) {
+            my $location = $c->model( 'CIDERDB::Location' )->find( $barcode );
+            unless ( defined $location ) {
+                $c->flash->{ item } = $object;
+                $c->res->redirect(
+                    $c->uri_for(
+                        $c->controller( 'Location' )->action_for( 'create' ),
+                        [ $barcode ]
+                    ) );
+                # Remove the barcode from the form; the location field
+                # will get filled in after the location is created.
+                $form->add_valid( location => undef );
+            }
+        }
         $form->model->update( $object );
     }
     elsif ( not $form->submitted ) {
@@ -137,6 +152,19 @@ sub _create :Private {
     $self->_build_language_field( $c, $form );
     
     if ( $form->submitted_and_valid ) {
+        my $barcode = $form->param_value( 'location' );
+        if ( defined $barcode ) {
+            my $location = $c->model( 'CIDERDB::Location' )->find( $barcode );
+            unless ( defined $location ) {
+                # TO DO: redirect to location create action
+                $form->get_field( 'location' )
+                     ->get_constraint({ type => 'Callback' })
+                     ->force_errors( 1 );
+                $form->process;
+                return;
+            }
+        }
+
         my $object = $form->model->create( );
 
         $c->flash->{ we_just_created_this } = 1;

@@ -7,6 +7,9 @@ model_config:
 
 elements:
   - type: Hidden
+    name: item
+
+  - type: Hidden
     name: title_count
 
   - type: Repeatable
