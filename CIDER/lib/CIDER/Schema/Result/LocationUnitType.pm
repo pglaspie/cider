@@ -23,7 +23,7 @@ __PACKAGE__->table("location_unit_type");
 
 =head2 name
 
-  data_type: 'char'
+  data_type: 'varchar'
   is_nullable: 0
   size: 255
 
@@ -39,7 +39,7 @@ __PACKAGE__->add_columns(
     "id",
     { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
     "name",
-    { data_type => "char", is_nullable => 0, size => 255 },
+    { data_type => "varchar", is_nullable => 0, size => 255 },
     "volume",
     { data_type => "decimal", is_nullable => 1, size => [5, 2] },
 );

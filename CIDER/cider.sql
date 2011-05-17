@@ -87,7 +87,7 @@ CREATE TABLE `location_collection_number` (
   PRIMARY KEY (`id`),
   KEY `location` (`location`),
   CONSTRAINT `location_collection_number_ibfk_1` FOREIGN KEY (`location`) REFERENCES `location` (`barcode`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -104,7 +104,7 @@ CREATE TABLE `location_series_number` (
   PRIMARY KEY (`id`),
   KEY `location` (`location`),
   CONSTRAINT `location_series_number_ibfk_1` FOREIGN KEY (`location`) REFERENCES `location` (`barcode`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -121,7 +121,7 @@ CREATE TABLE `location_title` (
   PRIMARY KEY (`id`),
   KEY `location` (`location`),
   CONSTRAINT `location_title_ibfk_1` FOREIGN KEY (`location`) REFERENCES `location` (`barcode`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -133,10 +133,10 @@ DROP TABLE IF EXISTS `location_unit_type`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `location_unit_type` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` char(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
   `volume` decimal(5,2) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -157,7 +157,7 @@ CREATE TABLE `log` (
   KEY `object` (`object`),
   CONSTRAINT `log_ibfk_2` FOREIGN KEY (`object`) REFERENCES `object` (`id`) ON DELETE CASCADE,
   CONSTRAINT `log_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -403,4 +403,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-05-16 13:26:22
+-- Dump completed on 2011-05-16 22:35:34
