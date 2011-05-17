@@ -51,9 +51,7 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
     my $type = $object->cider_type;
     $form->load_config_filestem( "object/$type" );
 
-    $self->_build_authority_fields( $c, $form );
     $self->_build_language_field( $c, $form );
-    $self->_build_record_context_field( $c, $form );
 
     $form->process;
 
@@ -136,9 +134,7 @@ sub _create :Private {
 
     my $form = $c->stash->{ form };
 
-    $self->_build_authority_fields( $c, $form );
     $self->_build_language_field( $c, $form );
-    $self->_build_record_context_field( $c, $form );
     
     if ( $form->submitted_and_valid ) {
         my $object = $form->model->create( );
@@ -210,45 +206,6 @@ sub drop_held_object_here :Chained('object') :Args(0) {
         $c->response->redirect(
             $c->uri_for( $c->controller( 'List' )->action_for( 'index' ) )
         );
-    }
-}
-
-sub _build_authority_fields {
-    my ( $self, $c, $form ) = @_;
-
-    for my $field (qw ( personal_name corporate_name
-                  topic_term geographic_term )) {
-        my $field_object = $form->get_field( { name => $field } );
-        if ( $field_object ) {
-            my @names = $c->model( 'CIDERDB::AuthorityName' )->search(
-                {},
-                {   order_by => 'value',
-                }
-            );
-            my @options = ( [ '', '' ] );
-            for my $name ( @names ) {
-                push @options, [ $name->id, $name->value ];
-            }
-            $field_object->options( \@options );
-        }
-    }
-}
-
-sub _build_record_context_field {
-    my ( $self, $c, $form ) = @_;
-
-    my $field_object = $form->get_field( { name => 'record_context' } );
-    if ( $field_object ) {
-        my @records = $c->model( 'CIDERDB::RecordContext' )->search(
-            {},
-            {   order_by => 'name',
-            }
-        );
-        my @options;
-        for my $record ( @records ) {
-            push @options, [ $record->id, $record->name ];
-        }
-        $field_object->options( \@options );
     }
 }
 
