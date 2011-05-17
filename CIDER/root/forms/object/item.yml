@@ -24,21 +24,41 @@ elements:
       label: Personal Name
       name: personal_name
       id: personal_name
+      empty_first: 1
+      model_config:
+        resultset: AuthorityName
+        attributes:
+          order_by: value
 
     - type: Select
       label: Corporate Name
       name: corporate_name
       id: corporate_name
+      empty_first: 1
+      model_config:
+        resultset: AuthorityName
+        attributes:
+          order_by: value
 
     - type: Select
       label: Topic Term
       name: topic_term
       id: topic_term
+      empty_first: 1
+      model_config:
+        resultset: AuthorityName
+        attributes:
+          order_by: value
 
     - type: Select
       label: Geographic Term
       name: geographic_term
       id: geographic_term
+      empty_first: 1
+      model_config:
+        resultset: AuthorityName
+        attributes:
+          order_by: value
 
     - type: Textarea
       label: Notes
