@@ -93,9 +93,6 @@ elements:
     - type: Text
       name: location
       label: Location Barcode
-      constraint:
-        type: Callback
-        message: Location barcode does not exist
 
     - type: Select
       label: Type
