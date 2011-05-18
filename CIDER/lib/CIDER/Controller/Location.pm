@@ -66,8 +66,7 @@ sub create :Chained('location') :Args(0) :FormConfig('location') {
         # A location with that barcode already exists; redirect to its
         # detail page.
         $c->response->redirect(
-            $c->uri_for( $c->controller( 'Location' )->action_for( 'detail' ),
-                         [$barcode] ) );
+            $c->uri_for( $self->action_for( 'detail' ), [ $barcode ] ) );
         $c->detach;
     }
 
@@ -75,29 +74,27 @@ sub create :Chained('location') :Args(0) :FormConfig('location') {
 
     $form->get_field( 'submit' )->value( 'Create location' );
 
-    if ( $form->submitted_and_valid ) {
+    if ( not $form->submitted ) {
+        if ( my $return_uri = $c->flash->{ return_uri } ) {
+            # We just created a new item or updated an existing item
+            # with a new location barcode.
+            $form->default_values( { return_uri => $return_uri } );
+        }
+    }
+    elsif ( $form->submitted_and_valid ) {
         $form->add_valid( barcode => $barcode );
 
         my $loc = $form->model->create;
 
-        if ( my $item_id = $form->param_value( 'item' ) ) {
-            my $item = $c->model( 'CIDERDB::Object' )->find( $item_id );
-            $item->location( $barcode );
-            $item->update;
-            $c->flash->{ item } = $item;
+        if ( my $return_uri = $form->param_value( 'return_uri' ) ) {
+            $c->res->redirect( $return_uri );
+            return;
         }
 
         $c->flash->{ we_just_created_this } = 1;
         
-        $c->response->redirect(
-            $c->uri_for( $c->controller( 'Location' )->action_for( 'detail' ),
-                         [$barcode] ) );
-    }
-    elsif ( not $form->submitted ) {
-        if ( defined ( my $item = $c->flash->{ item } ) ) {
-            $form->default_values( { item => $item->id } );
-#            $c->stash->{ item } = $item;
-        }
+        $c->res->redirect(
+            $c->uri_for( $self->action_for( 'detail' ), [ $barcode ] ) );
     }
 }
 

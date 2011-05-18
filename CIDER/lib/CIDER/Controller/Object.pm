@@ -55,30 +55,15 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
 
     $form->process;
 
-    if ( $form->submitted_and_valid ) {
-        my $barcode = $form->param_value( 'location' );
-        if ( defined $barcode ) {
-            my $location = $c->model( 'CIDERDB::Location' )->find( $barcode );
-            unless ( defined $location ) {
-                $c->flash->{ item } = $object;
-                $c->res->redirect(
-                    $c->uri_for(
-                        $c->controller( 'Location' )->action_for( 'create' ),
-                        [ $barcode ]
-                    ) );
-                # Remove the barcode from the form; the location field
-                # will get filled in after the location is created.
-                $form->add_valid( location => undef );
-            }
-        }
-        $form->model->update( $object );
-    }
-    elsif ( not $form->submitted ) {
+    $c->stash->{ form } = $form;
+
+    if ( not $form->submitted ) {
         $form->model->default_values( $object );
     }
-
-    $c->stash->{ form } = $form;
-    
+    elsif ( $form->submitted_and_valid ) {
+        $c->forward( '_ensure_location', [ 'update' ] );
+        $form->model->update( $object );
+    }
 }
 
 sub add_to_set :Chained('object') :Args(0) {
@@ -97,9 +82,7 @@ sub add_to_set :Chained('object') :Args(0) {
     }
     
     $c->response->redirect(
-        $c->uri_for( $c->controller( 'Object' )->action_for( 'detail' ),
-                     [$object->id],
-                 )
+        $c->uri_for( $self->action_for( 'detail' ), [$object->id] )
     );
 }
 
@@ -129,8 +112,7 @@ sub create :Path('create') :Args(0) {
 
     my $type = $c->request->param( 'type' );
     my $parent_id = $c->request->param( 'parent_id' );
-    if ( my $action =
-             $c->controller( 'Object' )->action_for( "create_$type" ) ) {
+    if ( my $action = $self->action_for( "create_$type" ) ) {
         $c->flash->{ parent_id } = $parent_id;
         $c->response->redirect( $c->uri_for( $action ) );
     }
@@ -151,31 +133,7 @@ sub _create :Private {
 
     $self->_build_language_field( $c, $form );
     
-    if ( $form->submitted_and_valid ) {
-        my $barcode = $form->param_value( 'location' );
-        if ( defined $barcode ) {
-            my $location = $c->model( 'CIDERDB::Location' )->find( $barcode );
-            unless ( defined $location ) {
-                # TO DO: redirect to location create action
-                $form->get_field( 'location' )
-                     ->get_constraint({ type => 'Callback' })
-                     ->force_errors( 1 );
-                $form->process;
-                return;
-            }
-        }
-
-        my $object = $form->model->create( );
-
-        $c->flash->{ we_just_created_this } = 1;
-        
-        $c->response->redirect(
-            $c->uri_for( $c->controller( 'Object' )->action_for( 'detail' ),
-                         [$object->id],
-                     )
-        );
-    }
-    elsif ( not $form->submitted ) {
+    if ( not $form->submitted ) {
         my $parent_id = $c->stash->{ parent_id };
 
         if ( $parent_id ) {
@@ -185,6 +143,37 @@ sub _create :Private {
 
         $form->default_values( { language => 'eng' } );
     }
+    elsif ( $form->submitted_and_valid ) {
+        $c->forward( '_ensure_location', [ 'create' ] );
+
+        my $object = $form->model->create( );
+
+        $c->flash->{ we_just_created_this } = 1;
+        
+        $c->response->redirect(
+            $c->uri_for( $self->action_for( 'detail' ), [$object->id] )
+        );
+    }
+}
+
+sub _ensure_location :Private {
+    my ( $self, $c, $action ) = @_;
+
+    my $form = $c->stash->{ form };
+
+    my $barcode = $form->param_value( 'location' );
+    return unless defined $barcode &&
+        !$c->model( 'CIDERDB::Location' )->find( $barcode );
+
+    $c->flash->{ return_uri } =
+        $c->uri_for( $c->action, $c->req->captures, $form->params );
+    $c->flash->{ title } = $form->param_value( 'title' );
+    $c->flash->{ action } = $action;
+
+    $c->res->redirect(
+        $c->uri_for( $c->controller( 'Location' )->action_for( 'create' ),
+                     [ $barcode ] ) );
+    $c->detach;
 }
 
 sub delete :Chained('object') :Args(0) {
@@ -203,7 +192,7 @@ sub pick_up :Chained('object') :Args(0) {
     $c->flash->{ we_just_picked_this_up } = 1;
     
     $c->response->redirect(
-        $c->uri_for( $c->controller( 'Object' )->action_for( 'detail' ),
+        $c->uri_for( $self->action_for( 'detail' ),
                      [$c->stash->{ object }->id],
                  )
     );
@@ -225,7 +214,7 @@ sub drop_held_object_here :Chained('object') :Args(0) {
     
     if ( $c->stash->{ object } ) {
         $c->response->redirect(
-            $c->uri_for( $c->controller( 'Object' )->action_for( 'detail' ),
+            $c->uri_for( $self->action_for( 'detail' ),
                          [$c->stash->{ object }->id],
                      )
         );
