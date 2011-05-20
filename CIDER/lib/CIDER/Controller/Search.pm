@@ -29,13 +29,23 @@ sub search :Path :Args(0) :FormConfig {
     if ( $form->submitted_and_valid ) {
         # Perform the search.
         my $searcher = $c->model( 'Search' );
+        my $field = $form->param_value( 'field' );
         my $query = $form->param_value( 'query' );
-        $c->log->debug('Have searcher and query.');
+
+        if ( $field ne 'all' ) {
+            $query = "$field:($query)";
+        }
+
+        my $qp = KinoSearch::Search::QueryParser->new(
+            schema => $searcher->get_schema,
+        );
+        $qp->set_heed_colons( 1 );
+        my $query_obj = $qp->parse( $query );
+
         my $hits = $searcher->hits (
-            query => $query,
+            query => $query_obj,
             num_wanted => 50,
         );
-        $c->log->debug('Have ' . $hits->total_hits . ' hits.');
 
         my @objects;
         while ( my $hit = $hits->next  ) {
