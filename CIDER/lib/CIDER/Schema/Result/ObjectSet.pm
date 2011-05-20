@@ -135,6 +135,20 @@ sub is_homogenous {
     return 1;
 }
 
+sub type {
+    my $self = shift;
+
+    return $self->objects->first->cider_type;
+}
+
+sub type_plural {
+    my $self = shift;
+    my ( $count ) = @_;
+
+    $count = $self->objects unless defined( $count );
+    return $self->type . ( $count == 1 ? '' : 's' );
+}
+
 sub search_and_replace {
     my $self = shift;
 
@@ -144,13 +158,18 @@ sub search_and_replace {
         croak "Can't search-and-replace a non-homogenous set.";
     }
 
+    my $count = 0;
     for my $object ( $self->objects ) {
         my $field = $args_ref->{ field };
         my $value = $object->$field;
-        $value =~ s/$$args_ref{old}/$$args_ref{new}/eg;
-        $object->$field( $value );
-        $object->update;
+        if ( $value =~ s/$$args_ref{old}/$$args_ref{new}/eg ) {
+            $object->$field( $value );
+            $object->update;
+            $count++;
+        }
     }
+
+    return $count;
 }
 
 sub set_field {

@@ -1,10 +1,17 @@
-<form>
+[% IF we_just_did_batch_edit %]
+<div class="success">
 <p>
-Set every object's
+You have successfully updated [% set.objects.size %] [% set.type_plural %].
+</p>
+</div>
+[% END %]
+<form action="[% c.uri_for( c.controller('Set').action_for('batch_edit'), [set.id] ) %]">
+<p>
+Set every [% set.type %]'s
 <select name="field">
-[% IF set.objects.0.type == 'collection' %]
+[% IF set.type == 'collection' %]
   [% INCLUDE set/collection_options.tt %]
-[% ELSIF set.objects.0.type == 'series' %]
+[% ELSIF set.type == 'series' %]
   [% INCLUDE set/series_options.tt %]
 [% ELSE %]
   [% INCLUDE set/item_options.tt %]
@@ -12,5 +19,6 @@ Set every object's
 </select>
 field to
 <input type="text" name="new_value" />.
+<input type="submit" value="Go" />
 </p>
 </form>
