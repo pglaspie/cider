@@ -73,20 +73,45 @@ sub remove_object :Args(1) :Chained('set') {
                        . ", but it wasn't there." );
     }
     
-    $c->response->redirect(
-        $c->uri_for( $c->controller( 'Set' )->action_for( 'detail' ),
-                     [$set->id],
-                 )
-    );
+    $c->res->redirect(
+        $c->uri_for( $self->action_for( 'detail' ), [$set->id] ) );
 }
 
 sub delete :Chained('set') :Args(0) {
     my ( $self, $c ) = @_;
 
     $c->stash->{ set }->delete;
-    $c->response->redirect(
-        $c->uri_for( $c->controller( 'Set' )->action_for( 'list' ) )
-    );
+    $c->res->redirect( $c->uri_for( $self->action_for( 'list' ) ) );
+}
+
+sub batch_edit :Chained('set') :Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $set = $c->stash->{ set };
+    $set->set_field( $c->req->params->{ field },
+                     $c->req->params->{ new_value } );
+
+    $c->flash->{ we_just_did_batch_edit } = 1;
+
+    $c->res->redirect(
+        $c->uri_for( $self->action_for( 'detail' ), [$set->id] ) );
+}
+
+sub search_and_replace :Chained('set') :Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $set = $c->stash->{ set };
+    my $count = $set->search_and_replace( {
+        field => $c->req->params->{ field },
+        old   => $c->req->params->{ old_value },
+        new   => $c->req->params->{ new_value }
+    } );
+
+    $c->flash->{ we_just_did_search_and_replace } = 1;
+    $c->flash->{ count } = $count;
+
+    $c->res->redirect(
+        $c->uri_for( $self->action_for( 'detail' ), [$set->id] ) );
 }
 
 =head1 AUTHOR

@@ -139,7 +139,7 @@ elements:
       
           - type: Text
             name: accession_procedure
-            label: Prodecure
+            label: Procedure
       
           - type: Text
             name: accession_number
