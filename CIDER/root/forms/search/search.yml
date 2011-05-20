@@ -1,8 +1,39 @@
 method: post
 
 elements:
+    - type: Select
+      label: 'In field:'
+      name: field
+      options:
+        - [ all, any field ]
+        - [ accession_by, Accession By ]
+        - [ accession_number, Accession Number ]
+        - [ accession_procedure, Accession Procedure ]
+        - [ checksum, Checksum ]
+        - [ checksum_app, Checksum Application ]
+        - [ description, Description ]
+        - [ file_extension, File Extension ]
+        - [ funder, Funder ]
+        - [ handle, Handle ]
+        - [ history, History ]
+        - [ lc_class, LC Class ]
+        - [ media_app, Media Application ]
+        - [ notes, Notes ]
+        - [ number, Number ]
+        - [ organization, Organization ]
+        - [ original_filename, Original Filename ]
+        - [ other_app, Other Application ]
+        - [ processing_notes, Processing Notes ]
+        - [ rsa, RSA ]
+        - [ stabilization_by, Stabilization By ]
+        - [ stabilization_notes, Stabilization Notes ]
+        - [ stabilization_procedure, Stabilization Procedure ]
+        - [ technical_metadata, Technical Metadata ]
+        - [ title, Title ]
+        - [ toc, Table of Contents ]
+        - [ virus_app, Virus Application ]
+
     - type: Text
-      label: 'In any field:'
       name: query
       id: query
       constraints:

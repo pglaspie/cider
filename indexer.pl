@@ -24,7 +24,7 @@ warn "connected to schema...\n";
 
 my $object_rs = $db_schema->resultset( 'Object' );
 
-warn "I gots a resutset...\n";
+warn "I gots a resultset...\n";
 
 # Create the index schema.
 # We'll try to have all the indexes share the same one...
@@ -51,9 +51,42 @@ my $index_only = KinoSearch::Plan::StringType->new( stored => 0 );
 my $int_type    = KinoSearch::Plan::Int32Type->new;
 
 # Define the fields.
-$index_schema->spec_field( name => 'title', type => $text_type );
+my @text_fields = qw(
+accession_by
+accession_number
+accession_procedure
+checksum
+checksum_app
+description
+file_extension
+funder
+handle
+history
+lc_class
+media_app
+notes
+number
+organization
+original_filename
+other_app
+processing_notes
+rsa
+stabilization_by
+stabilization_notes
+stabilization_procedure
+technical_metadata
+title
+toc
+virus_app
+);
+
+for my $field ( @text_fields ) {
+    $index_schema->spec_field( name => $field, type => $text_type );
+}
+
 $index_schema->spec_field( name => 'id', type => $storage_only );
 $index_schema->spec_field( name => 'set', type => $unstored_text );
+
 
 # Create one indexer object for each index.
 my $indexer = KinoSearch::Index::Indexer->new(
@@ -74,9 +107,12 @@ while ( my $object = $object_rs->next ) {
 	warn "On object $counter.\n";
     }
     my $doc = {
-	title => $object->title || '',
 	id => $object->id || '',
     };
+
+    for my $field ( @text_fields ) {
+        $doc->{ $field } = $object->$field || '';
+    }
 
     use Data::Dumper; warn Dumper ( $doc );
     
