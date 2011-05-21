@@ -145,8 +145,14 @@ sub type_plural {
     my $self = shift;
     my ( $count ) = @_;
 
-    $count = $self->objects unless defined( $count );
+    $count = $self->count unless defined( $count );
     return $self->type . ( $count == 1 ? '' : 's' );
+}
+
+sub count {
+    my $self = shift;
+
+    return $self->objects->count;
 }
 
 sub search_and_replace {
