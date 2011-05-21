@@ -5,6 +5,20 @@ form_error_message: Sorry, there was in error in your submission. Please see bel
 model_config:
     resultset: Object
 
+default_args:
+    constraints:
+        DateTime:
+            parser:
+                strptime: '%Y-%m-%d'
+    inflators:
+        DateTime:
+            parser:
+                strptime: '%Y-%m-%d'
+            strptime: '%Y-%m-%d'
+    deflators:
+        Strftime:
+            strftime: '%Y-%m-%d'
+
 elements:
     - type: Text
       label: Title
@@ -82,6 +96,9 @@ elements:
             id: date_from
             constraints:
               - type: Required
+              - type: DateTime
+            inflator: DateTime
+            deflator: Strftime
 
           - type: Text
             label: To
@@ -89,6 +106,9 @@ elements:
             id: date_to
             constraints:
               - type: Required
+              - type: DateTime
+            inflator: DateTime
+            deflator: Strftime
               
     - type: Text
       name: location
@@ -136,7 +156,10 @@ elements:
           - type: Text
             name: accession_date
             label: Date
-      
+            constraint: DateTime
+            inflator: DateTime
+            deflator: Strftime
+                  
           - type: Text
             name: accession_procedure
             label: Procedure
@@ -155,6 +178,9 @@ elements:
           - type: Text
             name: stabilization_date
             label: Date
+            constraint: DateTime
+            inflator: DateTime
+            deflator: Strftime
       
           - type: Text
             name: stabilization_procedure
@@ -198,6 +224,9 @@ elements:
     - type: Text
       name: file_creation_date
       label: File Creation Date
+      constraint: DateTime
+      inflator: DateTime
+      deflator: Strftime
       
     - type: Text
       name: lc_class

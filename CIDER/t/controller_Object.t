@@ -54,4 +54,21 @@ use DateTime;
 is( $rs->first->modification_logs->first->date, DateTime->today,
     'Date modified is today.' );
 
+$mech->submit_form_ok( { with_fields => {
+    bulk_date_from => '12-31-1999',
+    bulk_date_to => '2003/1/13',
+} }, 'Use incorrect date formats' );
+$mech->content_contains( 'Sorry', 'Form submission error.' );
+$mech->content_like( qr(Invalid date.*Invalid date.)s, 'Two error messages.' );
+
+$mech->submit_form_ok( { with_fields => {
+    bulk_date_from => '1999-12-31',
+    bulk_date_to => '2003-1-13',
+} }, 'Use correct date format' );
+$mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
+
+$mech->get_ok( $mech->uri );
+$mech->content_contains( 'value="1999-12-31"', 'From date correct.' );
+$mech->content_contains( 'value="2003-01-13"', 'To date correct.' );
+
 done_testing();
