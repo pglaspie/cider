@@ -25,7 +25,9 @@ sub init_schema {
     }
 
     my $schema = CIDER::Schema->
-        connect("dbi:SQLite:$db_file", '', '',);
+        connect("dbi:SQLite:$db_file", '', '', {
+            on_connect_call => 'use_foreign_keys',
+        });
 
     $schema->deploy;
     __PACKAGE__->populate_schema($schema);

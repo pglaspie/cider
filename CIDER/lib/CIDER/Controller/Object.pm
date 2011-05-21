@@ -162,8 +162,16 @@ sub _ensure_location :Private {
     my $form = $c->stash->{ form };
 
     my $barcode = $form->param_value( 'location' );
-    return unless defined $barcode &&
+    if ( defined( $barcode ) && $barcode eq '' ) {
+        # Replace empty string with null, so as not to violate the
+        # foreign key constraint.
+        $form->add_valid( location => undef );
+    }
+    return unless $barcode &&
         !$c->model( 'CIDERDB::Location' )->find( $barcode );
+
+    # No location exists with the given barcode: give the user a form
+    # to create one, then come back here afterward.
 
     $c->flash->{ return_uri } =
         $c->uri_for( $c->action, $c->req->captures, $form->params );
