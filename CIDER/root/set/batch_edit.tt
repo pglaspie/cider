@@ -1,7 +1,7 @@
 [% IF we_just_did_batch_edit %]
 <div class="success">
 <p>
-You have successfully updated [% set.objects.size %] [% set.type_plural %].
+You have successfully updated [% set.count %] [% set.type_plural %].
 </p>
 </div>
 [% END %]
