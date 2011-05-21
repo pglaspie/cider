@@ -10,7 +10,7 @@ use KinoSearch::Index::Indexer;
 
 use FindBin;
 use lib (
-    "$FindBin::Bin/CIDER/lib"
+    "$FindBin::Bin/../lib"
 );     
 
 use CIDER::Schema;
