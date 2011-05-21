@@ -92,5 +92,11 @@ $mech->submit_form_ok( { with_fields => {
 } }, 'Create new location.' );
 like( $mech->uri->path, qr(/object/[0-9]+), 'Redirected to item detail.' );
 $mech->content_contains( 'successfully', 'Successful creation.' );
+$mech->content_contains( '2345', 'Location is filled in.' );
+
+$mech->submit_form_ok( { with_fields => {
+    location => '',
+} }, 'Remove location.' );
+$mech->content_lacks( '2345', 'Successfully removed location.' );
 
 done_testing();

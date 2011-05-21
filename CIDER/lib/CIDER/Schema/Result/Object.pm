@@ -94,7 +94,7 @@ __PACKAGE__->table("object");
 =head2 location
 
   data_type: 'char'
-  is_nullable: 0
+  is_nullable: 1
   size: 16
 
 =head2 type
