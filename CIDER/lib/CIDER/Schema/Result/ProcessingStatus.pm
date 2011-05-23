@@ -28,7 +28,7 @@ __PACKAGE__->table("processing_status");
 
 =head2 name
 
-  data_type: 'char'
+  data_type: 'varchar'
   is_nullable: 0
   size: 32
 
@@ -38,7 +38,7 @@ __PACKAGE__->add_columns(
   "id",
   { data_type => "tinyint", is_auto_increment => 1, is_nullable => 0 },
   "name",
-  { data_type => "char", is_nullable => 0, size => 32 },
+  { data_type => "varchar", is_nullable => 0, size => 32 },
 );
 __PACKAGE__->set_primary_key("id");
 

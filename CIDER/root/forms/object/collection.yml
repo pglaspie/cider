@@ -137,10 +137,11 @@ elements:
       label: Processing Status
       name: processing_status
       id: processing_status
-      options:
-        - [ 1, 'Status One' ]
-        - [ 2, 'Status Two' ]
-        - [ 3, 'Status Three' ]
+      empty_first: 1
+      model_config:
+        resultset: ProcessingStatus
+        attributes:
+          order_by: id
         
     - type: Textarea
       label: Processing Notes
