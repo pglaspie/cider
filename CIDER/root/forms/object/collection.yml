@@ -159,5 +159,29 @@ elements:
       constraints:
         - type: Required
       
+    - type: Text
+      name: permanent_url
+      label: Permanent URL
+      constraint:
+        type: Regex
+        common:
+          - URI
+          - HTTP
+          - { '-scheme': 'https?' }
+
+    - type: Text
+      name: pid
+      label: PID
+
+    - type: Select
+      name: publication_status
+      label: Publication Status
+      empty_first: 1
+      options:
+        - [ draft, draft ]
+        - [ ready, ready ]
+        - [ exported, exported ]
+        - [ re-export, re-export ]
+
     - type: Submit
     

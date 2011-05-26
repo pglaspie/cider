@@ -216,6 +216,9 @@ CREATE TABLE `object` (
   `notes` text,
   `circa` tinyint(1) NOT NULL DEFAULT '0',
   `language` char(3) NOT NULL DEFAULT 'eng',
+  `permanent_url` varchar(1024) DEFAULT NULL,
+  `pid` varchar(255) DEFAULT NULL,
+  `publication_status` varchar(16) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `parent` (`parent`),
   KEY `personal_name` (`personal_name`),
@@ -403,4 +406,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-05-26 18:05:19
+-- Dump completed on 2011-05-26 19:04:11
