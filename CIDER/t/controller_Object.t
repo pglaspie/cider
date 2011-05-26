@@ -37,7 +37,7 @@ $mech->content_contains( 'Esperanto', 'Language list is populated.' );
 $mech->submit_form_ok( { with_fields => {
     title => 'New test collection',
     number => '69105',
-    scope => 'oscillo',
+    has_physical_documentation => 1,
 } }, 'Submitted creation form' );
 
 $mech->content_contains( 'You have successfully created' );

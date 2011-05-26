@@ -153,6 +153,8 @@ elements:
       options:
         - [ '1', 'Yes' ]
         - [ '0', 'No' ]
+      constraints:
+        - type: Required
       
     - type: Submit
     
