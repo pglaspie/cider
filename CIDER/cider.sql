@@ -157,7 +157,7 @@ CREATE TABLE `log` (
   KEY `object` (`object`),
   CONSTRAINT `log_ibfk_2` FOREIGN KEY (`object`) REFERENCES `object` (`id`) ON DELETE CASCADE,
   CONSTRAINT `log_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=173 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -175,8 +175,8 @@ CREATE TABLE `object` (
   `bulk_date_to` date DEFAULT NULL,
   `record_context` int(11) DEFAULT NULL,
   `history` text,
-  `scope` char(255) DEFAULT NULL,
-  `organization` char(255) DEFAULT NULL,
+  `scope` text,
+  `organization` text,
   `processing_status` tinyint(4) DEFAULT NULL,
   `has_physical_documentation` enum('0','1') DEFAULT NULL,
   `processing_notes` text,
@@ -403,4 +403,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-05-23 12:35:45
+-- Dump completed on 2011-05-26 18:05:19

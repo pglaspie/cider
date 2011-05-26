@@ -18,6 +18,9 @@ default_args:
     deflators:
         Strftime:
             strftime: '%Y-%m-%d'
+    elements:
+        Textarea:
+            rows: 8
 
 elements:
     - type: Text
@@ -116,17 +119,17 @@ elements:
         attributes:
           order_by: name
 
-    - type: Text
+    - type: Textarea
       label: History
       name: history
       id: history
 
-    - type: Text
+    - type: Textarea
       label: Scope
       name: scope
       id: scope
 
-    - type: Text
+    - type: Textarea
       label: Organization
       name: organization
       id: organization
