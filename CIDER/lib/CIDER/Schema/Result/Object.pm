@@ -290,6 +290,22 @@ __PACKAGE__->table("object");
   size: 3
   default_value: 'eng'
 
+=head2 permanent_url
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 1024
+
+=head2 pid
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 publication_status
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 32
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -389,6 +405,12 @@ __PACKAGE__->add_columns(
   { data_type => "boolean", is_nullable => 0, default_value => 0 },
   "language",
   { data_type => "char", is_nullable => 0, size => 3, default_value => 'eng' },
+  "permanent_url",
+  { data_type => "varchar", is_nullable => 1, size => 1024 },
+  "pid",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "publication_status",
+  { data_type => "varchar", is_nullable => 1, size => 16 },
 );
 __PACKAGE__->set_primary_key("id");
 
