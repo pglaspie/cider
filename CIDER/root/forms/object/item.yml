@@ -18,6 +18,9 @@ default_args:
     deflators:
         Strftime:
             strftime: '%Y-%m-%d'
+    elements:
+        Textarea:
+            rows: 8
 
 elements:
     - type: Text
