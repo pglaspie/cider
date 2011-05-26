@@ -2,6 +2,7 @@
 
 <h2>[% page.title %]</h2>
 
+<div class="confirm">
 <form action="[% c.req.uri %]">
 <p>
 This set has [% replace.size %] [% set.type_plural(replace.size) %] whose
@@ -30,11 +31,11 @@ c.uri_for( c.controller('Object').action_for('detail'), [row.obj.id] )
 <input type="hidden" name="old_value" value="[% old_value %]" />
 <input type="hidden" name="new_value" value="[% new_value %]" />
 <input type="submit" value="Yes, perform this replacement" />
-<a href="[%
-c.uri_for( c.controller('Set').action_for('detail'), [set.id] )
-%]">No, return to the set detail page</a>
+<input type="button" value="No, return to the set detail page"
+       onclick="history.back()" />
 </p>
 </form>
+</div>
 
 <p>
 Or, try a different search and replace below:
