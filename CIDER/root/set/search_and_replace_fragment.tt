@@ -8,12 +8,14 @@ You have successfully updated [% count %] [% set.type_plural(count) %].
 [% ELSE %]
 <div class="form_error_message">
 <p>
-There were no [% set.type %]s with that substring.
+There are no [% set.type %]s with that substring.
 </p>
 </div>
 [% END %]
 [% END %]
-<form action="[% c.uri_for( c.controller('Set').action_for('search_and_replace'), [set.id] ) %]">
+<form method="post" action="[%
+c.uri_for( c.controller('Set').action_for('search_and_replace'), [set.id] )
+%]">
 <p>
 In every [% set.type %]'s
 <select name="field">

@@ -101,17 +101,52 @@ sub search_and_replace :Chained('set') :Args(0) {
     my ( $self, $c ) = @_;
 
     my $set = $c->stash->{ set };
-    my $count = $set->search_and_replace( {
-        field => $c->req->params->{ field },
-        old   => $c->req->params->{ old_value },
-        new   => $c->req->params->{ new_value }
-    } );
 
-    $c->flash->{ we_just_did_search_and_replace } = 1;
-    $c->flash->{ count } = $count;
+    my $field = $c->req->params->{ field };
+    my $old   = $c->req->params->{ old_value };
+    my $new   = $c->req->params->{ new_value };
 
-    $c->res->redirect(
-        $c->uri_for( $self->action_for( 'detail' ), [$set->id] ) );
+    unless ( $c->req->params->{ confirm } ) {
+        my $rs = $set->search_in_field( $field, $old );
+        if ( $rs->count ) {
+            my @replace = ();
+            for my $obj ( $rs->all ) {
+                my $old_value = $obj->$field;
+                my $new_value = $old_value;
+                $new_value =~ s/$old/$new/g;
+                push @replace, {
+                    obj => $obj,
+                    old => $old_value,
+                    new => $new_value,
+                };
+            }
+
+            $c->stash->{ replace } = \@replace;
+            $c->stash->{ field } = $field;
+            $c->stash->{ old_value } = $old;
+            $c->stash->{ new_value } = $new;
+        } 
+        else {
+            $c->flash->{ we_just_did_search_and_replace } = 1;
+            $c->flash->{ count } = 0;
+
+            $c->res->redirect(
+                $c->uri_for( $self->action_for( 'detail' ), [$set->id] ) );
+        }
+    }
+    else {
+        my $count = $set->search_and_replace( {
+            field => $field,
+            old   => $old,
+            new   => $new
+        } );
+
+        $c->flash->{ we_just_did_search_and_replace } = 1;
+        $c->flash->{ count } = $count;
+
+        $c->res->redirect(
+            $c->uri_for( $self->action_for( 'detail' ), [$set->id] ) );
+    }
 }
 
 =head1 AUTHOR

@@ -155,6 +155,13 @@ sub count {
     return $self->objects->count;
 }
 
+sub search_in_field {
+    my $self = shift;
+    my ( $field, $substring ) = @_;
+
+    return $self->objects->search( { $field => { 'like', "%$substring%" } } );
+}
+
 sub search_and_replace {
     my $self = shift;
 
@@ -186,11 +193,7 @@ sub set_field {
         croak "Can't batch-set the fields of a non-homogenous set.";
     }
 
-    for my $object ( $self->objects ) {
-        $object->$field( $new_value );
-        $object->update;
-    }
-
+    $self->objects->update( { $field => $new_value } );
 }
 
 sub move_all_objects_to {
