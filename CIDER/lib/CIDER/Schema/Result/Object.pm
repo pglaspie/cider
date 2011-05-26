@@ -59,15 +59,13 @@ __PACKAGE__->table("object");
 
 =head2 scope
 
-  data_type: 'char'
-  is_nullable: 0
-  size: 255
+  data_type: 'text'
+  is_nullable: 1
 
 =head2 organization
 
-  data_type: 'char'
+  data_type: 'text'
   is_nullable: 1
-  size: 255
 
 =head2 processing_status
 
@@ -310,9 +308,9 @@ __PACKAGE__->add_columns(
   "history",
   { data_type => "text", is_nullable => 1 },
   "scope",
-  { data_type => "char", is_nullable => 1, size => 255 },
+  { data_type => "text", is_nullable => 1 },
   "organization",
-  { data_type => "char", is_nullable => 1, size => 255 },
+  { data_type => "text", is_nullable => 1 },
   "processing_status",
   { data_type => "tinyint", is_foreign_key => 1, is_nullable => 1 },
   "has_physical_documentation",
