@@ -125,8 +125,6 @@ elements:
       label: Scope
       name: scope
       id: scope
-      constraints:
-        - type: Required
 
     - type: Text
       label: Organization
