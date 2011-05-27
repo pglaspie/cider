@@ -3,5 +3,7 @@
 <option value="notes">Notes</option>
 <option value="history">History</option>
 <option value="organization">Organization</option>
+<option value="permanent_url">Permanent URL</option>
+<option value="pid">PID</option>
 <option value="processing_notes">Processing Notes</option>
-
+<option value="publication_status">Publication Status</option>

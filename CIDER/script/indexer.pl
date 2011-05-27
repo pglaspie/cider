@@ -55,6 +55,7 @@ my @text_fields = qw(
 accession_by
 accession_number
 accession_procedure
+arrangement
 checksum
 checksum_app
 description
@@ -69,7 +70,10 @@ number
 organization
 original_filename
 other_app
+permanent_url
+pid
 processing_notes
+publication_status
 rsa
 stabilization_by
 stabilization_notes
