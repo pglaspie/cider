@@ -306,6 +306,11 @@ __PACKAGE__->table("object");
   is_nullable: 1
   size: 32
 
+=head2 arrangement
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -411,6 +416,8 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", is_nullable => 1, size => 255 },
   "publication_status",
   { data_type => "varchar", is_nullable => 1, size => 16 },
+  "arrangement",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
 );
 __PACKAGE__->set_primary_key("id");
 

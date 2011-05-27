@@ -3,3 +3,4 @@
 <option value="accession_number">Accession Number</option>
 <option value="notes">Notes</option>
 <option value="description">Description</option>
+<option value="arrangement">Arrangement</option>
