@@ -909,4 +909,14 @@ sub language_name {
     return code2language( $self->language, LOCALE_LANG_ALPHA_3 );
 }
 
+sub store_column {
+    my $self = shift;
+    my ( $column, $value ) = @_;
+
+    # Convert all empty strings to nulls.
+    $value = undef if defined( $value ) && !length( $value );
+
+    return $self->next::method( $column, $value );
+}
+
 1;

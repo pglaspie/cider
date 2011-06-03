@@ -6,7 +6,9 @@ use warnings;
 use Moose;
 
 use Text::CSV;
-use Carp qw (croak);
+use Carp;
+
+use CIDER::Schema;
 
 has 'schema' => (
     is => 'rw',
@@ -17,30 +19,13 @@ around BUILDARGS => sub {
     my $orig = shift;
     my $class = shift;
 
-    my ( $args_ref ) = @_;
+    my ( $connect_info ) = @_;
 
-    unless ( ref $args_ref eq 'HASH'
-             && defined $args_ref->{schema_class}
-             && defined $args_ref->{connect_info}
-         ) {
-        croak "You must call CIDER::Importer's constructor with a hashref "
-              . "containing 'schema_class' and 'connect_info' keys.";
-    }
-
-    my $schema_class = $args_ref->{schema_class};
-    eval "require $schema_class";
-    if ( $@ ) {
-        croak "require() failed for schema class $schema_class: $@";
-    }
-
-    unless ( ref $args_ref->{connect_info} eq 'ARRAY' ) {
-        croak "The value of the connect_info key must be an array reference.";
-    }
-    my $schema = $schema_class->connect( @{ $args_ref->{connect_info} } );
+    my $schema = CIDER::Schema->connect( $connect_info );
 
     return $class->$orig( schema => $schema );
 };
-    
+
 sub import_from_csv {
     my $self = shift;
     my ($handle) = @_;
@@ -50,6 +35,10 @@ sub import_from_csv {
     
     my $schema = $self->schema;
     my $object_rs = $schema->resultset( 'Object' );
+
+    # All rows are inserted at once, or none at all if there are errors.
+    $schema->txn_begin;
+
     my $row_number = 0;
     while ( my $row = $csv->getline_hr( $handle ) ) {
         $row_number++;
@@ -59,19 +48,25 @@ sub import_from_csv {
         unless ( $row->{ id } ) {
             delete $row->{ id };
         }
+	
+        # TO DO: do we need to handle parent specially?
+
+        # TO DO: check cider_type?
+        # Do we need cider_type, or can we always deduce it?
 
         # Perform the actual update-or-insertion.
         my $object;
-        eval { $object = $object_rs->update_or_new( $row ); };
+        eval { $object = $object_rs->update_or_create( $row ); };
         if ( $@ ) {
+
+            $schema->txn_rollback;
+
             croak "CSV import failed at data row $row_number:\n$@\n";
         }
-        unless ( $object->in_storage ) {
-            eval { $object->insert; };
-            if ( $@ ) {
-                croak "CSV import failed at data row $row_number:\n$@\n";
-            }
-        }
     }
+
+    $schema->txn_commit;
+
+    return $row_number;
 }
 1;
