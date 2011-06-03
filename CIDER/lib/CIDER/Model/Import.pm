@@ -4,19 +4,19 @@ use namespace::autoclean;
 
 extends 'Catalyst::Model::Adaptor';
 
-# The args to pass to the searcher constuctor -- most crucially the path to
-__PACKAGE__->config(
-    schema_class => 'CIDER::Schema',
-    connect_info => [ 'dbi:SQLite:t/db/cider.db', '', '' ],
-);
+use CIDER;
 
 __PACKAGE__->config(
     class => 'CIDER::Importer',
-    args  => {
-        schema_class => __PACKAGE__->config->{ schema_class },
-        connect_info => __PACKAGE__->config->{ connect_info },
-    },
+    args  => CIDER->config->{ 'Model::CIDERDB' },
 );
+
+sub mangle_arguments {
+    my $self = shift;
+    my ( $args ) = @_;
+
+    return $args->{ connect_info };
+}
 
 __PACKAGE__->meta->make_immutable;
 

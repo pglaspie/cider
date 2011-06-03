@@ -1,0 +1,10 @@
+method: post
+
+elements:
+    - type: File
+      label: File
+      name: file
+
+    - type: Submit
+      name: submit
+      value: Import

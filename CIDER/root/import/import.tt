@@ -1,0 +1,15 @@
+[% page.title = 'Import' %]
+
+<h2>[% page.title %]</h2>
+
+[% IF error %]
+<div class="form_error_message">
+[% error %]
+</div>
+[% ELSIF import_was_successful %]
+<div class="success">
+You have successfully imported [% rows %].
+</div>
+[% END %]
+
+[% form %]

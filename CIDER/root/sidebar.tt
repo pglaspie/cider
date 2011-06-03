@@ -14,6 +14,10 @@ Welcome, [% c.user.username %]. <a href="[% c.uri_for( c.controller('Auth').acti
 <p>
 <a href="[% c.uri_for( c.controller('Set').action_for('list') ) %]">Your sets</a>
 </p>
+
+<p>
+<a href="[% c.uri_for( c.controller('Import').action_for('import') ) %]">Import</a>
+</p>
 [% ELSE %]
 <p>
 Welcome to CIDER.
