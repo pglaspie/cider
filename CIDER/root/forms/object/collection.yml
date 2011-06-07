@@ -6,18 +6,6 @@ model_config:
     resultset: Object
 
 default_args:
-    constraints:
-        DateTime:
-            parser:
-                strptime: '%Y-%m-%d'
-    inflators:
-        DateTime:
-            parser:
-                strptime: '%Y-%m-%d'
-            strptime: '%Y-%m-%d'
-    deflators:
-        Strftime:
-            strftime: '%Y-%m-%d'
     elements:
         Textarea:
             rows: 8
@@ -98,17 +86,16 @@ elements:
             label: From
             name: bulk_date_from
             id: bulk_date_from
-            constraint: DateTime
-            inflator: DateTime
-            deflator: Strftime
+            constraint: &Date
+              type: Callback
+              callback: 'CIDER::iso_8601_date'
+              message: ISO 8601 date must be YYYY, YYYY-MM, or YYYY-MM-DD
 
           - type: Text
             label: To
             name: bulk_date_to
             id: bulk_date_to
-            constraint: DateTime
-            inflator: DateTime
-            deflator: Strftime
+            constraint: *Date
 
     - type: Select
       label: Record Context

@@ -62,4 +62,7 @@ $mech->content_contains( 'import failed' );
 $mech->get_ok( '/object/4' );
 $mech->content_lacks( 'Test import error' );
 
+test_import( { number => 88 } );
+$mech->content_contains( 'import failed' );
+
 done_testing();

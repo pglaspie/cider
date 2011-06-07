@@ -157,7 +157,7 @@ CREATE TABLE `log` (
   KEY `object` (`object`),
   CONSTRAINT `log_ibfk_2` FOREIGN KEY (`object`) REFERENCES `object` (`id`) ON DELETE CASCADE,
   CONSTRAINT `log_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=173 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=174 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -169,10 +169,10 @@ DROP TABLE IF EXISTS `object`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `object` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `date_from` date DEFAULT NULL,
-  `date_to` date DEFAULT NULL,
-  `bulk_date_from` date DEFAULT NULL,
-  `bulk_date_to` date DEFAULT NULL,
+  `date_from` varchar(10) DEFAULT NULL,
+  `date_to` varchar(10) DEFAULT NULL,
+  `bulk_date_from` varchar(10) DEFAULT NULL,
+  `bulk_date_to` varchar(10) DEFAULT NULL,
   `record_context` int(11) DEFAULT NULL,
   `history` text,
   `scope` text,
@@ -189,11 +189,11 @@ CREATE TABLE `object` (
   `checksum` char(64) DEFAULT NULL,
   `original_filename` char(255) DEFAULT NULL,
   `accession_by` char(255) DEFAULT NULL,
-  `accession_date` date DEFAULT NULL,
+  `accession_date` varchar(10) DEFAULT NULL,
   `accession_procedure` text,
   `accession_number` char(128) DEFAULT NULL,
   `stabilization_by` char(255) DEFAULT NULL,
-  `stabilization_date` date DEFAULT NULL,
+  `stabilization_date` varchar(10) DEFAULT NULL,
   `stabilization_procedure` text,
   `stabilization_notes` text,
   `virus_app` char(128) DEFAULT NULL,
@@ -203,7 +203,7 @@ CREATE TABLE `object` (
   `toc` text,
   `rsa` text,
   `technical_metadata` text,
-  `file_creation_date` date DEFAULT NULL,
+  `file_creation_date` varchar(10) DEFAULT NULL,
   `lc_class` char(255) DEFAULT NULL,
   `file_extension` char(16) DEFAULT NULL,
   `parent` int(11) DEFAULT NULL,
@@ -219,6 +219,7 @@ CREATE TABLE `object` (
   `permanent_url` varchar(1024) DEFAULT NULL,
   `pid` varchar(255) DEFAULT NULL,
   `publication_status` varchar(16) DEFAULT NULL,
+  `arrangement` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `parent` (`parent`),
   KEY `personal_name` (`personal_name`),
@@ -241,7 +242,7 @@ CREATE TABLE `object` (
   CONSTRAINT `object_ibfk_6` FOREIGN KEY (`processing_status`) REFERENCES `processing_status` (`id`),
   CONSTRAINT `object_ibfk_8` FOREIGN KEY (`type`) REFERENCES `item_type` (`id`),
   CONSTRAINT `object_ibfk_9` FOREIGN KEY (`format`) REFERENCES `item_format` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -406,4 +407,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-05-26 19:57:31
+-- Dump completed on 2011-06-06 20:32:13

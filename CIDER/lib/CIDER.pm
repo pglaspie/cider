@@ -28,6 +28,19 @@ extends 'Catalyst';
 our $VERSION = '0.01';
 $VERSION = eval $VERSION;
 
+sub iso_8601_date {
+    my ( $date ) = @_;
+
+    return !defined( $date ) || $date eq ''
+        # YYYY or YYYY-MM or YYYY-MM-DD
+        || $date =~ /^\d{4}(?:-(\d{2})(?:-(\d{2}))?)?$/
+        # month = 1..12, date = 1..31
+        && ( !defined( $1 )
+             || ( $1 >= 1 && $1 <= 12
+                  && ( !defined( $2 )
+                       || ( $2 >= 1 && $2 <= 31 ) ) ) );
+}
+
 # Configure the application.
 #
 # Note that settings in cider.conf (or other external
@@ -53,7 +66,7 @@ __PACKAGE__->config(
     disable_component_resolution_regex_fallback => 1,
 
     default_view => 'TT',
-    
+
     authentication => {
         realms => {
             default => {
