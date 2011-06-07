@@ -8,8 +8,6 @@ use Class::Method::Modifiers qw(around);
 use List::Util qw(min max);
 use Locale::Language;
 
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 NAME
 
 CIDER::Schema::Result::Object
@@ -28,23 +26,27 @@ __PACKAGE__->table("object");
 
 =head2 date_from
 
-  data_type: 'date'
+  data_type: 'varchar'
   is_nullable: 1
+  size: 10
 
 =head2 date_to
 
-  data_type: 'date'
+  data_type: 'varchar'
   is_nullable: 1
+  size: 10
 
 =head2 bulk_date_from
 
-  data_type: 'date'
+  data_type: 'varchar'
   is_nullable: 1
+  size: 10
 
 =head2 bulk_date_to
 
-  data_type: 'date'
+  data_type: 'varchar'
   is_nullable: 1
+  size: 10
 
 =head2 record_context
 
@@ -139,8 +141,9 @@ __PACKAGE__->table("object");
 
 =head2 accession_date
 
-  data_type: 'date'
+  data_type: 'varchar'
   is_nullable: 1
+  size: 10
 
 =head2 accession_procedure
 
@@ -161,8 +164,9 @@ __PACKAGE__->table("object");
 
 =head2 stabilization_date
 
-  data_type: 'date'
+  data_type: 'varchar'
   is_nullable: 1
+  size: 10
 
 =head2 stabilization_procedure
 
@@ -215,8 +219,9 @@ __PACKAGE__->table("object");
 
 =head2 file_creation_date
 
-  data_type: 'date'
+  data_type: 'varchar'
   is_nullable: 1
+  size: 10
 
 =head2 lc_class
 
@@ -317,13 +322,13 @@ __PACKAGE__->add_columns(
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "date_from",
-  { data_type => "date", is_nullable => 1 },
+  { data_type => "varchar", is_nullable => 1, size => 10 },
   "date_to",
-  { data_type => "date", is_nullable => 1 },
+  { data_type => "varchar", is_nullable => 1, size => 10 },
   "bulk_date_from",
-  { data_type => "date", is_nullable => 1 },
+  { data_type => "varchar", is_nullable => 1, size => 10 },
   "bulk_date_to",
-  { data_type => "date", is_nullable => 1 },
+  { data_type => "varchar", is_nullable => 1, size => 10 },
   "record_context",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "history",
@@ -357,7 +362,7 @@ __PACKAGE__->add_columns(
   "accession_by",
   { data_type => "char", is_nullable => 1, size => 255 },
   "accession_date",
-  { data_type => "date", is_nullable => 1 },
+  { data_type => "varchar", is_nullable => 1, size => 10 },
   "accession_procedure",
   { data_type => "text", is_nullable => 1 },
   "accession_number",
@@ -365,7 +370,7 @@ __PACKAGE__->add_columns(
   "stabilization_by",
   { data_type => "char", is_nullable => 1, size => 255 },
   "stabilization_date",
-  { data_type => "date", is_nullable => 1 },
+  { data_type => "varchar", is_nullable => 1, size => 10 },
   "stabilization_procedure",
   { data_type => "text", is_nullable => 1 },
   "stabilization_notes",
@@ -385,7 +390,7 @@ __PACKAGE__->add_columns(
   "technical_metadata",
   { data_type => "text", is_nullable => 1 },
   "file_creation_date",
-  { data_type => "date", is_nullable => 1 },
+  { data_type => "varchar", is_nullable => 1, size => 10 },
   "lc_class",
   { data_type => "char", is_nullable => 1, size => 255 },
   "file_extension",
@@ -883,17 +888,19 @@ an object's children.
 
 =cut
 
-for my $method ( qw(date_from date_to) ) {
-    around $method => sub {
-        my ( $orig, $self ) = ( shift, shift );
+# TO DO: fix this to handle ISO-8601 partial dates (e.g. YYYY or YYYY-MM).
 
-        my $date = $orig->( $self, @_ );
-        return $date if defined $date;
+# for my $method ( qw(date_from date_to) ) {
+#     around $method => sub {
+#         my ( $orig, $self ) = ( shift, shift );
 
-        my @dates = map { $_->$method } $self->children;
-        return ( $method eq 'date_from' ) ? min @dates : max @dates;
-    };
-}
+#         my $date = $orig->( $self, @_ );
+#         return $date if defined $date;
+
+#         my @dates = map { $_->$method } $self->children;
+#         return ( $method eq 'date_from' ) ? min @dates : max @dates;
+#     };
+# }
 
 =head2 language_name
 

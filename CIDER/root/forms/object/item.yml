@@ -99,18 +99,16 @@ elements:
             id: date_from
             constraints:
               - type: Required
-              - type: DateTime
-            inflator: DateTime
-            deflator: Strftime
+              - &Date
+                type: Callback
+                callback: 'CIDER::iso_8601_date'
+                message: ISO 8601 date must be YYYY, YYYY-MM, or YYYY-MM-DD
 
           - type: Text
             label: To
             name: date_to
             id: date_to
-            constraints:
-              - type: DateTime
-            inflator: DateTime
-            deflator: Strftime
+            constraint: *Date
               
     - type: Text
       name: location
@@ -158,9 +156,7 @@ elements:
           - type: Text
             name: accession_date
             label: Date
-            constraint: DateTime
-            inflator: DateTime
-            deflator: Strftime
+            constraint: *Date
                   
           - type: Text
             name: accession_procedure
@@ -180,9 +176,7 @@ elements:
           - type: Text
             name: stabilization_date
             label: Date
-            constraint: DateTime
-            inflator: DateTime
-            deflator: Strftime
+            constraint: *Date
       
           - type: Text
             name: stabilization_procedure
@@ -226,9 +220,7 @@ elements:
     - type: Text
       name: file_creation_date
       label: File Creation Date
-      constraint: DateTime
-      inflator: DateTime
-      deflator: Strftime
+      constraint: *Date
       
     - type: Text
       name: lc_class

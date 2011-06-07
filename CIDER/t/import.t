@@ -70,7 +70,7 @@ is ( scalar @collections, 3,
      "After import, there are three root objects." );
 is ( $collections[1]->title, 'Renamed collection',
      "After import, the modified collection has been renamed.");
-is ( $collections[1]->date_from->date, '2000-01-01',
+is ( $collections[1]->date_from, '2000-01-01',
      "After import, the modified collection has kept the same date.");
 is ( $collections[1]->notes, 'Test notes.',
      "After import, the modified collection has kept the same notes.");
@@ -86,6 +86,10 @@ my $subitem = ( $item->children )[0];
 is( $subitem->title, 'New sub-item', 'Title is correct.' );
 is( $subitem->number, 99, 'Number is correct.' );
 is( $subitem->type->name, 'Test Type', 'Type is correct.' );
+
+dies_ok {
+    test_import( { number => 88 } );
+} "Title required on create.";
 
 dies_ok {
     test_import( { id => 1, title => 'Renumbered collection', number => 23 },
@@ -111,8 +115,10 @@ dies_ok {
 # These should all be errors:
 # date_from missing
 # series: accession_number, description missing
+# collection: has_physical_documentation missing (or default to no?)
 # nonexistent record_context or other foreign key (including location)
 # hard-coded select fields out of range?
+# nonexistent parent
 #
 # check max lengths?
 # test cider_type

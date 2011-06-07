@@ -63,24 +63,25 @@ is ( $item_1->parent->id, $series_1->id,
 
 use DateTime;
 
-is( $item_1->date_from,
-    DateTime->new( year => 2000, month => 1, day => 1 ),
+is( $item_1->date_from, '2000-01-01',
     "Item 1's date_from is correct." );
 
-is( $item_2->date_to,
-    DateTime->new( year => 2010, month => 1, day => 1 ),
+is( $item_2->date_to, '2010-01-01',
     "Item 2's date_to is correct." );
 
-$item_2->date_to( DateTime->new( year => 2011, month => 1, day => 1 ) );
+$item_2->date_to( '2011-01' );
 $item_2->update;
-is( $item_2->date_to->year, 2011,
+
+is( $schema->resultset( 'Object' )->find( $item_2->id )->date_to, '2011-01',
     "Item 2's new date_to is correct." );
 
-is( $collection_1->date_from, $item_1->date_from,
-    "The collection's date_from is the earliest date_from of its subitems.");
+# TO DO: re-implement date ranges on collections and series.
 
-is( $collection_1->date_to, $item_2->date_to,
-    "The collection's date_to is the latest date_to of its subitems.");
+# is( $collection_1->date_from, $item_1->date_from,
+#     "The collection's date_from is the earliest date_from of its subitems.");
+
+# is( $collection_1->date_to, $item_2->date_to,
+#     "The collection's date_to is the latest date_to of its subitems.");
 
 my $collection_2 = $collections[1];
 $series_1->parent( $collection_2 );

@@ -56,19 +56,44 @@ is( $rs->first->modification_logs->first->date, DateTime->today,
 
 $mech->submit_form_ok( { with_fields => {
     bulk_date_from => '12-31-1999',
-    bulk_date_to => '2003/1/13',
+    bulk_date_to => '2003/01/13',
 } }, 'Use incorrect date formats' );
 $mech->content_contains( 'Sorry', 'Form submission error.' );
-$mech->content_like( qr(Invalid date.*Invalid date.)s, 'Two error messages.' );
+$mech->content_like( qr(date must be.*date must be.)s, 'Two error messages.' );
 
 $mech->submit_form_ok( { with_fields => {
     bulk_date_from => '1999-12-31',
-    bulk_date_to => '2003-1-13',
+    bulk_date_to => '2003-01-13',
 } }, 'Use correct date format' );
 $mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
 
+$mech->submit_form_ok( { with_fields => {
+    bulk_date_from => '1999-12',
+    bulk_date_to => '2003',
+} }, 'Partial dates' );
+$mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
+
 $mech->get_ok( $mech->uri );
-$mech->content_contains( 'value="1999-12-31"', 'From date correct.' );
-$mech->content_contains( 'value="2003-01-13"', 'To date correct.' );
+$mech->content_contains( 'value="1999-12"', 'From date correct.' );
+$mech->content_contains( 'value="2003"', 'To date correct.' );
+
+$mech->submit_form_ok( { with_fields => { type => 'item' } },
+                       'Asked for sub-item creation form' );
+$mech->content_contains( 'Create a new item' );
+
+$mech->submit_form_ok( { with_fields => {
+    title => 'Æthelred the Unready',
+    number => 'II',
+    circa => 1,
+    date_from => '0968',
+    date_to => '1016-04-23',
+    accession_date => '2011-06',
+    stabilization_date => '9999',
+} }, 'Created a sub-item with partial dates' );
+
+$mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
+$mech->content_contains( 'Æthelred' );
+$mech->content_like( qr/\b0968\b/ );
+$mech->content_like( qr/\b2011-06\b/ );
 
 done_testing();
