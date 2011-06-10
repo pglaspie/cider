@@ -12,33 +12,23 @@ default_args:
 
 elements:
     - type: Text
-      label: Title
-      name: title
-      id: title
-      constraints:
-        - type: Required
-
-    - type: Text
-      label: Number
+      label: Series Number
       name: number
       id: number
       constraints:
         - type: Required
 
+# Accession Number(s) (derived)
+
     - type: Text
-      label: Accession Number
-      name: accession_number
+      label: Series Title
+      name: title
+      id: title
       constraints:
         - type: Required
 
-    - type: Textarea
-      label: Notes
-      name: notes
-      id: notes
-        
-    - type: Hidden
-      name: parent
-      id: parent
+# Start Date (derived)
+# End Date (derived)
 
     - type: Fieldset
       legend: Bulk Date
@@ -58,6 +48,8 @@ elements:
             id: bulk_date_to
             constraint: *Date
 
+# Restrictions (derived)
+
     - type: Textarea
       label: Description
       name: description
@@ -68,5 +60,17 @@ elements:
     - type: Text
       label: Arrangement
       name: arrangement
+
+    - type: Textarea
+      label: Notes
+      name: notes
+      id: notes
+        
+# Extent (derived)
+
+    - type: Hidden
+      name: parent
+      id: parent
+
 
     - type: Submit
