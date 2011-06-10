@@ -6,36 +6,92 @@ model_config:
     resultset: Object
 
 default_args:
-    constraints:
-        DateTime:
-            parser:
-                strptime: '%Y-%m-%d'
-    inflators:
-        DateTime:
-            parser:
-                strptime: '%Y-%m-%d'
-            strptime: '%Y-%m-%d'
-    deflators:
-        Strftime:
-            strftime: '%Y-%m-%d'
     elements:
         Textarea:
             rows: 8
 
 elements:
     - type: Text
-      label: Title
+      label: Item Number
+      name: number
+      id: number
+      constraints:
+        - type: Required
+
+    - type: Text
+      label: Item Title
       name: title
       id: title
       constraints:
         - type: Required
 
+# Creator
+
+    - type: Fieldset
+      legend: Date
+      elements:            
+          - type: Checkbox
+            label: Circa
+            name: circa
+
+          - type: Text
+            label: From
+            name: date_from
+            id: date_from
+            constraints:
+              - type: Required
+              - &Date
+                type: Callback
+                callback: 'CIDER::iso_8601_date'
+                message: ISO 8601 date must be YYYY, YYYY-MM, or YYYY-MM-DD
+
+          - type: Text
+            label: To
+            name: date_to
+            id: date_to
+            constraint: *Date
+              
+# Restrictions
+
+    - type: Fieldset
+      legend: Accession
+      elements:      
+          - type: Text
+            name: accession_by
+            label: By
+      
+          - type: Text
+            name: accession_date
+            label: Date
+            constraint: *Date
+                  
+          - type: Text
+            name: accession_procedure
+            label: Procedure
+      
+          - type: Text
+            name: accession_number
+            label: Number
+      
     - type: Text
-      label: Number
-      name: number
-      id: number
-      constraints:
-        - type: Required
+      name: location
+      label: Location Barcode
+
+    - type: Select
+      label: Type
+      name: type
+      options:
+        - [ 1, 'Type One' ]
+        - [ 2, 'Type Two' ]
+        - [ 3, 'Type Three' ]
+
+    - type: Select
+      label: Format
+      name: format
+      options:
+        - [ 1, 'Format One' ]
+        - [ 2, 'Format Two' ]
+        - [ 3, 'Format Three' ]
 
     - type: Select
       label: Personal Name
@@ -82,54 +138,6 @@ elements:
       name: notes
       id: notes
         
-    - type: Hidden
-      name: parent
-      id: parent
-
-    - type: Fieldset
-      legend: Date
-      elements:            
-          - type: Checkbox
-            label: Circa
-            name: circa
-
-          - type: Text
-            label: From
-            name: date_from
-            id: date_from
-            constraints:
-              - type: Required
-              - &Date
-                type: Callback
-                callback: 'CIDER::iso_8601_date'
-                message: ISO 8601 date must be YYYY, YYYY-MM, or YYYY-MM-DD
-
-          - type: Text
-            label: To
-            name: date_to
-            id: date_to
-            constraint: *Date
-              
-    - type: Text
-      name: location
-      label: Location Barcode
-
-    - type: Select
-      label: Type
-      name: type
-      options:
-        - [ 1, 'Type One' ]
-        - [ 2, 'Type Two' ]
-        - [ 3, 'Type Three' ]
-
-    - type: Select
-      label: Format
-      name: format
-      options:
-        - [ 1, 'Format One' ]
-        - [ 2, 'Format Two' ]
-        - [ 3, 'Format Three' ]
-
     - type: Text
       name: funder
       label: Funder
@@ -146,25 +154,10 @@ elements:
       name: original_filename
       label: Original Filename
 
-    - type: Fieldset
-      legend: Accession
-      elements:      
-          - type: Text
-            name: accession_by
-            label: By
-      
-          - type: Text
-            name: accession_date
-            label: Date
-            constraint: *Date
-                  
-          - type: Text
-            name: accession_procedure
-            label: Procedure
-      
-          - type: Text
-            name: accession_number
-            label: Number
+    - type: Text
+      name: file_creation_date
+      label: File Creation Date
+      constraint: *Date
       
     - type: Fieldset
       legend: Stabilization
@@ -218,11 +211,6 @@ elements:
       label: Technical Metadata
       
     - type: Text
-      name: file_creation_date
-      label: File Creation Date
-      constraint: *Date
-      
-    - type: Text
       name: lc_class
       label: LC Class
       
@@ -230,4 +218,9 @@ elements:
       name: file_extension
       label: File Extension
       
+    - type: Hidden
+      name: parent
+      id: parent
+
+
     - type: Submit
