@@ -4,6 +4,7 @@ elements:
     - type: File
       label: File
       name: file
+      constraint: Required
 
     - type: Submit
       name: submit
