@@ -10,4 +10,5 @@ elements:
         - type: Required
 
     - type: Submit
+      name: submit
       value: Create Set

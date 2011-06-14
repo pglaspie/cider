@@ -53,6 +53,8 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
 
     $self->_build_language_field( $c, $form );
 
+    $form->get_field( 'submit' )->value( "Update \u$type" );
+
     $form->process;
 
     $c->stash->{ form } = $form;
@@ -130,8 +132,11 @@ sub _create :Private {
     $c->stash->{ template } = 'object/create.tt';
 
     my $form = $c->stash->{ form };
+    my $type = $c->stash->{ object_type };
 
     $self->_build_language_field( $c, $form );
+
+    $form->get_field( 'submit' )->value( "Create \u$type" );
     
     if ( not $form->submitted ) {
         my $parent_id = $c->stash->{ parent_id };

@@ -1,4 +1,4 @@
-<h1>CIDER prototype: December 2010</h1>
+[% page.title = "Log in" %]
 
 <p>
 This is an early prototype of CIDER, intended to assist Appleseed and Tufts DCA in iteratively developing this software together.
