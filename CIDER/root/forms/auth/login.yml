@@ -16,3 +16,5 @@ elements:
         - type: Required
 
     - type: Submit
+      name: submit
+      value: Log in

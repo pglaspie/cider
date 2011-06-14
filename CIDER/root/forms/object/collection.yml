@@ -149,3 +149,4 @@ elements:
 
 
     - type: Submit
+      name: submit
