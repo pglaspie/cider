@@ -14,8 +14,7 @@ use lib (
     "$FindBin::Bin/../lib",
 );
 use CIDERTest;
-CIDERTest->init_schema;
-CIDERTest->init_index;
+CIDERTest->init_index( CIDERTest->init_schema );
 
 ok( my $mech = Test::WWW::Mechanize::Catalyst->new, 'Created mech object' );
 
