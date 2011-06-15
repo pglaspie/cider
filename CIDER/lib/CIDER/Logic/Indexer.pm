@@ -82,7 +82,7 @@ for my $field ( @text_fields ) {
     $index_schema->spec_field( name => $field, type => $text_type );
 }
 
-$index_schema->spec_field( name => 'id', type => $storage_only );
+$index_schema->spec_field( name => 'id', type => $string_type );
 $index_schema->spec_field( name => 'set', type => $unstored_text );
 
 
@@ -117,7 +117,9 @@ sub make_index {
 
 =head2 add( $object_rs )
 
-Incrementally add all objects in a result set to the index.
+Incrementally add all objects in a result set to the index.  If an
+object already exists in the index, its old index entry will be
+removed first.
 
 =cut
 
@@ -131,13 +133,38 @@ sub add {
         create => 1,
     );
 
+    # Remove any existing docs for the objects.
+    _remove_from_indexer( $object_rs, $indexer );
+
     _add_to_indexer( $object_rs, $indexer );
+
+    $indexer->commit;
+}
+
+=head2 remove( $object_rs )
+
+Remove all objects in a result set from the index.
+
+=cut
+
+sub remove {
+    my $self = shift;
+    my ( $object_rs ) = @_;
+
+    my $indexer = KinoSearch::Index::Indexer->new(
+        index => $self->path_to_index,
+        schema => $index_schema,
+    );
+
+    _remove_from_indexer( $object_rs, $indexer );
 
     $indexer->commit;
 }
 
 sub _add_to_indexer {
     my ( $object_rs, $indexer ) = @_;
+
+    $object_rs->reset;
 
     # Start looping through the objects.
     # Each will get a document in the searchable index.
@@ -155,6 +182,19 @@ sub _add_to_indexer {
         $doc->{ set } = $sets || '';
 
         $indexer->add_doc( $doc );
+    }
+}
+
+sub _remove_from_indexer {
+    my ( $object_rs, $indexer ) = @_;
+
+    $object_rs->reset;
+
+    while ( my $object = $object_rs->next ) {
+        $indexer->delete_by_term(
+            field => 'id',
+            term => '' . $object->id,
+        );
     }
 }
 
