@@ -17,19 +17,19 @@ my $schema = CIDERTest->init_schema;
 use Test::More qw(no_plan);
 use Test::Exception;
 
-use CIDER::Importer;
+use CIDER::Logic::Importer;
 use FindBin;
 use Text::CSV::Slurp;
 
 my $db_dir   = "$FindBin::Bin/db";
 my $db_file  = "$db_dir/cider.db";
 
-my $importer = CIDER::Importer->new ( "dbi:SQLite:$db_file" );
+my $importer = CIDER::Logic::Importer->new ( "dbi:SQLite:$db_file" );
 
-isa_ok ($importer, 'CIDER::Importer');
+isa_ok ($importer, 'CIDER::Logic::Importer');
 
 # Use Text::CSV::Slurp to quickly-but-accurately whip up a simple test CSV.
-# Then stuff it into a filehandle for CIDER::Importer to chew on.
+# Then stuff it into a filehandle for CIDER::Logic::Importer to chew on.
 
 sub test_import {
     my $csv = Text::CSV::Slurp->create( input => [ @_ ] );

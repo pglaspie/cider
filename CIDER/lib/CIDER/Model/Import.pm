@@ -7,7 +7,7 @@ extends 'Catalyst::Model::Adaptor';
 use CIDER;
 
 __PACKAGE__->config(
-    class => 'CIDER::Importer',
+    class => 'CIDER::Logic::Importer',
     args  => CIDER->config->{ 'Model::CIDERDB' },
 );
 

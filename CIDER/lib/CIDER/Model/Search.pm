@@ -24,11 +24,14 @@ CIDER::Model::Search - Catalyst Model
 
 =head1 DESCRIPTION
 
-Catalyst Model.
+Catalyst Model for searching the index.  $c->model( 'Search' )
+actually just returns a new instance of
+KinoSearch::Search::IndexSearcher.
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 Jason McIntosh
+Doug Orleans
 
 =head1 LICENSE
 

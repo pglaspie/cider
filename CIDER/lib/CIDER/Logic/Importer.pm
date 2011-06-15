@@ -1,4 +1,4 @@
-package CIDER::Importer;
+package CIDER::Logic::Importer;
 
 use strict;
 use warnings;
@@ -29,10 +29,10 @@ around BUILDARGS => sub {
 sub import_from_csv {
     my $self = shift;
     my ($handle) = @_;
-    
+
     my $csv = Text::CSV->new;
     $csv->column_names( $csv->getline( $handle ) );
-    
+
     my $schema = $self->schema;
     my $object_rs = $schema->resultset( 'Object' );
 
@@ -48,7 +48,7 @@ sub import_from_csv {
         unless ( $row->{ id } ) {
             delete $row->{ id };
         }
-	
+
         # TO DO: do we need to handle parent specially?
 
         # TO DO: check cider_type?
