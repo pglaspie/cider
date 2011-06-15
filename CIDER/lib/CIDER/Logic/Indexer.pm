@@ -85,27 +85,59 @@ for my $field ( @text_fields ) {
 $index_schema->spec_field( name => 'id', type => $storage_only );
 $index_schema->spec_field( name => 'set', type => $unstored_text );
 
+
+=head1 METHODS
+
+=head2 make_index
+
+Create a new index for all objects in the database, replacing the
+existing index if any.  The new index will be optimized.
+
+=cut
+
 sub make_index {
     my $self = shift;
 
-    my $object_rs = $self->schema->resultset( 'Object' );
-
-    $self->add( $object_rs, 1 );
-
-    return $object_rs->count;
-}
-
-sub add {
-    my $self = shift;
-    my ( $object_rs, $truncate ) = @_;
-
-    # Create one indexer object for each index.
     my $indexer = KinoSearch::Index::Indexer->new(
         index => $self->path_to_index,
         schema => $index_schema,
         create => 1,
-        truncate => $truncate,
+        truncate => 1,
     );
+
+    my $object_rs = $self->schema->resultset( 'Object' );
+
+    _add_to_indexer( $object_rs, $indexer );
+
+    $indexer->optimize;
+    $indexer->commit;
+
+    return $object_rs->count;
+}
+
+=head2 add( $object_rs )
+
+Incrementally add all objects in a result set to the index.
+
+=cut
+
+sub add {
+    my $self = shift;
+    my ( $object_rs ) = @_;
+
+    my $indexer = KinoSearch::Index::Indexer->new(
+        index => $self->path_to_index,
+        schema => $index_schema,
+        create => 1,
+    );
+
+    _add_to_indexer( $object_rs, $indexer );
+
+    $indexer->commit;
+}
+
+sub _add_to_indexer {
+    my ( $object_rs, $indexer ) = @_;
 
     # Start looping through the objects.
     # Each will get a document in the searchable index.
@@ -124,8 +156,6 @@ sub add {
 
         $indexer->add_doc( $doc );
     }
-
-    $indexer->commit;
 }
 
 __PACKAGE__->meta->make_immutable;
