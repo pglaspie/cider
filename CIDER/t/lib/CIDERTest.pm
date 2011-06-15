@@ -184,12 +184,13 @@ sub init_schema {
 
 sub init_index {
     my $self = shift;
-    # Make the search index.
-    remove_tree( $index_dir ) if -e $index_dir;
+
+    # Create the index directory if it doesn't already exist.
     make_path( $index_dir );
 
     my $indexer = CIDER::Logic::Indexer->new( $dsn, $index_dir );
-    $indexer->make_index;
+    $indexer->make_index;       # This clobbers any existing index.
+    return $indexer;
 }
 
 1;
@@ -227,7 +228,9 @@ and then creates a new database populated with default test data.
 
 =head2 init_index
 
-    CIDERTest->init_index;
+    my $indexer = CIDERTest->init_index;
 
 This method (re)creates the search index in t/db/index based on the
 current test database in t/db/cider.db, i.e. call init_schema first.
+The returned $indexer can be used to add more objects to the index,
+with $indexer->add( $object_rs ).
