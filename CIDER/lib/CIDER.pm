@@ -51,13 +51,9 @@ sub iso_8601_date {
 # local deployment.
 
 if ( defined $ENV{CIDER_SITE_CONFIG} ) {
-    __PACKAGE__
-        ->config( 'Plugin::ConfigLoader' => {
-            file => $ENV{CIDER_SITE_CONFIG},
-            driver => {
-                'General' => { -IncludeAgain => 1 }
-            },
-        } );
+    __PACKAGE__->config( 'Plugin::ConfigLoader' => {
+        file => $ENV{CIDER_SITE_CONFIG},
+    } );
 }
 
 __PACKAGE__->config(
@@ -76,7 +72,6 @@ __PACKAGE__->config(
         },
     },
     'Plugin::Session' => {
-        storage => '/tmp/cider_session',
         flash_to_stash => 1,
         expires => 1000000,
         cookie_expires => 1000000,
