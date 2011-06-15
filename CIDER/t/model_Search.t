@@ -11,8 +11,8 @@ use lib (
 );
 
 use CIDERTest;
-CIDERTest->init_schema;
-CIDERTest->init_index;
+my $schema = CIDERTest->init_schema;
+my $indexer = CIDERTest->init_index;
 
 use CIDER;
 my $searcher = CIDER->model( 'Search' );
@@ -20,5 +20,22 @@ my $hits = $searcher->hits( query => 'Item' );
 is( $hits->total_hits, 2, 'Found two Items.' );
 is( $hits->next->{title}, 'Test Item 1', 'Found Test Item 1.' );
 is( $hits->next->{title}, 'Test Item 2', 'Found Test Item 2.' );
+
+my $item = $schema->resultset( 'Object' )->create( {
+    number => 3,
+    title => 'Test Item 3',
+    type => 1,
+} );
+ok( $item, 'Created Item 3.' );
+
+my $item_rs = $schema->resultset( 'Object' )->search_rs( { number => 3 } );
+is( $item_rs->count, 1, 'About to index Item 3.' );
+
+$indexer->add( $item_rs );
+
+$searcher = CIDER->model( 'Search' );
+$hits = $searcher->hits( query => 'Item' );
+is( $hits->total_hits, 3, 'Found three Items.' );
+is( $hits->next->{title}, 'Test Item 3', 'Found Test Item 3.' );
 
 done_testing();
