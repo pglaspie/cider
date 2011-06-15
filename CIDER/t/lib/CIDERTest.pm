@@ -12,13 +12,16 @@ use English;
 use File::Path qw(make_path remove_tree);
 
 use CIDER::Schema;
+use CIDER::Logic::Indexer;
+
+my $db_dir    = "$FindBin::Bin/db";
+my $db_file   = "$db_dir/cider.db";
+my $dsn       = "dbi:SQLite:$db_file";
+my $index_dir = "$FindBin::Bin/db/index";
 
 sub init_schema {
     my $self = shift;
     my %args = @_;
-
-    my $db_dir  = "$FindBin::Bin/db";
-    my $db_file = "$db_dir/cider.db";
 
     if (-e $db_file) {
         unlink $db_file
@@ -26,7 +29,7 @@ sub init_schema {
     }
 
     my $schema = CIDER::Schema->
-        connect("dbi:SQLite:$db_file", '', '', {
+        connect( $dsn, '', '', {
             on_connect_call => 'use_foreign_keys',
         });
 
@@ -182,11 +185,11 @@ sub init_schema {
 sub init_index {
     my $self = shift;
     # Make the search index.
-    my $index_dir = "$FindBin::Bin/db/index";
     remove_tree( $index_dir ) if -e $index_dir;
     make_path( $index_dir );
-    # TO DO: refactor the script into a module!!
-    do "$FindBin::Bin/../script/indexer.pl";    
+
+    my $indexer = CIDER::Logic::Indexer->new( $dsn, $index_dir );
+    $indexer->make_index;
 }
 
 1;
