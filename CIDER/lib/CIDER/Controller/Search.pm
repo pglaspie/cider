@@ -28,7 +28,7 @@ sub search :Path :Args(0) :FormConfig {
     my $form = $c->stash->{ form };
     if ( $form->submitted_and_valid ) {
         # Perform the search.
-        my $searcher = $c->model( 'Search' );
+        my $searcher = $c->model( 'Search' )->searcher;
         my $field = $form->param_value( 'field' );
         my $query = $form->param_value( 'query' );
 
