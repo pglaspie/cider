@@ -9,6 +9,7 @@ $ENV{CIDER_SITE_CONFIG} = "$FindBin::Bin/conf/cider.conf";
 
 use Carp qw(croak);
 use English;
+use File::Path qw(make_path remove_tree);
 
 use CIDER::Schema;
 
@@ -30,14 +31,6 @@ sub init_schema {
         });
 
     $schema->deploy;
-    __PACKAGE__->populate_schema($schema);
-
-    return $schema;
-}
-
-sub populate_schema {
-    my $self   = shift;
-    my $schema = shift;
 
     $schema->populate(
         'RecordContext',
@@ -183,6 +176,17 @@ sub populate_schema {
         ]
     );
 
+    return $schema;
+}
+
+sub init_index {
+    my $self = shift;
+    # Make the search index.
+    my $index_dir = "$FindBin::Bin/db/index";
+    remove_tree( $index_dir ) if -e $index_dir;
+    make_path( $index_dir );
+    # TO DO: refactor the script into a module!!
+    do "$FindBin::Bin/../script/indexer.pl";    
 }
 
 1;
@@ -199,7 +203,8 @@ CIDERTest
     use CIDERTest;
     use Test::More;
 
-    my $schema = CIDERTest->init_schema();
+    my $schema = CIDERTest->init_schema;
+    CIDERTest->init_index;
 
 =head1 DESCRIPTION
 
@@ -212,25 +217,14 @@ who stole it in turn from DBIC...)
 
 =head2 init_schema
 
-    my $schema = CIDERTest->init_schema();
+    my $schema = CIDERTest->init_schema;
 
-This method removes the test SQLite database in t/TestSite/db/mhs.db
-and then creates a new, empty database.
+This method removes the test SQLite database in t/db/cider.db
+and then creates a new database populated with default test data.
 
-This method will call deploy_schema() to create the db schema,
-and populate_schema() to insert default data.
+=head2 init_index
 
-=head2 deploy_schema
+    CIDERTest->init_index;
 
-    CIDERTest->deploy_schema( $schema );
-
-This method calls $schema->deploy() to create the db schema based on the DBIC
-schema.
-
-=head2 populate_schema
-
-  CIDERTest->populate_schema( $schema );
-
-After you deploy your schema you can use this method to populate
-the tables with test data.
-
+This method (re)creates the search index in t/db/index based on the
+current test database in t/db/cider.db, i.e. call init_schema first.

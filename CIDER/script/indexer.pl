@@ -13,18 +13,13 @@ use lib (
     "$FindBin::Bin/../lib"
 );     
 
+use CIDER;
 use CIDER::Schema;
 
-warn "Initializing...\n";
-
-my $path_to_index = '/tmp/cider_index';
-my $db_schema = CIDER::Schema->connect( 'dbi:mysql:cider', 'root', '' );
-
-warn "connected to schema...\n";
-
+my $path_to_index = CIDER->config->{ 'Model::Search' }->{ index };
+my $connect_info = CIDER->config->{ 'Model::CIDERDB' }->{ connect_info };
+my $db_schema = CIDER::Schema->connect( $connect_info );
 my $object_rs = $db_schema->resultset( 'Object' );
-
-warn "I gots a resultset...\n";
 
 # Create the index schema.
 # We'll try to have all the indexes share the same one...
@@ -100,16 +95,9 @@ my $indexer = KinoSearch::Index::Indexer->new(
     truncate => 1,
 );
 
-warn "Looping...\n";
-
-my $counter = 0;
 # Start looping through the objects.
 # Each will get a document in the searchable index.
-my $mod = 1;
 while ( my $object = $object_rs->next ) {
-    if ( $counter++ % $mod == 0 ) {
-	warn "On object $counter.\n";
-    }
     my $doc = {
 	id => $object->id || '',
     };
@@ -118,14 +106,11 @@ while ( my $object = $object_rs->next ) {
         $doc->{ $field } = $object->$field || '';
     }
 
-    use Data::Dumper; warn Dumper ( $doc );
-    
     my @sets = $object->sets;
     my $sets = join ' ', map { $_->id } @sets;
     $doc->{ set } = $sets || '';
 
     $indexer->add_doc( $doc );
-    last if $counter > 100;
 }
 
 $indexer->commit;
