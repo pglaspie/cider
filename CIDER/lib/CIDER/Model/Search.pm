@@ -2,16 +2,45 @@ package CIDER::Model::Search;
 use Moose;
 use namespace::autoclean;
 
-extends 'Catalyst::Model::Factory';
+extends 'Catalyst::Model';
 
-__PACKAGE__->config(
-    class => 'KinoSearch::Search::IndexSearcher',
+use KinoSearch;
+use CIDER::Logic::Indexer;
+
+has schema => (
+    is => 'ro',
+    isa => 'DBIx::Class::Schema',
 );
 
-# IndexSearcher wants a plain list, not a hashref, so we have to do this...
-sub mangle_arguments {
-    my ( $self, $args ) = @_;
-    return %$args;
+has index => (
+    is => 'ro',
+    isa => 'Str'
+);
+
+sub ACCEPT_CONTEXT {
+    my $self = shift;
+    my ( $c ) = @_;
+
+    my $schema = $c->model( 'CIDERDB' )->schema;
+
+    return $self->meta->clone_object( $self, schema => $schema );
+}
+
+sub indexer {
+    my $self = shift;
+
+    return CIDER::Logic::Indexer->new(
+        schema => $self->schema,
+        path_to_index => $self->index,
+    );
+}
+
+sub searcher {
+    my $self = shift;
+
+    return KinoSearch::Search::IndexSearcher->new(
+        index => $self->index,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -24,9 +53,18 @@ CIDER::Model::Search - Catalyst Model
 
 =head1 DESCRIPTION
 
-Catalyst Model for searching the index.  $c->model( 'Search' )
-actually just returns a new instance of
-KinoSearch::Search::IndexSearcher.
+Catalyst Model for searching the index.
+
+=head1 METHODS
+
+=head2 indexer
+
+Returns an instance of L<CIDER::Logic::Indexer>.
+
+=head2 searcher
+
+Returns an instance of L<KinoSearch::Search::IndexSearcher>.  Note
+that if you update the index, you need to get a new searcher.
 
 =head1 AUTHORS
 

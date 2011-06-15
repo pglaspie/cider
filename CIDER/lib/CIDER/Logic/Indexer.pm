@@ -8,31 +8,17 @@ use Moose;
 use Text::CSV;
 use Carp;
 
-use CIDER::Schema;
-
 use KinoSearch;
 
 has schema => (
-    is => 'rw',
-    isa => 'DBIx::Class',
+    is => 'ro',
+    isa => 'DBIx::Class::Schema',
 );
 
 has path_to_index => (
     is => 'ro',
     isa => 'Str',
 );
-
-around BUILDARGS => sub {
-    my $orig = shift;
-    my $class = shift;
-
-    my ( $connect_info, $path_to_index ) = @_;
-
-    my $schema = CIDER::Schema->connect( $connect_info );
-
-    return $class->$orig( schema => $schema,
-                          path_to_index => $path_to_index );
-};
 
 # Create the index schema.
 # We'll try to have all the indexes share the same one...
