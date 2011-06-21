@@ -37,7 +37,7 @@ sub import_FORM_VALID {
     my $form = $c->stash->{ form };
     my $file = $form->param_value( 'file' );
 
-    my $importer = $c->model( 'Import' );
+    my $importer = $c->model( 'Import' )->importer;
     my $rows = 0;
     eval { $rows = $importer->import_from_csv( $file->fh ); };
     if ( $@ ) {

@@ -826,6 +826,10 @@ sub delete {
     }
     
     $self->next::method( @_ );
+
+    $self->result_source->schema->indexer->remove( $self );
+
+    return $self;
 }
 
 sub cider_type {
@@ -847,6 +851,8 @@ sub insert {
 
     $self->creator( $user ) if defined( $user );
 
+    $self->result_source->schema->indexer->add( $self );
+
     return $self;
 }
 
@@ -858,6 +864,8 @@ sub update {
     my $user = $self->result_source->schema->user;
 
     $self->add_to_modification_logs( { user => $user } ) if defined( $user );
+
+    $self->result_source->schema->indexer->update( $self );
 
     return $self;
 }

@@ -28,23 +28,28 @@ sub search :Path :Args(0) :FormConfig {
     my $form = $c->stash->{ form };
     if ( $form->submitted_and_valid ) {
         # Perform the search.
-        my $searcher = $c->model( 'Search' )->searcher;
         my $field = $form->param_value( 'field' );
         my $query = $form->param_value( 'query' );
+        my $query_str = $query;
 
         if ( $field ne 'all' ) {
-            $query = "$field:($query)";
+            $query_str = "$field:($query)";
+
+            $query = KinoSearch::Search::TermQuery->new(
+                field => $field,
+
+                # NOTE: search is case-insensitive, but only because
+                # the terms in the index have been downcased, so we
+                # must downcase the query term.  (QueryParser does
+                # this automatically, but the TermQuery constructor
+                # does not.)
+                term => lc $query,
+            );
         }
 
-        my $qp = KinoSearch::Search::QueryParser->new(
-            schema => $searcher->get_schema,
-        );
-        $qp->set_heed_colons( 1 );
-        my $query_obj = $qp->parse( $query );
-
-        my $hits = $searcher->hits (
-            query => $query_obj,
-            num_wanted => 50,
+        my $hits = $c->model( 'Search' )->search(
+            query => $query,
+            num_wanted => 20, # TO DO: parameterize this?
         );
 
         my @objects;
@@ -59,7 +64,7 @@ sub search :Path :Args(0) :FormConfig {
             }
         }
         $c->stash->{ objects } = \@objects;
-        $c->stash->{ query } = $query;
+        $c->stash->{ query } = $query_str;
         $c->stash->{ template } = 'search/results.tt';
     }
 }

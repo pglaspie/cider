@@ -5,6 +5,7 @@ use base 'Catalyst::Model::DBIC::Schema';
 
 __PACKAGE__->config(
     schema_class => 'CIDER::Schema',
+    traits => [ qw( SchemaProxy ) ],
 );
 
 =head1 NAME

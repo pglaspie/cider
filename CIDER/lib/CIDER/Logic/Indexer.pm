@@ -107,7 +107,7 @@ sub make_index {
 
     my $object_rs = $self->schema->resultset( 'Object' );
 
-    _add_to_indexer( $object_rs, $indexer );
+    _add_rs_to_indexer( $object_rs, $indexer );
 
     $indexer->optimize;
     $indexer->commit;
@@ -115,15 +115,13 @@ sub make_index {
     return $object_rs->count;
 }
 
-=head2 add( $object_rs )
+=head2 add_rs( $object_rs )
 
-Incrementally add all objects in a result set to the index.  If an
-object already exists in the index, its old index entry will be
-removed first.
+Add all objects in a result set to the index.
 
 =cut
 
-sub add {
+sub add_rs {
     my $self = shift;
     my ( $object_rs ) = @_;
 
@@ -133,69 +131,121 @@ sub add {
         create => 1,
     );
 
-    # Remove any existing docs for the objects.
-    _remove_from_indexer( $object_rs, $indexer );
-
-    _add_to_indexer( $object_rs, $indexer );
+    _add_rs_to_indexer( $object_rs, $indexer );
 
     $indexer->commit;
 }
 
-=head2 remove( $object_rs )
+=head2 add( $object )
 
-Remove all objects in a result set from the index.
+Add an object to the index.
+
+=cut
+
+sub add {
+    my $self = shift;
+    my ( $object ) = @_;
+
+    my $indexer = KinoSearch::Index::Indexer->new(
+        index => $self->path_to_index,
+        schema => $index_schema,
+        create => 1,
+    );
+
+    _add_to_indexer( $object, $indexer );
+
+    $indexer->commit;
+}
+
+=head2 update( $object )
+
+Update an object in the index.
+
+=cut
+
+sub update {
+    my $self = shift;
+    my ( $object ) = @_;
+
+    my $indexer = KinoSearch::Index::Indexer->new(
+        index => $self->path_to_index,
+        schema => $index_schema,
+        create => 1,
+    );
+
+    _remove_from_indexer( $object, $indexer );
+    _add_to_indexer( $object, $indexer );
+
+    $indexer->commit;
+}
+
+=head2 remove( $object )
+
+Remove an object from the index.
 
 =cut
 
 sub remove {
     my $self = shift;
-    my ( $object_rs ) = @_;
+    my ( $object ) = @_;
 
     my $indexer = KinoSearch::Index::Indexer->new(
         index => $self->path_to_index,
         schema => $index_schema,
+        create => 1,
     );
 
-    _remove_from_indexer( $object_rs, $indexer );
+    _remove_from_indexer( $object, $indexer );
 
     $indexer->commit;
 }
 
-sub _add_to_indexer {
+
+sub _add_rs_to_indexer {
     my ( $object_rs, $indexer ) = @_;
 
     $object_rs->reset;
 
-    # Start looping through the objects.
-    # Each will get a document in the searchable index.
     while ( my $object = $object_rs->next ) {
-        my $doc = {
-            id => $object->id || '',
-        };
+        _add_to_indexer( $object, $indexer );
+    }
+}
 
-        for my $field ( @text_fields ) {
-            $doc->{ $field } = $object->$field || '';
-        }
+sub _add_to_indexer {
+    my ( $object, $indexer ) = @_;
 
-        my @sets = $object->sets;
-        my $sets = join ' ', map { $_->id } @sets;
-        $doc->{ set } = $sets || '';
+    my $doc = {
+        id => $object->id || '',
+    };
 
-        $indexer->add_doc( $doc );
+    for my $field ( @text_fields ) {
+        $doc->{ $field } = $object->$field || '';
+    }
+
+    my @sets = $object->sets;
+    my $sets = join ' ', map { $_->id } @sets;
+    $doc->{ set } = $sets || '';
+
+    $indexer->add_doc( $doc );
+}
+
+sub _remove_rs_from_indexer {
+    my ( $object_rs, $indexer ) = @_;
+
+    $object_rs->reset;
+
+    while ( my $object = $object_rs->next ) {
+        _remove_from_indexer( $object );
     }
 }
 
 sub _remove_from_indexer {
-    my ( $object_rs, $indexer ) = @_;
+    my ( $object, $indexer ) = @_;
 
-    $object_rs->reset;
-
-    while ( my $object = $object_rs->next ) {
-        $indexer->delete_by_term(
-            field => 'id',
-            term => '' . $object->id,
-        );
-    }
+    $indexer->delete_by_term(
+        field => 'id',
+        term => '' . $object->id,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;

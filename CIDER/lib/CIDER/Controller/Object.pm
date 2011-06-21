@@ -24,11 +24,11 @@ Catalyst Controller.
 
 sub object :Chained('/') :CaptureArgs(1) {
     my ( $self, $c, $object_id ) = @_;
-    
+
     my $object = $c->model( 'CIDERDB' )
         ->resultset( 'Object' )
             ->find( $object_id );
-    
+
     $c->stash->{ object } = $object;
 
     $c->forward( 'set_up_held_object' );
@@ -82,7 +82,7 @@ sub add_to_set :Chained('object') :Args(0) {
         $c->log->warn( "Attempt to add object " . $object->id
                        . " to nonexistent set $set_id");
     }
-    
+
     $c->response->redirect(
         $c->uri_for( $self->action_for( 'detail' ), [$object->id] )
     );
@@ -137,7 +137,7 @@ sub _create :Private {
     $self->_build_language_field( $c, $form );
 
     $form->get_field( 'submit' )->value( "Create \u$type" );
-    
+
     if ( not $form->submitted ) {
         my $parent_id = $c->stash->{ parent_id };
 
@@ -154,7 +154,7 @@ sub _create :Private {
         my $object = $form->model->create( );
 
         $c->flash->{ we_just_created_this } = 1;
-        
+
         $c->response->redirect(
             $c->uri_for( $self->action_for( 'detail' ), [$object->id] )
         );
@@ -203,7 +203,7 @@ sub pick_up :Chained('object') :Args(0) {
 
     $c->session->{ held_object_id } = $c->stash->{ object }->id;
     $c->flash->{ we_just_picked_this_up } = 1;
-    
+
     $c->response->redirect(
         $c->uri_for( $self->action_for( 'detail' ),
                      [$c->stash->{ object }->id],
@@ -224,7 +224,7 @@ sub drop_held_object_here :Chained('object') :Args(0) {
     $new_child->update;
 
     delete $c->session->{ held_object_id };
-    
+
     if ( $c->stash->{ object } ) {
         $c->response->redirect(
             $c->uri_for( $self->action_for( 'detail' ),
