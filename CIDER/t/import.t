@@ -9,7 +9,7 @@ use FindBin;
 use lib (
     "$FindBin::Bin/../lib",
     "$FindBin::Bin/lib",
-);     
+);
 
 use CIDERTest;
 my $schema = CIDERTest->init_schema;
@@ -24,7 +24,7 @@ use Text::CSV::Slurp;
 my $db_dir   = "$FindBin::Bin/db";
 my $db_file  = "$db_dir/cider.db";
 
-my $importer = CIDER::Logic::Importer->new ( "dbi:SQLite:$db_file" );
+my $importer = CIDER::Logic::Importer->new( schema => $schema );
 
 isa_ok ($importer, 'CIDER::Logic::Importer');
 

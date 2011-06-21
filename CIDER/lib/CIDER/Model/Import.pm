@@ -2,20 +2,30 @@ package CIDER::Model::Import;
 use Moose;
 use namespace::autoclean;
 
-extends 'Catalyst::Model::Adaptor';
+extends 'Catalyst::Model';
 
-use CIDER;
+use CIDER::Logic::Importer;
 
-__PACKAGE__->config(
-    class => 'CIDER::Logic::Importer',
-    args  => CIDER->config->{ 'Model::CIDERDB' },
+has schema => (
+    is => 'ro',
+    isa => 'DBIx::Class::Schema',
 );
 
-sub mangle_arguments {
+sub ACCEPT_CONTEXT {
     my $self = shift;
-    my ( $args ) = @_;
+    my ( $c ) = @_;
 
-    return $args->{ connect_info };
+    my $schema = $c->model( 'CIDERDB' )->schema;
+
+    return $self->meta->clone_object( $self, schema => $schema );
+}
+
+sub importer {
+    my $self = shift;
+
+    return CIDER::Logic::Importer->new(
+        schema => $self->schema,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;

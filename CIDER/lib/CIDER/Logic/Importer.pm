@@ -15,17 +15,6 @@ has 'schema' => (
     isa => 'DBIx::Class',
 );
 
-around BUILDARGS => sub {
-    my $orig = shift;
-    my $class = shift;
-
-    my ( $connect_info ) = @_;
-
-    my $schema = CIDER::Schema->connect( $connect_info );
-
-    return $class->$orig( schema => $schema );
-};
-
 sub import_from_csv {
     my $self = shift;
     my ($handle) = @_;

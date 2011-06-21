@@ -34,6 +34,11 @@ sub init_schema {
             on_connect_call => 'use_foreign_keys',
         });
 
+    # Create the index directory if it doesn't already exist.
+    make_path( $index_dir );
+
+    $schema->search_index( $index_dir );
+
     $schema->deploy;
 
     $schema->populate(
@@ -180,22 +185,9 @@ sub init_schema {
         ]
     );
 
+    $schema->indexer->make_index;       # This clobbers any existing index.
+
     return $schema;
-}
-
-sub init_index {
-    my $self = shift;
-    my ( $schema ) = @_;
-
-    # Create the index directory if it doesn't already exist.
-    make_path( $index_dir );
-
-    my $indexer = CIDER::Logic::Indexer->new(
-        schema => $schema,
-        path_to_index => $index_dir,
-    );
-    $indexer->make_index;       # This clobbers any existing index.
-    return $indexer;
 }
 
 1;
@@ -213,7 +205,6 @@ CIDERTest
     use Test::More;
 
     my $schema = CIDERTest->init_schema;
-    my $indexer = CIDERTest->init_index( $schema );
 
 =head1 DESCRIPTION
 
@@ -230,11 +221,4 @@ who stole it in turn from DBIC...)
 
 This method removes the test SQLite database in t/db/cider.db
 and then creates a new database populated with default test data.
-
-=head2 init_index
-
-    my $indexer = CIDERTest->init_index( $schema );
-
-This method (re)creates the search index in t/db/index based on the
-provided schema.  The returned $indexer can be used to add more
-objects to the index, with $indexer->add( $object_rs ).
+It also (re)creates the search index in t/db/index.
