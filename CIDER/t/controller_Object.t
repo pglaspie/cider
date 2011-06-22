@@ -96,4 +96,7 @@ $mech->content_contains( 'Æthelred' );
 $mech->content_like( qr/\b0968\b/ );
 $mech->content_like( qr/\b2011-06\b/ );
 
+$mech->get( '/object/9999' );
+is( $mech->status, 404, 'Invalid object id gives 404 page.' );
+
 done_testing();
