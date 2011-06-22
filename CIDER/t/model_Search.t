@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Test::More;
+use Test::Exception;
 
 BEGIN { use_ok 'CIDER::Model::Search' }
 
@@ -12,6 +13,8 @@ use lib (
 
 use CIDERTest;
 my $schema = CIDERTest->init_schema;
+
+use Text::CSV::Slurp;
 
 use CIDER;
 my $model = CIDER->model( 'Search' );
@@ -51,5 +54,42 @@ $item->delete;
 
 $hits = $model->search( query => 'Object' );
 is( $hits->total_hits, 0, 'Found no Objects.' );
+
+my $set = $schema->resultset( 'ObjectSet' )->find( 1 );
+$set->add( $schema->resultset( 'Object' )->find( 5 ) );
+$set->set_field( title => 'New Title' );
+
+$hits = $model->search( query => 'Item' );
+is( $hits->total_hits, 0, 'Found no Items.' );
+
+$hits = $model->search( query => 'New Title' );
+is( $hits->total_hits, 2, 'Found two New Titles.' );
+
+my $importer = CIDER->model( 'Import' )->importer;
+my $csv = Text::CSV::Slurp->create( input => [ {
+    title => 'Imported series 1',
+    number => 1,
+}, {
+    title => 'Imported series 2',
+    # error - no number
+} ] );
+open my $handle, '<', \$csv;
+dies_ok( sub { $importer->import_from_csv( $handle ) }, 'Import fails.' );
+
+$hits = $model->search( query => 'Imported' );
+is( $hits->total_hits, 0, 'Found no Imported.' );
+
+$csv = Text::CSV::Slurp->create( input => [ {
+    title => 'Imported series 1',
+    number => 1,
+}, {
+    title => 'Imported series 2',
+    number => 2,
+} ] );
+open $handle, '<', \$csv;
+$importer->import_from_csv( $handle );
+
+$hits = $model->search( query => 'Imported' );
+is( $hits->total_hits, 2, 'Found two Imported.' );
 
 done_testing();

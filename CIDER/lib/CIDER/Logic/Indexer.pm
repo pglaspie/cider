@@ -20,6 +20,16 @@ has path_to_index => (
     isa => 'Str',
 );
 
+has _indexer => (
+    is => 'rw',
+    isa => 'Maybe[KinoSearch::Index::Indexer]',
+);
+
+has _in_txn => (
+    is => 'rw',
+    isa => 'Bool',
+);
+
 # Create the index schema.
 # We'll try to have all the indexes share the same one...
 my $index_schema = KinoSearch::Plan::Schema->new;
@@ -98,6 +108,10 @@ existing index if any.  The new index will be optimized.
 sub make_index {
     my $self = shift;
 
+    # This method will invalidate the index, so there's no use allowing
+    # the current transaction to complete.
+    $self->txn_rollback;
+
     my $indexer = KinoSearch::Index::Indexer->new(
         index => $self->path_to_index,
         schema => $index_schema,
@@ -125,15 +139,11 @@ sub add_rs {
     my $self = shift;
     my ( $object_rs ) = @_;
 
-    my $indexer = KinoSearch::Index::Indexer->new(
-        index => $self->path_to_index,
-        schema => $index_schema,
-        create => 1,
-    );
+    my $indexer = $self->_indexer;
 
     _add_rs_to_indexer( $object_rs, $indexer );
 
-    $indexer->commit;
+    $self->_commit;
 }
 
 =head2 add( $object )
@@ -146,15 +156,29 @@ sub add {
     my $self = shift;
     my ( $object ) = @_;
 
-    my $indexer = KinoSearch::Index::Indexer->new(
-        index => $self->path_to_index,
-        schema => $index_schema,
-        create => 1,
-    );
+    my $indexer = $self->_indexer;
 
     _add_to_indexer( $object, $indexer );
 
-    $indexer->commit;
+    $self->_commit;
+}
+
+=head2 update_rs( $object_rs )
+
+Update all objects in a result set in the index.
+
+=cut
+
+sub update_rs {
+    my $self = shift;
+    my ( $object_rs ) = @_;
+
+    my $indexer = $self->_indexer;
+
+    _remove_rs_from_indexer( $object_rs, $indexer );
+    _add_rs_to_indexer( $object_rs, $indexer );
+
+    $self->_commit;
 }
 
 =head2 update( $object )
@@ -167,16 +191,29 @@ sub update {
     my $self = shift;
     my ( $object ) = @_;
 
-    my $indexer = KinoSearch::Index::Indexer->new(
-        index => $self->path_to_index,
-        schema => $index_schema,
-        create => 1,
-    );
+    my $indexer = $self->_indexer;
 
     _remove_from_indexer( $object, $indexer );
     _add_to_indexer( $object, $indexer );
 
-    $indexer->commit;
+    $self->_commit;
+}
+
+=head2 remove_rs( $object_rs )
+
+Remove all objects in a result set from the index.
+
+=cut
+
+sub remove_rs {
+    my $self = shift;
+    my ( $object_rs ) = @_;
+
+    my $indexer = $self->_indexer;
+
+    _remove_rs_from_indexer( $object_rs, $indexer );
+
+    $self->_commit;
 }
 
 =head2 remove( $object )
@@ -189,17 +226,80 @@ sub remove {
     my $self = shift;
     my ( $object ) = @_;
 
-    my $indexer = KinoSearch::Index::Indexer->new(
-        index => $self->path_to_index,
-        schema => $index_schema,
-        create => 1,
-    );
+    my $indexer = $self->_indexer;
 
     _remove_from_indexer( $object, $indexer );
 
-    $indexer->commit;
+    $self->_commit;
 }
 
+=head2 txn_begin
+
+Begin a transaction.  Changes to the index will not take effect unless
+and until txn_commit is called.
+
+=cut
+
+sub txn_begin {
+    my $self = shift;
+
+    $self->_in_txn( 1 );
+}
+
+=head2 txn_rollback
+
+Cancel the current transaction, discarding any changes to the index.
+
+=cut
+
+sub txn_rollback {
+    my $self = shift;
+
+    $self->_in_txn( 0 );
+    $self->_indexer( undef );
+}
+
+=head2 txn_commit
+
+End the current transaction, making all changes to the index at once.
+
+=cut
+
+sub txn_commit {
+    my $self = shift;
+
+    $self->_in_txn( 0 );
+    $self->_commit;
+}
+
+### Private methods
+
+sub _commit {
+    my $self = shift;
+
+    unless ( $self->_in_txn ) {
+        $self->_indexer->commit;
+        $self->_indexer( undef );
+    }
+}
+
+around _indexer => sub {
+    my ( $orig, $self ) = ( shift, shift );
+
+    return $self->$orig( @_ ) if @_;
+
+    my $indexer = $self->$orig;
+    unless ( $indexer ) {
+        $indexer = KinoSearch::Index::Indexer->new(
+            index => $self->path_to_index,
+            schema => $index_schema,
+            create => 1,
+        );
+        $self->$orig( $indexer );
+    }
+
+    return $indexer;
+};
 
 sub _add_rs_to_indexer {
     my ( $object_rs, $indexer ) = @_;
@@ -235,7 +335,7 @@ sub _remove_rs_from_indexer {
     $object_rs->reset;
 
     while ( my $object = $object_rs->next ) {
-        _remove_from_indexer( $object );
+        _remove_from_indexer( $object, $indexer );
     }
 }
 
