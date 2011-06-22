@@ -15,6 +15,7 @@ requires 'Catalyst::Plugin::Scheduler';
 requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Model::Adaptor';
+requires 'Catalyst::Model::DBIC::Schema' => '0.50';
 requires 'Moose';
 requires 'Class::Method::Modifiers';
 requires 'Text::CSV';
