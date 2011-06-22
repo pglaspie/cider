@@ -25,9 +25,7 @@ Catalyst Controller.
 sub object :Chained('/') :CaptureArgs(1) {
     my ( $self, $c, $object_id ) = @_;
 
-    my $object = $c->model( 'CIDERDB' )
-        ->resultset( 'Object' )
-            ->find( $object_id );
+    my $object = $c->model( 'CIDERDB::Object' )->find( $object_id );
 
     $c->stash->{ object } = $object;
 
@@ -47,6 +45,10 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
     my ( $self, $c ) = @_;
 
     my $object = $c->stash->{ object };
+    unless ( defined( $object ) ) {
+        $c->detach( $c->controller( 'Root' )->action_for( 'default' ) );
+    }
+
     my $form = $self->form;
     my $type = $object->cider_type;
     $form->load_config_filestem( "object/$type" );
