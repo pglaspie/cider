@@ -27,6 +27,7 @@ sub import_from_csv {
 
     # All rows are inserted at once, or none at all if there are errors.
     $schema->txn_begin;
+    $schema->indexer->txn_begin;
 
     my $row_number = 0;
     while ( my $row = $csv->getline_hr( $handle ) ) {
@@ -49,12 +50,14 @@ sub import_from_csv {
         if ( $@ ) {
 
             $schema->txn_rollback;
+            $schema->indexer->txn_rollback;
 
             croak "CSV import failed at data row $row_number:\n$@\n";
         }
     }
 
     $schema->txn_commit;
+    $schema->indexer->txn_commit;
 
     return $row_number;
 }

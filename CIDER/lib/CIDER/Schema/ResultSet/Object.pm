@@ -21,5 +21,25 @@ sub root_objects {
     }
 }
 
+sub update {
+    my $self = shift;
+
+    my $ret = $self->next::method( @_ );
+
+    $self->result_source->schema->indexer->update_rs( $self );
+
+    return $ret;
+}
+
+sub delete {
+    my $self = shift;
+
+    my $ret = $self->next::method( @_ );
+
+    $self->result_source->schema->indexer->remove_rs( $self );
+
+    return $ret;
+}
+
 1;
 

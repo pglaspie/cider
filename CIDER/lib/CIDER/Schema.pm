@@ -26,15 +26,22 @@ __PACKAGE__->mk_classdata( 'user' );
 
 __PACKAGE__->mk_group_accessors( simple => qw(
     search_index
+    _indexer
 ) );
 
 sub indexer {
     my $self = shift;
 
-    return CIDER::Logic::Indexer->new(
-        schema => $self,
-        path_to_index => $self->search_index,
-    );
+    my $indexer = $self->_indexer;
+    unless ( $indexer ) {
+        $indexer = CIDER::Logic::Indexer->new(
+            schema => $self,
+            path_to_index => $self->search_index,
+        );
+        $self->_indexer( $indexer );
+    }
+
+    return $indexer;
 }
 
 1;
