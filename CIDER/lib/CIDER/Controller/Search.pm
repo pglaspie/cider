@@ -17,7 +17,7 @@ Catalyst Controller.
 =cut
 
 
-=head2 index
+=head2 search
 
 =cut
 
@@ -67,6 +67,20 @@ sub search :Path :Args(0) :FormConfig {
         $c->stash->{ query } = $query_str;
         $c->stash->{ template } = 'search/results.tt';
     }
+}
+
+=head2 make_index
+
+Private action to (re)make the search index from scratch, optimized.
+It's run automatically by L<Catalyst::Plugin::Scheduler>.  See
+C<$APP_HOME/scheduler.yml>.
+
+=cut
+
+sub make_index :Private {
+    my ( $self, $c ) = @_;
+
+    $c->model( 'CIDERDB' )->schema->indexer->make_index;
 }
 
 =head1 AUTHOR

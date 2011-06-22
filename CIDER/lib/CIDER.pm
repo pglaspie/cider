@@ -21,6 +21,8 @@ use Catalyst qw/
     Session
     Session::Store::File
     Session::State::Cookie
+
+    Scheduler
 /;
 
 extends 'Catalyst';
