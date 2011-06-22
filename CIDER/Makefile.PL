@@ -11,6 +11,7 @@ all_from 'lib/CIDER.pm';
 
 requires 'Catalyst::Runtime' => '5.80029';
 requires 'Catalyst::Plugin::ConfigLoader';
+requires 'Catalyst::Plugin::Scheduler';
 requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Model::Adaptor';
