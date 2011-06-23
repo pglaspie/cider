@@ -60,6 +60,11 @@ test_import( {
     title => 'New sub-item',
     number => 99,
     type => 1,
+}, {
+    parent => 4,
+    title => 'New sub-item',
+    number => 99,
+    type => 1,
 } );
 
 @collections = $schema->resultset('Object')->root_objects;
@@ -77,12 +82,13 @@ is ( $collections[0]->title, 'Brand-new collection',
      "After import, the new collection has the expected name.");
 
 my $item = $schema->resultset( 'Object' )->find( 4 );
-is( $item->number_of_children, 1,
-    'After import, ' . $item->title . ' has 1 child.' );
-my $subitem = ( $item->children )[0];
-is( $subitem->title, 'New sub-item', 'Title is correct.' );
-is( $subitem->number, 99, 'Number is correct.' );
-is( $subitem->type->name, 'Test Type', 'Type is correct.' );
+is( $item->number_of_children, 2,
+    'After import, ' . $item->title . ' has 2 children.' );
+for my $subitem ( $item->children ) {
+    is( $subitem->title, 'New sub-item', 'Title is correct.' );
+    is( $subitem->number, 99, 'Number is correct.' );
+    is( $subitem->type->name, 'Test Type', 'Type is correct.' );
+}
 
 dies_ok {
     test_import( { number => 88 } );

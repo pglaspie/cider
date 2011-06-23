@@ -33,9 +33,13 @@ sub import_from_csv {
     while ( my $row = $csv->getline_hr( $handle ) ) {
         $row_number++;
 
-        # If the 'id' field has no value, remove it completely, so that the
-        # DB can properly assign a fresh one.
-        unless ( $row->{ id } ) {
+        my $object;
+        if ( $row->{ id } ) {
+            $object = $object_rs->find( $row->{ id } );
+        }
+        else {
+            # If the 'id' field has no value, remove it completely, so
+            # that the DB can properly assign a fresh one.
             delete $row->{ id };
         }
 
@@ -45,8 +49,14 @@ sub import_from_csv {
         # Do we need cider_type, or can we always deduce it?
 
         # Perform the actual update-or-insertion.
-        my $object;
-        eval { $object = $object_rs->update_or_create( $row ); };
+        eval {
+            if ( $object ) {
+                $object->update( $row );
+            }
+            else {
+                $object = $object_rs->create( $row );
+            }
+        };
         if ( $@ ) {
 
             $schema->txn_rollback;
