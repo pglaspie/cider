@@ -37,6 +37,7 @@ $mech->content_contains( 'Esperanto', 'Language list is populated.' );
 $mech->submit_form_ok( { with_fields => {
     title => 'New test collection',
     number => '69105',
+    processing_status => 1,
     has_physical_documentation => 1,
 } }, 'Submitted creation form' );
 
@@ -88,6 +89,7 @@ $mech->submit_form_ok( { with_fields => {
     date_from => '0968',
     date_to => '1016-04-23',
     accession_date => '2011-06',
+    type => 1,
     stabilization_date => '9999',
 } }, 'Created a sub-item with partial dates' );
 

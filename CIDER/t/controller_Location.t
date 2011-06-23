@@ -77,7 +77,7 @@ $mech->submit_form_ok( { with_fields => {
     title => 'New Test Item',
     number => '99',
     date_from => '2000-01-01',
-    date_to => '2010-01-01',
+    type => 1,
     location => '2345',
 } }, 'Create an item with a new location barcode.' );
 is( $mech->uri->path, '/location/2345/create',
