@@ -38,9 +38,23 @@ DROP TABLE IF EXISTS `item_format`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `item_format` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` char(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `item_restrictions`
+--
+
+DROP TABLE IF EXISTS `item_restrictions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `item_restrictions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -52,9 +66,9 @@ DROP TABLE IF EXISTS `item_type`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `item_type` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` char(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -157,7 +171,7 @@ CREATE TABLE `log` (
   KEY `object` (`object`),
   CONSTRAINT `log_ibfk_2` FOREIGN KEY (`object`) REFERENCES `object` (`id`) ON DELETE CASCADE,
   CONSTRAINT `log_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=174 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=223 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -220,6 +234,7 @@ CREATE TABLE `object` (
   `pid` varchar(255) DEFAULT NULL,
   `publication_status` varchar(16) DEFAULT NULL,
   `arrangement` varchar(255) DEFAULT NULL,
+  `restrictions` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `parent` (`parent`),
   KEY `personal_name` (`personal_name`),
@@ -231,6 +246,8 @@ CREATE TABLE `object` (
   KEY `processing_status` (`processing_status`),
   KEY `record_creator` (`record_context`),
   KEY `location` (`location`),
+  KEY `restrictions` (`restrictions`),
+  CONSTRAINT `object_ibfk_14` FOREIGN KEY (`restrictions`) REFERENCES `item_restrictions` (`id`),
   CONSTRAINT `object_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `object` (`id`),
   CONSTRAINT `object_ibfk_11` FOREIGN KEY (`processing_status`) REFERENCES `processing_status` (`id`),
   CONSTRAINT `object_ibfk_12` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`),
@@ -242,7 +259,7 @@ CREATE TABLE `object` (
   CONSTRAINT `object_ibfk_6` FOREIGN KEY (`processing_status`) REFERENCES `processing_status` (`id`),
   CONSTRAINT `object_ibfk_8` FOREIGN KEY (`type`) REFERENCES `item_type` (`id`),
   CONSTRAINT `object_ibfk_9` FOREIGN KEY (`format`) REFERENCES `item_format` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -288,9 +305,9 @@ DROP TABLE IF EXISTS `processing_status`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `processing_status` (
   `id` tinyint(4) NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL,
+  `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -322,37 +339,6 @@ CREATE TABLE `related_collection` (
   PRIMARY KEY (`id`),
   KEY `object` (`object`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `restriction`
---
-
-DROP TABLE IF EXISTS `restriction`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `restriction` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` char(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `restriction_object`
---
-
-DROP TABLE IF EXISTS `restriction_object`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `restriction_object` (
-  `restriction` int(11) NOT NULL DEFAULT '0',
-  `object` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`restriction`,`object`),
-  KEY `object` (`object`),
-  CONSTRAINT `restriction_object_ibfk_1` FOREIGN KEY (`restriction`) REFERENCES `restriction` (`id`),
-  CONSTRAINT `restriction_object_ibfk_2` FOREIGN KEY (`object`) REFERENCES `object` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -407,4 +393,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-06-06 20:32:13
+-- Dump completed on 2011-06-23 19:20:50

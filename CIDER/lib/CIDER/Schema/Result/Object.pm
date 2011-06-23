@@ -316,6 +316,11 @@ __PACKAGE__->table("object");
   is_nullable: 1
   size: 255
 
+=head2 restrictions
+  data_type: 'integer'
+  is_foreign_key: 1
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -423,6 +428,8 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", is_nullable => 1, size => 16 },
   "arrangement",
   { data_type => "varchar", is_nullable => 1, size => 255 },
+  "restrictions",
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
 );
 __PACKAGE__->set_primary_key("id");
 
@@ -653,21 +660,6 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-=head2 restriction_objects
-
-Type: has_many
-
-Related object: L<CIDER::Schema::Result::RestrictionObject>
-
-=cut
-
-__PACKAGE__->has_many(
-  "restriction_objects",
-  "CIDER::Schema::Result::RestrictionObject",
-  { "foreign.object" => "self.id" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
 __PACKAGE__->many_to_many('sets' => 'object_set_objects', 'object_set');
 
 =head2 logs
@@ -740,6 +732,30 @@ Related object: L<CIDER::Schema::Result::Location>
 
 __PACKAGE__->belongs_to(
     location => "CIDER::Schema::Result::Location",
+    # The next line should not be necessary, but omitting it leads to
+    # any relations defined afterward (e.g. restrictions) being
+    # ignored!!  TO DO: track this down? bug in DBIx?
+    { barcode => 'location' },
+);
+
+=head2 restrictions
+
+Type: belongs_to
+
+Related object: L<CIDER::Schema::Result::ItemRestrictions>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "restrictions",
+  "CIDER::Schema::Result::ItemRestrictions",
+  { id => "restrictions" },
+  {
+    is_deferrable => 1,
+    join_type     => "LEFT",
+    on_delete     => "CASCADE",
+    on_update     => "CASCADE",
+  },
 );
 
 

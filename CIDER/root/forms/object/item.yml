@@ -51,7 +51,14 @@ elements:
             id: date_to
             constraint: *Date
               
-# Restrictions
+    - type: Select
+      label: Restrictions
+      name: restrictions
+      empty_first: 1
+      model_config:
+        resultset: ItemRestrictions
+        attributes:
+          order_by: id
 
     - type: Fieldset
       legend: Accession
@@ -80,18 +87,21 @@ elements:
     - type: Select
       label: Type
       name: type
-      options:
-        - [ 1, 'Type One' ]
-        - [ 2, 'Type Two' ]
-        - [ 3, 'Type Three' ]
+      constraint: Required
+      empty_first: 1
+      model_config:
+        resultset: ItemType
+        attributes:
+          order_by: name
 
     - type: Select
       label: Format
       name: format
-      options:
-        - [ 1, 'Format One' ]
-        - [ 2, 'Format Two' ]
-        - [ 3, 'Format Three' ]
+      empty_first: 1
+      model_config:
+        resultset: ItemFormat
+        attributes:
+          order_by: name
 
     - type: Select
       label: Personal Name

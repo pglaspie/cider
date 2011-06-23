@@ -94,6 +94,7 @@ elements:
       label: Processing Status
       name: processing_status
       id: processing_status
+      constraint: Required
       empty_first: 1
       model_config:
         resultset: ProcessingStatus
