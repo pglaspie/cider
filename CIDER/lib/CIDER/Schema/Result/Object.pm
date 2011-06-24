@@ -786,6 +786,19 @@ __PACKAGE__->belongs_to(
   },
 );
 
+=head2 relationships
+
+Type: has_many
+
+Related object: L<CIDER::Schema::Result::CollectionRelationship>
+
+=cut
+
+__PACKAGE__->has_many(
+    relationships => 'CIDER::Schema::Result::CollectionRelationship',
+    'collection',
+);
+
 
 sub inflate_result {
     my $self = shift;

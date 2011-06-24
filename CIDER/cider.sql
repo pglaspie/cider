@@ -24,9 +24,45 @@ DROP TABLE IF EXISTS `authority_name`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `authority_name` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `value` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `note` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9720 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `collection_relationship`
+--
+
+DROP TABLE IF EXISTS `collection_relationship`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `collection_relationship` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `collection` int(11) NOT NULL,
+  `predicate` int(11) NOT NULL,
+  `pid` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `collection` (`collection`),
+  KEY `predicate` (`predicate`),
+  CONSTRAINT `collection_relationship_ibfk_2` FOREIGN KEY (`predicate`) REFERENCES `relationship_predicate` (`id`),
+  CONSTRAINT `collection_relationship_ibfk_1` FOREIGN KEY (`collection`) REFERENCES `object` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `geographic_term`
+--
+
+DROP TABLE IF EXISTS `geographic_term`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `geographic_term` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `note` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1780 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -171,7 +207,7 @@ CREATE TABLE `log` (
   KEY `object` (`object`),
   CONSTRAINT `log_ibfk_2` FOREIGN KEY (`object`) REFERENCES `object` (`id`) ON DELETE CASCADE,
   CONSTRAINT `log_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=223 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=251 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -235,6 +271,7 @@ CREATE TABLE `object` (
   `publication_status` varchar(16) DEFAULT NULL,
   `arrangement` varchar(255) DEFAULT NULL,
   `restrictions` int(11) DEFAULT NULL,
+  `creator` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `parent` (`parent`),
   KEY `personal_name` (`personal_name`),
@@ -247,19 +284,21 @@ CREATE TABLE `object` (
   KEY `record_creator` (`record_context`),
   KEY `location` (`location`),
   KEY `restrictions` (`restrictions`),
-  CONSTRAINT `object_ibfk_14` FOREIGN KEY (`restrictions`) REFERENCES `item_restrictions` (`id`),
+  KEY `creator` (`creator`),
+  CONSTRAINT `object_ibfk_5` FOREIGN KEY (`geographic_term`) REFERENCES `geographic_term` (`id`),
   CONSTRAINT `object_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `object` (`id`),
   CONSTRAINT `object_ibfk_11` FOREIGN KEY (`processing_status`) REFERENCES `processing_status` (`id`),
   CONSTRAINT `object_ibfk_12` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`),
   CONSTRAINT `object_ibfk_13` FOREIGN KEY (`location`) REFERENCES `location` (`barcode`),
+  CONSTRAINT `object_ibfk_14` FOREIGN KEY (`restrictions`) REFERENCES `item_restrictions` (`id`),
+  CONSTRAINT `object_ibfk_15` FOREIGN KEY (`creator`) REFERENCES `authority_name` (`id`),
   CONSTRAINT `object_ibfk_2` FOREIGN KEY (`personal_name`) REFERENCES `authority_name` (`id`),
   CONSTRAINT `object_ibfk_3` FOREIGN KEY (`corporate_name`) REFERENCES `authority_name` (`id`),
-  CONSTRAINT `object_ibfk_4` FOREIGN KEY (`topic_term`) REFERENCES `authority_name` (`id`),
-  CONSTRAINT `object_ibfk_5` FOREIGN KEY (`geographic_term`) REFERENCES `authority_name` (`id`),
+  CONSTRAINT `object_ibfk_4` FOREIGN KEY (`topic_term`) REFERENCES `topic_term` (`id`),
   CONSTRAINT `object_ibfk_6` FOREIGN KEY (`processing_status`) REFERENCES `processing_status` (`id`),
   CONSTRAINT `object_ibfk_8` FOREIGN KEY (`type`) REFERENCES `item_type` (`id`),
   CONSTRAINT `object_ibfk_9` FOREIGN KEY (`format`) REFERENCES `item_format` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -342,6 +381,21 @@ CREATE TABLE `related_collection` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `relationship_predicate`
+--
+
+DROP TABLE IF EXISTS `relationship_predicate`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `relationship_predicate` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `predicate` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `predicate` (`predicate`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `roles`
 --
 
@@ -353,6 +407,21 @@ CREATE TABLE `roles` (
   `role` text,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `topic_term`
+--
+
+DROP TABLE IF EXISTS `topic_term`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `topic_term` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `note` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2163 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -393,4 +462,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-06-23 19:20:50
+-- Dump completed on 2011-06-24 19:48:14

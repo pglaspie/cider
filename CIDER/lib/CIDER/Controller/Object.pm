@@ -67,6 +67,10 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
     elsif ( $form->submitted_and_valid ) {
         $c->forward( '_ensure_location', [ 'update' ] );
         $form->model->update( $object );
+
+        $c->response->redirect(
+            $c->uri_for( $self->action_for( 'detail' ), [$object->id] )
+        );
     }
 }
 

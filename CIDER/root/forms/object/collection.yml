@@ -142,7 +142,40 @@ elements:
         - [ exported, exported ]
         - [ re-export, re-export ]
 
-# Relationships (repeatable)
+    - type: Fieldset
+      legend: Relationships
+      elements:
+        - type: Hidden
+          name: relationship_count
+
+        - type: Repeatable
+          nested_name: relationships
+          counter_name: relationship_count
+          model_config:
+            empty_rows: 1
+          elements:
+            - type: Hidden
+              name: id
+
+            - type: Select
+              label: Predicate
+              name: predicate
+              constraint:
+                - type: DependOn
+                  others: pid
+              empty_first: 1
+              model_config:
+                delete_if_empty: 1
+                resultset: RelationshipPredicate
+                attributes:
+                  order_by: id
+
+            - type: Text
+              label: PID
+              name: pid
+              constraint:
+                - type: DependOn
+                  others: predicate
 
     - type: Hidden
       name: parent
