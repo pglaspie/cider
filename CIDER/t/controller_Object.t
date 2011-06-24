@@ -44,7 +44,7 @@ $mech->submit_form_ok( { with_fields => {
 $mech->content_contains( 'You have successfully created' );
 
 my $rs = $schema->resultset( 'Collection' )->search( { number => '69105' } );
-is( $rs->first->creator->username, 'alice', 'Creator is alice.' );
+is( $rs->first->created_by->username, 'alice', 'Created by alice.' );
 
 $mech->submit_form_ok( { with_fields => {
     number => '42',

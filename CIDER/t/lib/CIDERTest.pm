@@ -85,8 +85,8 @@ sub init_schema {
     $schema->populate(
         'AuthorityName',
         [
-            [qw/id value/],
-            [1, 'Test Status'],
+            [qw/id name/],
+            [1, 'Test Name'],
         ]
     );
 
