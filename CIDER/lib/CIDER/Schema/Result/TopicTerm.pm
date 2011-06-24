@@ -1,4 +1,4 @@
-package CIDER::Schema::Result::AuthorityName;
+package CIDER::Schema::Result::TopicTerm;
 
 use strict;
 use warnings;
@@ -7,11 +7,11 @@ use base 'DBIx::Class::Core';
 
 =head1 NAME
 
-CIDER::Schema::Result::AuthorityName
+CIDER::Schema::Result::TopicTerm
 
 =cut
 
-__PACKAGE__->table("authority_name");
+__PACKAGE__->table("topic_term");
 
 =head1 ACCESSORS
 
@@ -46,7 +46,7 @@ __PACKAGE__->set_primary_key("id");
 
 =head1 RELATIONS
 
-=head2 object_personal_names
+=head2 objects
 
 Type: has_many
 
@@ -55,39 +55,9 @@ Related object: L<CIDER::Schema::Result::Object>
 =cut
 
 __PACKAGE__->has_many(
-  "object_personal_names",
+  "objects",
   "CIDER::Schema::Result::Object",
-  { "foreign.personal_name" => "self.id" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
-=head2 object_corporate_names
-
-Type: has_many
-
-Related object: L<CIDER::Schema::Result::Object>
-
-=cut
-
-__PACKAGE__->has_many(
-  "object_corporate_names",
-  "CIDER::Schema::Result::Object",
-  { "foreign.corporate_name" => "self.id" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
-=head2 object_creator
-
-Type: has_many
-
-Related object: L<CIDER::Schema::Result::Object>
-
-=cut
-
-__PACKAGE__->has_many(
-  "object_creators",
-  "CIDER::Schema::Result::Object",
-  { "foreign.creator" => "self.id" },
+  { "foreign.topic_term" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
 

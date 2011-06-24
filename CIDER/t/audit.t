@@ -19,7 +19,7 @@ my $schema = CIDERTest->init_schema;
 use Test::More qw(no_plan);
 
 my $obj = $schema->resultset( 'Object' )->find( 1 );
-is( $obj->creator->id, 1,
+is( $obj->created_by->id, 1,
     'Object 1 created by user 1.' );
 is( $obj->date_created, DateTime->new( year => 2011, month => 1, day => 1 ),
     'Object 1 created on 2011-01-01.' );
@@ -36,7 +36,7 @@ $obj = $schema->resultset( 'Object' )->create( {
 
 ok( $obj, 'Created test item 3.' );
 
-is( $obj->creator->id, 1, 'Created by user 1.' );
+is( $obj->created_by->id, 1, 'Created by user 1.' );
 
 use DateTime;
 is( $obj->date_created, DateTime->today, 'Creation date is today.' );

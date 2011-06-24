@@ -321,6 +321,12 @@ __PACKAGE__->table("object");
   is_foreign_key: 1
   is_nullable: 1
 
+=head2 creator
+
+  data_type: 'integer'
+  is_foreign_key: 1
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -430,6 +436,8 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", is_nullable => 1, size => 255 },
   "restrictions",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
+  "creator",
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
 );
 __PACKAGE__->set_primary_key("id");
 
@@ -514,13 +522,13 @@ __PACKAGE__->belongs_to(
 
 Type: belongs_to
 
-Related object: L<CIDER::Schema::Result::AuthorityName>
+Related object: L<CIDER::Schema::Result::TopicTerm>
 
 =cut
 
 __PACKAGE__->belongs_to(
   "topic_term",
-  "CIDER::Schema::Result::AuthorityName",
+  "CIDER::Schema::Result::TopicTerm",
   { id => "topic_term" },
   {
     is_deferrable => 1,
@@ -534,13 +542,13 @@ __PACKAGE__->belongs_to(
 
 Type: belongs_to
 
-Related object: L<CIDER::Schema::Result::AuthorityName>
+Related object: L<CIDER::Schema::Result::GeographicTerm>
 
 =cut
 
 __PACKAGE__->belongs_to(
   "geographic_term",
-  "CIDER::Schema::Result::AuthorityName",
+  "CIDER::Schema::Result::GeographicTerm",
   { id => "geographic_term" },
   {
     is_deferrable => 1,
@@ -688,7 +696,7 @@ __PACKAGE__->has_one(
     'object',
     { where => { action => 'create' },
       proxy => {
-          creator => 'user',
+          created_by => 'user',
           date_created => 'date',
       },
     },
@@ -750,6 +758,26 @@ __PACKAGE__->belongs_to(
   "restrictions",
   "CIDER::Schema::Result::ItemRestrictions",
   { id => "restrictions" },
+  {
+    is_deferrable => 1,
+    join_type     => "LEFT",
+    on_delete     => "CASCADE",
+    on_update     => "CASCADE",
+  },
+);
+
+=head2 creator
+
+Type: belongs_to
+
+Related object: L<CIDER::Schema::Result::AuthorityName>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "creator",
+  "CIDER::Schema::Result::AuthorityName",
+  { id => "creator" },
   {
     is_deferrable => 1,
     join_type     => "LEFT",
@@ -865,7 +893,7 @@ sub insert {
 
     my $user = $self->result_source->schema->user;
 
-    $self->creator( $user ) if defined( $user );
+    $self->created_by( $user ) if defined( $user );
 
     $self->result_source->schema->indexer->add( $self );
 

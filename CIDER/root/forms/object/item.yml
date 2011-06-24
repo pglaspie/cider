@@ -25,7 +25,14 @@ elements:
       constraints:
         - type: Required
 
-# Creator
+    - type: Select
+      label: Creator
+      name: creator
+      empty_first: 1
+      model_config:
+        resultset: AuthorityName
+        attributes:
+          order_by: name
 
     - type: Fieldset
       legend: Date
@@ -111,7 +118,7 @@ elements:
       model_config:
         resultset: AuthorityName
         attributes:
-          order_by: value
+          order_by: name
 
     - type: Select
       label: Corporate Name
@@ -121,7 +128,7 @@ elements:
       model_config:
         resultset: AuthorityName
         attributes:
-          order_by: value
+          order_by: name
 
     - type: Select
       label: Topic Term
@@ -129,9 +136,9 @@ elements:
       id: topic_term
       empty_first: 1
       model_config:
-        resultset: AuthorityName
+        resultset: TopicTerm
         attributes:
-          order_by: value
+          order_by: name
 
     - type: Select
       label: Geographic Term
@@ -139,9 +146,9 @@ elements:
       id: geographic_term
       empty_first: 1
       model_config:
-        resultset: AuthorityName
+        resultset: GeographicTerm
         attributes:
-          order_by: value
+          order_by: name
 
     - type: Textarea
       label: Notes
