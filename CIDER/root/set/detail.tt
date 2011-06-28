@@ -29,3 +29,20 @@
 <h2>Delete this set</h2>
 <p>To permanently remove this set from your list, click the button below. (Deleteing a set does not otherwise affect the objects it contains.)</p>
 <p>[% INCLUDE set/delete_set_button.tt %]</p>
+
+<h3>Export</h3>
+
+<form action="[% c.uri_for_action( c.controller('Set').action_for('export'), [set.id] ) %]">
+Export
+<select name="descendants">
+<option value="0" selected>this set</option>
+<option value="1">this set and all its objects' descendants</option>
+</select>
+in
+<select name="format">
+<option value="csv">CSV</option>
+<option value="xml">XML</option>
+</select>
+format.
+<input type="submit" value="Go" />
+</form>

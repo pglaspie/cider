@@ -29,7 +29,7 @@
 [% form %]
 
 <h3>Delete this object</h3>
-<p>To permamently delete this object, click the button below.</p>
+<p>To permanently delete this object, click the button below.</p>
 <p>[% INCLUDE object/delete_object_button.tt %]</p>
 
 <h3>Children</h3>
@@ -94,4 +94,21 @@ Add object to:
 <option value="NEW">New set...</option> 
 </select>
 <input type="submit" name="Submit" value="Add" />
+</form>
+
+<h3>Export</h3>
+
+<form action="[% c.uri_for_action( c.controller('Object').action_for('export'), [object.id] ) %]">
+Export
+<select name="descendants">
+<option value="0">this object</option>
+<option value="1">this object and all its descendants</option>
+</select>
+in
+<select name="format">
+<option value="csv">CSV</option>
+<option value="xml">XML</option>
+</select>
+format.
+<input type="submit" value="Go" />
 </form>

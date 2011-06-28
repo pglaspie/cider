@@ -870,6 +870,12 @@ sub has_ancestor {
     return 0;
 }
 
+sub descendants {
+    my $self = shift;
+
+    return $self, map { $_->descendants } $self->children;
+}
+
 # Override the DBIC delete() method to work recursively on our kids,
 # as well as object-set relations.
 sub delete {
@@ -881,7 +887,7 @@ sub delete {
     for my $link ( $self->object_set_objects ) {
         $link->delete;
     }
-    
+
     $self->next::method( @_ );
 
     $self->result_source->schema->indexer->remove( $self );
