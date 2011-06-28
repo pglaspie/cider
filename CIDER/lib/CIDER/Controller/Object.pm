@@ -259,6 +259,36 @@ sub _build_language_field {
     }
 }
 
+sub export :Chained( 'object' ) :Args( 0 ) {
+    my ( $self, $c ) = @_;
+
+    $c->stash->{ objects } = [ $c->stash->{ object } ];
+
+    $c->forward( $self->action_for( '_export' ) );
+}
+
+sub _export :Private {
+    my ( $self, $c ) = @_;
+
+    my $format = $c->req->params->{ format };
+    unless ( grep { $_ eq $format } 'csv', 'xml' ) {
+        $c->detach( $c->controller( 'Root' )->action_for( 'default' ) );
+    }
+    $c->stash->{ template } = "object/export.$format";
+
+    my $objects = $c->stash->{ objects };
+
+    if ( $c->req->params->{ descendants } ) {
+        $objects = [ map { $_->descendants } @$objects ];
+        $c->stash->{ objects } = $objects;
+    }
+
+    # Update the audit trails.
+    $_->export for @$objects;
+
+    $c->stash->{ current_view } = 'NoWrapperTT';
+}
+
 
 =head1 AUTHOR
 
