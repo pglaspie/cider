@@ -82,3 +82,15 @@ for my $item ( $homog_set->objects ) {
            "Item's title successfully changed."
        );
 }
+
+my $id = $homog_set->id;
+my @items = $homog_set->objects;
+ok( $homog_set->delete, 'Deleted the homogenous set.' );
+is( scalar $user->sets, 1, 'User has one set.');
+for my $item ( @items ) {
+    ok( $item->in_storage, 'Item ' . $item->id . ' still exists.' );
+}
+my $rs = $schema->resultset( 'ObjectSetObject' )->search( {
+    object_set => $id
+} );
+is( $rs->count, 0, 'Relations were deleted.' );
