@@ -89,6 +89,16 @@ __PACKAGE__->has_many(
 
 __PACKAGE__->many_to_many('objects' => 'object_set_objects', 'object');
 
+sub delete {
+    my $self = shift;
+
+    for my $link ( $self->object_set_objects ) {
+        $link->delete;
+    }
+
+    return $self->next::method( @_ );
+}
+
 sub add {
     my $self = shift;
     my ( $object_to_add ) = @_;
