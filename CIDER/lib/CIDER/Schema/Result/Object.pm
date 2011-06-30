@@ -7,6 +7,7 @@ use base 'DBIx::Class::Core';
 use Class::Method::Modifiers qw(around);
 use List::Util qw(min max);
 use Locale::Language;
+use CIDER::Logic::Utils qw( iso_8601_date );
 
 =head1 NAME
 
@@ -1043,7 +1044,10 @@ sub store_column {
     # Convert all empty strings to nulls.
     $value = undef if defined( $value ) && !length( $value );
 
-    # TO DO: validate field type, e.g. date type is ISO-8601
+    if ( $column =~ /date/ ) {
+        $self->throw_exception( "$column must be ISO-8601 format" )
+            unless iso_8601_date( $value );
+    }
 
     return $self->next::method( $column, $value );
 }

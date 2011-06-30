@@ -127,9 +127,18 @@ dies_ok {
     test_import( { title => 'New undated item', number => 123, type => 1 } )
 } "Item start date can't be missing on create.";
 
-# dies_ok {
-#     test_import( { id => 1, date_from => '1-1-2001' } )
-# } 'Date format must be ISO-8601.';
+dies_ok {
+    test_import( { number => 55, title => 'foo', type => 1,
+                   date_from => '1-1-2001' } )
+} 'Start date format must be ISO-8601 on create.';
+
+dies_ok {
+    test_import( { id => 1, date_from => '1-1-2001' } )
+} 'Start date format must be ISO-8601 on update.';
+
+dies_ok {
+    test_import( { id => 4, file_creation_date => '2001-1-32' } )
+} 'File creation date format must be ISO-8601.';
 
 # dies_ok {
 #     test_import( { id => 1, permanent_url => 'invalid:uri' } )

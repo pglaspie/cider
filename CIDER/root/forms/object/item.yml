@@ -49,7 +49,7 @@ elements:
               - type: Required
               - &Date
                 type: Callback
-                callback: 'CIDER::iso_8601_date'
+                callback: 'CIDER::Logic::Utils::iso_8601_date'
                 message: ISO 8601 date must be YYYY, YYYY-MM, or YYYY-MM-DD
 
           - type: Text
