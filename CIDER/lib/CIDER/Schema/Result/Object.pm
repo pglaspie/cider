@@ -7,6 +7,7 @@ use base 'DBIx::Class::Core';
 use Class::Method::Modifiers qw(around);
 use List::Util qw(min max);
 use Locale::Language;
+use Regexp::Common qw( URI );
 use CIDER::Logic::Utils qw( iso_8601_date );
 
 =head1 NAME
@@ -1042,11 +1043,18 @@ sub store_column {
     my ( $column, $value ) = @_;
 
     # Convert all empty strings to nulls.
-    $value = undef if defined( $value ) && !length( $value );
+    $value = undef if defined( $value ) && $value eq '';
 
-    if ( $column =~ /date/ ) {
-        $self->throw_exception( "$column must be ISO-8601 format" )
-            unless iso_8601_date( $value );
+    if ( defined( $value ) ) {
+        # TO DO: need better way of determining these column types...
+        if ( $column =~ /date/ ) {
+            $self->throw_exception( "$column must be ISO-8601 format" )
+                unless iso_8601_date( $value );
+        }
+        elsif ( $column =~ /url/ ) {
+            $self->throw_exception( "$column must be HTTP or HTTPS URI" )
+                unless $RE{URI}{HTTP}{ -scheme => 'https?' }->matches( $value );
+        }
     }
 
     return $self->next::method( $column, $value );
