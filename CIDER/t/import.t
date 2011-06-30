@@ -140,9 +140,17 @@ dies_ok {
     test_import( { id => 4, file_creation_date => '2001-1-32' } )
 } 'File creation date format must be ISO-8601.';
 
-# dies_ok {
-#     test_import( { id => 1, permanent_url => 'invalid:uri' } )
-# } 'Permanent URL must be an http or https URI.';
+dies_ok {
+    test_import( { id => 1, permanent_url => 'invalid:uri' } )
+} 'Permanent URL must be an http or https URI.';
+
+lives_ok {
+    test_import( { id => 1, permanent_url => 'https://example.com' } )
+} 'HTTPS permanent URL is ok.';
+
+lives_ok {
+    test_import( { id => 1, permanent_url => '' } )
+} 'Permanent URL can be unset.';
 
 # TO DO:
 # These should all be errors:
