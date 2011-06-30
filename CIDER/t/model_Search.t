@@ -30,6 +30,7 @@ is( $hits->next->{title}, 'Test Item 2', 'Found Test Item 2.' );
 my $item = $schema->resultset( 'Object' )->create( {
     number => 3,
     title => 'Test Item 3',
+    date_from => '2000',
     type => 1,
 } );
 ok( $item, 'Created Item 3.' );
@@ -69,8 +70,10 @@ my $importer = CIDER->model( 'Import' )->importer;
 my $csv = Text::CSV::Slurp->create( input => [ {
     title => 'Imported series 1',
     number => 1,
+    description => 'foo',
 }, {
     title => 'Imported series 2',
+    description => 'foo',
     # error - no number
 } ] );
 open my $handle, '<', \$csv;
@@ -82,9 +85,11 @@ is( $hits->total_hits, 0, 'Found no Imported.' );
 $csv = Text::CSV::Slurp->create( input => [ {
     title => 'Imported series 1',
     number => 1,
+    description => 'foo',
 }, {
     title => 'Imported series 2',
     number => 2,
+    description => 'foo',
 } ] );
 open $handle, '<', \$csv;
 $importer->import_from_csv( $handle );

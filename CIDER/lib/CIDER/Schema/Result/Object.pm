@@ -52,7 +52,7 @@ __PACKAGE__->table("object");
 
   data_type: 'integer'
   is_foreign_key: 1
-  is_nullable: 0
+  is_nullable: 1
 
 =head2 history
 
@@ -805,20 +805,26 @@ sub inflate_result {
 
     my $result = $self->next::method(@_);
 
-    if ( $result->record_context ) {
+    $result->classify;
+
+    return $result;
+}
+
+sub classify {
+    my $self = shift;
+
+    if ( $self->record_context ) {
         $self->ensure_class_loaded( 'CIDER::Schema::Result::Collection' );
-        bless $result, 'CIDER::Schema::Result::Collection';
+        bless $self, 'CIDER::Schema::Result::Collection';
     }
-    elsif ( $result->type ) {
+    elsif ( $self->type ) {
         $self->ensure_class_loaded( 'CIDER::Schema::Result::Item' );
-        bless $result, 'CIDER::Schema::Result::Item';
+        bless $self, 'CIDER::Schema::Result::Item';
     }
     else {
         $self->ensure_class_loaded( 'CIDER::Schema::Result::Series' );
-        bless $result, 'CIDER::Schema::Result::Series';
+        bless $self, 'CIDER::Schema::Result::Series';
     }
-
-    return $result;
 }
 
 sub children {
@@ -908,10 +914,15 @@ sub cider_type {
 sub insert {
     my $self = shift;
 
+    # inflate_result is not called on newly-created Row objects, so we
+    # need to classify it before validation.
+    $self->classify;
+
+    $self->validate;
+
     $self->next::method( @_ );
 
     my $user = $self->result_source->schema->user;
-
     $self->created_by( $user ) if defined( $user );
 
     $self->result_source->schema->indexer->add( $self );
@@ -922,6 +933,8 @@ sub insert {
 sub update {
     my $self = shift;
 
+    $self->validate;
+
     $self->next::method( @_ );
 
     my $user = $self->result_source->schema->user;
@@ -931,6 +944,42 @@ sub update {
     $self->result_source->schema->indexer->update( $self );
 
     return $self;
+}
+
+=head2 required_fields
+
+An array of required fields for this class.
+
+=cut
+
+sub required_fields {
+    return qw( title number );
+}
+
+=head2 validate
+
+Throws an exception if any required fields are empty.
+
+=cut
+
+sub validate {
+    my $self = shift;
+
+    $self->require_field( $_ ) for $self->required_fields;
+}
+
+=head2 validate
+
+Throws an exception if the given field is empty.
+
+=cut
+
+sub require_field {
+    my $self = shift;
+    my ( $field ) = ( @_ );
+
+    $self->throw_exception( "$field is required" )
+        unless defined $self->$field;
 }
 
 sub export {
@@ -993,6 +1042,8 @@ sub store_column {
 
     # Convert all empty strings to nulls.
     $value = undef if defined( $value ) && !length( $value );
+
+    # TO DO: validate field type, e.g. date type is ISO-8601
 
     return $self->next::method( $column, $value );
 }

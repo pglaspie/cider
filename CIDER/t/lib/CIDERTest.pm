@@ -93,35 +93,32 @@ sub init_schema {
     $schema->populate(
         'Object',
         [
-            [qw/id parent number title personal_name corporate_name
-               topic_term geographic_term notes date_from date_to
-               record_context has_physical_documentation
-               type/],
-            [1, undef, 12345, 'Test Collection with kids', 1, undef,
-             undef, undef, 'Test notes.', undef, undef,
-             1, 0,
-             undef
-            ],
-            [2, undef, 12345, 'Test Collection without kids', 2, undef,
-             undef, undef, 'Test notes.', undef, undef,
-             1, 0,
-             undef
-            ],
-            [3, 1, 12345, 'Test Series 1', 1, undef,
-             undef, undef, 'Test notes.', undef, undef,
-             undef, undef,
-             undef,
-            ],
-            [4, 3, 12345, 'Test Item 1', 1 , undef,
-             undef, undef, 'Test notes.', '2000-01-01', '2008-01-01',
-             undef, undef,
-             1,
-            ],
-            [5, 3, 12345, 'Test Item 2', 1 , undef,
-             undef, undef, 'Test notes.', '2002-01-01', '2010-01-01',
-             undef, undef,
-             1,
-            ],
+            [qw/id parent number title notes
+                record_context has_physical_documentation processing_status/],
+            [1, undef, 12345, 'Test Collection with kids', 'Test notes.',
+             1, 0, 1],
+            [2, undef, 12345, 'Test Collection without kids', 'Test notes.',
+             1, 0, 1],
+        ]
+    );
+
+    $schema->populate(
+        'Object',
+        [
+            [qw/id parent number title description/],
+            [3, 1, 12345, 'Test Series 1', 'Test description.'],
+        ]
+    );
+
+    $schema->populate(
+        'Object',
+        [
+            [qw/id parent number title personal_name
+                notes date_from date_to type/],
+            [4, 3, 12345, 'Test Item 1', 1,
+             'Test notes.', '2000-01-01', '2008-01-01', 1],
+            [5, 3, 12345, 'Test Item 2', 1,
+             'Test notes.', '2002-01-01', '2010-01-01', 1],
         ]
     );
 

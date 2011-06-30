@@ -32,6 +32,7 @@ $obj = $schema->resultset( 'Object' )->create( {
     title     => 'Test Item 3',
     date_from => '2000-01-01',
     date_to   => '2010-01-01',
+    type      => 1,
 } );
 
 ok( $obj, 'Created test item 3.' );

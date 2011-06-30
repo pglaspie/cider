@@ -49,21 +49,23 @@ test_import( {
 test_import( {
     title => 'Brand-new collection',
     record_context => 1,
-    date_from => '2000-01-01',
     number    => 41,
     language  => 'eng',
-    has_physical_documentation => 1,
+    has_physical_documentation => 0,
+    processing_status => 1,
 } );
 
 test_import( {
     parent => 4,
     title => 'New sub-item',
     number => 99,
+    date_from => '2000',
     type => 1,
 }, {
     parent => 4,
     title => 'New sub-item',
     number => 99,
+    date_from => '2000',
     type => 1,
 } );
 
@@ -87,6 +89,7 @@ is( $item->number_of_children, 2,
 for my $subitem ( $item->children ) {
     is( $subitem->title, 'New sub-item', 'Title is correct.' );
     is( $subitem->number, 99, 'Number is correct.' );
+    is( $subitem->date_from, '2000', 'Start date is correct.' );
     is( $subitem->type->name, 'Test Type', 'Type is correct.' );
 }
 
@@ -103,8 +106,26 @@ is( $schema->resultset( 'Object' )->find( 1 )->number, 12345,
     'Number was not updated on failed import.' );
 
 dies_ok {
-    test_import( { title => 'New unnumbered collection' } )
-} "Number can't be missing on create.";
+    test_import( { title => 'New collection', number => 123,
+                   record_context => 1, has_physical_documentation => 1 } )
+} "Collection processing status can't be missing on create.";
+
+dies_ok {
+    test_import( { title => 'New collection', number => 123,
+                   record_context => 1, processing_status => 1 } )
+} "Collection has_physical_documentation can't be missing on create.";
+
+dies_ok {
+    test_import( { title => 'New unnumbered series', description => 'foo' } )
+} "Series number can't be missing on create.";
+
+dies_ok {
+    test_import( { title => 'New undescribed series', number => 28 } )
+} "Series description can't be missing on create.";
+
+dies_ok {
+    test_import( { title => 'New undated item', number => 123, type => 1 } )
+} "Item start date can't be missing on create.";
 
 # dies_ok {
 #     test_import( { id => 1, date_from => '1-1-2001' } )
@@ -116,9 +137,6 @@ dies_ok {
 
 # TO DO:
 # These should all be errors:
-# date_from missing
-# series: accession_number, description missing
-# collection: has_physical_documentation missing (or default to no?)
 # nonexistent record_context or other foreign key (including location)
 # hard-coded select fields out of range?
 # nonexistent parent

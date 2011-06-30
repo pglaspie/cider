@@ -1,14 +1,9 @@
 package CIDER::Schema::Result::Item;
 
-# Created by DBIx::Class::Schema::Loader
-# DO NOT MODIFY THE FIRST PART OF THIS FILE
-
 use strict;
 use warnings;
 
 use base 'CIDER::Schema::Result::Object';
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
 
 =head1 NAME
 
@@ -20,5 +15,20 @@ __PACKAGE__->table("object");
 
 __PACKAGE__->add_columns(
 );
+
+=head1 METHODS
+
+=head2 required_fields
+
+An array of required fields for this class.
+
+=cut
+
+sub required_fields {
+    my $class = shift;
+
+    return ( $class->next::method( @_ ),
+             qw( date_from type ) );
+}
 
 1;
