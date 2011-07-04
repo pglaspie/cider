@@ -8,3 +8,9 @@
 [% INCLUDE display_object.tt %]
 <hr />
 [% END %]
+
+<h3>Create a set</h3>
+
+<p>If you wish, you can create a new set based on these search results.</p>
+
+[% set_creation_form %]

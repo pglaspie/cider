@@ -41,4 +41,9 @@ $mech->submit_form_ok( { with_fields => {
 } }, 'Search for Item in title.' );
 $mech->content_like( qr(title.*Item.*returned 2 objects), 'Found 2 Items.' );
 
+# Now try to create a set
+$mech->submit_form_ok( { with_fields => { name => 'from_search' } },
+                       'Submitting the create-set-from-search form.' );
+$mech->content_like( qr(from_search</li>), 'Created a new set.' );
+
 done_testing();
