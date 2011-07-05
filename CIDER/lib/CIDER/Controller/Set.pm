@@ -34,6 +34,24 @@ sub set :Chained('/') :CaptureArgs(1) {
 sub detail :Chained('set') :PathPart('') :Args(0) {
     my ( $self, $c ) = @_;
 
+    # Store a list of export template files in the stash. These'll help
+    # build an export form.
+    my $template_directory = $c->config->{ export }->{ template_directory };
+    my @template_files;
+    my $dh;
+    opendir $dh, $template_directory;
+    if ( $dh ) {
+        while ( my $template_file = readdir $dh ) {
+            next if $template_file =~ /^\./; # Exclude dotfiles.
+            push @template_files, $template_file;
+        }
+        closedir $dh;
+    }
+    else {
+        $c->log->error( "Failed to opendir export config directory "
+                        . "'$template_directory': $!" );
+    }
+    $c->stash->{ template_files } = \@template_files;
 }
 
 sub list :Path('list') :Args(0) :FormConfig('set/create') {

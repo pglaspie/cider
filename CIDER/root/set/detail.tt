@@ -39,9 +39,10 @@ Export
 <option value="1">this set and all its objects' descendants</option>
 </select>
 in
-<select name="format">
-<option value="csv">CSV</option>
-<option value="xml">XML</option>
+<select name="template">
+[% FOREACH template_file = template_files %]
+  <option value="[% template_file %]">[% template_file %]</option>
+[% END %]
 </select>
 format.
 <input type="submit" value="Go" />
