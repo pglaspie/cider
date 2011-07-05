@@ -77,8 +77,12 @@ sub search :Path :Args(0) :FormConfig {
         $set_creation_form->action( '/search/create_set' );
      
         # Stick the last query in the flash, for the create-set action's use.
-        $c->flash->{ last_search_query } = $query;
-        
+        if ( ref $query ) {
+            $c->flash->{ last_search_query } = $query->to_string;
+        }
+        else {
+            $c->flash->{ last_search_query } = $query;
+        }
     }
 }
 
@@ -107,7 +111,16 @@ sub create_set :Path('create_set') :Args(0) :FormConfig('set/create') {
     } );
 
     # Populate the new set with the results of the last query.
-    my $query = $c->flash->{ last_search_query };
+    my $query;
+    if ( my $dumped_query = $c->flash->{ last_search_query } ) {
+        $query = $c->flash->{ last_search_query };
+    }
+    else {
+        $c->log->error('Went to create_set without a last_search_query '
+                       . ' defined. Redirecting to to the search page.');
+        $c->res->redirect( $c->uri_for( '/search' ) );
+        return;
+    }
 
     my $hits = $c->model( 'Search' )->search(
         query => $query,
