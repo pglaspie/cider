@@ -2,6 +2,7 @@ package CIDER::Controller::Object;
 use Moose;
 use namespace::autoclean;
 use Locale::Language;
+use File::Spec;
 
 BEGIN {extends 'Catalyst::Controller::HTML::FormFu'; }
 
@@ -270,11 +271,17 @@ sub export :Chained( 'object' ) :Args( 0 ) {
 sub _export :Private {
     my ( $self, $c ) = @_;
 
-    my $format = $c->req->params->{ format };
-    unless ( grep { $_ eq $format } 'csv', 'xml' ) {
+    my $template_directory = $c->config->{ export }->{ template_directory };
+    
+    my $template_file = $c->req->params->{ template };
+    $template_file = File::Spec->catfile( $template_directory,
+                                          $template_file );
+    unless ( -f $template_file && -r $template_file ) {
+        $c->log->error( "Request to load template '$template_file', but that "
+                        . "doesn't look like a template file I can read." );
         $c->detach( $c->controller( 'Root' )->action_for( 'default' ) );
     }
-    $c->stash->{ template } = "object/export.$format";
+    $c->stash->{ template } = $template_file;
 
     my $objects = $c->stash->{ objects };
 

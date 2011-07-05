@@ -12,6 +12,7 @@ __PACKAGE__->config(
     FILTERS => {
         csv => \&csv,
     },
+    ABSOLUTE => 1,
 );
 
 sub csv {
