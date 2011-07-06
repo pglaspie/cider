@@ -44,6 +44,8 @@ __PACKAGE__->add_columns(
 );
 __PACKAGE__->set_primary_key("id");
 
+use overload '""' => sub { shift->name() }, fallback => 1;
+
 =head1 RELATIONS
 
 =head2 objects
@@ -60,5 +62,29 @@ __PACKAGE__->has_many(
   { "foreign.geographic_term" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
+
+sub update {
+    my $self = shift;
+
+    $self->next::method( @_ );
+
+    for my $object ( $self->objects ) {
+        $self->result_source->schema->indexer->update( $object );
+    }
+
+    return $self;
+}
+
+sub delete {
+    my $self = shift;
+
+    $self->next::method( @_ );
+
+    for my $object ( $self->objects ) {
+        $self->result_source->schema->indexer->update( $object );
+    }
+
+    return $self;
+}
 
 1;

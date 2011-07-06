@@ -37,6 +37,8 @@ __PACKAGE__->add_columns(
 );
 __PACKAGE__->set_primary_key("id");
 
+use overload '""' => sub { shift->name() }, fallback => 1;
+
 =head1 RELATIONS
 
 =head2 objects

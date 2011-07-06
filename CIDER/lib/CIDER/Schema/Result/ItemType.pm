@@ -1,8 +1,5 @@
 package CIDER::Schema::Result::ItemType;
 
-# Created by DBIx::Class::Schema::Loader
-# DO NOT MODIFY THE FIRST PART OF THIS FILE
-
 use strict;
 use warnings;
 
@@ -42,6 +39,8 @@ __PACKAGE__->add_columns(
 );
 __PACKAGE__->set_primary_key("id");
 
+use overload '""' => sub { shift->name() }, fallback => 1;
+
 =head1 RELATIONS
 
 =head2 objects
@@ -59,10 +58,4 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2010-12-03 13:30:32
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:hIlxR5Nt+DmLSScikImLwQ
-
-
-# You can replace this text with custom content, and it will be preserved on regeneration
 1;
