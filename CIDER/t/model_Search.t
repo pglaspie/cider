@@ -97,4 +97,40 @@ $importer->import_from_csv( $handle );
 $hits = $model->search( query => 'Imported' );
 is( $hits->total_hits, 2, 'Found two Imported.' );
 
+$hits = $model->search( query => 'Status' );
+is( $hits->total_hits, 2, 'Found two collections with processing status.' );
+
+$query = KinoSearch::Search::TermQuery->new(
+    field => 'corporate_name',
+    term => 'name',
+);
+$hits = $model->search( query => $query );
+is( $hits->total_hits, 0, 'No corporate names yet.' );
+
+$item = $schema->resultset( 'Object' )->find( 4 );
+$item->corporate_name( 1 );
+$item->update;
+
+$hits = $model->search( query => $query );
+is( $hits->total_hits, 1, 'Item was re-indexed with corporate name.' );
+
+my $name = $schema->resultset( 'AuthorityName' )->find( 1 );
+$name->name( 'Test Corp' );
+$name->update;
+
+$hits = $model->search( query => $query );
+is( $hits->total_hits, 0, 'No hits for old corporate name.' );
+
+$query = KinoSearch::Search::TermQuery->new(
+    field => 'corporate_name',
+    term => 'corp',
+);
+$hits = $model->search( query => $query );
+is( $hits->total_hits, 1, 'Found new corporate name.' );
+
+$name->delete;
+
+$hits = $model->search( query => $query );
+is( $hits->total_hits, 0, 'Found no corporate names after deleting the name.' );
+
 done_testing();

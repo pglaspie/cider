@@ -62,9 +62,13 @@ my @text_fields = qw(
                         arrangement
                         checksum
                         checksum_app
+                        creator
+                        corporate_name
                         description
                         file_extension
+                        format
                         funder
+                        geographic_term
                         handle
                         history
                         lc_class
@@ -75,9 +79,12 @@ my @text_fields = qw(
                         original_filename
                         other_app
                         permanent_url
+                        personal_name
                         pid
                         processing_notes
+                        processing_status
                         publication_status
+                        restrictions
                         rsa
                         stabilization_by
                         stabilization_notes
@@ -85,6 +92,8 @@ my @text_fields = qw(
                         technical_metadata
                         title
                         toc
+                        topic_term
+                        type
                         virus_app
                 );
 

@@ -635,26 +635,6 @@ __PACKAGE__->belongs_to(
   { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
 );
 
-=head2 processing_status
-
-Type: belongs_to
-
-Related object: L<CIDER::Schema::Result::ProcessingStatus>
-
-=cut
-
-__PACKAGE__->belongs_to(
-  "processing_status",
-  "CIDER::Schema::Result::ProcessingStatus",
-  { id => "processing_status" },
-  {
-    is_deferrable => 1,
-    join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
-  },
-);
-
 =head2 object_set_objects
 
 Type: has_many
