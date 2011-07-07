@@ -56,15 +56,15 @@ test_import( {
 } );
 
 test_import( {
-    parent => 4,
+    parent => 'n4',
     title => 'New sub-item',
-    number => 99,
+    number => 'x1',
     date_from => '2000',
     type => 1,
 }, {
-    parent => 4,
+    parent => 'n4',
     title => 'New sub-item',
-    number => 99,
+    number => 'x2',
     date_from => '2000',
     type => 1,
 } );
@@ -88,7 +88,7 @@ is( $item->number_of_children, 2,
     'After import, ' . $item->title . ' has 2 children.' );
 for my $subitem ( $item->children ) {
     is( $subitem->title, 'New sub-item', 'Title is correct.' );
-    is( $subitem->number, 99, 'Number is correct.' );
+    ok( $subitem->number, 'Number exists.' );
     is( $subitem->date_from, '2000', 'Start date is correct.' );
     is( $subitem->type->name, 'Test Type', 'Type is correct.' );
 }
@@ -102,7 +102,7 @@ dies_ok {
                  { id => 2, title => 'No number' } ) # number will be ''
 } "Number can't be empty on update";
 
-is( $schema->resultset( 'Object' )->find( 1 )->number, 12345,
+is( $schema->resultset( 'Object' )->find( 1 )->number, 'n1',
     'Number was not updated on failed import.' );
 
 dies_ok {
@@ -151,6 +151,10 @@ lives_ok {
 lives_ok {
     test_import( { id => 1, permanent_url => '' } )
 } 'Permanent URL can be unset.';
+
+throws_ok {
+    test_import( { id => 5, parent => 4 } )
+} qr(parent), 'Unknown parent number is an error.';
 
 # TO DO:
 # These should all be errors:

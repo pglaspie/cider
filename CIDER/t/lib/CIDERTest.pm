@@ -95,9 +95,9 @@ sub init_schema {
         [
             [qw/id parent number title notes
                 record_context has_physical_documentation processing_status/],
-            [1, undef, 12345, 'Test Collection with kids', 'Test notes.',
+            [1, undef, 'n1', 'Test Collection with kids', 'Test notes.',
              1, 0, 1],
-            [2, undef, 12345, 'Test Collection without kids', 'Test notes.',
+            [2, undef, 'n2', 'Test Collection without kids', 'Test notes.',
              1, 0, 1],
         ]
     );
@@ -106,7 +106,7 @@ sub init_schema {
         'Object',
         [
             [qw/id parent number title description/],
-            [3, 1, 12345, 'Test Series 1', 'Test description.'],
+            [3, 1, 'n3', 'Test Series 1', 'Test description.'],
         ]
     );
 
@@ -115,9 +115,9 @@ sub init_schema {
         [
             [qw/id parent number title personal_name
                 notes date_from date_to type/],
-            [4, 3, 12345, 'Test Item 1', 1,
+            [4, 3, 'n4', 'Test Item 1', 1,
              'Test notes.', '2000-01-01', '2008-01-01', 1],
-            [5, 3, 12345, 'Test Item 2', 1,
+            [5, 3, 'n5', 'Test Item 2', 1,
              'Test notes.', '2002-01-01', '2010-01-01', 1],
         ]
     );

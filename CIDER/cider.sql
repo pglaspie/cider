@@ -207,7 +207,7 @@ CREATE TABLE `log` (
   KEY `object` (`object`),
   CONSTRAINT `log_ibfk_2` FOREIGN KEY (`object`) REFERENCES `object` (`id`) ON DELETE CASCADE,
   CONSTRAINT `log_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=251 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=593 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -273,6 +273,7 @@ CREATE TABLE `object` (
   `restrictions` int(11) DEFAULT NULL,
   `creator` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `number` (`number`),
   KEY `parent` (`parent`),
   KEY `personal_name` (`personal_name`),
   KEY `corporate_name` (`corporate_name`),
@@ -285,7 +286,6 @@ CREATE TABLE `object` (
   KEY `location` (`location`),
   KEY `restrictions` (`restrictions`),
   KEY `creator` (`creator`),
-  CONSTRAINT `object_ibfk_5` FOREIGN KEY (`geographic_term`) REFERENCES `geographic_term` (`id`),
   CONSTRAINT `object_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `object` (`id`),
   CONSTRAINT `object_ibfk_11` FOREIGN KEY (`processing_status`) REFERENCES `processing_status` (`id`),
   CONSTRAINT `object_ibfk_12` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`),
@@ -295,10 +295,11 @@ CREATE TABLE `object` (
   CONSTRAINT `object_ibfk_2` FOREIGN KEY (`personal_name`) REFERENCES `authority_name` (`id`),
   CONSTRAINT `object_ibfk_3` FOREIGN KEY (`corporate_name`) REFERENCES `authority_name` (`id`),
   CONSTRAINT `object_ibfk_4` FOREIGN KEY (`topic_term`) REFERENCES `topic_term` (`id`),
+  CONSTRAINT `object_ibfk_5` FOREIGN KEY (`geographic_term`) REFERENCES `geographic_term` (`id`),
   CONSTRAINT `object_ibfk_6` FOREIGN KEY (`processing_status`) REFERENCES `processing_status` (`id`),
   CONSTRAINT `object_ibfk_8` FOREIGN KEY (`type`) REFERENCES `item_type` (`id`),
   CONSTRAINT `object_ibfk_9` FOREIGN KEY (`format`) REFERENCES `item_format` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -315,7 +316,7 @@ CREATE TABLE `object_set` (
   PRIMARY KEY (`id`),
   KEY `owner` (`owner`),
   CONSTRAINT `object_set_ibfk_1` FOREIGN KEY (`owner`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -462,4 +463,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-06-24 19:48:14
+-- Dump completed on 2011-07-07 15:12:43
