@@ -275,7 +275,15 @@ sub _export :Private {
 
     my $template_directory = $c->config->{ export }->{ template_directory };
 
-    my $template_file = $c->req->params->{ template };
+    my $template = $c->req->params->{ template };
+    my ( undef, undef, $template_file ) = File::Spec->splitpath( $template );
+
+    unless ( $template eq $template_file ) {
+        $c->log->error( "Request to load template '$template', "
+                        . "which is not a plain filename. " );
+        $c->detach( $c->controller( 'Root' )->action_for( 'default' ) );
+    }
+
     $template_file = File::Spec->catfile( $template_directory,
                                           $template_file );
     unless ( -f $template_file && -r $template_file ) {
