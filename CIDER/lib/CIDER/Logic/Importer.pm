@@ -43,7 +43,14 @@ sub import_from_csv {
             delete $row->{ id };
         }
 
-        # TO DO: do we need to handle parent specially?
+        if ( $row->{ parent } ) {
+            my $parent = $object_rs->find( { number => $row->{ parent } } );
+            unless ( $parent ) {
+                $object_rs->throw_exception(
+                    "Unknown parent number: $row->{ parent }" );
+            }
+            $row->{ parent } = $parent;
+        }
 
         # TO DO: check cider_type?
         # Do we need cider_type, or can we always deduce it?
@@ -58,11 +65,12 @@ sub import_from_csv {
             }
         };
         if ( $@ ) {
+            my $err = $@;
 
             $schema->txn_rollback;
             $schema->indexer->txn_rollback;
 
-            croak "CSV import failed at data row $row_number:\n$@\n";
+            croak "CSV import failed at data row $row_number:\n$err\n";
         }
     }
 
