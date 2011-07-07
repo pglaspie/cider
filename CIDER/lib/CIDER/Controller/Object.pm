@@ -50,6 +50,8 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
         $c->detach( $c->controller( 'Root' )->action_for( 'default' ) );
     }
 
+    $c->forward( '_setup_export_templates' );
+
     my $form = $self->form;
     my $type = $object->cider_type;
     $form->load_config_filestem( "object/$type" );
@@ -272,7 +274,7 @@ sub _export :Private {
     my ( $self, $c ) = @_;
 
     my $template_directory = $c->config->{ export }->{ template_directory };
-    
+
     my $template_file = $c->req->params->{ template };
     $template_file = File::Spec->catfile( $template_directory,
                                           $template_file );
@@ -294,6 +296,29 @@ sub _export :Private {
     $_->export for @$objects;
 
     $c->stash->{ current_view } = 'NoWrapperTT';
+}
+
+sub _setup_export_templates :Private {
+    my ( $self, $c ) = @_;
+
+    # Store a list of export template files in the stash. These'll help
+    # build an export form.
+    my $template_directory = $c->config->{ export }->{ template_directory };
+    my @template_files;
+    my $dh;
+    opendir $dh, $template_directory;
+    if ( $dh ) {
+        while ( my $template_file = readdir $dh ) {
+            next if $template_file =~ /^\./; # Exclude dotfiles.
+            push @template_files, $template_file;
+        }
+        closedir $dh;
+    }
+    else {
+        $c->log->error( "Failed to opendir export config directory "
+                        . "'$template_directory': $!" );
+    }
+    $c->stash->{ template_files } = \@template_files;
 }
 
 
