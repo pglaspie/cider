@@ -45,7 +45,7 @@
 [% END %]
 
 [%### Stuff to handle object-moving. %]
-[% IF held_object && held_object.id != object.id && !held_object.has_ancestor( object ) %]
+[% IF held_object && held_object.id != object.id && !object.has_ancestor( held_object ) %]
 [%### "Drop" the currently held object, making it a child of the current
       object. %]
 <form method="post" action="[% c.uri_for_action( c.controller('Object').action_for('drop_held_object_here'), [object.id] ) %]">

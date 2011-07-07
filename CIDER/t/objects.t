@@ -15,6 +15,7 @@ use CIDERTest;
 my $schema = CIDERTest->init_schema;
 
 use Test::More qw(no_plan);
+use Test::Exception;
 
 my @collections = $schema->resultset('Object')->root_objects;
 
@@ -84,6 +85,10 @@ is( $schema->resultset( 'Object' )->find( $item_2->id )->date_to, '2011-01',
 #     "The collection's date_to is the latest date_to of its subitems.");
 
 my $collection_2 = $collections[1];
+
+is ($series_1->has_ancestor( $collection_2 ), 0,
+    'Before moving, the series does not see the collection as ancestor.' );
+
 $series_1->parent( $collection_2 );
 $series_1->update;
 
@@ -91,3 +96,10 @@ is (scalar($collection_2->children), 1,
     'After moving, there is one child series in the second collection.');
 is (scalar($collection_1->children), 0,
     'After moving, there are no child series in the first collection.');
+is ($series_1->has_ancestor( $collection_2 ), 1,
+    'After moving, the series claims the collection as ancestor.' );
+
+throws_ok { $collection_2->parent( $series_1 ) } qr/ancestor/,
+    "The series refuses to become its ancestor's parent.";
+
+

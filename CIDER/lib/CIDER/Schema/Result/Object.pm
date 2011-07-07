@@ -8,6 +8,7 @@ use Class::Method::Modifiers qw(around);
 use List::Util qw(min max);
 use Locale::Language;
 use Regexp::Common qw( URI );
+use Carp qw( croak );
 use CIDER::Logic::Utils qw( iso_8601_date );
 
 =head1 NAME
@@ -409,7 +410,8 @@ __PACKAGE__->add_columns(
   "file_extension",
   { data_type => "char", is_nullable => 1, size => 16 },
   "parent",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 1,
+    accessor => '_parent'},
   "number",
   { data_type => "char", is_nullable => 0, size => 255 },
   "title",
@@ -1038,6 +1040,32 @@ sub store_column {
     }
 
     return $self->next::method( $column, $value );
+}
+
+# parent: Custom user-facing accessor method for the 'parent' column.
+#         On set, confirms that no circular graphs are in the making.
+sub parent {
+    my ( $self, $new_parent ) = @_;
+
+    if ( $new_parent ) {
+        unless ( ref $new_parent ) {
+            $new_parent = $self->result_source->schema->
+                                 resultset('Object')->find( $new_parent );
+        }
+    
+        if ( $new_parent->has_ancestor( $self ) ) {
+            croak( sprintf "Cannot set a CIDER object (ID %s) to be "
+                       . "the parent of its ancestor (ID %s).",
+                   $new_parent->id,
+                   $self->id,
+               );
+        }
+
+        # If we've made it this far, then this is a legal new parent.
+        $self->_parent( $new_parent->id );
+    }
+
+    return $self->_parent;
 }
 
 1;
