@@ -1,0 +1,12 @@
+[% page.title = list_name %]
+
+<h2>[% page.title %]</h2>
+
+<table>
+<thead><tr><th>Name</th><th>Note</th></tr></thead>
+<tbody>
+[% FOR authority IN list.all %]
+<tr><td>[% authority.name %]</td><td>[% authority.note %]</td></tr>
+[% END %]
+</tbody>
+</table>

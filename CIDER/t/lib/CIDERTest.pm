@@ -86,7 +86,31 @@ sub init_schema {
         'AuthorityName',
         [
             [qw/id name/],
-            [1, 'Test Name'],
+            [1, 'Test Name', ''],
+        ]
+    );
+
+    $schema->populate(
+        'GeographicTerm',
+        [
+            [qw/id name/],
+            [1, 'Test Geographic Term'],
+        ]
+    );
+
+    $schema->populate(
+        'TopicTerm',
+        [
+            [qw/id name/],
+            [1, 'Test Topic Term'],
+        ]
+    );
+
+    $schema->populate(
+        'ItemFormat',
+        [
+            [qw/id name/],
+            [1, 'Test Format'],
         ]
     );
 

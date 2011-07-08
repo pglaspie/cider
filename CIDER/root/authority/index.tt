@@ -1,0 +1,10 @@
+[% page.title = 'Authority Lists' %]
+
+<h2>[% page.title %]</h2>
+
+[% FOR id IN list_ids %]
+<p>
+<a href="[% c.uri_for( c.controller( 'Authority' ).action_for( 'browse' ),
+                       [ id ] ) %]">[% list_names.$id %]</a>
+</p>
+[% END %]
