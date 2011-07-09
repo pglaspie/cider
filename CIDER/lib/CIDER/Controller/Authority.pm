@@ -59,8 +59,9 @@ sub authority :Chained :CaptureArgs(1) {
 
     my $rs = $c->model( "CIDERDB::$list_class" );
 
+    $c->stash->{ list_id }   = $list_id;
     $c->stash->{ list_name } = $list_names->{ $list_id };
-    $c->stash->{ list } = $rs->search( undef, { order_by => 'name' } );
+    $c->stash->{ list }      = $rs->search( undef, { order_by => 'name' } );
 }
 
 =head2 browse
@@ -71,6 +72,8 @@ Browse the authority names in an authority list.
 
 sub browse :Chained( 'authority' ) :PathPart('') :Args(0) {
     my ( $self, $c ) = @_;
+
+    $c->stash->{ notes } = $c->stash->{ list_id } ne 'format';
 }
 
 =head1 AUTHOR

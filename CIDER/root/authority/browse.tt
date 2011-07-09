@@ -3,10 +3,18 @@
 <h2>[% page.title %]</h2>
 
 <table>
-<thead><tr><th>Name</th><th>Note</th></tr></thead>
+<thead>
+<tr>
+<th>Name</th>
+[% IF notes %]<th>Note</th>[% END %]
+</tr>
+</thead>
 <tbody>
 [% FOR authority IN list.all %]
-<tr><td>[% authority.name %]</td><td>[% authority.note %]</td></tr>
+<tr>
+<td>[% authority.name %]</td>
+[% IF notes %]<td>[% authority.note %]</td>[% END %]
+</tr>
 [% END %]
 </tbody>
 </table>
