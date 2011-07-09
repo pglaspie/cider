@@ -5,6 +5,6 @@
 [% FOR id IN list_ids %]
 <p>
 <a href="[% c.uri_for( c.controller( 'Authority' ).action_for( 'browse' ),
-                       [ id ] ) %]">[% list_names.$id %]</a>
+                       [ id ] ) %]">[% list_names.$id _ 's' %]</a>
 </p>
 [% END %]
