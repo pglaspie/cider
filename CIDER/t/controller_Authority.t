@@ -45,15 +45,30 @@ $mech->back;
 $mech->follow_link( text => 'Names' );
 $mech->submit_form_ok( { with_fields => {
     note => 'New Note',
-} }, 'Submit form with no name' );
+} }, 'Submit create form with no name' );
 $mech->content_contains( 'is required' );
 $mech->submit_form_ok( { with_fields => {
     name => 'New Name',
     note => 'New Note',
-} }, 'Submit form with name' );
+} }, 'Submit create form with name' );
 $mech->content_contains( 'Added' );
 $mech->content_contains( '<td>New Name' );
 $mech->content_contains( '<td>New Note' );
+
+$mech->follow_link_ok( { text => 'Edit', url_regex => qr(1) } );
+$mech->submit_form_ok( { with_fields => {
+    name => '',
+    note => 'Another Note',
+} }, 'Submit update form with no name' );
+$mech->content_contains( 'is required' );
+$mech->submit_form_ok( { with_fields => {
+    name => 'Another Name',
+    note => 'Another Note',
+} }, 'Submit update form with name' );
+$mech->content_contains( 'Updated' );
+$mech->content_contains( '<td>Another Name' );
+$mech->content_contains( '<td>Another Note' );
+$mech->content_lacks( 'Test Name' );
 
 $mech->follow_link_ok( { text => 'Delete' } );
 $mech->content_contains( 'Deleted' );

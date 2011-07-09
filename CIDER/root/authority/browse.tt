@@ -8,6 +8,12 @@
 </div>
 [% END %]
 
+[% IF updated %]
+<div class="success">
+<p>Updated [% list_name %] "[% authority %]".</p>
+</div>
+[% END %]
+
 [% IF deleted %]
 <div class="success">
 <p>Deleted [% list_name %] "[% name %]".</p>
@@ -29,11 +35,14 @@
 <tr>
 <td>[% authority.name %]</td>
 [% IF notes %]<td>[% authority.note %]</td>[% END %]
-<td><a href="[% %]">Edit</a>
+<td><a href="[%
+    c.uri_for( c.controller( 'Authority' ).action_for( 'edit' ),
+               [ list_id, authority.id ] )
+%]">Edit</a>
 [%- IF NOT authority.objects -%]
 &nbsp;<a href="[%
      c.uri_for( c.controller( 'Authority' ).action_for( 'delete' ),
-                [ list_id ], authority.id )
+                [ list_id, authority.id ] )
 %]">Delete</a>
 [% END %]
 </tr>

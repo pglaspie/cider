@@ -63,6 +63,7 @@ sub authority :Chained :CaptureArgs(1) {
     $c->stash->{ list_class } = $list_class;
     $c->stash->{ list_name }  = $list_names->{ $list_id };
     $c->stash->{ list }       = $rs->search( undef, { order_by => 'name' } );
+    $c->stash->{ notes }      = $list_id ne 'format';
 }
 
 =head2 browse
@@ -71,20 +72,18 @@ Browse the authority names in an authority list.
 
 =cut
 
-sub browse :Chained( 'authority' ) :PathPart('') :Args(0) :FormConfig {
+sub browse :Chained( 'authority' ) :PathPart('') :Args(0)
+    :FormConfig('authority/edit')
+{
     my ( $self, $c ) = @_;
 
-    my $notes = $c->stash->{ list_id } ne 'format';
-
     my $form = $c->stash->{ form };
-    unless ( $notes ) {
+    unless ( $c->stash->{ notes } ) {
         $form->remove_element( $form->get_field( 'note' ) );
     }
     $form->get_field( 'submit' )
         ->value( 'Add a new ' . $c->stash->{ list_name } );
     $form->model_config->{ resultset } = $c->stash->{ list_class };
-
-    $c->stash->{ notes } = $notes;
 }
 
 =head2 browse_FORM_VALID
@@ -107,20 +106,89 @@ sub browse_FORM_VALID {
     $c->res->redirect( $c->req->uri );
 }
 
+=head2 get
+
+Chain action that gets an authority name by id.
+
+=cut
+
+sub get :Chained( 'authority' ) :PathPart('') :CaptureArgs(1) {
+    my ( $self, $c, $id ) = @_;
+
+    my $authority = $c->stash->{ list }->find( $id );
+
+    unless ( $authority ) {
+        $c->detach( $c->controller( 'Root' )->action_for( 'default' ) );
+    }
+
+    $c->stash->{ authority } = $authority;
+}
+
+=head2 edit
+
+Edit an authority name.
+
+=cut
+
+sub edit :Chained( 'get' ) :Args(0) :FormConfig {
+    my ( $self, $c ) = @_;
+
+    my $form = $c->stash->{ form };
+    unless ( $c->stash->{ notes } ) {
+        $form->remove_element( $form->get_field( 'note' ) );
+    }
+    $form->get_field( 'submit' )
+        ->value( 'Update ' . $c->stash->{ list_name } );
+    $form->model_config->{ resultset } = $c->stash->{ list_class };
+}
+
+=head2 edit_FORM_NOT_SUBMITTED
+
+Show a form to edit an authority name.
+
+=cut
+
+sub edit_FORM_NOT_SUBMITTED {
+    my ( $self, $c ) = @_;
+
+    my $form = $c->stash->{ form };
+    my $authority = $c->stash->{ authority };
+
+    $form->model->default_values( $authority );
+}
+
+=head2 edit_FORM_VALID
+
+Update an authority name from a valid submitted form.
+
+=cut
+
+sub edit_FORM_VALID {
+    my ( $self, $c ) = @_;
+
+    my $form = $c->stash->{ form };
+    my $authority = $c->stash->{ authority };
+
+    $form->model->update( $authority );
+
+    $c->flash->{ updated } = 1;
+    $c->flash->{ authority } = $authority;
+    $c->res->redirect( $c->uri_for( $self->action_for( 'browse' ),
+                                    [ $c->stash->{ list_id } ] ) );
+}
+
 =head2 delete
 
 Delete an authority name.
 
 =cut
 
-sub delete :Chained( 'authority' ) :Args(1) {
-    my ( $self, $c, $delete_id ) = @_;
+sub delete :Chained( 'get' ) :Args(0) {
+    my ( $self, $c ) = @_;
 
-    my $authority = $c->stash->{ list }->find( $delete_id );
+    my $authority = $c->stash->{ authority };
     my $name = $authority->name;
     $authority->delete;
-
-    # TO DO: show error message if not deleted
 
     $c->flash->{ deleted } = 1;
     $c->flash->{ name } = $name;
