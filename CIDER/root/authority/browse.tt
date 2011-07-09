@@ -1,6 +1,14 @@
-[% page.title = list_name %]
+[% page.title = list_name _ 's' %]
 
 <h2>[% page.title %]</h2>
+
+[% IF added %]
+<div class="success">
+<p>Added [% list_name %] "[% new_name %]".</p> 
+</div>
+[% END %]
+
+[% form %]
 
 <table>
 <thead>

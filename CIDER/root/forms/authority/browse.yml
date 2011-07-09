@@ -1,0 +1,10 @@
+elements:
+  - type: Text
+    name: name
+    label: Name
+    constraint: Required
+  - type: Text
+    name: note
+    label: Note
+  - type: Submit
+    name: submit

@@ -2,7 +2,7 @@ package CIDER::Controller::Authority;
 use Moose;
 use namespace::autoclean;
 
-BEGIN {extends 'Catalyst::Controller'; }
+BEGIN {extends 'Catalyst::Controller::HTML::FormFu'; }
 
 =head1 NAME
 
@@ -19,10 +19,10 @@ Catalyst Controller for browsing and editing authority lists.
 my $list_ids = [ qw( name geographic_term topic_term format ) ];
 
 my $list_names = {
-    name            => 'Names',
-    geographic_term => 'Geographic Terms',
-    topic_term      => 'Topic Terms',
-    format          => 'Formats',
+    name            => 'Name',
+    geographic_term => 'Geographic Term',
+    topic_term      => 'Topic Term',
+    format          => 'Format',
 };
 
 my $class_names = {
@@ -59,9 +59,10 @@ sub authority :Chained :CaptureArgs(1) {
 
     my $rs = $c->model( "CIDERDB::$list_class" );
 
-    $c->stash->{ list_id }   = $list_id;
-    $c->stash->{ list_name } = $list_names->{ $list_id };
-    $c->stash->{ list }      = $rs->search( undef, { order_by => 'name' } );
+    $c->stash->{ list_id }    = $list_id;
+    $c->stash->{ list_class } = $list_class;
+    $c->stash->{ list_name }  = $list_names->{ $list_id };
+    $c->stash->{ list }       = $rs->search( undef, { order_by => 'name' } );
 }
 
 =head2 browse
@@ -70,11 +71,40 @@ Browse the authority names in an authority list.
 
 =cut
 
-sub browse :Chained( 'authority' ) :PathPart('') :Args(0) {
+sub browse :Chained( 'authority' ) :PathPart('') :Args(0) :FormConfig {
     my ( $self, $c ) = @_;
 
-    $c->stash->{ notes } = $c->stash->{ list_id } ne 'format';
+    my $notes = $c->stash->{ list_id } ne 'format';
+
+    my $form = $c->stash->{ form };
+    unless ( $notes ) {
+        $form->remove_element( $form->get_field( 'note' ) );
+    }
+    $form->get_field( 'submit' )
+        ->value( 'Add a new ' . $c->stash->{ list_name } );
+    $form->model_config->{ resultset } = $c->stash->{ list_class };
+
+    $c->stash->{ notes } = $notes;
 }
+
+=head2 browse_FORM_VALID
+
+Add a new authority name from a valid submitted form.
+
+=cut
+
+sub browse_FORM_VALID {
+    my ( $self, $c ) = @_;
+
+    my $form = $c->stash->{ form };
+
+    my $new_name = $form->model->create;
+
+    $c->flash->{ added } = 1;
+    $c->flash->{ new_name } = $new_name;
+    $c->res->redirect( $c->req->uri );
+}
+
 
 =head1 AUTHOR
 
