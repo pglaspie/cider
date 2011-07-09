@@ -10,6 +10,4 @@ This is a work in progress; several features are not yet completely implemented,
 
 <h2>Log in</h2>
 
-<p>(For now, just use the username <code>test</code>, with password <code>test</code>.)</p>
-
 [% form %]
