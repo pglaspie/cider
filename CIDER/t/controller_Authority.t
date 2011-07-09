@@ -55,4 +55,9 @@ $mech->content_contains( 'Added' );
 $mech->content_contains( '<td>New Name' );
 $mech->content_contains( '<td>New Note' );
 
+$mech->follow_link_ok( { text => 'Delete' } );
+$mech->content_contains( 'Deleted' );
+$mech->content_contains( 'New Name' );
+$mech->content_lacks( 'New Note' );
+
 done_testing();

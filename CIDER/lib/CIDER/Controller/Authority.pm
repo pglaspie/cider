@@ -98,13 +98,35 @@ sub browse_FORM_VALID {
 
     my $form = $c->stash->{ form };
 
-    my $new_name = $form->model->create;
+    my $authority = $form->model->create;
+
+    # TO DO: show error message if $authority is undef
 
     $c->flash->{ added } = 1;
-    $c->flash->{ new_name } = $new_name;
+    $c->flash->{ authority } = $authority;
     $c->res->redirect( $c->req->uri );
 }
 
+=head2 delete
+
+Delete an authority name.
+
+=cut
+
+sub delete :Chained( 'authority' ) :Args(1) {
+    my ( $self, $c, $delete_id ) = @_;
+
+    my $authority = $c->stash->{ list }->find( $delete_id );
+    my $name = $authority->name;
+    $authority->delete;
+
+    # TO DO: show error message if not deleted
+
+    $c->flash->{ deleted } = 1;
+    $c->flash->{ name } = $name;
+    $c->res->redirect( $c->uri_for( $self->action_for( 'browse' ),
+                                    [ $c->stash->{ list_id } ] ) );
+}
 
 =head1 AUTHOR
 

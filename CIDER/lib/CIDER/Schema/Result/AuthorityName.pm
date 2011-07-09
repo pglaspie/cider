@@ -93,6 +93,28 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 objects
+
+Type: has_many
+
+Related object: L<CIDER::Schema::Result::Object>
+
+A resultset of all objects that have this authority name in any field.
+
+=cut
+
+__PACKAGE__->has_many(
+  "objects",
+  "CIDER::Schema::Result::Object",
+  [
+      { "foreign.personal_name" => "self.id" },
+      { "foreign.corporate_name" => "self.id" },
+      { "foreign.creator" => "self.id" },
+  ],
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+
 sub update {
     my $self = shift;
 
