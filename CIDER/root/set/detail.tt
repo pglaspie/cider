@@ -27,10 +27,10 @@
 [% END %]
 
 <h2>Delete this set</h2>
-<p>To permanently remove this set from your list, click the button below. (Deleteing a set does not otherwise affect the objects it contains.)</p>
+<p>To permanently remove this set from your list, click the button below. (Deleting a set does not otherwise affect the objects it contains.)</p>
 <p>[% INCLUDE set/delete_set_button.tt %]</p>
 
-<h3>Export</h3>
+<h2>Export</h2>
 
 <form action="[% c.uri_for_action( c.controller('Set').action_for('export'), [set.id] ) %]">
 Export

@@ -18,7 +18,7 @@ Set every [% set.type %]'s
 [% END %]
 </select>
 field to
-<input type="text" name="new_value" />.
+<input type="text" name="value" />.
 <input type="submit" value="Go" />
 </p>
 </form>

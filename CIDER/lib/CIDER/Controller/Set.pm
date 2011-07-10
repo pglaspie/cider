@@ -91,7 +91,7 @@ sub batch_edit :Chained('set') :Args(0) {
 
     my $set = $c->stash->{ set };
     $set->set_field( $c->req->params->{ field },
-                     $c->req->params->{ new_value } );
+                     $c->req->params->{ value } );
 
     $c->flash->{ we_just_did_batch_edit } = 1;
 
