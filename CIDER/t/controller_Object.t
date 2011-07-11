@@ -101,4 +101,33 @@ $mech->content_like( qr/\b2011-06\b/ );
 $mech->get( '/object/9999' );
 is( $mech->status, 404, 'Invalid object id gives 404 page.' );
 
+$mech->get( '/object/1' );
+$mech->submit_form_ok ( { with_fields => {
+    descendants => 1,
+    template => 'export.csv',
+} }, 'Export to CSV' );
+is( $mech->ct, 'text/csv', 'MIME type is correct' );
+
+use Text::CSV::Slurp;
+ok( my $csv = Text::CSV::Slurp->load( string => $mech->content ),
+    'Export file is valid CSV' );
+is( @$csv, 4, 'CSV has four rows.' );
+is( $csv->[0]->{ title }, 'Test Collection with kids',
+    'Collection title is correct' );
+is( $csv->[1]->{ title }, 'Test Series 1',
+    'Series title is correct' );
+is( $csv->[1]->{ parent }, $csv->[0]->{ number },
+    "Child's parent is parent's number" );
+
+$mech->get( '/object/1' );
+$mech->submit_form_ok ( { with_fields => {
+    descendants => 1,
+    template => 'export.xml',
+} }, 'Export to XML' );
+is( $mech->ct, 'application/xml', 'MIME type is correct' );
+
+use XML::LibXML;
+ok( XML::LibXML->load_xml( string => $mech->content ),
+    'Export file is valid XML' );
+
 done_testing();
