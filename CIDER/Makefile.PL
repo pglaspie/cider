@@ -30,6 +30,7 @@ requires 'DBIx::Class::TimeStamp';
 requires 'Locale::Codes';
 requires 'Config::General'; # This should reflect the config file format you've chosen
                  # See Catalyst::Plugin::ConfigLoader for supported formats
+requires 'XML::LibXML';
 test_requires 'Test::More' => '0.88';
 test_requires 'Test::Exception';
 catalyst;

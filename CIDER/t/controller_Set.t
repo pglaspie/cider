@@ -36,6 +36,16 @@ $mech->content_contains( 'Test Item 2' );
 $mech->content_lacks( 'Set every' );
 $mech->content_lacks( 'In every' );
 
+use Text::CSV::Slurp;
+$mech->submit_form_ok( { with_fields => {
+    descendants => 1,
+    template => 'export.csv',
+} }, 'Export to CSV' );
+ok( my $csv = Text::CSV::Slurp->load( string => $mech->content ),
+    'Export file is valid CSV' );
+is( @$csv, 4, 'CSV has four rows.' );
+$mech->back;
+
 $mech->submit_form_ok( { form_number => 1 }, 'Remove the first item' );
 $mech->content_lacks( 'Test Series 2' );
 $mech->content_contains( 'Set every' );
