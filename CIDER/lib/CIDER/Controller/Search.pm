@@ -74,7 +74,9 @@ sub search :Path :Args(0) :FormConfig {
         $c->stash->{ set_creation_form } = $set_creation_form;
 
         # Aim this form at the set-creation action.
-        $set_creation_form->action( '/search/create_set' );
+        $set_creation_form->action(
+            $c->uri_for( '/search/create_set' )
+        );
      
         # Stick the last query in the flash, for the create-set action's use.
         if ( ref $query ) {
