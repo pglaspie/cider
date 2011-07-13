@@ -31,6 +31,23 @@ CREATE TABLE `authority_name` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `collection_material`
+--
+
+DROP TABLE IF EXISTS `collection_material`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `collection_material` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `collection` int(11) NOT NULL,
+  `material` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `collection` (`collection`),
+  CONSTRAINT `collection_material_ibfk_1` FOREIGN KEY (`collection`) REFERENCES `object` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `collection_relationship`
 --
 
@@ -76,7 +93,7 @@ CREATE TABLE `item_format` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -207,7 +224,7 @@ CREATE TABLE `log` (
   KEY `object` (`object`),
   CONSTRAINT `log_ibfk_2` FOREIGN KEY (`object`) REFERENCES `object` (`id`) ON DELETE CASCADE,
   CONSTRAINT `log_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=593 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=780 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -316,7 +333,7 @@ CREATE TABLE `object_set` (
   PRIMARY KEY (`id`),
   KEY `owner` (`owner`),
   CONSTRAINT `object_set_ibfk_1` FOREIGN KEY (`owner`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -422,7 +439,7 @@ CREATE TABLE `topic_term` (
   `name` varchar(255) NOT NULL,
   `note` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2163 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2164 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -451,7 +468,7 @@ CREATE TABLE `users` (
   `username` char(64) DEFAULT NULL,
   `password` char(64) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -463,4 +480,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-07-07 15:12:43
+-- Dump completed on 2011-07-13 14:09:49
