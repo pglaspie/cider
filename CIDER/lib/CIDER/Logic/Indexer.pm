@@ -97,7 +97,13 @@ my @text_fields = qw(
                         virus_app
                 );
 
-for my $field ( @text_fields ) {
+# Multitext fields are one-to-many text fields.  Their values are just
+# joined with newlines and treated as single text fields.
+my @multitext_fields = qw(
+                             material
+                         );
+
+for my $field ( @text_fields, @multitext_fields ) {
     $index_schema->spec_field( name => $field, type => $text_type );
 }
 
@@ -329,6 +335,10 @@ sub _add_to_indexer {
 
     for my $field ( @text_fields ) {
         $doc->{ $field } = $object->$field || '';
+    }
+
+    for my $field ( @multitext_fields ) {
+        $doc->{ $field } = join "\n", $object->$field;
     }
 
     my @sets = $object->sets;

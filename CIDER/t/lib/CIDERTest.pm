@@ -168,6 +168,15 @@ sub init_schema {
     );
 
     $schema->populate(
+        'CollectionMaterial',
+        [
+            [qw/collection material/],
+            [1, 'Test Material 1'],
+            [1, 'Test Material 2'],
+        ]
+    );
+
+    $schema->populate(
         'LocationUnitType',
         [
          [qw/id name volume/],

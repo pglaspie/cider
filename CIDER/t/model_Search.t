@@ -133,4 +133,20 @@ $name->delete;
 $hits = $model->search( query => $query );
 is( $hits->total_hits, 0, 'Found no corporate names after deleting the name.' );
 
+$hits = $model->search( query => 'Material' );
+is( $hits->total_hits, 1, 'Found one collection with associated material.' );
+my $collection = $schema->resultset( 'Object' )->find( $hits->next->{ id } );
+
+my $material = $collection->add_to_material( { material => 'Pamphlet' } );
+$hits = $model->search( query => 'Pamphlet' );
+is( $hits->total_hits, 1, 'Found added material.' );
+
+$material->update( { material => 'Booklet' } );
+$hits = $model->search( query => 'Booklet' );
+is( $hits->total_hits, 1, 'Found updated material.' );
+
+$material->delete;
+$hits = $model->search( query => 'Booklet' );
+is( $hits->total_hits, 0, 'Deleted material was deleted from the index.' );
+
 done_testing();
