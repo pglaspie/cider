@@ -14,7 +14,7 @@ use lib (
 use CIDERTest;
 my $schema = CIDERTest->init_schema;
 
-use Test::More qw(no_plan);
+use Test::More;
 use Test::Exception;
 
 my @collections = $schema->resultset('Object')->root_objects;
@@ -102,4 +102,18 @@ is ($series_1->has_ancestor( $collection_2 ), 1,
 throws_ok { $collection_2->parent( $series_1 ) } qr/ancestor/,
     "The series refuses to become its ancestor's parent.";
 
+my $material = $collection_1->add_to_material( {
+    material => 'Test Material 3'
+} );
+is( $collection_1->material->count, 3,
+    'Has 3 associated materials after adding' );
+$material->delete;
+is( $collection_1->material->count, 2,
+    'Has 2 associated materials after deleting' );
+is( $collection_1->material->first, 'Test Material 1',
+    'First associated material is correct' );
+$collection_1->delete;
+is( $schema->resultset( 'CollectionMaterial' )->count, 0,
+    'Deleting collection deletes associated material' );
 
+done_testing();

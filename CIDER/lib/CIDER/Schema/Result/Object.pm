@@ -784,6 +784,19 @@ __PACKAGE__->has_many(
     'collection',
 );
 
+=head2 material
+
+Type: has_many
+
+Related object: L<CIDER::Schema::Result::CollectionMaterial>
+
+=cut
+
+__PACKAGE__->has_many(
+    material => 'CIDER::Schema::Result::CollectionMaterial',
+    'collection',
+);
+
 
 sub inflate_result {
     my $self = shift;
