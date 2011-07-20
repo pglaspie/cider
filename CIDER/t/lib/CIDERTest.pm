@@ -39,7 +39,12 @@ sub init_schema {
 
     $schema->search_index( $index_dir );
 
-    $schema->deploy;
+    # The default dir for deploy is "./", which means that if you run
+    # the tests from CIDER_HOME it tries to read cider.sql to get the
+    # deployment statements rather than generating them for SQLite.
+    # So we have to specify the dir here, even though it actually uses
+    # the path in the $dsn to write the SQLite file...
+    $schema->deploy( undef, $db_dir );
 
     $schema->populate(
         'RecordContext',
