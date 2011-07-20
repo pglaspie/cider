@@ -880,17 +880,14 @@ sub descendants {
     return $self, map { $_->descendants } $self->children;
 }
 
-# Override the DBIC delete() method to work recursively on our kids,
-# as well as object-set relations.
+# Override the DBIC delete() method to work recursively on our related
+# objects, rather than relying on the database to do cascading delete.
 sub delete {
     my $self = shift;
 
-    for my $child ( $self->children ) {
-        $child->delete;
-    }
-    for my $link ( $self->object_set_objects ) {
-        $link->delete;
-    }
+    $_->delete for ( $self->children, $self->object_set_objects,
+                     $self->logs, $self->relationships,
+                     $self->material );
 
     $self->next::method( @_ );
 
