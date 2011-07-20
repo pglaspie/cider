@@ -62,8 +62,8 @@ __PACKAGE__->belongs_to(
   { id => "collection" },
   {
     is_deferrable => 1,
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => undef,
+    on_update     => undef,
   },
 );
 

@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Tue Jul 19 15:30:27 2011
+-- Created on Wed Jul 20 15:39:48 2011
 -- 
 SET foreign_key_checks=0;
 
@@ -233,7 +233,7 @@ DROP TABLE IF EXISTS `users`;
 --
 CREATE TABLE `users` (
   `id` integer NOT NULL auto_increment,
-  `username` char(64) NOT NULL,
+  `username` char(64),
   `password` char(64) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
