@@ -128,11 +128,6 @@ $query = KinoSearch::Search::TermQuery->new(
 $hits = $model->search( query => $query );
 is( $hits->total_hits, 1, 'Found new corporate name.' );
 
-$name->delete;
-
-$hits = $model->search( query => $query );
-is( $hits->total_hits, 0, 'Found no corporate names after deleting the name.' );
-
 $hits = $model->search( query => 'Material' );
 is( $hits->total_hits, 1, 'Found one collection with associated material.' );
 my $collection = $schema->resultset( 'Object' )->find( $hits->next->{ id } );
