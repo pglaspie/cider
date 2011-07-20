@@ -75,16 +75,4 @@ sub update {
     return $self;
 }
 
-sub delete {
-    my $self = shift;
-
-    $self->next::method( @_ );
-
-    for my $object ( $self->objects ) {
-        $self->result_source->schema->indexer->update( $object );
-    }
-
-    return $self;
-}
-
 1;
