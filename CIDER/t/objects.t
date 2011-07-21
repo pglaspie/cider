@@ -28,7 +28,7 @@ is ($collection_1->title, 'Test Collection with kids',
 isa_ok ($collection_1, 'CIDER::Schema::Result::Collection',
      'Collection'
  );
-is( $collection_1->cider_type, 'collection', 'cider_type is collection.' );
+is( $collection_1->type, 'collection', 'type is collection.' );
 
 is( $collection_1->language_name, 'English',
     'The collection language is English.' );
@@ -43,7 +43,7 @@ is ( $series_1->title, 'Test Series 1',
 isa_ok ($series_1, 'CIDER::Schema::Result::Series',
      'Series'
  );
-is( $series_1->cider_type, 'series', 'cider_type is series.' );
+is( $series_1->type, 'series', 'type is series.' );
 
 my @items = $series_1->children;
 is (scalar @items, 2, 'There are two child item.');
@@ -56,7 +56,7 @@ is ( $item_1->title, 'Test Item 1',
 isa_ok ($item_1, 'CIDER::Schema::Result::Item',
      'Item'
  );
-is( $item_1->cider_type, 'item', 'cider_type is item.' );
+is( $item_1->type, 'item', 'type is item.' );
 
 is ( $item_1->parent->id, $series_1->id,
      "The series is the parent of the item."

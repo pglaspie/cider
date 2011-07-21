@@ -92,8 +92,8 @@ elements:
       label: Location Barcode
 
     - type: Select
-      label: Type
-      name: type
+      label: DC Type
+      name: dc_type
       constraint: Required
       empty_first: 1
       model_config:

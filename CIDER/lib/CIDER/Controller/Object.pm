@@ -53,7 +53,7 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
     $c->forward( '_setup_export_templates' );
 
     my $form = $self->form;
-    my $type = $object->cider_type;
+    my $type = $object->type;
     $form->load_config_filestem( "object/$type" );
 
     $self->_build_language_field( $c, $form );

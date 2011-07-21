@@ -148,7 +148,7 @@ sub is_homogenous {
 sub type {
     my $self = shift;
 
-    return $self->objects->first->cider_type;
+    return $self->objects->first->type;
 }
 
 sub type_plural {

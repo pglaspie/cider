@@ -22,7 +22,7 @@
 
 [% IF we_just_created_this %]
 <div class="success">
-<p>You have successfully created a new [% object.cider_type %] with the title <em>[% object.title %]</em>.</p>
+<p>You have successfully created a new [% object.type %] with the title <em>[% object.title %]</em>.</p>
 </div>
 [% END %]
 

@@ -93,7 +93,7 @@ my @text_fields = qw(
                         title
                         toc
                         topic_term
-                        type
+                        dc_type
                         virus_app
                 );
 

@@ -89,7 +89,7 @@ $mech->submit_form_ok( { with_fields => {
     date_from => '0968',
     date_to => '1016-04-23',
     accession_date => '2011-06',
-    type => 1,
+    dc_type => 1,
     stabilization_date => '9999',
 } }, 'Created a sub-item with partial dates' );
 
