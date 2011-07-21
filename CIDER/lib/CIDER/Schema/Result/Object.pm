@@ -19,319 +19,6 @@ CIDER::Schema::Result::Object
 
 __PACKAGE__->table("object");
 
-=head1 ACCESSORS
-
-=head2 id
-
-  data_type: 'integer'
-  is_auto_increment: 1
-  is_nullable: 0
-
-=head2 date_from
-
-  data_type: 'varchar'
-  is_nullable: 1
-  size: 10
-
-=head2 date_to
-
-  data_type: 'varchar'
-  is_nullable: 1
-  size: 10
-
-=head2 bulk_date_from
-
-  data_type: 'varchar'
-  is_nullable: 1
-  size: 10
-
-=head2 bulk_date_to
-
-  data_type: 'varchar'
-  is_nullable: 1
-  size: 10
-
-=head2 record_context
-
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 1
-
-=head2 history
-
-  data_type: 'text'
-  is_nullable: 1
-
-=head2 scope
-
-  data_type: 'text'
-  is_nullable: 1
-
-=head2 organization
-
-  data_type: 'text'
-  is_nullable: 1
-
-=head2 processing_status
-
-  data_type: 'tinyint'
-  is_foreign_key: 1
-  is_nullable: 1
-
-=head2 has_physical_documentation
-
-  data_type: 'enum'
-  extra: {list => [0,1]}
-  is_nullable: 1
-
-=head2 processing_notes
-
-  data_type: 'text'
-  is_nullable: 1
-
-=head2 description
-
-  data_type: 'text'
-  is_nullable: 1
-
-=head2 location
-
-  data_type: 'char'
-  is_nullable: 1
-  size: 16
-
-=head2 type
-
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 1
-
-=head2 format
-
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 1
-
-=head2 funder
-
-  data_type: 'char'
-  is_nullable: 1
-  size: 128
-
-=head2 handle
-
-  data_type: 'char'
-  is_nullable: 1
-  size: 128
-
-=head2 checksum
-
-  data_type: 'char'
-  is_nullable: 1
-  size: 64
-
-=head2 original_filename
-
-  data_type: 'char'
-  is_nullable: 1
-  size: 255
-
-=head2 accession_by
-
-  data_type: 'char'
-  is_nullable: 1
-  size: 255
-
-=head2 accession_date
-
-  data_type: 'varchar'
-  is_nullable: 1
-  size: 10
-
-=head2 accession_procedure
-
-  data_type: 'text'
-  is_nullable: 1
-
-=head2 accession_number
-
-  data_type: 'char'
-  is_nullable: 1
-  size: 128
-
-=head2 stabilization_by
-
-  data_type: 'char'
-  is_nullable: 1
-  size: 255
-
-=head2 stabilization_date
-
-  data_type: 'varchar'
-  is_nullable: 1
-  size: 10
-
-=head2 stabilization_procedure
-
-  data_type: 'text'
-  is_nullable: 1
-
-=head2 stabilization_notes
-
-  data_type: 'text'
-  is_nullable: 1
-
-=head2 virus_app
-
-  data_type: 'char'
-  is_nullable: 1
-  size: 128
-
-=head2 checksum_app
-
-  data_type: 'char'
-  is_nullable: 1
-  size: 128
-
-=head2 media_app
-
-  data_type: 'char'
-  is_nullable: 1
-  size: 128
-
-=head2 other_app
-
-  data_type: 'char'
-  is_nullable: 1
-  size: 128
-
-=head2 toc
-
-  data_type: 'text'
-  is_nullable: 1
-
-=head2 rsa
-
-  data_type: 'text'
-  is_nullable: 1
-
-=head2 technical_metadata
-
-  data_type: 'text'
-  is_nullable: 1
-
-=head2 file_creation_date
-
-  data_type: 'varchar'
-  is_nullable: 1
-  size: 10
-
-=head2 lc_class
-
-  data_type: 'char'
-  is_nullable: 1
-  size: 255
-
-=head2 file_extension
-
-  data_type: 'char'
-  is_nullable: 1
-  size: 16
-
-=head2 parent
-
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 1
-
-=head2 number
-
-  data_type: 'char'
-  is_nullable: 0
-  size: 255
-
-=head2 title
-
-  data_type: 'char'
-  is_nullable: 0
-  size: 255
-
-=head2 personal_name
-
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 1
-
-=head2 corporate_name
-
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 1
-
-=head2 topic_term
-
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 1
-
-=head2 geographic_term
-
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 1
-
-=head2 notes
-
-  data_type: 'text'
-  is_nullable: 1
-
-=head2 circa
-
-  data_type: 'boolean'
-  is_nullable: 0
-  default_value: 0
-
-=head2 language
-
-  data_type: 'char'
-  is_nullable: 0
-  size: 3
-  default_value: 'eng'
-
-=head2 permanent_url
-
-  data_type: 'varchar'
-  is_nullable: 1
-  size: 1024
-
-=head2 pid
-  data_type: 'varchar'
-  is_nullable: 1
-  size: 255
-
-=head2 publication_status
-  data_type: 'varchar'
-  is_nullable: 1
-  size: 32
-
-=head2 arrangement
-  data_type: 'varchar'
-  is_nullable: 1
-  size: 255
-
-=head2 restrictions
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 1
-
-=head2 creator
-
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 1
-
-=cut
-
 __PACKAGE__->add_columns(
   "id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
@@ -446,16 +133,6 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 __PACKAGE__->add_unique_constraint( [ 'number' ] );
 
-=head1 RELATIONS
-
-=head2 parent
-
-Type: belongs_to
-
-Related object: L<CIDER::Schema::Result::Object>
-
-=cut
-
 __PACKAGE__->belongs_to(
   "parent",
   "CIDER::Schema::Result::Object",
@@ -468,28 +145,12 @@ __PACKAGE__->belongs_to(
   },
 );
 
-=head2 objects
-
-Type: has_many
-
-Related object: L<CIDER::Schema::Result::Object>
-
-=cut
-
 __PACKAGE__->has_many(
   "objects",
   "CIDER::Schema::Result::Object",
   { "foreign.parent" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
-
-=head2 personal_name
-
-Type: belongs_to
-
-Related object: L<CIDER::Schema::Result::AuthorityName>
-
-=cut
 
 __PACKAGE__->belongs_to(
   "personal_name",
@@ -503,14 +164,6 @@ __PACKAGE__->belongs_to(
   },
 );
 
-=head2 corporate_name
-
-Type: belongs_to
-
-Related object: L<CIDER::Schema::Result::AuthorityName>
-
-=cut
-
 __PACKAGE__->belongs_to(
   "corporate_name",
   "CIDER::Schema::Result::AuthorityName",
@@ -522,14 +175,6 @@ __PACKAGE__->belongs_to(
     on_update     => "CASCADE",
   },
 );
-
-=head2 topic_term
-
-Type: belongs_to
-
-Related object: L<CIDER::Schema::Result::TopicTerm>
-
-=cut
 
 __PACKAGE__->belongs_to(
   "topic_term",
@@ -543,14 +188,6 @@ __PACKAGE__->belongs_to(
   },
 );
 
-=head2 geographic_term
-
-Type: belongs_to
-
-Related object: L<CIDER::Schema::Result::GeographicTerm>
-
-=cut
-
 __PACKAGE__->belongs_to(
   "geographic_term",
   "CIDER::Schema::Result::GeographicTerm",
@@ -562,14 +199,6 @@ __PACKAGE__->belongs_to(
     on_update     => "CASCADE",
   },
 );
-
-=head2 processing_status
-
-Type: belongs_to
-
-Related object: L<CIDER::Schema::Result::ProcessingStatus>
-
-=cut
 
 __PACKAGE__->belongs_to(
   "processing_status",
@@ -583,14 +212,6 @@ __PACKAGE__->belongs_to(
   },
 );
 
-=head2 type
-
-Type: belongs_to
-
-Related object: L<CIDER::Schema::Result::ItemType>
-
-=cut
-
 __PACKAGE__->belongs_to(
   "type",
   "CIDER::Schema::Result::ItemType",
@@ -602,14 +223,6 @@ __PACKAGE__->belongs_to(
     on_update     => "CASCADE",
   },
 );
-
-=head2 format
-
-Type: belongs_to
-
-Related object: L<CIDER::Schema::Result::ItemFormat>
-
-=cut
 
 __PACKAGE__->belongs_to(
   "format",
@@ -623,28 +236,12 @@ __PACKAGE__->belongs_to(
   },
 );
 
-=head2 record_context
-
-Type: belongs_to
-
-Related object: L<CIDER::Schema::Result::RecordContext>
-
-=cut
-
 __PACKAGE__->belongs_to(
   "record_context",
   "CIDER::Schema::Result::RecordContext",
   { id => "record_context" },
   { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
 );
-
-=head2 object_set_objects
-
-Type: has_many
-
-Related object: L<CIDER::Schema::Result::ObjectSetObject>
-
-=cut
 
 __PACKAGE__->has_many(
   "object_set_objects",
@@ -655,26 +252,10 @@ __PACKAGE__->has_many(
 
 __PACKAGE__->many_to_many('sets' => 'object_set_objects', 'object_set');
 
-=head2 logs
-
-Type: has_many
-
-Related object: L<CIDER::Schema::Result::Log>
-
-=cut
-
 __PACKAGE__->has_many(
     logs => "CIDER::Schema::Result::Log",
     'object',
 );
-
-=head2 creation_log
-
-Type: has_one
-
-Related object: L<CIDER::Schema::Result::Log>
-
-=cut
 
 __PACKAGE__->has_one(
     creation_log => "CIDER::Schema::Result::Log",
@@ -687,41 +268,17 @@ __PACKAGE__->has_one(
     },
 );
 
-=head2 modification_logs
-
-Type: has_many
-
-Related object: L<CIDER::Schema::Result::Log>
-
-=cut
-
 __PACKAGE__->has_many(
     modification_logs => "CIDER::Schema::Result::Log",
     'object',
     { where => { action => 'update' } },
 );
 
-=head2 export_logs
-
-Type: has_many
-
-Related object: L<CIDER::Schema::Result::Log>
-
-=cut
-
 __PACKAGE__->has_many(
     export_logs => "CIDER::Schema::Result::Log",
     'object',
     { where => { action => 'export' } },
 );
-
-=head2 location
-
-Type: belongs_to
-
-Related object: L<CIDER::Schema::Result::Location>
-
-=cut
 
 __PACKAGE__->belongs_to(
     location => "CIDER::Schema::Result::Location",
@@ -730,14 +287,6 @@ __PACKAGE__->belongs_to(
     # ignored!!  TO DO: track this down? bug in DBIx?
     { barcode => 'location' },
 );
-
-=head2 restrictions
-
-Type: belongs_to
-
-Related object: L<CIDER::Schema::Result::ItemRestrictions>
-
-=cut
 
 __PACKAGE__->belongs_to(
   "restrictions",
@@ -751,14 +300,6 @@ __PACKAGE__->belongs_to(
   },
 );
 
-=head2 creator
-
-Type: belongs_to
-
-Related object: L<CIDER::Schema::Result::AuthorityName>
-
-=cut
-
 __PACKAGE__->belongs_to(
   "creator",
   "CIDER::Schema::Result::AuthorityName",
@@ -771,26 +312,10 @@ __PACKAGE__->belongs_to(
   },
 );
 
-=head2 relationships
-
-Type: has_many
-
-Related object: L<CIDER::Schema::Result::CollectionRelationship>
-
-=cut
-
 __PACKAGE__->has_many(
     relationships => 'CIDER::Schema::Result::CollectionRelationship',
     'collection',
 );
-
-=head2 material
-
-Type: has_many
-
-Related object: L<CIDER::Schema::Result::CollectionMaterial>
-
-=cut
 
 __PACKAGE__->has_many(
     material => 'CIDER::Schema::Result::CollectionMaterial',
