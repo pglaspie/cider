@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Wed Jul 20 15:39:48 2011
+-- Created on Thu Jul 21 12:36:34 2011
 -- 
 SET foreign_key_checks=0;
 
@@ -284,7 +284,7 @@ CREATE TABLE `object` (
   `processing_notes` text,
   `description` text,
   `location` char(16),
-  `type` integer,
+  `dc_type` integer,
   `format` integer,
   `funder` char(128),
   `handle` char(128),
@@ -326,6 +326,7 @@ CREATE TABLE `object` (
   `creator` integer,
   INDEX `object_idx_corporate_name` (`corporate_name`),
   INDEX `object_idx_creator` (`creator`),
+  INDEX `object_idx_dc_type` (`dc_type`),
   INDEX `object_idx_format` (`format`),
   INDEX `object_idx_geographic_term` (`geographic_term`),
   INDEX `object_idx_location` (`location`),
@@ -335,11 +336,11 @@ CREATE TABLE `object` (
   INDEX `object_idx_record_context` (`record_context`),
   INDEX `object_idx_restrictions` (`restrictions`),
   INDEX `object_idx_topic_term` (`topic_term`),
-  INDEX `object_idx_type` (`type`),
   PRIMARY KEY (`id`),
   UNIQUE `object_number` (`number`),
   CONSTRAINT `object_fk_corporate_name` FOREIGN KEY (`corporate_name`) REFERENCES `authority_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `object_fk_creator` FOREIGN KEY (`creator`) REFERENCES `authority_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `object_fk_dc_type` FOREIGN KEY (`dc_type`) REFERENCES `item_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `object_fk_format` FOREIGN KEY (`format`) REFERENCES `item_format` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `object_fk_geographic_term` FOREIGN KEY (`geographic_term`) REFERENCES `geographic_term` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `object_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`barcode`),
@@ -348,8 +349,7 @@ CREATE TABLE `object` (
   CONSTRAINT `object_fk_processing_status` FOREIGN KEY (`processing_status`) REFERENCES `processing_status` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `object_fk_record_context` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `object_fk_restrictions` FOREIGN KEY (`restrictions`) REFERENCES `item_restrictions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `object_fk_topic_term` FOREIGN KEY (`topic_term`) REFERENCES `topic_term` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `object_fk_type` FOREIGN KEY (`type`) REFERENCES `item_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `object_fk_topic_term` FOREIGN KEY (`topic_term`) REFERENCES `topic_term` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `collection_relationship`;

@@ -143,7 +143,7 @@ sub init_schema {
         'Object',
         [
             [qw/id parent number title personal_name
-                notes date_from date_to type/],
+                notes date_from date_to dc_type/],
             [4, 3, 'n4', 'Test Item 1', 1,
              'Test notes.', '2000-01-01', '2008-01-01', 1],
             [5, 3, 'n5', 'Test Item 2', 1,

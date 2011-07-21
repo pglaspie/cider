@@ -52,8 +52,8 @@ sub import_from_csv {
             $row->{ parent } = $parent;
         }
 
-        # TO DO: check cider_type?
-        # Do we need cider_type, or can we always deduce it?
+        # TO DO: check type?
+        # Do we need type, or can we always deduce it?
 
         # Perform the actual update-or-insertion.
         eval {

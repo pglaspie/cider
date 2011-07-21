@@ -60,13 +60,13 @@ test_import( {
     title => 'New sub-item',
     number => 'x1',
     date_from => '2000',
-    type => 1,
+    dc_type => 1,
 }, {
     parent => 'n4',
     title => 'New sub-item',
     number => 'x2',
     date_from => '2000',
-    type => 1,
+    dc_type => 1,
 } );
 
 @collections = $schema->resultset('Object')->root_objects;
@@ -90,7 +90,7 @@ for my $subitem ( $item->children ) {
     is( $subitem->title, 'New sub-item', 'Title is correct.' );
     ok( $subitem->number, 'Number exists.' );
     is( $subitem->date_from, '2000', 'Start date is correct.' );
-    is( $subitem->type->name, 'Test Type', 'Type is correct.' );
+    is( $subitem->dc_type->name, 'Test Type', 'DC Type is correct.' );
 }
 
 dies_ok {
@@ -124,11 +124,11 @@ dies_ok {
 } "Series description can't be missing on create.";
 
 dies_ok {
-    test_import( { title => 'New undated item', number => 123, type => 1 } )
+    test_import( { title => 'New undated item', number => 123, dc_type => 1 } )
 } "Item start date can't be missing on create.";
 
 dies_ok {
-    test_import( { number => 55, title => 'foo', type => 1,
+    test_import( { number => 55, title => 'foo', dc_type => 1,
                    date_from => '1-1-2001' } )
 } 'Start date format must be ISO-8601 on create.';
 
@@ -163,4 +163,4 @@ throws_ok {
 # nonexistent parent
 #
 # check max lengths?
-# test cider_type
+# test type

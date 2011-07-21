@@ -38,13 +38,13 @@ test_import( {
     title => 'Test import renaming',
     number => 999,
     date_from => undef,
-    type => undef,
+    dc_type => undef,
 }, {
     parent => 999,
     title => 'Test import creation',
     number => 69105,
     date_from => '2000',
-    type => 1,
+    dc_type => 1,
 } );
 
 $mech->content_contains( 'successfully imported 2 rows' );

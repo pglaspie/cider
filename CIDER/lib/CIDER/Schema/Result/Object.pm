@@ -48,7 +48,7 @@ __PACKAGE__->add_columns(
   { data_type => "text", is_nullable => 1 },
   "location",
   { data_type => "char", is_foreign_key => 1, is_nullable => 1, size => 16 },
-  "type",
+  "dc_type",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "format",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
@@ -213,9 +213,9 @@ __PACKAGE__->belongs_to(
 );
 
 __PACKAGE__->belongs_to(
-  "type",
+  "dc_type",
   "CIDER::Schema::Result::ItemType",
-  { id => "type" },
+  { id => "dc_type" },
   {
     is_deferrable => 1,
     join_type     => "LEFT",
@@ -340,7 +340,7 @@ sub classify {
         $self->ensure_class_loaded( 'CIDER::Schema::Result::Collection' );
         bless $self, 'CIDER::Schema::Result::Collection';
     }
-    elsif ( $self->type ) {
+    elsif ( $self->dc_type ) {
         $self->ensure_class_loaded( 'CIDER::Schema::Result::Item' );
         bless $self, 'CIDER::Schema::Result::Item';
     }
@@ -421,7 +421,7 @@ sub delete {
     return $self;
 }
 
-sub cider_type {
+sub type {
     my $self = shift;
 
     my $class = ref $self;
