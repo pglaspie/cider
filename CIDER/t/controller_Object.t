@@ -114,10 +114,16 @@ ok( my $csv = Text::CSV::Slurp->load( string => $mech->content ),
 is( @$csv, 4, 'CSV has four rows.' );
 is( $csv->[0]->{ title }, 'Test Collection with kids',
     'Collection title is correct' );
+is( $csv->[0]->{ type }, 'collection',
+    'Collection type is correct' );
 is( $csv->[1]->{ title }, 'Test Series 1',
     'Series title is correct' );
+is( $csv->[1]->{ type }, 'series',
+    'Series type is correct' );
 is( $csv->[1]->{ parent }, $csv->[0]->{ number },
     "Child's parent is parent's number" );
+is( $csv->[2]->{ type }, 'item',
+    'Item type is correct' );
 
 $mech->get( '/object/1' );
 $mech->submit_form_ok ( { with_fields => {
