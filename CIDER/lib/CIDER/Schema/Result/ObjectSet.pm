@@ -7,8 +7,6 @@ use base 'DBIx::Class::Core';
 
 use Carp qw(croak);
 
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 NAME
 
 CIDER::Schema::Result::ObjectSet
@@ -16,28 +14,6 @@ CIDER::Schema::Result::ObjectSet
 =cut
 
 __PACKAGE__->table("object_set");
-
-=head1 ACCESSORS
-
-=head2 id
-
-  data_type: 'integer'
-  is_auto_increment: 1
-  is_nullable: 0
-
-=head2 name
-
-  data_type: 'char'
-  is_nullable: 1
-  size: 255
-
-=head2 owner
-
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 1
-
-=cut
 
 __PACKAGE__->add_columns(
   "id",
@@ -48,16 +24,6 @@ __PACKAGE__->add_columns(
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
 );
 __PACKAGE__->set_primary_key("id");
-
-=head1 RELATIONS
-
-=head2 owner
-
-Type: belongs_to
-
-Related object: L<CIDER::Schema::Result::User>
-
-=cut
 
 __PACKAGE__->belongs_to(
   "owner",
@@ -71,21 +37,12 @@ __PACKAGE__->belongs_to(
   },
 );
 
-=head2 object_set_objects
-
-Type: has_many
-
-Related object: L<CIDER::Schema::Result::ObjectSetObject>
-
-=cut
-
 __PACKAGE__->has_many(
   "object_set_objects",
   "CIDER::Schema::Result::ObjectSetObject",
   { "foreign.object_set" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
-
 
 __PACKAGE__->many_to_many('objects' => 'object_set_objects', 'object');
 
@@ -132,12 +89,12 @@ sub remove {
 sub is_homogenous {
     my $self = shift;
 
-    my $last_object_class = undef;
+    my $last_object_type = undef;
     for my $object ( $self->objects ) {
-        if ( not $last_object_class ) {
-            $last_object_class = ref $object;
+        if ( not $last_object_type ) {
+            $last_object_type = $object->type;
         }
-        elsif ( $last_object_class ne ref $object ) {
+        elsif ( $last_object_type ne $object->type ) {
             return 0;
         }
     }

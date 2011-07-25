@@ -39,7 +39,7 @@
     c.uri_for( c.controller( 'Authority' ).action_for( 'edit' ),
                [ list_id, authority.id ] )
 %]">Edit</a>
-[%- IF authority.get_column( 'num_objects' ) == 0 -%]
+[%- IF authority.get_column( 'num_items' ) == 0 -%]
 &nbsp;<a href="[%
      c.uri_for( c.controller( 'Authority' ).action_for( 'delete' ),
                 [ list_id, authority.id ] )

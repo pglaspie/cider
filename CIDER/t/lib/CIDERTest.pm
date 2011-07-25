@@ -122,32 +122,41 @@ sub init_schema {
     $schema->populate(
         'Object',
         [
-            [qw/id parent number title notes
+            [qw/id parent number title/],
+            [1, undef, 'n1', 'Test Collection with kids'],
+            [2, undef, 'n2', 'Test Collection without kids'],
+            [3, 1, 'n3', 'Test Series 1'],
+            [4, 3, 'n4', 'Test Item 1'],
+            [5, 3, 'n5', 'Test Item 2'],
+        ]
+    );
+
+    $schema->populate(
+        'Collection',
+        [
+            [qw/id notes
                 record_context has_physical_documentation processing_status/],
-            [1, undef, 'n1', 'Test Collection with kids', 'Test notes.',
+            [1, 'Test notes.',
              1, 0, 1],
-            [2, undef, 'n2', 'Test Collection without kids', 'Test notes.',
+            [2, 'Test notes.',
              1, 0, 1],
         ]
     );
 
     $schema->populate(
-        'Object',
+        'Series',
         [
-            [qw/id parent number title description/],
-            [3, 1, 'n3', 'Test Series 1', 'Test description.'],
+            [qw/id description/],
+            [3, 'Test description.'],
         ]
     );
 
     $schema->populate(
-        'Object',
+        'Item',
         [
-            [qw/id parent number title personal_name
-                notes date_from date_to dc_type/],
-            [4, 3, 'n4', 'Test Item 1', 1,
-             'Test notes.', '2000-01-01', '2008-01-01', 1],
-            [5, 3, 'n5', 'Test Item 2', 1,
-             'Test notes.', '2002-01-01', '2010-01-01', 1],
+            [qw/id personal_name notes date_from date_to dc_type/],
+            [4, 1, 'Test notes.', '2000-01-01', '2008-01-01', 1],
+            [5, 1, 'Test notes.', '2002-01-01', '2010-01-01', 1],
         ]
     );
 

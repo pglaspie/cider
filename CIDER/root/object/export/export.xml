@@ -9,7 +9,7 @@
     <parent>[% object.parent.number | xml %]</parent>
 [% END -%]
 [% FOR field IN fields -%]
-[% value = object.$field -%]
+[% value = object.$field || object.type_object.$field -%]
 [% IF value -%]
     <[% field %]>[% value.id || value | xml %]</[% field %]>
 [% END -%]

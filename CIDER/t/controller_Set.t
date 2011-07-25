@@ -23,9 +23,9 @@ $mech->submit_form( with_fields => {
 
 my $user = $schema->resultset( 'User' )->find( 1 );
 my ( $homog_set, $heterog_set ) = $user->sets;
-my $item = $schema->resultset( 'Item' )->find( 5 );
+my $item = $schema->resultset( 'Object' )->find( 5 );
 $homog_set->add( $item );
-my $series = $schema->resultset( 'Series' )->find( 3 );
+my $series = $schema->resultset( 'Object' )->find( 3 );
 $heterog_set->add( $series );
 
 $mech->follow_link_ok( { text => 'Your sets' } );

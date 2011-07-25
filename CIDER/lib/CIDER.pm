@@ -23,6 +23,8 @@ use Catalyst qw/
     Session::State::Cookie
 
     Scheduler
+
+    StackTrace
 /;
 
 extends 'Catalyst';
@@ -64,6 +66,9 @@ __PACKAGE__->config(
         flash_to_stash => 1,
         expires => 1000000,
         cookie_expires => 1000000,
+    },
+    stacktrace => {
+        verbose => 2,
     },
     'Controller::HTML::FormFu' => {
         model_stash => {

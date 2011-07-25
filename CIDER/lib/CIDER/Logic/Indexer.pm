@@ -55,60 +55,79 @@ my $index_only = KinoSearch::Plan::StringType->new( stored => 0 );
 my $int_type    = KinoSearch::Plan::Int32Type->new;
 
 # Define the fields.
-my @text_fields = qw(
-                        accession_by
-                        accession_number
-                        accession_procedure
-                        arrangement
-                        checksum
-                        checksum_app
-                        creator
-                        corporate_name
-                        description
-                        file_extension
-                        format
-                        funder
-                        geographic_term
-                        handle
-                        history
-                        lc_class
-                        media_app
-                        notes
-                        number
-                        organization
-                        original_filename
-                        other_app
-                        permanent_url
-                        personal_name
-                        pid
-                        processing_notes
-                        processing_status
-                        publication_status
-                        restrictions
-                        rsa
-                        stabilization_by
-                        stabilization_notes
-                        stabilization_procedure
-                        technical_metadata
-                        title
-                        toc
-                        topic_term
-                        dc_type
-                        virus_app
-                );
+my @object_text_fields
+    = qw(
+            number
+            title
+    );
+
+my @collection_text_fields
+    = qw(
+            history
+            scope
+            organization
+            notes
+            processing_status
+            processing_notes
+            permanent_url
+            pid
+            publication_status
+    );
+
+my @series_text_fields
+    = qw(
+            description
+            arrangement
+            notes
+    );
+
+my @item_text_fields
+    = qw(
+            creator
+            restrictions
+            accession_by
+            accession_procedure
+            accession_number
+            dc_type
+            format
+            personal_name
+            corporate_name
+            topic_term
+            geographic_term
+            notes
+            checksum
+            original_filename
+            stabilization_by
+            stabilization_procedure
+            stabilization_notes
+            virus_app
+            checksum_app
+            media_app
+            other_app
+            toc
+            rsa
+            technical_metadata
+            lc_class
+            file_extension
+    );
 
 # Multitext fields are one-to-many text fields.  Their values are just
 # joined with newlines and treated as single text fields.
-my @multitext_fields = qw(
-                             material
-                         );
+my @collection_multitext_fields
+    = qw(
+            material
+    );
 
-for my $field ( @text_fields, @multitext_fields ) {
+for my $field ( @object_text_fields,
+                @collection_text_fields,
+                @series_text_fields,
+                @item_text_fields,
+                @collection_multitext_fields,
+              ) {
     $index_schema->spec_field( name => $field, type => $text_type );
 }
 
 $index_schema->spec_field( name => 'id', type => $string_type );
-$index_schema->spec_field( name => 'set', type => $unstored_text );
 
 
 =head1 METHODS
@@ -330,20 +349,33 @@ sub _add_to_indexer {
     my ( $object, $indexer ) = @_;
 
     my $doc = {
-        id => $object->id || '',
+        id => $object->id,
     };
 
-    for my $field ( @text_fields ) {
+    for my $field ( @object_text_fields ) {
         $doc->{ $field } = $object->$field || '';
     }
 
-    for my $field ( @multitext_fields ) {
-        $doc->{ $field } = join "\n", $object->$field;
+    # TO DO: inspect columns_info to get the field lists?
+    my $type_obj = $object->type_object;
+    if ( $object->type eq 'collection' ) {
+        for my $field ( @collection_text_fields ) {
+            $doc->{ $field } = $type_obj->$field || '';
+        }
+        for my $field ( @collection_multitext_fields ) {
+            $doc->{ $field } = join "\n", $type_obj->$field;
+        }
     }
-
-    my @sets = $object->sets;
-    my $sets = join ' ', map { $_->id } @sets;
-    $doc->{ set } = $sets || '';
+    elsif ( $object->type eq 'series' ) {
+        for my $field ( @series_text_fields ) {
+            $doc->{ $field } = $type_obj->$field || '';
+        }
+    }
+    elsif ( $object->type eq 'item' ) {
+        for my $field ( @item_text_fields ) {
+            $doc->{ $field } = $type_obj->$field || '';
+        }
+    }
 
     $indexer->add_doc( $doc );
 }

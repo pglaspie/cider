@@ -39,7 +39,7 @@ __PACKAGE__->set_primary_key("id");
 
 =head1 RELATIONS
 
-=head2 relationships
+=head2 collection_relationships
 
 Type: has_many
 
@@ -48,7 +48,7 @@ Related object: L<CIDER::Schema::Result::CollectionRelationship>
 =cut
 
 __PACKAGE__->has_many(
-    relationships => 'CIDER::Schema::Result::CollectionRelationship',
+    collection_relationships => 'CIDER::Schema::Result::CollectionRelationship',
     'predicate',
     { cascade_copy => 0, cascade_delete => 0 },
 );

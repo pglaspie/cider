@@ -30,41 +30,44 @@ elements:
 # Start Date (derived)
 # End Date (derived)
 
-    - type: Fieldset
-      legend: Bulk Date
-      elements:            
-          - type: Text
-            label: From
-            name: bulk_date_from
-            id: bulk_date_from
-            constraint: &Date
-              type: Callback
-              callback: 'CIDER::Logic::Utils::iso_8601_date'
-              message: ISO 8601 date must be YYYY, YYYY-MM, or YYYY-MM-DD
+    - type: Block
+      nested_name: series
+      elements:
+        - type: Fieldset
+          legend: Bulk Date
+          elements:            
+              - type: Text
+                label: From
+                name: bulk_date_from
+                id: bulk_date_from
+                constraint: &Date
+                  type: Callback
+                  callback: 'CIDER::Logic::Utils::iso_8601_date'
+                  message: ISO 8601 date must be YYYY, YYYY-MM, or YYYY-MM-DD
 
-          - type: Text
-            label: To
-            name: bulk_date_to
-            id: bulk_date_to
-            constraint: *Date
+              - type: Text
+                label: To
+                name: bulk_date_to
+                id: bulk_date_to
+                constraint: *Date
 
-# Restrictions (derived)
+    # Restrictions (derived)
 
-    - type: Textarea
-      label: Description
-      name: description
-      id: description
-      constraints:
-        - type: Required
+        - type: Textarea
+          label: Description
+          name: description
+          id: description
+          constraints:
+            - type: Required
 
-    - type: Text
-      label: Arrangement
-      name: arrangement
+        - type: Text
+          label: Arrangement
+          name: arrangement
 
-    - type: Textarea
-      label: Notes
-      name: notes
-      id: notes
+        - type: Textarea
+          label: Notes
+          name: notes
+          id: notes
         
 # Extent (derived)
 
