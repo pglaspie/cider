@@ -155,10 +155,16 @@ sub _create :Private {
             $parent_field->value ( $parent_id );
         }
 
-        $form->default_values( { language => 'eng' } );
+        $form->default_values( { 'collection.language' => 'eng' } );
     }
     elsif ( $form->submitted_and_valid ) {
         $c->forward( '_ensure_location', [ 'create' ] );
+
+        for my $key ( $form->valid ) {
+            unless ( defined $form->param_value( $key ) ) {
+                $c->log->debug( "Undefined value for field '$key'" );
+            }
+        }
 
         my $object = $form->model->create( );
 
@@ -175,12 +181,7 @@ sub _ensure_location :Private {
 
     my $form = $c->stash->{ form };
 
-    my $barcode = $form->param_value( 'location' );
-    if ( defined( $barcode ) && $barcode eq '' ) {
-        # Replace empty string with null, so as not to violate the
-        # foreign key constraint.
-        $form->add_valid( location => undef );
-    }
+    my $barcode = $form->param_value( 'item.location' );
     return unless $barcode &&
         !$c->model( 'CIDERDB::Location' )->find( $barcode );
 
@@ -188,7 +189,8 @@ sub _ensure_location :Private {
     # to create one, then come back here afterward.
 
     $c->flash->{ return_uri } =
-        $c->uri_for( $c->action, $c->req->captures, $form->params );
+        $c->uri_for( $c->action, $c->req->captures,
+                     { map { $_ => $form->param_value( $_ ) } $form->valid } );
     $c->flash->{ title } = $form->param_value( 'title' );
     $c->flash->{ action } = $action;
 

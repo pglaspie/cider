@@ -48,64 +48,64 @@ use overload '""' => sub { shift->name() }, fallback => 1;
 
 =head1 RELATIONS
 
-=head2 object_personal_names
+=head2 item_personal_names
 
 Type: has_many
 
-Related object: L<CIDER::Schema::Result::Object>
+Related object: L<CIDER::Schema::Result::Item>
 
 =cut
 
 __PACKAGE__->has_many(
-  "object_personal_names",
-  "CIDER::Schema::Result::Object",
+  "item_personal_names",
+  "CIDER::Schema::Result::Item",
   { "foreign.personal_name" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-=head2 object_corporate_names
+=head2 item_corporate_names
 
 Type: has_many
 
-Related object: L<CIDER::Schema::Result::Object>
+Related object: L<CIDER::Schema::Result::Item>
 
 =cut
 
 __PACKAGE__->has_many(
-  "object_corporate_names",
-  "CIDER::Schema::Result::Object",
+  "item_corporate_names",
+  "CIDER::Schema::Result::Item",
   { "foreign.corporate_name" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-=head2 object_creator
+=head2 item_creator
 
 Type: has_many
 
-Related object: L<CIDER::Schema::Result::Object>
+Related object: L<CIDER::Schema::Result::Item>
 
 =cut
 
 __PACKAGE__->has_many(
-  "object_creators",
-  "CIDER::Schema::Result::Object",
+  "item_creators",
+  "CIDER::Schema::Result::Item",
   { "foreign.creator" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-=head2 objects
+=head2 items
 
 Type: has_many
 
-Related object: L<CIDER::Schema::Result::Object>
+Related object: L<CIDER::Schema::Result::Item>
 
-A resultset of all objects that have this authority name in any field.
+A resultset of all items that have this authority name in any field.
 
 =cut
 
 __PACKAGE__->has_many(
-  "objects",
-  "CIDER::Schema::Result::Object",
+  "items",
+  "CIDER::Schema::Result::Item",
   [
       { "foreign.personal_name" => "self.id" },
       { "foreign.corporate_name" => "self.id" },
@@ -120,10 +120,8 @@ sub update {
 
     $self->next::method( @_ );
 
-    for my $object ( $self->object_personal_names,
-                     $self->object_corporate_names,
-                     $self->object_creators ) {
-        $self->result_source->schema->indexer->update( $object );
+    for my $item ( $self->items ) {
+        $self->result_source->schema->indexer->update( $item->object );
     }
 
     return $self;

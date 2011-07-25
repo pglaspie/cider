@@ -33,35 +33,61 @@ sub import_from_csv {
     while ( my $row = $csv->getline_hr( $handle ) ) {
         $row_number++;
 
+        my $vals = { };
+
         my $object;
-        if ( $row->{ id } ) {
-            $object = $object_rs->find( $row->{ id } );
-        }
-        else {
-            # If the 'id' field has no value, remove it completely, so
-            # that the DB can properly assign a fresh one.
-            delete $row->{ id };
+        if ( my $id = delete $row->{ id } ) {
+            $object = $object_rs->find( $id );
         }
 
-        if ( $row->{ parent } ) {
-            my $parent = $object_rs->find( { number => $row->{ parent } } );
-            unless ( $parent ) {
-                $object_rs->throw_exception(
-                    "Unknown parent number: $row->{ parent }" );
+        if ( exists $row->{ parent } ) {
+            if ( my $parent_num = delete $row->{ parent } ) {
+                my $parent = $object_rs->find( { number => $parent_num } );
+                unless ( $parent ) {
+                    $object_rs->throw_exception(
+                        "Unknown parent number: $parent_num" );
+                }
+                $vals->{ parent } = $parent;
             }
-            $row->{ parent } = $parent;
+            else {
+                $vals->{ parent } = undef;
+            }
         }
 
-        # TO DO: check type?
-        # Do we need type, or can we always deduce it?
+        for my $field ( qw(number title) ) {
+            if ( exists $row->{ $field } ) {
+                if ( my $val = delete $row->{ $field } ) {
+                    $vals->{ $field } = $val;
+                }
+                else {
+                    $vals->{ $field } = undef;
+                }
+            }
+        }
+
+        my $type = delete $row->{ type };
+        # TO DO: check that type is valid?
+        unless ( $type ) {
+            if ( $object ) {
+                $type = $object->type;
+            }
+            # TO DO: else croak!
+        }
 
         # Perform the actual update-or-insertion.
         eval {
             if ( $object ) {
-                $object->update( $row );
+                $object->update( $vals );
+                unless ( $object->$type ) {
+                    # TO DO: warn about change in type
+                    # TO DO: copy shared fields?
+                    $object->type_object->delete;
+                }
+                $object->update_or_create_related( $type, $row );
             }
             else {
-                $object = $object_rs->create( $row );
+                $vals->{ $type } = $row;
+                $object = $object_rs->create( $vals );
             }
         };
         if ( $@ ) {

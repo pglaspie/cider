@@ -37,40 +37,40 @@ $mech->content_contains( 'Esperanto', 'Language list is populated.' );
 $mech->submit_form_ok( { with_fields => {
     title => 'New test collection',
     number => '69105',
-    processing_status => 1,
-    has_physical_documentation => 1,
+    'collection.processing_status' => 1,
+    'collection.has_physical_documentation' => 1,
 } }, 'Submitted creation form' );
 
 $mech->content_contains( 'You have successfully created' );
 
-my $rs = $schema->resultset( 'Collection' )->search( { number => '69105' } );
+my $rs = $schema->resultset( 'Object' )->search( { number => '69105' } );
 is( $rs->first->created_by->username, 'alice', 'Created by alice.' );
 
 $mech->submit_form_ok( { with_fields => {
     number => '42',
 } }, 'Submitted update form' );
 
-$rs = $schema->resultset( 'Collection' )->search( { number => '42' } );
+$rs = $schema->resultset( 'Object' )->search( { number => '42' } );
 use DateTime;
 is( $rs->first->modification_logs->first->date, DateTime->today,
     'Date modified is today.' );
 
 $mech->submit_form_ok( { with_fields => {
-    bulk_date_from => '12-31-1999',
-    bulk_date_to => '2003/01/13',
+    'collection.bulk_date_from' => '12-31-1999',
+    'collection.bulk_date_to' => '2003/01/13',
 } }, 'Use incorrect date formats' );
 $mech->content_contains( 'Sorry', 'Form submission error.' );
 $mech->content_like( qr(date must be.*date must be.)s, 'Two error messages.' );
 
 $mech->submit_form_ok( { with_fields => {
-    bulk_date_from => '1999-12-31',
-    bulk_date_to => '2003-01-13',
+    'collection.bulk_date_from' => '1999-12-31',
+    'collection.bulk_date_to' => '2003-01-13',
 } }, 'Use correct date format' );
 $mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
 
 $mech->submit_form_ok( { with_fields => {
-    bulk_date_from => '1999-12',
-    bulk_date_to => '2003',
+    'collection.bulk_date_from' => '1999-12',
+    'collection.bulk_date_to' => '2003',
 } }, 'Partial dates' );
 $mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
 
@@ -85,12 +85,12 @@ $mech->content_contains( 'Create a new item' );
 $mech->submit_form_ok( { with_fields => {
     title => 'Æthelred the Unready',
     number => 'II',
-    circa => 1,
-    date_from => '0968',
-    date_to => '1016-04-23',
-    accession_date => '2011-06',
-    dc_type => 1,
-    stabilization_date => '9999',
+    'item.circa' => 1,
+    'item.date_from' => '0968',
+    'item.date_to' => '1016-04-23',
+    'item.accession_date' => '2011-06',
+    'item.dc_type' => 1,
+    'item.stabilization_date' => '9999',
 } }, 'Created a sub-item with partial dates' );
 
 $mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
@@ -116,6 +116,8 @@ is( $csv->[0]->{ title }, 'Test Collection with kids',
     'Collection title is correct' );
 is( $csv->[0]->{ type }, 'collection',
     'Collection type is correct' );
+is( $csv->[0]->{ notes }, 'Test notes.',
+    'Collection notes are correct' );
 is( $csv->[1]->{ title }, 'Test Series 1',
     'Series title is correct' );
 is( $csv->[1]->{ type }, 'series',

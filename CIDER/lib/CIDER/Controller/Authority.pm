@@ -64,9 +64,9 @@ sub authority :Chained :CaptureArgs(1) {
     $c->stash->{ list_name }  = $list_names->{ $list_id };
     $c->stash->{ list }       = $rs->search( undef, {
         order_by => 'name',
-        join => 'objects',
+        join => 'items',
         group_by => 'me.id',
-        '+columns' => [ { num_objects => { count => 'objects.id' } } ],
+        '+columns' => [ { num_items => { count => 'items.id' } } ],
     } );
 
     $c->stash->{ notes }      = $list_id ne 'format';
