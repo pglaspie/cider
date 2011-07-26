@@ -80,10 +80,10 @@ is( $schema->resultset( 'Item' )->find( $item_2->id )->date_to,
 
 # TO DO: re-implement date ranges on collections and series.
 
-# is( $collection_1->collection->date_from, $item_1->date_from,
+# is( $collection_1->date_from, $item_1->date_from,
 #     "The collection's date_from is the earliest date_from of its subitems.");
 
-# is( $collection_1->collection->date_to, $item_2->date_to,
+# is( $collection_1->date_to, $item_2->date_to,
 #     "The collection's date_to is the latest date_to of its subitems.");
 
 my $collection_2 = $collections[1];
