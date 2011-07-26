@@ -125,11 +125,6 @@ dies_ok {
 } "Series number can't be missing on create.";
 
 dies_ok {
-    test_import( { type => 'series',
-                   title => 'New undescribed series', number => 28 } )
-} "Series description can't be missing on create.";
-
-dies_ok {
     test_import( { type => 'item',
                    title => 'New undated item', number => 123, dc_type => 1 } )
 } "Item start date can't be missing on create.";
