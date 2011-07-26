@@ -1,4 +1,4 @@
-package CIDER::Schema::Result::ProcessingStatus;
+package CIDER::Schema::Result::Documentation;
 
 use strict;
 use warnings;
@@ -7,11 +7,11 @@ use base 'DBIx::Class::Core';
 
 =head1 NAME
 
-CIDER::Schema::Result::ProcessingStatus
+CIDER::Schema::Result::Documentation
 
 =cut
 
-__PACKAGE__->table( 'processing_status' );
+__PACKAGE__->table( 'documentation' );
 
 __PACKAGE__->add_columns(
     id =>
@@ -20,15 +20,14 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key( 'id' );
 
 __PACKAGE__->has_many(
-    collections =>
-        'CIDER::Schema::Result::Collection',
-    'processing_status',
+    collections => 'CIDER::Schema::Result::Collection',
+    undef,
     { cascade_copy => 0, cascade_delete => 0 },
 );
 
 __PACKAGE__->add_columns(
     name =>
-        { data_type => 'varchar', size => 10 },
+        { data_type => 'varchar', size => 3 },
 );
 __PACKAGE__->add_unique_constraint( [ 'name' ] );
 use overload '""' => sub { shift->name() }, fallback => 1;

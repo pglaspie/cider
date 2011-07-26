@@ -72,10 +72,27 @@ sub init_schema {
     );
 
     $schema->populate(
+        'Documentation',
+        [
+            [qw/id name description/],
+            [1, 'yes', 'Has physical documentation'],
+            [2, 'no', 'Does not have physical documentation'],
+        ]
+    );
+
+    $schema->populate(
         'ProcessingStatus',
         [
+            [qw/id name description/],
+            [1, 'test_status', 'Test Status'],
+        ]
+    );
+
+    $schema->populate(
+        'PublicationStatus',
+        [
             [qw/id name/],
-            [1, 'Test Status'],
+            [1, 'draft'],
         ]
     );
 
@@ -135,11 +152,11 @@ sub init_schema {
         'Collection',
         [
             [qw/id notes
-                record_context has_physical_documentation processing_status/],
+                documentation processing_status/],
             [1, 'Test notes.',
-             1, 0, 1],
+             1, 1],
             [2, 'Test notes.',
-             1, 0, 1],
+             1, 1],
         ]
     );
 
@@ -187,6 +204,14 @@ sub init_schema {
             [qw/collection material/],
             [1, 'Test Material 1'],
             [1, 'Test Material 2'],
+        ]
+    );
+
+    $schema->populate(
+        'CollectionLanguage',
+        [
+            [qw/collection language/],
+            [1, 'eng'],
         ]
     );
 

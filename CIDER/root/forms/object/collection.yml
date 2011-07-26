@@ -15,17 +15,13 @@ elements:
       label: Collection Number
       name: number
       id: number
-      constraints:
-        - type: Required
-
-# Accession Number(s) (derived)
+      constraint: Required
 
     - type: Text
       label: Collection Title
       name: title
       id: title
-      constraints:
-        - type: Required
+      constraint: Required
 
 # Start Date (derived)
 # End Date (derived)
@@ -52,20 +48,6 @@ elements:
 
 # Restrictions (derived)
 
-    - type: Select
-      label: Record Context
-      name: record_context
-      id: record_context
-      model_config:
-        resultset: RecordContext
-        attributes:
-          order_by: name
-
-    - type: Textarea
-      label: Archival History
-      name: history
-      id: history
-
     - type: Textarea
       label: Scope
       name: scope
@@ -76,9 +58,32 @@ elements:
       name: organization
       id: organization
 
+# Primary and Secondary Record Contexts
+
+    - type: Textarea
+      label: Archival History
+      name: history
+      id: history
+
+    - type: Select
+      label: Documentation
+      name: documentation
+      id: documentation
+      empty_first: 1
+      constraint: Required
+      model_config:
+        resultset: Documentation
+        label_column: description
+        attributes:
+          order_by: id
+
+    - type: Textarea
+      label: Processing Notes
+      name: processing_notes
+      id: processing_notes
+
     - type: Hidden
       name: material_count
-
     - type: Fieldset
       legend: Associated Material
       elements:
@@ -100,12 +105,43 @@ elements:
       name: notes
       id: notes
 
-    - type: Select
-      label: Language
-      name: language
-      id: language
+# TO DO: fix this!
+    # - type: Hidden
+    #   name: language_count
+    # - type: Fieldset
+    #   legend: Languages
+    #   elements:
+    #     - type: Repeatable
+    #       nested_name: languages
+    #       counter_name: language_count
+    #       model_config:
+    #         empty_rows: 1
+    #       elements:
+    #         - type: Hidden
+    #           name: id
+    #         - type: Select
+    #           name: language
+    #           empty_first: 1
+#              model_config:
+#                delete_if_empty: 1
 
-# Subjects
+    - type: Hidden
+      name: subject_count
+    - type: Fieldset
+      legend: Subjects
+      elements:
+        - type: Repeatable
+          nested_name: subjects
+          counter_name: subject_count
+          model_config:
+            empty_rows: 1
+          elements:
+            - type: Hidden
+              name: id
+            - type: Text
+              name: subject
+              model_config:
+                delete_if_empty: 1
 
     - type: Select
       label: Processing Status
@@ -115,25 +151,11 @@ elements:
       empty_first: 1
       model_config:
         resultset: ProcessingStatus
+        label_column: description
         attributes:
           order_by: id
 
-    - type: Textarea
-      label: Processing Notes
-      name: processing_notes
-      id: processing_notes
-
-    - type: Select
-      label: Documentation
-      name: has_physical_documentation
-      id: has_physical_documentation
-      empty_first: 1
-      options:
-        - [ '1', 'This collection has a physical collection documentation folder' ]
-
-        - [ '0', 'This collection does not have a physical collection documentation folder' ]
-      constraints:
-        - type: Required
+# Accession Number(s) (derived)
 
     - type: Text
       name: permanent_url
@@ -148,16 +170,15 @@ elements:
     - type: Text
       name: pid
       label: PID
+      # TO DO: constrain uniqueness?
 
     - type: Select
       name: publication_status
       label: Publication Status
-      empty_first: 1
-      options:
-        - [ draft, draft ]
-        - [ ready, ready ]
-        - [ exported, exported ]
-        - [ re-export, re-export ]
+      model_config:
+        resultset: PublicationStatus
+        attributes:
+          order_by: id
 
     - type: Fieldset
       legend: Relationships

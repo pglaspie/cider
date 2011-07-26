@@ -49,10 +49,8 @@ test_import( {
 test_import( {
     type => 'collection',
     title => 'Brand-new collection',
-    record_context => 1,
-    number    => 41,
-    language  => 'eng',
-    has_physical_documentation => 0,
+    number => 41,
+    documentation => 1,
     processing_status => 1,
 } );
 
@@ -108,16 +106,16 @@ is( $schema->resultset( 'Collection' )->find( 1 )->number, 'n1',
     'Number was not updated on failed import.' );
 
 dies_ok {
-    test_import( { title => 'New collection', number => 123,
-                   type => 'collection',
-                   record_context => 1, has_physical_documentation => 1 } )
+    test_import( { type => 'collection',
+                   title => 'New collection', number => 123,
+                   documentation => 1 } )
 } "Collection processing status can't be missing on create.";
 
 dies_ok {
-    test_import( { title => 'New collection', number => 123,
-                   type => 'collection',
-                   record_context => 1, processing_status => 1 } )
-} "Collection has_physical_documentation can't be missing on create.";
+    test_import( { type => 'collection',
+                   title => 'New collection', number => 123,
+                   processing_status => 1 } )
+} "Collection documentation can't be missing on create.";
 
 dies_ok {
     test_import( { type => 'series',
@@ -130,8 +128,8 @@ dies_ok {
 } "Item start date can't be missing on create.";
 
 dies_ok {
-    test_import( { number => 55, title => 'foo', dc_type => 1,
-                   type => 'item',
+    test_import( { type => 'item',
+                   number => 55, title => 'foo', dc_type => 1,
                    date_from => '1-1-2001' } )
 } 'Start date format must be ISO-8601 on create.';
 

@@ -1,4 +1,4 @@
-package CIDER::Schema::Result::CollectionMaterial;
+package CIDER::Schema::Result::CollectionSubject;
 
 use strict;
 use warnings;
@@ -7,11 +7,11 @@ use base 'DBIx::Class::Core';
 
 =head1 NAME
 
-CIDER::Schema::Result::CollectionMaterial
+CIDER::Schema::Result::CollectionSubject
 
 =cut
 
-__PACKAGE__->table( 'collection_material' );
+__PACKAGE__->table( 'collection_subject' );
 
 __PACKAGE__->add_columns(
     id =>
@@ -29,10 +29,10 @@ __PACKAGE__->belongs_to(
 );
 
 __PACKAGE__->add_columns(
-    material =>
+    subject =>
         { data_type => 'varchar' },
 );
-use overload '""' => sub { shift->material() }, fallback => 1;
+use overload '""' => sub { shift->subject() }, fallback => 1;
 
 sub insert {
     my $self = shift;

@@ -103,7 +103,8 @@ $importer->import_from_csv( $handle );
 $hits = $model->search( query => 'Imported' );
 is( $hits->total_hits, 2, 'Found two Imported.' );
 
-$hits = $model->search( query => 'Status' );
+# TO DO: should look for 'Status'
+$hits = $model->search( query => 'test_status' );
 is( $hits->total_hits, 2, 'Found two collections with processing status.' );
 
 $query = KinoSearch::Search::TermQuery->new(
