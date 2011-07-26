@@ -27,14 +27,12 @@ is( $obj->date_available, DateTime->new( year => 2011, month => 5, day => 1 ),
     'Object 1 available on 2011-05-01.' );
 
 $schema->user( 1 );
-$obj = $schema->resultset( 'Object' )->create( {
+$obj = $schema->resultset( 'Item' )->create( {
     number    => 12345,
     title     => 'Test Item 3',
-    item      => {
-        date_from => '2000-01-01',
-        date_to   => '2010-01-01',
-        dc_type   => 1,
-    },
+    date_from => '2000-01-01',
+    date_to   => '2010-01-01',
+    dc_type   => 1,
 } );
 
 ok( $obj, 'Created test item 3.' );

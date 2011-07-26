@@ -3,7 +3,7 @@ method: post
 form_error_message: Sorry, there was in error in your submission. Please see below.
 
 model_config:
-    resultset: Object
+    resultset: Collection
 
 default_args:
     elements:
@@ -30,177 +30,172 @@ elements:
 # Start Date (derived)
 # End Date (derived)
 
-    - type: Block
-      nested_name: collection
+    - type: Fieldset
+      legend: Bulk Dates
       elements:
+          - type: Text
+            label: From
+            name: bulk_date_from
+            id: bulk_date_from
+            constraint: &Date
+              type: Callback
+              callback: 'CIDER::Logic::Utils::iso_8601_date'
+              message: ISO 8601 date must be YYYY, YYYY-MM, or YYYY-MM-DD
 
-        - type: Fieldset
-          legend: Bulk Dates
-          elements:
-              - type: Text
-                label: From
-                name: bulk_date_from
-                id: bulk_date_from
-                constraint: &Date
-                  type: Callback
-                  callback: 'CIDER::Logic::Utils::iso_8601_date'
-                  message: ISO 8601 date must be YYYY, YYYY-MM, or YYYY-MM-DD
+          - type: Text
+            label: To
+            name: bulk_date_to
+            id: bulk_date_to
+            constraint: *Date
 
-              - type: Text
-                label: To
-                name: bulk_date_to
-                id: bulk_date_to
-                constraint: *Date
+# Extent (derived)
 
-    # Extent (derived)
+# Restrictions (derived)
 
-    # Restrictions (derived)
+    - type: Select
+      label: Record Context
+      name: record_context
+      id: record_context
+      model_config:
+        resultset: RecordContext
+        attributes:
+          order_by: name
 
-        - type: Select
-          label: Record Context
-          name: record_context
-          id: record_context
-          model_config:
-            resultset: RecordContext
-            attributes:
-              order_by: name
+    - type: Textarea
+      label: Archival History
+      name: history
+      id: history
 
-        - type: Textarea
-          label: Archival History
-          name: history
-          id: history
+    - type: Textarea
+      label: Scope
+      name: scope
+      id: scope
 
-        - type: Textarea
-          label: Scope
-          name: scope
-          id: scope
-
-        - type: Textarea
-          label: Organization
-          name: organization
-          id: organization
-
-        - type: Hidden
-          name: material_count
-
-        - type: Fieldset
-          legend: Associated Material
-          elements:
-            - type: Repeatable
-              nested_name: material
-              counter_name: material_count
-              model_config:
-                empty_rows: 1
-              elements:
-                - type: Hidden
-                  name: id
-                - type: Text
-                  name: material
-                  model_config:
-                    delete_if_empty: 1
-
-        - type: Textarea
-          label: Notes
-          name: notes
-          id: notes
-
-        - type: Select
-          label: Language
-          name: language
-          id: language
-
-    # Subjects
-
-        - type: Select
-          label: Processing Status
-          name: processing_status
-          id: processing_status
-          constraint: Required
-          empty_first: 1
-          model_config:
-            resultset: ProcessingStatus
-            attributes:
-              order_by: id
-
-        - type: Textarea
-          label: Processing Notes
-          name: processing_notes
-          id: processing_notes
-
-        - type: Select
-          label: Documentation
-          name: has_physical_documentation
-          id: has_physical_documentation
-          empty_first: 1
-          options:
-            - [ '1', 'This collection has a physical collection documentation folder' ]
-
-            - [ '0', 'This collection does not have a physical collection documentation folder' ]
-          constraints:
-            - type: Required
-
-        - type: Text
-          name: permanent_url
-          label: Permanent URL
-          constraint:
-            type: Regex
-            common:
-              - URI
-              - HTTP
-              - { '-scheme': 'https?' }
-
-        - type: Text
-          name: pid
-          label: PID
-
-        - type: Select
-          name: publication_status
-          label: Publication Status
-          empty_first: 1
-          options:
-            - [ draft, draft ]
-            - [ ready, ready ]
-            - [ exported, exported ]
-            - [ re-export, re-export ]
-
-        - type: Fieldset
-          legend: Relationships
-          elements:
-            - type: Hidden
-              name: relationship_count
-
-            - type: Repeatable
-              nested_name: collection_relationships
-              counter_name: relationship_count
-              model_config:
-                empty_rows: 1
-              elements:
-                - type: Hidden
-                  name: id
-
-                - type: Select
-                  label: Predicate
-                  name: predicate
-                  constraint:
-                    - type: DependOn
-                      others: pid
-                  empty_first: 1
-                  model_config:
-                    delete_if_empty: 1
-                    resultset: RelationshipPredicate
-                    attributes:
-                      order_by: id
-
-                - type: Text
-                  label: PID
-                  name: pid
-                  constraint:
-                    - type: DependOn
-                      others: predicate
+    - type: Textarea
+      label: Organization
+      name: organization
+      id: organization
 
     - type: Hidden
-      name: parent
-      id: parent
+      name: material_count
+
+    - type: Fieldset
+      legend: Associated Material
+      elements:
+        - type: Repeatable
+          nested_name: material
+          counter_name: material_count
+          model_config:
+            empty_rows: 1
+          elements:
+            - type: Hidden
+              name: id
+            - type: Text
+              name: material
+              model_config:
+                delete_if_empty: 1
+
+    - type: Textarea
+      label: Notes
+      name: notes
+      id: notes
+
+    - type: Select
+      label: Language
+      name: language
+      id: language
+
+# Subjects
+
+    - type: Select
+      label: Processing Status
+      name: processing_status
+      id: processing_status
+      constraint: Required
+      empty_first: 1
+      model_config:
+        resultset: ProcessingStatus
+        attributes:
+          order_by: id
+
+    - type: Textarea
+      label: Processing Notes
+      name: processing_notes
+      id: processing_notes
+
+    - type: Select
+      label: Documentation
+      name: has_physical_documentation
+      id: has_physical_documentation
+      empty_first: 1
+      options:
+        - [ '1', 'This collection has a physical collection documentation folder' ]
+
+        - [ '0', 'This collection does not have a physical collection documentation folder' ]
+      constraints:
+        - type: Required
+
+    - type: Text
+      name: permanent_url
+      label: Permanent URL
+      constraint:
+        type: Regex
+        common:
+          - URI
+          - HTTP
+          - { '-scheme': 'https?' }
+
+    - type: Text
+      name: pid
+      label: PID
+
+    - type: Select
+      name: publication_status
+      label: Publication Status
+      empty_first: 1
+      options:
+        - [ draft, draft ]
+        - [ ready, ready ]
+        - [ exported, exported ]
+        - [ re-export, re-export ]
+
+    - type: Fieldset
+      legend: Relationships
+      elements:
+        - type: Hidden
+          name: relationship_count
+
+        - type: Repeatable
+          nested_name: collection_relationships
+          counter_name: relationship_count
+          model_config:
+            empty_rows: 1
+          elements:
+            - type: Hidden
+              name: id
+
+            - type: Select
+              label: Predicate
+              name: predicate
+              constraint:
+                - type: DependOn
+                  others: pid
+              empty_first: 1
+              model_config:
+                delete_if_empty: 1
+                resultset: RelationshipPredicate
+                attributes:
+                  order_by: id
+
+            - type: Text
+              label: PID
+              name: pid
+              constraint:
+                - type: DependOn
+                  others: predicate
+
+    - type: Hidden
+      name: parent_id
 
 
     - type: Submit

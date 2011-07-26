@@ -52,14 +52,20 @@ __PACKAGE__->has_many(
 
 __PACKAGE__->might_have(
     collection => 'CIDER::Schema::Result::Collection',
+    undef,
+    { cascade_update => 0, cascade_delete => 0 },
 );
 
 __PACKAGE__->might_have(
     series => 'CIDER::Schema::Result::Series',
+    undef,
+    { cascade_update => 0, cascade_delete => 0 },
 );
 
 __PACKAGE__->might_have(
     item => 'CIDER::Schema::Result::Item',
+    undef,
+    { cascade_update => 0, cascade_delete => 0 },
 );
 
 =head2 type_object
@@ -129,36 +135,23 @@ __PACKAGE__->has_many(
 sub children {
     my $self = shift;
 
-    my $object_rs = $self->result_source->schema->resultset('Object');
-
-    return $object_rs
-           ->search( { parent => $self->id }, { order_by => 'title' } )
-           ->all;
+    return map { $_->type_object }
+        $self->objects->search( undef, { order_by => 'title' } );
 }
 
 sub number_of_children {
     my $self = shift;
 
-    my $object_rs = $self->result_source->schema->resultset('Object');
-
-    return $object_rs
-           ->search( { parent => $self->id } )
-           ->count;
+    return $self->objects->count;
 }
 
 sub ancestors {
     my $self = shift;
-    my ( $ancestors_ref ) = @_;
-    $ancestors_ref ||= [];
 
     if ( my $parent = $self->parent ) {
-        push @$ancestors_ref, $parent;
-        $parent->ancestors( $ancestors_ref );
+        return $parent->ancestors, $parent->type_object;
     }
-    else {
-        return;
-    }
-    return reverse @$ancestors_ref;
+    return ();
 }
 
 # has_ancestor: Returns 1 if the given object is an ancestor of this object.
@@ -178,7 +171,7 @@ sub has_ancestor {
 sub descendants {
     my $self = shift;
 
-    return $self, map { $_->descendants } $self->children;
+    return $self->type_object, map { $_->descendants } $self->children;
 }
 
 # Override the DBIC delete() method to work recursively on our related
@@ -186,8 +179,9 @@ sub descendants {
 sub delete {
     my $self = shift;
 
+    $self->type_object->delete if $self->type_object;
+
     $_->delete for ( $self->children,
-                     $self->type_object,
                      $self->object_set_objects,
                      $self->logs,
                    );
@@ -270,8 +264,14 @@ sub parent {
 
     if ( $new_parent ) {
         unless ( ref $new_parent ) {
-            $new_parent = $self->result_source->schema->
-                                 resultset('Object')->find( $new_parent );
+            $new_parent = $self->result_source->resultset->find( $new_parent );
+        }
+
+        if ( $new_parent->id == $self->id ) {
+            croak( sprintf "Cannot set a CIDER object (ID %s) to be "
+                       . "its own parent.",
+                   $self->id,
+               );
         }
 
         if ( $new_parent->has_ancestor( $self ) ) {

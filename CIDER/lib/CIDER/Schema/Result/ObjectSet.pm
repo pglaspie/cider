@@ -60,7 +60,7 @@ sub add {
     my $self = shift;
     my ( $object_to_add ) = @_;
 
-    $self->add_to_objects( $object_to_add );
+    $self->add_to_objects( $object_to_add->object );
 }
 
 sub remove {

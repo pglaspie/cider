@@ -6,6 +6,7 @@ use warnings;
 use base 'DBIx::Class::Core';
 use CIDER::Logic::Utils qw( iso_8601_date );
 use Regexp::Common qw( URI );
+use Sub::Name qw( subname );
 
 =head1 NAME
 
@@ -19,6 +20,16 @@ Series, and Item.
 =cut
 
 
+my @proxy_fields = qw( parent number title
+                       objects sets
+                       logs creation_log created_by date_created
+                       modification_logs export_logs
+                     );
+
+my @proxy_methods = qw( children number_of_children
+                        ancestors has_ancestor descendants
+                        export date_available
+                      );
 
 sub setup_object {
     my ( $class ) = @_;
@@ -33,7 +44,33 @@ sub setup_object {
     $class->belongs_to(
         object => 'CIDER::Schema::Result::Object',
         'id',
+        { proxy => [ @proxy_fields ],
+          cascade_update => 1,
+          cascade_delete => 1,
+        }
     );
+}
+
+sub _delete_proxy_fields {
+    my ( $fields ) = @_;
+
+    my $deleted = { };
+    for my $field ( @proxy_fields ) {
+        if ( exists $fields->{ $field } ) {
+            $deleted->{ $field } = delete $fields->{ $field };
+        }
+    }
+    return $deleted;
+}
+
+sub new {
+    my $class = shift;
+    my ( $fields ) = @_;
+
+    my $obj = _delete_proxy_fields( $fields );
+    my $row = $class->next::method( $fields );
+    $row->object( $row->new_related( 'object', $obj ) );
+    return $row;
 }
 
 sub insert {
@@ -60,11 +97,12 @@ sub insert {
 
 sub update {
     my $self = shift;
+    my ( $fields ) = @_;
 
-    $self->next::method( @_ );
-
+    my $obj = _delete_proxy_fields( $fields );
+    $self->next::method( $fields );
+    $self->object->update( $obj );
     $self->_update;
-
     return $self;
 }
 
@@ -102,6 +140,12 @@ sub store_column {
     }
 
     return $self->next::method( $column, $value );
+}
+
+no strict 'refs';
+for my $method ( @proxy_methods ) {
+    my $name = join "::", __PACKAGE__, $method;
+    *$name = subname $method => sub { shift->object->$method( @_ ) };
 }
 
 1;

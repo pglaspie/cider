@@ -33,35 +33,22 @@ sub import_from_csv {
     while ( my $row = $csv->getline_hr( $handle ) ) {
         $row_number++;
 
-        my $vals = { };
-
         my $object;
         if ( my $id = delete $row->{ id } ) {
             $object = $object_rs->find( $id );
         }
 
         if ( exists $row->{ parent } ) {
-            if ( my $parent_num = delete $row->{ parent } ) {
+            if ( my $parent_num = $row->{ parent } ) {
                 my $parent = $object_rs->find( { number => $parent_num } );
                 unless ( $parent ) {
                     $object_rs->throw_exception(
                         "Unknown parent number: $parent_num" );
                 }
-                $vals->{ parent } = $parent;
+                $row->{ parent } = $parent;
             }
             else {
-                $vals->{ parent } = undef;
-            }
-        }
-
-        for my $field ( qw(number title) ) {
-            if ( exists $row->{ $field } ) {
-                if ( my $val = delete $row->{ $field } ) {
-                    $vals->{ $field } = $val;
-                }
-                else {
-                    $vals->{ $field } = undef;
-                }
+                $row->{ parent } = undef;
             }
         }
 
@@ -77,17 +64,18 @@ sub import_from_csv {
         # Perform the actual update-or-insertion.
         eval {
             if ( $object ) {
-                $object->update( $vals );
-                unless ( $object->$type ) {
-                    # TO DO: warn about change in type
-                    # TO DO: copy shared fields?
-                    $object->type_object->delete;
-                }
-                $object->update_or_create_related( $type, $row );
+                $object->type_object->update( $row );
+                # TO DO: handle type change
+
+                # unless ( $object->$type ) {
+                #     # TO DO: warn about change in type
+                #     # TO DO: copy shared fields?
+                #     $object->type_object->delete;
+                # }
+                # $object->update_or_create_related( $type, $row );
             }
             else {
-                $vals->{ $type } = $row;
-                $object = $object_rs->create( $vals );
+                $object_rs->related_resultset( $type )->create( $row );
             }
         };
         if ( $@ ) {
