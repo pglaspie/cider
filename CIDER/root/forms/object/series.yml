@@ -18,8 +18,6 @@ elements:
       constraints:
         - type: Required
 
-# Accession Number(s) (derived)
-
     - type: Text
       label: Series Title
       name: title
@@ -54,10 +52,8 @@ elements:
       label: Description
       name: description
       id: description
-      constraints:
-        - type: Required
 
-    - type: Text
+    - type: Textarea
       label: Arrangement
       name: arrangement
 
@@ -67,6 +63,8 @@ elements:
       id: notes
         
 # Extent (derived)
+
+# Accession Number(s) (derived)
 
     - type: Hidden
       name: parent_id

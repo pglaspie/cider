@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Mon Jul 25 18:45:46 2011
+-- Created on Tue Jul 26 14:30:36 2011
 -- 
 SET foreign_key_checks=0;
 
@@ -279,7 +279,7 @@ CREATE TABLE `collection` (
   INDEX `collection_idx_record_context` (`record_context`),
   INDEX (`id`),
   PRIMARY KEY (`id`),
-  CONSTRAINT `collection_fk_id` FOREIGN KEY (`id`) REFERENCES `object` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `collection_fk_id` FOREIGN KEY (`id`) REFERENCES `object` (`id`),
   CONSTRAINT `collection_fk_processing_status` FOREIGN KEY (`processing_status`) REFERENCES `processing_status` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `collection_fk_record_context` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -306,12 +306,12 @@ CREATE TABLE `series` (
   `id` integer NOT NULL,
   `bulk_date_from` varchar(10),
   `bulk_date_to` varchar(10),
-  `description` text NOT NULL,
-  `arrangement` varchar(255),
+  `description` text,
+  `arrangement` text,
   `notes` text,
   INDEX (`id`),
   PRIMARY KEY (`id`),
-  CONSTRAINT `series_fk_id` FOREIGN KEY (`id`) REFERENCES `object` (`id`) ON DELETE CASCADE
+  CONSTRAINT `series_fk_id` FOREIGN KEY (`id`) REFERENCES `object` (`id`)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `user_roles`;
@@ -401,7 +401,7 @@ CREATE TABLE `item` (
   CONSTRAINT `item_fk_format` FOREIGN KEY (`format`) REFERENCES `item_format` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `item_fk_geographic_term` FOREIGN KEY (`geographic_term`) REFERENCES `geographic_term` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `item_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`barcode`),
-  CONSTRAINT `item_fk_id` FOREIGN KEY (`id`) REFERENCES `object` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `item_fk_id` FOREIGN KEY (`id`) REFERENCES `object` (`id`),
   CONSTRAINT `item_fk_personal_name` FOREIGN KEY (`personal_name`) REFERENCES `authority_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `item_fk_restrictions` FOREIGN KEY (`restrictions`) REFERENCES `item_restrictions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `item_fk_topic_term` FOREIGN KEY (`topic_term`) REFERENCES `topic_term` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
