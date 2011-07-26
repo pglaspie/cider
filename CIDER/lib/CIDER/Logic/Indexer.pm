@@ -116,6 +116,8 @@ my @item_text_fields
 my @collection_multitext_fields
     = qw(
             material
+            languages
+            subjects
     );
 
 for my $field ( @object_text_fields,
@@ -363,6 +365,7 @@ sub _add_to_indexer {
             $doc->{ $field } = $type_obj->$field || '';
         }
         for my $field ( @collection_multitext_fields ) {
+            # TO DO: use description, language_name, etc
             $doc->{ $field } = join "\n", $type_obj->$field;
         }
     }

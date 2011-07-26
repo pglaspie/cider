@@ -31,7 +31,7 @@ isa_ok ($collection_1, 'CIDER::Schema::Result::Collection',
  );
 is( $collection_1->type, 'collection', 'type is collection.' );
 
-is( $collection_1->language_name, 'English',
+is( $collection_1->languages->first->language_name, 'English',
     'The collection language is English.' );
 
 my @series = $collection_1->children;

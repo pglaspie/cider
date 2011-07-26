@@ -1,23 +1,18 @@
-package CIDER::Schema::Result::CollectionMaterial;
+package CIDER::Schema::Result::CollectionLanguage;
 
 use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
+use Locale::Language;
 
 =head1 NAME
 
-CIDER::Schema::Result::CollectionMaterial
+CIDER::Schema::Result::CollectionLanguage
 
 =cut
 
-__PACKAGE__->table( 'collection_material' );
-
-__PACKAGE__->add_columns(
-    id =>
-        { data_type => 'int', is_auto_increment => 1 },
-);
-__PACKAGE__->set_primary_key( 'id' );
+__PACKAGE__->table( 'collection_language' );
 
 __PACKAGE__->add_columns(
     collection =>
@@ -29,10 +24,30 @@ __PACKAGE__->belongs_to(
 );
 
 __PACKAGE__->add_columns(
-    material =>
-        { data_type => 'varchar' },
+    language =>
+        { data_type => 'char', size => 3 },
 );
-use overload '""' => sub { shift->material() }, fallback => 1;
+use overload '""' => sub { shift->language() }, fallback => 1;
+
+=head1 METHODS
+
+=cut
+
+=head2 language_name
+
+Returns the full English name of a collection language.  (As opposed
+to the 'language' field, which contains the three-letter ISO language
+code.)
+
+=cut
+
+sub language_name {
+    my $self = shift;
+
+    return code2language( $self->language, LOCALE_LANG_ALPHA_3 );
+}
+
+__PACKAGE__->set_primary_key( qw( collection language ) );
 
 sub insert {
     my $self = shift;
