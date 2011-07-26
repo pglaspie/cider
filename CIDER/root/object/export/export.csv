@@ -4,7 +4,7 @@ parent,[% fields.join(',') %]
 [% FOR object IN objects -%]
 [% IF object.parent %][% object.parent.number | csv -%][% END %],
 [%- FOR field IN fields -%]
-[% value = object.$field || object.type_object.$field -%]
+[% value = object.$field -%]
 [% value.id || value | csv -%]
 [% IF loop.last %]
 [% ELSE %],[% END -%]

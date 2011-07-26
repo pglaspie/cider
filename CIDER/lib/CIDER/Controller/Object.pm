@@ -159,12 +159,6 @@ sub _create :Private {
     elsif ( $form->submitted_and_valid ) {
         $c->forward( '_ensure_location', [ 'create' ] );
 
-        for my $key ( $form->valid ) {
-            unless ( defined $form->param_value( $key ) ) {
-                $c->log->debug( "Undefined value for field '$key'" );
-            }
-        }
-
         my $object = $form->model->create( );
 
         $c->flash->{ we_just_created_this } = 1;
