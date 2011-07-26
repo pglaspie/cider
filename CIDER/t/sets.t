@@ -22,8 +22,8 @@ $schema->user( $user );
 my @sets = $user->sets;
 is ( scalar @sets, 2, 'User has two sets.');
 
-my $item = $schema->resultset( 'Object' )->find( 5 );
-my $series = $schema->resultset( 'Object' )->find( 3 );
+my $item = $schema->resultset( 'Item' )->find( 5 );
+my $series = $schema->resultset( 'Series' )->find( 3 );
 my $homog_set = $sets[0];
 my $heterog_set = $sets[1];
 
@@ -69,7 +69,7 @@ for my $item ( $homog_set->objects ) {
        );
 }
 
-my $collection = $schema->resultset( 'Object' )->find( 2 );
+my $collection = $schema->resultset( 'Collection' )->find( 2 );
 $homog_set->move_all_objects_to( $collection );
 for my $item ( $homog_set->objects ) {
     is ( $item->parent->id, 2,

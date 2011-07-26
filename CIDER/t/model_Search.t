@@ -28,13 +28,11 @@ is( $hits->total_hits, 2, 'Found two Items.' );
 is( $hits->next->{title}, 'Test Item 1', 'Found Test Item 1.' );
 is( $hits->next->{title}, 'Test Item 2', 'Found Test Item 2.' );
 
-my $item = $schema->resultset( 'Object' )->create( {
+my $item = $schema->resultset( 'Item' )->create( {
     number => 3,
     title => 'Test Item 3',
-    item => {
-        date_from => '2000',
-        dc_type => 1,
-    },
+    date_from => '2000',
+    dc_type => 1,
 } );
 ok( $item, 'Created Item 3.' );
 
@@ -60,7 +58,7 @@ $hits = $model->search( query => 'Object' );
 is( $hits->total_hits, 0, 'Found no Objects.' );
 
 my $set = $schema->resultset( 'ObjectSet' )->find( 1 );
-$set->add( $schema->resultset( 'Object' )->find( 5 ) );
+$set->add( $schema->resultset( 'Item' )->find( 5 ) );
 $set->set_field( title => 'New Title' );
 
 $hits = $model->search( query => 'Item' );
@@ -115,8 +113,8 @@ $query = KinoSearch::Search::TermQuery->new(
 $hits = $model->search( query => $query );
 is( $hits->total_hits, 0, 'No corporate names yet.' );
 
-$item = $schema->resultset( 'Object' )->find( 4 );
-$item->item->corporate_name( 1 );
+$item = $schema->resultset( 'Item' )->find( 4 );
+$item->corporate_name( 1 );
 $item->update;
 
 $hits = $model->search( query => $query );
@@ -138,10 +136,9 @@ is( $hits->total_hits, 1, 'Found new corporate name.' );
 
 $hits = $model->search( query => 'Material' );
 is( $hits->total_hits, 1, 'Found one collection with associated material.' );
-my $collection = $schema->resultset( 'Object' )->find( $hits->next->{ id } );
+my $coll = $schema->resultset( 'Collection' )->find( $hits->next->{ id } );
 
-my $material = $collection->collection->add_to_material(
-    { material => 'Pamphlet' } );
+my $material = $coll->add_to_material( { material => 'Pamphlet' } );
 $hits = $model->search( query => 'Pamphlet' );
 is( $hits->total_hits, 1, 'Found added material.' );
 

@@ -26,9 +26,9 @@ Catalyst Controller.
 sub object :Chained('/') :CaptureArgs(1) {
     my ( $self, $c, $object_id ) = @_;
 
-    my $object = $c->model( 'CIDERDB::Object' )->find( $object_id );
-
-    $c->stash->{ object } = $object;
+    if ( my $object = $c->model( 'CIDERDB::Object' )->find( $object_id ) ) {
+        $c->stash->{ object } = $object->type_object;
+    }
 
     $c->forward( 'set_up_held_object' );
 }
@@ -38,7 +38,7 @@ sub set_up_held_object :Private {
     if ( my $held_object_id = $c->session->{ held_object_id } ) {
         my $held_object = $c->model( 'CIDERDB::Object' )
             ->find( $held_object_id );
-        $c->stash->{ held_object } = $held_object;
+        $c->stash->{ held_object } = $held_object->type_object;
     }
 }
 
@@ -151,11 +151,10 @@ sub _create :Private {
         my $parent_id = $c->stash->{ parent_id };
 
         if ( $parent_id ) {
-            my $parent_field = $form->get_field( { name => 'parent' } );
-            $parent_field->value ( $parent_id );
+            $form->default_values( { parent_id => $parent_id } );
         }
 
-        $form->default_values( { 'collection.language' => 'eng' } );
+        $form->default_values( { language => 'eng' } );
     }
     elsif ( $form->submitted_and_valid ) {
         $c->forward( '_ensure_location', [ 'create' ] );
@@ -181,7 +180,7 @@ sub _ensure_location :Private {
 
     my $form = $c->stash->{ form };
 
-    my $barcode = $form->param_value( 'item.location' );
+    my $barcode = $form->param_value( 'location' );
     return unless $barcode &&
         !$c->model( 'CIDERDB::Location' )->find( $barcode );
 

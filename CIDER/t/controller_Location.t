@@ -58,7 +58,7 @@ $mech->content_contains( 'Second Title', 'Second location title was set.' );
 
 $mech->get( '/object/4/' );
 $mech->submit_form_ok( { with_fields => {
-    'item.location' => '1234',
+    location => '1234',
 } }, 'Update an item with a new location barcode.' );
 is( $mech->uri->path, '/location/1234/create',
     'Redirected to create location.' );
@@ -76,9 +76,9 @@ $mech->get( '/object/create/item' );
 $mech->submit_form_ok( { with_fields => {
     title => 'New Test Item',
     number => '99',
-    'item.date_from' => '2000-01-01',
-    'item.dc_type' => 1,
-    'item.location' => '2345',
+    date_from => '2000-01-01',
+    dc_type => 1,
+    location => '2345',
 } }, 'Create an item with a new location barcode.' );
 is( $mech->uri->path, '/location/2345/create',
     'Redirected to create location.' );
@@ -95,7 +95,7 @@ $mech->content_contains( 'successfully', 'Successful creation.' );
 $mech->content_contains( '2345', 'Location is filled in.' );
 
 $mech->submit_form_ok( { with_fields => {
-    'item.location' => '',
+    location => '',
 } }, 'Remove location.' );
 $mech->content_lacks( '2345', 'Successfully removed location.' );
 

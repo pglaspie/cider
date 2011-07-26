@@ -37,8 +37,8 @@ $mech->content_contains( 'Esperanto', 'Language list is populated.' );
 $mech->submit_form_ok( { with_fields => {
     title => 'New test collection',
     number => '69105',
-    'collection.processing_status' => 1,
-    'collection.has_physical_documentation' => 1,
+    processing_status => 1,
+    has_physical_documentation => 1,
 } }, 'Submitted creation form' );
 
 $mech->content_contains( 'You have successfully created' );
@@ -56,21 +56,21 @@ is( $rs->first->modification_logs->first->date, DateTime->today,
     'Date modified is today.' );
 
 $mech->submit_form_ok( { with_fields => {
-    'collection.bulk_date_from' => '12-31-1999',
-    'collection.bulk_date_to' => '2003/01/13',
+    bulk_date_from => '12-31-1999',
+    bulk_date_to => '2003/01/13',
 } }, 'Use incorrect date formats' );
 $mech->content_contains( 'Sorry', 'Form submission error.' );
 $mech->content_like( qr(date must be.*date must be.)s, 'Two error messages.' );
 
 $mech->submit_form_ok( { with_fields => {
-    'collection.bulk_date_from' => '1999-12-31',
-    'collection.bulk_date_to' => '2003-01-13',
+    bulk_date_from => '1999-12-31',
+    bulk_date_to => '2003-01-13',
 } }, 'Use correct date format' );
 $mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
 
 $mech->submit_form_ok( { with_fields => {
-    'collection.bulk_date_from' => '1999-12',
-    'collection.bulk_date_to' => '2003',
+    bulk_date_from => '1999-12',
+    bulk_date_to => '2003',
 } }, 'Partial dates' );
 $mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
 
@@ -85,12 +85,12 @@ $mech->content_contains( 'Create a new item' );
 $mech->submit_form_ok( { with_fields => {
     title => 'Æthelred the Unready',
     number => 'II',
-    'item.circa' => 1,
-    'item.date_from' => '0968',
-    'item.date_to' => '1016-04-23',
-    'item.accession_date' => '2011-06',
-    'item.dc_type' => 1,
-    'item.stabilization_date' => '9999',
+    circa => 1,
+    date_from => '0968',
+    date_to => '1016-04-23',
+    accession_date => '2011-06',
+    dc_type => 1,
+    stabilization_date => '9999',
 } }, 'Created a sub-item with partial dates' );
 
 $mech->content_lacks( 'Sorry', 'Form submitted successfully.' );

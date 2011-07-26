@@ -14,7 +14,7 @@ sub root_objects {
     );
 
     if ( wantarray ) {
-        return $resultset->all;
+        return map { $_->type_object } $resultset->all;
     }
     else {
         return $resultset;

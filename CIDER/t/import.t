@@ -77,22 +77,22 @@ is ( scalar @collections, 3,
      "After import, there are three root objects." );
 is ( $collections[1]->title, 'Renamed collection',
      "After import, the modified collection has been renamed.");
-is ( $collections[1]->collection->notes, 'Test notes.',
+is ( $collections[1]->notes, 'Test notes.',
      "After import, the modified collection has kept the same notes.");
 is ( $collections[2]->title, 'Test Collection without kids',
      "After import, the untouched collection has the expected name.");
 is ( $collections[0]->title, 'Brand-new collection',
      "After import, the new collection has the expected name.");
 
-my $item = $schema->resultset( 'Object' )->find( 4 );
+my $item = $schema->resultset( 'Item' )->find( 4 );
 is( $item->number_of_children, 2,
     'After import, ' . $item->title . ' has 2 children.' );
 for my $subitem ( $item->children ) {
     is( $subitem->type, 'item', 'Type is correct.' );
     is( $subitem->title, 'New sub-item', 'Title is correct.' );
     ok( $subitem->number, 'Number exists.' );
-    is( $subitem->item->date_from, '2000', 'Start date is correct.' );
-    is( $subitem->item->dc_type, 'Test Type', 'DC Type is correct.' );
+    is( $subitem->date_from, '2000', 'Start date is correct.' );
+    is( $subitem->dc_type, 'Test Type', 'DC Type is correct.' );
 }
 
 dies_ok {
@@ -104,7 +104,7 @@ dies_ok {
                  { id => 2, title => 'No number' } ) # number will be ''
 } "Number can't be empty on update";
 
-is( $schema->resultset( 'Object' )->find( 1 )->number, 'n1',
+is( $schema->resultset( 'Collection' )->find( 1 )->number, 'n1',
     'Number was not updated on failed import.' );
 
 dies_ok {
