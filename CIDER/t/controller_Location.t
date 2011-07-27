@@ -56,47 +56,49 @@ $mech->submit_form_ok( { with_fields => {
 } }, 'Set second title.' );
 $mech->content_contains( 'Second Title', 'Second location title was set.' );
 
-$mech->get( '/object/4/' );
-$mech->submit_form_ok( { with_fields => {
-    location => '1234',
-} }, 'Update an item with a new location barcode.' );
-is( $mech->uri->path, '/location/1234/create',
-    'Redirected to create location.' );
-$mech->content_contains( 'after which', 'Not-done-yet alert message.' );
-$mech->content_contains( 'Test Item 1', 'Mentions item title.' );
-$mech->content_contains( 'updated' );
+# TO DO: locations are on item classes now.
 
-$mech->submit_form_ok( { with_fields => {
-    'titles_1.title' => 'Title 1234',
-    unit_type => 1,
-} }, 'Create new location.' );
-is( $mech->uri->path, '/object/4', 'Redirected to item detail.' );
+# $mech->get( '/object/4/' );
+# $mech->submit_form_ok( { with_fields => {
+#     location => '1234',
+# } }, 'Update an item with a new location barcode.' );
+# is( $mech->uri->path, '/location/1234/create',
+#     'Redirected to create location.' );
+# $mech->content_contains( 'after which', 'Not-done-yet alert message.' );
+# $mech->content_contains( 'Test Item 1', 'Mentions item title.' );
+# $mech->content_contains( 'updated' );
 
-$mech->get( '/object/create/item' );
-$mech->submit_form_ok( { with_fields => {
-    title => 'New Test Item',
-    number => '99',
-    date_from => '2000-01-01',
-    dc_type => 1,
-    location => '2345',
-} }, 'Create an item with a new location barcode.' );
-is( $mech->uri->path, '/location/2345/create',
-    'Redirected to create location.' );
-$mech->content_contains( 'after which', 'Not-done-yet alert message.' );
-$mech->content_contains( 'New Test Item', 'Mentions item title.' );
-$mech->content_contains( 'created' );
+# $mech->submit_form_ok( { with_fields => {
+#     'titles_1.title' => 'Title 1234',
+#     unit_type => 1,
+# } }, 'Create new location.' );
+# is( $mech->uri->path, '/object/4', 'Redirected to item detail.' );
 
-$mech->submit_form_ok( { with_fields => {
-    'titles_1.title' => 'Title 2345',
-    unit_type => 1,
-} }, 'Create new location.' );
-like( $mech->uri->path, qr(/object/[0-9]+), 'Redirected to item detail.' );
-$mech->content_contains( 'successfully', 'Successful creation.' );
-$mech->content_contains( '2345', 'Location is filled in.' );
+# $mech->get( '/object/create/item' );
+# $mech->submit_form_ok( { with_fields => {
+#     title => 'New Test Item',
+#     number => '99',
+#     date_from => '2000-01-01',
+#     dc_type => 1,
+#     location => '2345',
+# } }, 'Create an item with a new location barcode.' );
+# is( $mech->uri->path, '/location/2345/create',
+#     'Redirected to create location.' );
+# $mech->content_contains( 'after which', 'Not-done-yet alert message.' );
+# $mech->content_contains( 'New Test Item', 'Mentions item title.' );
+# $mech->content_contains( 'created' );
 
-$mech->submit_form_ok( { with_fields => {
-    location => '',
-} }, 'Remove location.' );
-$mech->content_lacks( '2345', 'Successfully removed location.' );
+# $mech->submit_form_ok( { with_fields => {
+#     'titles_1.title' => 'Title 2345',
+#     unit_type => 1,
+# } }, 'Create new location.' );
+# like( $mech->uri->path, qr(/object/[0-9]+), 'Redirected to item detail.' );
+# $mech->content_contains( 'successfully', 'Successful creation.' );
+# $mech->content_contains( '2345', 'Location is filled in.' );
+
+# $mech->submit_form_ok( { with_fields => {
+#     location => '',
+# } }, 'Remove location.' );
+# $mech->content_lacks( '2345', 'Successfully removed location.' );
 
 done_testing();

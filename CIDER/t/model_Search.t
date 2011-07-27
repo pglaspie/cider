@@ -108,20 +108,20 @@ $hits = $model->search( query => 'test_status' );
 is( $hits->total_hits, 2, 'Found two collections with processing status.' );
 
 $query = KinoSearch::Search::TermQuery->new(
-    field => 'corporate_name',
+    field => 'corporate_names',
     term => 'name',
 );
 $hits = $model->search( query => $query );
 is( $hits->total_hits, 0, 'No corporate names yet.' );
 
 $item = $schema->resultset( 'Item' )->find( 4 );
-$item->corporate_name( 1 );
+my $name = $schema->resultset( 'AuthorityName' )->find( 1 );
+$item->add_to_corporate_names( $name );
 $item->update;
 
 $hits = $model->search( query => $query );
 is( $hits->total_hits, 1, 'Item was re-indexed with corporate name.' );
 
-my $name = $schema->resultset( 'AuthorityName' )->find( 1 );
 $name->name( 'Test Corp' );
 $name->update;
 
@@ -129,7 +129,7 @@ $hits = $model->search( query => $query );
 is( $hits->total_hits, 0, 'No hits for old corporate name.' );
 
 $query = KinoSearch::Search::TermQuery->new(
-    field => 'corporate_name',
+    field => 'corporate_names',
     term => 'corp',
 );
 $hits = $model->search( query => $query );

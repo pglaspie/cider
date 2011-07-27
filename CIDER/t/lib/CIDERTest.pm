@@ -97,7 +97,7 @@ sub init_schema {
     );
 
     $schema->populate(
-        'ItemType',
+        'DCType',
         [
             [qw/id name/],
             [1, 'Test Type'],
@@ -125,14 +125,6 @@ sub init_schema {
         [
             [qw/id name/],
             [1, 'Test Topic Term'],
-        ]
-    );
-
-    $schema->populate(
-        'ItemFormat',
-        [
-            [qw/id name/],
-            [1, 'Test Format'],
         ]
     );
 
@@ -171,9 +163,9 @@ sub init_schema {
     $schema->populate(
         'Item',
         [
-            [qw/id personal_name notes date_from date_to dc_type/],
-            [4, 1, 'Test notes.', '2000-01-01', '2008-01-01', 1],
-            [5, 1, 'Test notes.', '2002-01-01', '2010-01-01', 1],
+            [qw/id description date_from date_to dc_type/],
+            [4, 'Test description.', '2000-01-01', '2008-01-01', 1],
+            [5, 'Test description.', '2002-01-01', '2010-01-01', 1],
         ]
     );
 
@@ -212,6 +204,15 @@ sub init_schema {
         [
             [qw/collection language/],
             [1, 'eng'],
+        ]
+    );
+
+    $schema->populate(
+        'ItemAuthorityName',
+        [
+            [qw/item role name/],
+            [4, 'personal_name', 1],
+            [5, 'personal_name', 1],
         ]
     );
 

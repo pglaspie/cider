@@ -25,14 +25,14 @@ elements:
       constraints:
         - type: Required
 
-    - type: Select
-      label: Creator
-      name: creator
-      empty_first: 1
-      model_config:
-        resultset: AuthorityName
-        attributes:
-          order_by: name
+    # - type: Select
+    #   label: Creator
+    #   name: creator
+    #   empty_first: 1
+    #   model_config:
+    #     resultset: AuthorityName
+    #     attributes:
+    #       order_by: name
 
     - type: Fieldset
       legend: Date
@@ -67,173 +67,78 @@ elements:
         attributes:
           order_by: id
 
-    - type: Fieldset
-      legend: Accession
-      elements:      
-          - type: Text
-            name: accession_by
-            label: By
-
-          - type: Text
-            name: accession_date
-            label: Date
-            constraint: *Date
-
-          - type: Text
-            name: accession_procedure
-            label: Procedure
-
-          - type: Text
-            name: accession_number
-            label: Number
-
     - type: Text
-      name: location
-      label: Location Barcode
+      name: accession_number
+      label: Accession Number
 
     - type: Select
-      label: DC Type
+      label: Type
       name: dc_type
       constraint: Required
-      empty_first: 1
       model_config:
-        resultset: ItemType
+        resultset: DCType
         attributes:
           order_by: name
 
-    - type: Select
-      label: Format
-      name: format
-      empty_first: 1
-      model_config:
-        resultset: ItemFormat
-        attributes:
-          order_by: name
+    # - type: Select
+    #   label: Personal Name
+    #   name: personal_name
+    #   id: personal_name
+    #   empty_first: 1
+    #   model_config:
+    #     resultset: AuthorityName
+    #     attributes:
+    #       order_by: name
 
-    - type: Select
-      label: Personal Name
-      name: personal_name
-      id: personal_name
-      empty_first: 1
-      model_config:
-        resultset: AuthorityName
-        attributes:
-          order_by: name
+    # - type: Select
+    #   label: Corporate Name
+    #   name: corporate_name
+    #   id: corporate_name
+    #   empty_first: 1
+    #   model_config:
+    #     resultset: AuthorityName
+    #     attributes:
+    #       order_by: name
 
-    - type: Select
-      label: Corporate Name
-      name: corporate_name
-      id: corporate_name
-      empty_first: 1
-      model_config:
-        resultset: AuthorityName
-        attributes:
-          order_by: name
+    # - type: Select
+    #   label: Topic Term
+    #   name: topic_term
+    #   id: topic_term
+    #   empty_first: 1
+    #   model_config:
+    #     resultset: TopicTerm
+    #     attributes:
+    #       order_by: name
 
-    - type: Select
-      label: Topic Term
-      name: topic_term
-      id: topic_term
-      empty_first: 1
-      model_config:
-        resultset: TopicTerm
-        attributes:
-          order_by: name
-
-    - type: Select
-      label: Geographic Term
-      name: geographic_term
-      id: geographic_term
-      empty_first: 1
-      model_config:
-        resultset: GeographicTerm
-        attributes:
-          order_by: name
+    # - type: Select
+    #   label: Geographic Term
+    #   name: geographic_term
+    #   id: geographic_term
+    #   empty_first: 1
+    #   model_config:
+    #     resultset: GeographicTerm
+    #     attributes:
+    #       order_by: name
 
     - type: Textarea
-      label: Notes
-      name: notes
-      id: notes
+      label: Description
+      name: description
 
     - type: Text
-      name: funder
-      label: Funder
+      name: volume
+      label: Volume
 
     - type: Text
-      name: handle
-      label: Handle
+      name: issue
+      label: Issue
 
-    - type: Text
-      name: checksum
-      label: Checksum
+    - type: Textarea
+      name: abstract
+      label: Abstract
 
-    - type: Text
-      name: original_filename
-      label: Original Filename
-
-    - type: Text
-      name: file_creation_date
-      label: File Creation Date
-      constraint: *Date
-
-    - type: Fieldset
-      legend: Stabilization
-      elements:      
-          - type: Text
-            name: stabilization_by
-            label: By
-
-          - type: Text
-            name: stabilization_date
-            label: Date
-            constraint: *Date
-
-          - type: Text
-            name: stabilization_procedure
-            label: Procedure
-
-          - type: Text
-            name: stabilization_notes
-            label: Notes
-
-    - type: Fieldset
-      legend: Applications
-      elements:      
-          - type: Text
-            name: virus_app
-            label: Virus
-
-          - type: Text
-            name: checksum_app
-            label: Checksum
-
-          - type: Text
-            name: media_app
-            label: Media
-
-          - type: Text
-            name: other_app
-            label: Other
-
-    - type: Text
-      name: toc
-      label: Table of Contents
-
-    - type: Text
-      name: rsa
-      label: RSA
-
-    - type: Text
-      name: technical_metadata
-      label: Technical Metadata
-
-    - type: Text
-      name: lc_class
-      label: LC Class
-
-    - type: Text
-      name: file_extension
-      label: File Extension
+    - type: Textarea
+      name: citation
+      label: Bibliographic Citation
       
     - type: Hidden
       name: parent_id

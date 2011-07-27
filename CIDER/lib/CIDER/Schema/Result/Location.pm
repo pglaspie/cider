@@ -52,20 +52,6 @@ __PACKAGE__->belongs_to(
     { proxy => 'volume' }
 );
 
-=head2 items
-
-Type: has_many
-
-Related object: L<CIDER::Schema::Result::Item>
-
-=cut
-
-__PACKAGE__->has_many(
-    items => 'CIDER::Schema::Result::Item',
-    undef,
-    { cascade_delete => 0, cascade_copy => 0 }
-);
-
 =head2 titles
 
 Type: has_many

@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Tue Jul 26 18:29:45 2011
+-- Created on Wed Jul 27 19:16:34 2011
 -- 
 SET foreign_key_checks=0;
 
@@ -13,6 +13,17 @@ CREATE TABLE `authority_name` (
   `id` integer NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
   `note` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `dc_type`;
+
+--
+-- Table: `dc_type`
+--
+CREATE TABLE `dc_type` (
+  `id` tinyint NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -41,36 +52,15 @@ CREATE TABLE `geographic_term` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `item_format`;
-
---
--- Table: `item_format`
---
-CREATE TABLE `item_format` (
-  `id` integer NOT NULL auto_increment,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
 DROP TABLE IF EXISTS `item_restrictions`;
 
 --
 -- Table: `item_restrictions`
 --
 CREATE TABLE `item_restrictions` (
-  `id` integer NOT NULL auto_increment,
+  `id` tinyint NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS `item_type`;
-
---
--- Table: `item_type`
---
-CREATE TABLE `item_type` (
-  `id` integer NOT NULL auto_increment,
-  `name` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -335,60 +325,24 @@ DROP TABLE IF EXISTS `item`;
 --
 CREATE TABLE `item` (
   `id` integer NOT NULL,
-  `creator` integer,
   `circa` enum('0','1') NOT NULL DEFAULT '0',
   `date_from` varchar(10) NOT NULL,
   `date_to` varchar(10),
-  `restrictions` integer,
-  `accession_by` char(255),
-  `accession_date` varchar(10),
-  `accession_procedure` text,
-  `accession_number` char(128),
-  `location` char(16),
-  `dc_type` integer NOT NULL,
-  `format` integer,
-  `personal_name` integer,
-  `corporate_name` integer,
-  `topic_term` integer,
-  `geographic_term` integer,
-  `notes` text,
-  `checksum` char(64),
-  `original_filename` char(255),
-  `file_creation_date` varchar(10),
-  `stabilization_by` char(255),
-  `stabilization_date` varchar(10),
-  `stabilization_procedure` text,
-  `stabilization_notes` text,
-  `virus_app` char(128),
-  `checksum_app` char(128),
-  `media_app` char(128),
-  `other_app` char(128),
-  `toc` text,
-  `rsa` text,
-  `technical_metadata` text,
-  `lc_class` char(255),
-  `file_extension` char(16),
-  INDEX `item_idx_corporate_name` (`corporate_name`),
-  INDEX `item_idx_creator` (`creator`),
+  `restrictions` tinyint,
+  `accession_number` varchar(255),
+  `dc_type` tinyint NOT NULL,
+  `description` text,
+  `volume` varchar(255),
+  `issue` varchar(255),
+  `abstract` text,
+  `citation` text,
   INDEX `item_idx_dc_type` (`dc_type`),
-  INDEX `item_idx_format` (`format`),
-  INDEX `item_idx_geographic_term` (`geographic_term`),
-  INDEX `item_idx_location` (`location`),
-  INDEX `item_idx_personal_name` (`personal_name`),
   INDEX `item_idx_restrictions` (`restrictions`),
-  INDEX `item_idx_topic_term` (`topic_term`),
   INDEX (`id`),
   PRIMARY KEY (`id`),
-  CONSTRAINT `item_fk_corporate_name` FOREIGN KEY (`corporate_name`) REFERENCES `authority_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `item_fk_creator` FOREIGN KEY (`creator`) REFERENCES `authority_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `item_fk_dc_type` FOREIGN KEY (`dc_type`) REFERENCES `item_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `item_fk_format` FOREIGN KEY (`format`) REFERENCES `item_format` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `item_fk_geographic_term` FOREIGN KEY (`geographic_term`) REFERENCES `geographic_term` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `item_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`barcode`),
+  CONSTRAINT `item_fk_dc_type` FOREIGN KEY (`dc_type`) REFERENCES `dc_type` (`id`),
   CONSTRAINT `item_fk_id` FOREIGN KEY (`id`) REFERENCES `object` (`id`),
-  CONSTRAINT `item_fk_personal_name` FOREIGN KEY (`personal_name`) REFERENCES `authority_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `item_fk_restrictions` FOREIGN KEY (`restrictions`) REFERENCES `item_restrictions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `item_fk_topic_term` FOREIGN KEY (`topic_term`) REFERENCES `topic_term` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `item_fk_restrictions` FOREIGN KEY (`restrictions`) REFERENCES `item_restrictions` (`id`)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `collection`;
@@ -461,6 +415,52 @@ CREATE TABLE `collection_subject` (
   INDEX `collection_subject_idx_collection` (`collection`),
   PRIMARY KEY (`id`),
   CONSTRAINT `collection_subject_fk_collection` FOREIGN KEY (`collection`) REFERENCES `collection` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `item_authority_name`;
+
+--
+-- Table: `item_authority_name`
+--
+CREATE TABLE `item_authority_name` (
+  `item` integer NOT NULL,
+  `role` enum('creator', 'personal_name', 'corporate_name') NOT NULL,
+  `name` integer NOT NULL,
+  INDEX `item_authority_name_idx_item` (`item`),
+  INDEX `item_authority_name_idx_name` (`name`),
+  PRIMARY KEY (`item`, `role`, `name`),
+  CONSTRAINT `item_authority_name_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `item_authority_name_fk_name` FOREIGN KEY (`name`) REFERENCES `authority_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `item_geographic_term`;
+
+--
+-- Table: `item_geographic_term`
+--
+CREATE TABLE `item_geographic_term` (
+  `item` integer NOT NULL,
+  `geographic_term` integer NOT NULL,
+  INDEX `item_geographic_term_idx_geographic_term` (`geographic_term`),
+  INDEX `item_geographic_term_idx_item` (`item`),
+  PRIMARY KEY (`item`, `geographic_term`),
+  CONSTRAINT `item_geographic_term_fk_geographic_term` FOREIGN KEY (`geographic_term`) REFERENCES `geographic_term` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `item_geographic_term_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `item_topic_term`;
+
+--
+-- Table: `item_topic_term`
+--
+CREATE TABLE `item_topic_term` (
+  `item` integer NOT NULL,
+  `topic_term` integer NOT NULL,
+  INDEX `item_topic_term_idx_item` (`item`),
+  INDEX `item_topic_term_idx_topic_term` (`topic_term`),
+  PRIMARY KEY (`item`, `topic_term`),
+  CONSTRAINT `item_topic_term_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `item_topic_term_fk_topic_term` FOREIGN KEY (`topic_term`) REFERENCES `topic_term` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `collection_record_context`;

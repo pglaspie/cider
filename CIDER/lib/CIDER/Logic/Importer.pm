@@ -61,6 +61,9 @@ sub import_from_csv {
             # TO DO: else croak!
         }
 
+        # TO DO: fill in default values that are not defaults in the
+        # db, i.e. item dc_type = 'Text', languages = ('eng').
+
         # Perform the actual update-or-insertion.
         eval {
             if ( $object ) {
