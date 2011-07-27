@@ -83,32 +83,14 @@ my @series_text_fields
 
 my @item_text_fields
     = qw(
-            creator
             restrictions
-            accession_by
-            accession_procedure
             accession_number
             dc_type
-            format
-            personal_name
-            corporate_name
-            topic_term
-            geographic_term
-            notes
-            checksum
-            original_filename
-            stabilization_by
-            stabilization_procedure
-            stabilization_notes
-            virus_app
-            checksum_app
-            media_app
-            other_app
-            toc
-            rsa
-            technical_metadata
-            lc_class
-            file_extension
+            description
+            volume
+            issue
+            abstract
+            citation
     );
 
 # Multitext fields are one-to-many text fields.  Their values are just
@@ -120,11 +102,21 @@ my @collection_multitext_fields
             subjects
     );
 
+my @item_multitext_fields
+    = qw(
+            creators
+            personal_names
+            corporate_names
+            topic_terms
+            geographic_terms
+    );
+
 for my $field ( @object_text_fields,
                 @collection_text_fields,
                 @series_text_fields,
                 @item_text_fields,
                 @collection_multitext_fields,
+                @item_multitext_fields,
               ) {
     $index_schema->spec_field( name => $field, type => $text_type );
 }
@@ -354,9 +346,15 @@ sub _add_to_indexer {
         id => $object->id,
     };
 
+    # TO DO: for authority names and controlled vocabularies, use the
+    # longer text rather than the stringified text, e.g. notes,
+    # description, language_name.
+
     for my $field ( @object_text_fields ) {
         $doc->{ $field } = $object->$field || '';
     }
+
+
 
     # TO DO: inspect columns_info to get the field lists?
     my $type_obj = $object->type_object;
@@ -365,7 +363,6 @@ sub _add_to_indexer {
             $doc->{ $field } = $type_obj->$field || '';
         }
         for my $field ( @collection_multitext_fields ) {
-            # TO DO: use description, language_name, etc
             $doc->{ $field } = join "\n", $type_obj->$field;
         }
     }
@@ -377,6 +374,9 @@ sub _add_to_indexer {
     elsif ( $object->type eq 'item' ) {
         for my $field ( @item_text_fields ) {
             $doc->{ $field } = $type_obj->$field || '';
+        }
+        for my $field ( @item_multitext_fields ) {
+            $doc->{ $field } = join "\n", $type_obj->$field;
         }
     }
 

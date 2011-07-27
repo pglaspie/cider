@@ -16,20 +16,20 @@ Catalyst Controller for browsing and editing authority lists.
 
 =cut
 
-my $list_ids = [ qw( name geographic_term topic_term format ) ];
+my $list_ids = [ qw( name geographic_term topic_term ) ];
+
+# TO DO: get this info from the classes
 
 my $list_names = {
     name            => 'Name',
     geographic_term => 'Geographic Term',
     topic_term      => 'Topic Term',
-    format          => 'Format',
 };
 
 my $class_names = {
     name            => 'AuthorityName',
     geographic_term => 'GeographicTerm',
     topic_term      => 'TopicTerm',
-    format          => 'ItemFormat',
 };
 
 =head2 index
@@ -62,14 +62,18 @@ sub authority :Chained :CaptureArgs(1) {
     $c->stash->{ list_id }    = $list_id;
     $c->stash->{ list_class } = $list_class;
     $c->stash->{ list_name }  = $list_names->{ $list_id };
+    # TO DO: get name of has_many relationship from the class
+    # $c->stash->{ list }       = $rs->search( undef, {
+    #     order_by => 'me.name',
+    #     join => 'item_authority_names',
+    #     group_by => 'me.id',
+    #     '+columns' => [ { num_items => { count => 'item' } } ],
+    # } );
     $c->stash->{ list }       = $rs->search( undef, {
-        order_by => 'name',
-        join => 'items',
-        group_by => 'me.id',
-        '+columns' => [ { num_items => { count => 'items.id' } } ],
+        order_by => 'me.name',
     } );
 
-    $c->stash->{ notes }      = $list_id ne 'format';
+    $c->stash->{ notes } = 1;
 }
 
 =head2 browse

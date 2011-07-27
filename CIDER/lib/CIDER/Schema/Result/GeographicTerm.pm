@@ -11,25 +11,34 @@ CIDER::Schema::Result::GeographicTerm
 
 =cut
 
-__PACKAGE__->table("geographic_term");
+__PACKAGE__->table( 'geographic_term' );
 
 __PACKAGE__->add_columns(
-  "id",
-  { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
-  "name",
-  { data_type => "varchar", is_nullable => 0, size => 255 },
-  "note",
-  { data_type => "text", is_nullable => 1 },
+    id =>
+        { data_type => 'int', is_auto_increment => 1 },
 );
-__PACKAGE__->set_primary_key("id");
-
-use overload '""' => sub { shift->name() }, fallback => 1;
+__PACKAGE__->set_primary_key( 'id' );
 
 __PACKAGE__->has_many(
-  "items",
-  "CIDER::Schema::Result::Item",
-  { "foreign.geographic_term" => "self.id" },
-  { cascade_copy => 0, cascade_delete => 0 },
+    item_geographic_terms =>
+        'CIDER::Schema::Result::ItemGeographicTerm',
+    'geographic_term',
+);
+__PACKAGE__->many_to_many(
+    items =>
+        'item_geographic_terms',
+    'item',
+);
+
+__PACKAGE__->add_columns(
+    name =>
+        { data_type => 'varchar' },
+);
+use overload '""' => sub { shift->name() }, fallback => 1;
+
+__PACKAGE__->add_columns(
+    note =>
+        { data_type => 'text', is_nullable => 1 },
 );
 
 sub update {

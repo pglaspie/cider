@@ -15,177 +15,117 @@ __PACKAGE__->table( 'item' );
 
 __PACKAGE__->setup_object;
 
+__PACKAGE__->has_many(
+    item_creators =>
+        'CIDER::Schema::Result::ItemAuthorityName',
+    undef,
+    { where => { role => 'creator' } }
+);
+__PACKAGE__->many_to_many(
+    creators =>
+        'item_creators',
+    'name',
+);
+
 __PACKAGE__->add_columns(
-  "creator",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
-  "circa",
-  { data_type => "boolean", is_nullable => 0, default_value => 0 },
-  "date_from",
-  { data_type => "varchar", size => 10 },
-  "date_to",
-  { data_type => "varchar", is_nullable => 1, size => 10 },
-  "restrictions",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
-  "accession_by",
-  { data_type => "char", is_nullable => 1, size => 255 },
-  "accession_date",
-  { data_type => "varchar", is_nullable => 1, size => 10 },
-  "accession_procedure",
-  { data_type => "text", is_nullable => 1 },
-  "accession_number",
-  { data_type => "char", is_nullable => 1, size => 128 },
-  "location",
-  { data_type => "char", is_foreign_key => 1, is_nullable => 1, size => 16 },
-  "dc_type",
-  { data_type => "integer", is_foreign_key => 1 },
-  "format",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
-  "personal_name",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
-  "corporate_name",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
-  "topic_term",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
-  "geographic_term",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
-  "notes",
-  { data_type => "text", is_nullable => 1 },
-  "checksum",
-  { data_type => "char", is_nullable => 1, size => 64 },
-  "original_filename",
-  { data_type => "char", is_nullable => 1, size => 255 },
-  "file_creation_date",
-  { data_type => "varchar", is_nullable => 1, size => 10 },
-  "stabilization_by",
-  { data_type => "char", is_nullable => 1, size => 255 },
-  "stabilization_date",
-  { data_type => "varchar", is_nullable => 1, size => 10 },
-  "stabilization_procedure",
-  { data_type => "text", is_nullable => 1 },
-  "stabilization_notes",
-  { data_type => "text", is_nullable => 1 },
-  "virus_app",
-  { data_type => "char", is_nullable => 1, size => 128 },
-  "checksum_app",
-  { data_type => "char", is_nullable => 1, size => 128 },
-  "media_app",
-  { data_type => "char", is_nullable => 1, size => 128 },
-  "other_app",
-  { data_type => "char", is_nullable => 1, size => 128 },
-  "toc",
-  { data_type => "text", is_nullable => 1 },
-  "rsa",
-  { data_type => "text", is_nullable => 1 },
-  "technical_metadata",
-  { data_type => "text", is_nullable => 1 },
-  "lc_class",
-  { data_type => "char", is_nullable => 1, size => 255 },
-  "file_extension",
-  { data_type => "char", is_nullable => 1, size => 16 },
+    circa =>
+        { data_type => 'boolean', default_value => 0 },
+    date_from =>
+        { data_type => 'varchar', size => 10 },
+    date_to =>
+        { data_type => 'varchar', is_nullable => 1, size => 10 },
 );
 
+__PACKAGE__->add_columns(
+    restrictions =>
+        { data_type => 'tinyint', is_foreign_key => 1, is_nullable => 1 },
+);
 __PACKAGE__->belongs_to(
-  "creator",
-  "CIDER::Schema::Result::AuthorityName",
-  { id => "creator" },
-  {
-    is_deferrable => 1,
-    join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
-  },
+    restrictions =>
+        'CIDER::Schema::Result::ItemRestrictions',
 );
 
-__PACKAGE__->belongs_to(
-  "restrictions",
-  "CIDER::Schema::Result::ItemRestrictions",
-  { id => "restrictions" },
-  {
-    is_deferrable => 1,
-    join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
-  },
+__PACKAGE__->add_columns(
+    accession_number =>
+        { data_type => 'varchar', is_nullable => 1 },
 );
 
+__PACKAGE__->add_columns(
+    dc_type =>
+        { data_type => 'tinyint', is_foreign_key => 1 },
+);
 __PACKAGE__->belongs_to(
-    location => "CIDER::Schema::Result::Location",
-    # The next line should not be necessary, but omitting it leads to
-    # any relations defined afterward (e.g. restrictions) being
-    # ignored!!  TO DO: track this down? bug in DBIx?
-    { barcode => 'location' },
+    dc_type =>
+        'CIDER::Schema::Result::DCType',
 );
 
-__PACKAGE__->belongs_to(
-  "dc_type",
-  "CIDER::Schema::Result::ItemType",
-  { id => "dc_type" },
-  {
-    is_deferrable => 1,
-    join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
-  },
+__PACKAGE__->has_many(
+    item_personal_names =>
+        'CIDER::Schema::Result::ItemAuthorityName',
+    undef,
+    { where => { role => 'personal_name' } }
+);
+__PACKAGE__->many_to_many(
+    personal_names =>
+        'item_personal_names',
+    'name',
 );
 
-__PACKAGE__->belongs_to(
-  "format",
-  "CIDER::Schema::Result::ItemFormat",
-  { id => "format" },
-  {
-    is_deferrable => 1,
-    join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
-  },
+__PACKAGE__->has_many(
+    item_corporate_names =>
+        'CIDER::Schema::Result::ItemAuthorityName',
+    undef,
+    { where => { role => 'corporate_name' } }
+);
+__PACKAGE__->many_to_many(
+    corporate_names =>
+        'item_corporate_names',
+    'name',
 );
 
-__PACKAGE__->belongs_to(
-  "personal_name",
-  "CIDER::Schema::Result::AuthorityName",
-  { id => "personal_name" },
-  {
-    is_deferrable => 1,
-    join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
-  },
+__PACKAGE__->has_many(
+    item_topic_terms =>
+        'CIDER::Schema::Result::ItemTopicTerm',
+);
+__PACKAGE__->many_to_many(
+    topic_terms =>
+        'item_topic_terms',
+    'topic_term',
 );
 
-__PACKAGE__->belongs_to(
-  "corporate_name",
-  "CIDER::Schema::Result::AuthorityName",
-  { id => "corporate_name" },
-  {
-    is_deferrable => 1,
-    join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
-  },
+__PACKAGE__->has_many(
+    item_geographic_terms =>
+        'CIDER::Schema::Result::ItemGeographicTerm',
+);
+__PACKAGE__->many_to_many(
+    geographic_terms =>
+        'item_geographic_terms',
+    'geographic_term',
 );
 
-__PACKAGE__->belongs_to(
-  "topic_term",
-  "CIDER::Schema::Result::TopicTerm",
-  { id => "topic_term" },
-  {
-    is_deferrable => 1,
-    join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
-  },
+__PACKAGE__->add_columns(
+    description =>
+        { data_type => 'text', is_nullable => 1 },
+    volume =>
+        { data_type => 'varchar', is_nullable => 1 },
+    issue =>
+        { data_type => 'varchar', is_nullable => 1 },
+    abstract =>
+        { data_type => 'text', is_nullable => 1 },
+    citation =>
+        { data_type => 'text', is_nullable => 1 },
 );
 
-__PACKAGE__->belongs_to(
-  "geographic_term",
-  "CIDER::Schema::Result::GeographicTerm",
-  { id => "geographic_term" },
-  {
-    is_deferrable => 1,
-    join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
-  },
+# TO DO: classes
+
+__PACKAGE__->has_many(
+    item_authority_names =>
+        'CIDER::Schema::Result::ItemAuthorityName',
+);
+__PACKAGE__->many_to_many(
+    item_names =>
+        'item_authority_names',
+    'name',
 );
 
 =head1 METHODS

@@ -1,4 +1,4 @@
-package CIDER::Schema::Result::ItemRestrictions;
+package CIDER::Schema::Result::DCType;
 
 use strict;
 use warnings;
@@ -7,11 +7,11 @@ use base 'DBIx::Class::Core';
 
 =head1 NAME
 
-CIDER::Schema::Result::ItemRestrictions
+CIDER::Schema::Result::ItemType
 
 =cut
 
-__PACKAGE__->table( 'item_restrictions' );
+__PACKAGE__->table( 'dc_type' );
 
 __PACKAGE__->add_columns(
     id =>
@@ -22,7 +22,7 @@ __PACKAGE__->set_primary_key( 'id' );
 __PACKAGE__->has_many(
     items =>
         'CIDER::Schema::Result::Item',
-    'restrictions',
+    'dc_type',
     { cascade_copy => 0, cascade_delete => 0 },
 );
 
@@ -31,10 +31,5 @@ __PACKAGE__->add_columns(
         { data_type => 'varchar' },
 );
 use overload '""' => sub { shift->name() }, fallback => 1;
-
-__PACKAGE__->add_columns(
-    description =>
-        { data_type => 'varchar' },
-);
 
 1;
