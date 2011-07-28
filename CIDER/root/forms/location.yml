@@ -72,7 +72,7 @@ elements:
     constraint: Required
     empty_first: 1
     model_config:
-      resultset: LocationUnitType
+      resultset: UnitType
 
   - type: Submit
     name: submit

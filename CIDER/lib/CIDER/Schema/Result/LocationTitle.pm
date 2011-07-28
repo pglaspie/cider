@@ -11,39 +11,27 @@ CIDER::Schema::Result::LocationTitle;
 
 =cut
 
-__PACKAGE__->table("location_title");
-
-=head1 ACCESSORS
-
-=head2 id
-
-  data_type: 'integer'
-  is_auto_increment: 1
-  is_nullable: 0
-
-=head2 location
-
-  data_type: 'char'
-  is_foreign_key: 1
-  is_nullable: 0
-  size: 16
-
-=head2 title
-
-  data_type: 'text'
-  is_nullable: 0
-
-=cut
+__PACKAGE__->table( 'location_title' );
 
 __PACKAGE__->add_columns(
-    "id",
-    { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
-    "location",
-    { data_type => "char", is_foreign_key => 1, is_nullable => 0, size => 16 },
-    "title",
-    { data_type => "text", is_nullable => 0 },
+    id =>
+        { data_type => 'int', is_auto_increment => 1 },
 );
-__PACKAGE__->set_primary_key("id");
+__PACKAGE__->set_primary_key( 'id' );
+
+__PACKAGE__->add_columns(
+    location =>
+        { data_type => 'int', is_foreign_key => 1 },
+);
+__PACKAGE__->belongs_to(
+    location =>
+        'CIDER::Schema::Result::Location',
+);
+
+__PACKAGE__->add_columns(
+    title =>
+        { data_type => 'varchar' }
+);
 
 use overload '""' => sub { shift->title() }, fallback => 1;
 

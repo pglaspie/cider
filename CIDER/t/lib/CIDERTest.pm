@@ -217,7 +217,7 @@ sub init_schema {
     );
 
     $schema->populate(
-        'LocationUnitType',
+        'UnitType',
         [
          [qw/id name volume/],
          [1, '1.2 cu. ft. box', 1.2],
@@ -229,20 +229,20 @@ sub init_schema {
     $schema->populate(
         'Location',
         [
-         [qw/barcode unit_type/],
-         ['8001', 1],
-         ['8002', 1],
-         ['8003', 1],
-         ['8004', 1],
-         ['8005', 1],
-         ['9001', 2],
-         ['9002', 2],
-         ['9003', 2],
-         ['11', 3],
-         ['12', 3],
-         ['13', 3],
-         ['21', 3],
-         ['22', 3],
+         [qw/id barcode unit_type/],
+         [1, '8001', 1],
+         [2, '8002', 1],
+         [3, '8003', 1],
+         [4, '8004', 1],
+         [5, '8005', 1],
+         [6, '9001', 2],
+         [7, '9002', 2],
+         [8, '9003', 2],
+         [9, '11', 3],
+         [10, '12', 3],
+         [11, '13', 3],
+         [12, '21', 3],
+         [13, '22', 3],
         ]
     );
 
@@ -250,8 +250,8 @@ sub init_schema {
         'LocationTitle',
         [
          [qw/id location title/],
-         [1, '8001', 'John Doe Papers'],
-         [2, '8001', 'Jane Doe Papers'],
+         [1, 1, 'John Doe Papers'],
+         [2, 1, 'Jane Doe Papers'],
         ]
     );
 

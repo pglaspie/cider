@@ -11,40 +11,27 @@ CIDER::Schema::Result::LocationCollectionNumber;
 
 =cut
 
-__PACKAGE__->table("location_collection_number");
-
-=head1 ACCESSORS
-
-=head2 id
-
-  data_type: 'integer'
-  is_auto_increment: 1
-  is_nullable: 0
-
-=head2 location
-
-  data_type: 'char'
-  is_foreign_key: 1
-  is_nullable: 0
-  size: 16
-
-=head2 number
-
-  data_type: 'char'
-  is_nullable: 0
-  size: 255
-
-=cut
+__PACKAGE__->table( 'location_collection_number' );
 
 __PACKAGE__->add_columns(
-    "id",
-    { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
-    "location",
-    { data_type => "char", is_foreign_key => 1, is_nullable => 0, size => 16 },
-    "number",
-    { data_type => "char", is_nullable => 0, size => 255 },
+    id =>
+        { data_type => 'int', is_auto_increment => 1 },
 );
-__PACKAGE__->set_primary_key("id");
+__PACKAGE__->set_primary_key( 'id' );
+
+__PACKAGE__->add_columns(
+    location =>
+        { data_type => 'int', is_foreign_key => 1 },
+);
+__PACKAGE__->belongs_to(
+    location =>
+        'CIDER::Schema::Result::Location',
+);
+
+__PACKAGE__->add_columns(
+    number =>
+        { data_type => 'varchar' }
+);
 
 use overload '""' => sub { shift->number() }, fallback => 1;
 
