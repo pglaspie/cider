@@ -1,8 +1,20 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Thu Jul 28 13:09:05 2011
+-- Created on Thu Jul 28 17:56:09 2011
 -- 
 SET foreign_key_checks=0;
+
+DROP TABLE IF EXISTS `application`;
+
+--
+-- Table: `application`
+--
+CREATE TABLE `application` (
+  `id` integer NOT NULL auto_increment,
+  `function` enum('checksum', 'media_image', 'virus_check') NOT NULL,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `authority_name`;
 
@@ -27,6 +39,18 @@ CREATE TABLE `dc_type` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `dca_staff`;
+
+--
+-- Table: `dca_staff`
+--
+CREATE TABLE `dca_staff` (
+  `id` integer NOT NULL auto_increment,
+  `first_name` varchar(255) NOT NULL,
+  `last_name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
 DROP TABLE IF EXISTS `documentation`;
 
 --
@@ -38,6 +62,29 @@ CREATE TABLE `documentation` (
   `description` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE `documentation_name` (`name`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `file_extension`;
+
+--
+-- Table: `file_extension`
+--
+CREATE TABLE `file_extension` (
+  `id` integer NOT NULL auto_increment,
+  `extension` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `format`;
+
+--
+-- Table: `format`
+--
+CREATE TABLE `format` (
+  `id` integer NOT NULL auto_increment,
+  `class` enum('container', 'bound_volume', 'three_dimensional_object', 'audio_visual_media', 'document', 'physical_image', 'digital_object', 'browsing_object') NOT NULL,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `geographic_term`;
@@ -184,6 +231,19 @@ CREATE TABLE `roles` (
   `id` integer NOT NULL auto_increment,
   `role` text,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `stabilization_procedure`;
+
+--
+-- Table: `stabilization_procedure`
+--
+CREATE TABLE `stabilization_procedure` (
+  `id` tinyint NOT NULL auto_increment,
+  `code` varchar(10) NOT NULL,
+  `name` varchar(255),
+  PRIMARY KEY (`id`),
+  UNIQUE `stabilization_procedure_code` (`code`)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `topic_term`;
@@ -384,6 +444,37 @@ CREATE TABLE `collection` (
   CONSTRAINT `collection_fk_publication_status` FOREIGN KEY (`publication_status`) REFERENCES `publication_status` (`id`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `item_group`;
+
+--
+-- Table: `item_group`
+--
+CREATE TABLE `item_group` (
+  `id` integer NOT NULL auto_increment,
+  `item` integer NOT NULL,
+  INDEX `item_group_idx_item` (`item`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `item_group_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `browsing_object`;
+
+--
+-- Table: `browsing_object`
+--
+CREATE TABLE `browsing_object` (
+  `id` integer NOT NULL auto_increment,
+  `item` integer NOT NULL,
+  `format` integer,
+  `pid` varchar(255),
+  `thumbnail_pid` varchar(255),
+  INDEX `browsing_object_idx_format` (`format`),
+  INDEX `browsing_object_idx_item` (`item`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `browsing_object_fk_format` FOREIGN KEY (`format`) REFERENCES `format` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `browsing_object_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
 DROP TABLE IF EXISTS `collection_language`;
 
 --
@@ -485,6 +576,243 @@ CREATE TABLE `collection_record_context` (
   PRIMARY KEY (`collection`, `is_primary`, `record_context`),
   CONSTRAINT `collection_record_context_fk_collection` FOREIGN KEY (`collection`) REFERENCES `collection` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `collection_record_context_fk_record_context` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `document`;
+
+--
+-- Table: `document`
+--
+CREATE TABLE `document` (
+  `id` integer NOT NULL auto_increment,
+  `item` integer NOT NULL,
+  `location` integer NOT NULL,
+  `format` integer,
+  `dimensions` varchar(255),
+  `rights` text,
+  INDEX `document_idx_format` (`format`),
+  INDEX `document_idx_item` (`item`),
+  INDEX `document_idx_location` (`location`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `document_fk_format` FOREIGN KEY (`format`) REFERENCES `document` (`id`),
+  CONSTRAINT `document_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `document_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `file_folder`;
+
+--
+-- Table: `file_folder`
+--
+CREATE TABLE `file_folder` (
+  `id` integer NOT NULL auto_increment,
+  `item` integer NOT NULL,
+  `location` integer NOT NULL,
+  `notes` text,
+  INDEX `file_folder_idx_item` (`item`),
+  INDEX `file_folder_idx_location` (`location`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `file_folder_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `file_folder_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `audio_visual_media`;
+
+--
+-- Table: `audio_visual_media`
+--
+CREATE TABLE `audio_visual_media` (
+  `id` integer NOT NULL auto_increment,
+  `item` integer NOT NULL,
+  `location` integer NOT NULL,
+  `format` integer,
+  `notes` text,
+  `rights` text,
+  INDEX `audio_visual_media_idx_format` (`format`),
+  INDEX `audio_visual_media_idx_item` (`item`),
+  INDEX `audio_visual_media_idx_location` (`location`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `audio_visual_media_fk_format` FOREIGN KEY (`format`) REFERENCES `format` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `audio_visual_media_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `audio_visual_media_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `bound_volume`;
+
+--
+-- Table: `bound_volume`
+--
+CREATE TABLE `bound_volume` (
+  `id` integer NOT NULL auto_increment,
+  `item` integer NOT NULL,
+  `location` integer NOT NULL,
+  `format` integer,
+  `notes` text,
+  `rights` text,
+  INDEX `bound_volume_idx_format` (`format`),
+  INDEX `bound_volume_idx_item` (`item`),
+  INDEX `bound_volume_idx_location` (`location`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `bound_volume_fk_format` FOREIGN KEY (`format`) REFERENCES `format` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `bound_volume_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `bound_volume_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `browsing_object_relationship`;
+
+--
+-- Table: `browsing_object_relationship`
+--
+CREATE TABLE `browsing_object_relationship` (
+  `id` integer NOT NULL auto_increment,
+  `browsing_object` integer NOT NULL,
+  `predicate` tinyint NOT NULL,
+  `pid` varchar(255) NOT NULL,
+  INDEX `browsing_object_relationship_idx_browsing_object` (`browsing_object`),
+  INDEX `browsing_object_relationship_idx_predicate` (`predicate`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `browsing_object_relationship_fk_browsing_object` FOREIGN KEY (`browsing_object`) REFERENCES `browsing_object` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `browsing_object_relationship_fk_predicate` FOREIGN KEY (`predicate`) REFERENCES `relationship_predicate` (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `container`;
+
+--
+-- Table: `container`
+--
+CREATE TABLE `container` (
+  `id` integer NOT NULL auto_increment,
+  `item` integer NOT NULL,
+  `location` integer NOT NULL,
+  `format` integer,
+  `notes` text,
+  INDEX `container_idx_format` (`format`),
+  INDEX `container_idx_item` (`item`),
+  INDEX `container_idx_location` (`location`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `container_fk_format` FOREIGN KEY (`format`) REFERENCES `format` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `container_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `container_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `physical_image`;
+
+--
+-- Table: `physical_image`
+--
+CREATE TABLE `physical_image` (
+  `id` integer NOT NULL auto_increment,
+  `item` integer NOT NULL,
+  `location` integer NOT NULL,
+  `format` integer,
+  `dimensions` varchar(255),
+  `rights` text,
+  INDEX `physical_image_idx_format` (`format`),
+  INDEX `physical_image_idx_item` (`item`),
+  INDEX `physical_image_idx_location` (`location`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `physical_image_fk_format` FOREIGN KEY (`format`) REFERENCES `format` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `physical_image_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `physical_image_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `three_dimensional_object`;
+
+--
+-- Table: `three_dimensional_object`
+--
+CREATE TABLE `three_dimensional_object` (
+  `id` integer NOT NULL auto_increment,
+  `item` integer NOT NULL,
+  `location` integer NOT NULL,
+  `format` integer,
+  `notes` text,
+  `rights` text,
+  INDEX `three_dimensional_object_idx_format` (`format`),
+  INDEX `three_dimensional_object_idx_item` (`item`),
+  INDEX `three_dimensional_object_idx_location` (`location`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `three_dimensional_object_fk_format` FOREIGN KEY (`format`) REFERENCES `format` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `three_dimensional_object_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `three_dimensional_object_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `digital_object`;
+
+--
+-- Table: `digital_object`
+--
+CREATE TABLE `digital_object` (
+  `id` integer NOT NULL auto_increment,
+  `item` integer NOT NULL,
+  `location` integer NOT NULL,
+  `format` integer,
+  `pid` varchar(255),
+  `permanent_url` varchar(255),
+  `notes` text,
+  `rights` text,
+  `checksum` varchar(255),
+  `file_extension` integer,
+  `original_filename` varchar(255),
+  `toc` text,
+  `stabilized_by` integer,
+  `stabilization_date` varchar(10),
+  `stabilization_procedure` tinyint,
+  `stabilization_notes` text,
+  `checksum_app` integer,
+  `media_app` integer,
+  `virus_app` integer,
+  `file_creation_date` varchar(10),
+  INDEX `digital_object_idx_checksum_app` (`checksum_app`),
+  INDEX `digital_object_idx_file_extension` (`file_extension`),
+  INDEX `digital_object_idx_format` (`format`),
+  INDEX `digital_object_idx_item` (`item`),
+  INDEX `digital_object_idx_location` (`location`),
+  INDEX `digital_object_idx_media_app` (`media_app`),
+  INDEX `digital_object_idx_stabilization_procedure` (`stabilization_procedure`),
+  INDEX `digital_object_idx_stabilized_by` (`stabilized_by`),
+  INDEX `digital_object_idx_virus_app` (`virus_app`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `digital_object_fk_checksum_app` FOREIGN KEY (`checksum_app`) REFERENCES `application` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `digital_object_fk_file_extension` FOREIGN KEY (`file_extension`) REFERENCES `file_extension` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `digital_object_fk_format` FOREIGN KEY (`format`) REFERENCES `digital_object` (`id`),
+  CONSTRAINT `digital_object_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `digital_object_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`),
+  CONSTRAINT `digital_object_fk_media_app` FOREIGN KEY (`media_app`) REFERENCES `application` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `digital_object_fk_stabilization_procedure` FOREIGN KEY (`stabilization_procedure`) REFERENCES `stabilization_procedure` (`id`),
+  CONSTRAINT `digital_object_fk_stabilized_by` FOREIGN KEY (`stabilized_by`) REFERENCES `dca_staff` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `digital_object_fk_virus_app` FOREIGN KEY (`virus_app`) REFERENCES `application` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `digital_object_application`;
+
+--
+-- Table: `digital_object_application`
+--
+CREATE TABLE `digital_object_application` (
+  `id` integer NOT NULL auto_increment,
+  `digital_object` integer NOT NULL,
+  `application` varchar(255) NOT NULL,
+  INDEX `digital_object_application_idx_digital_object` (`digital_object`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `digital_object_application_fk_digital_object` FOREIGN KEY (`digital_object`) REFERENCES `digital_object` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `digital_object_relationship`;
+
+--
+-- Table: `digital_object_relationship`
+--
+CREATE TABLE `digital_object_relationship` (
+  `id` integer NOT NULL auto_increment,
+  `digital_object` integer NOT NULL,
+  `predicate` tinyint NOT NULL,
+  `pid` varchar(255) NOT NULL,
+  INDEX `digital_object_relationship_idx_digital_object` (`digital_object`),
+  INDEX `digital_object_relationship_idx_predicate` (`predicate`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `digital_object_relationship_fk_digital_object` FOREIGN KEY (`digital_object`) REFERENCES `digital_object` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `digital_object_relationship_fk_predicate` FOREIGN KEY (`predicate`) REFERENCES `relationship_predicate` (`id`)
 ) ENGINE=InnoDB;
 
 SET foreign_key_checks=1;
