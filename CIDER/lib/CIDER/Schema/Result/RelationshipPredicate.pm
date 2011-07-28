@@ -17,7 +17,21 @@ __PACKAGE__->has_many(
     collection_relationships =>
         'CIDER::Schema::Result::CollectionRelationship',
     'predicate',
-    { cascade_copy => 0, cascade_delete => 0 },
+    { cascade_copy => 0, cascade_delete => 0 }
+);
+
+__PACKAGE__->has_many(
+    digital_object_relationships =>
+        'CIDER::Schema::Result::DigitalObjectRelationship',
+    { 'foreign.predicate' => 'self.id' },
+    { cascade_copy => 0, cascade_delete => 0 }
+);
+
+__PACKAGE__->has_many(
+    browsing_object_relationships =>
+        'CIDER::Schema::Result::BrowsingObjectRelationship',
+    'predicate',
+    { cascade_copy => 0, cascade_delete => 0 }
 );
 
 __PACKAGE__->add_columns(

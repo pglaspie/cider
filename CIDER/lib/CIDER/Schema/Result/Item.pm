@@ -116,7 +116,56 @@ __PACKAGE__->add_columns(
         { data_type => 'text', is_nullable => 1 },
 );
 
-# TO DO: classes
+__PACKAGE__->has_many(
+    groups =>
+        'CIDER::Schema::Result::Group',
+);
+
+__PACKAGE__->has_many(
+    file_folders =>
+        'CIDER::Schema::Result::FileFolder',
+);
+
+__PACKAGE__->has_many(
+    containers =>
+        'CIDER::Schema::Result::Container',
+);
+
+__PACKAGE__->has_many(
+    bound_volumes =>
+        'CIDER::Schema::Result::BoundVolume',
+);
+
+__PACKAGE__->has_many(
+    three_dimensional_objects =>
+        'CIDER::Schema::Result::ThreeDimensionalObject',
+);
+
+__PACKAGE__->has_many(
+    audio_visual_media =>
+        'CIDER::Schema::Result::AudioVisualMedia',
+);
+
+__PACKAGE__->has_many(
+    documents =>
+        'CIDER::Schema::Result::Document',
+);
+
+__PACKAGE__->has_many(
+    physical_images =>
+        'CIDER::Schema::Result::PhysicalImage',
+);
+
+__PACKAGE__->has_many(
+    digital_objects =>
+        'CIDER::Schema::Result::DigitalObject',
+);
+
+__PACKAGE__->has_many(
+    browsing_objects =>
+        'CIDER::Schema::Result::BrowsingObject',
+);
+
 
 __PACKAGE__->has_many(
     item_authority_names =>
