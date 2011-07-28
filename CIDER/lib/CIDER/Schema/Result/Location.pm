@@ -11,81 +11,44 @@ CIDER::Schema::Result::Location;
 
 =cut
 
-__PACKAGE__->table("location");
-
-=head1 ACCESSORS
-
-=head2 barcode
-
-  data_type: 'char'
-  is_nullable: 0
-  size: 16
-
-=head2 unit_type
-
-  data_type: 'integer'
-  is_nullable: 0
-
-=cut
+__PACKAGE__->table( 'location' );
 
 __PACKAGE__->add_columns(
-  "barcode",
-  { data_type => "char", is_nullable => 0, size => 16 },
-  "unit_type",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
+    id =>
+        { data_type => 'int', is_auto_increment => 1 },
 );
-__PACKAGE__->set_primary_key("barcode");
+__PACKAGE__->set_primary_key( 'id' );
 
-=head1 RELATIONS
+__PACKAGE__->has_many(
+    titles =>
+        'CIDER::Schema::Result::LocationTitle',
+);
 
-=head2 unit_type
+__PACKAGE__->has_many(
+    collection_numbers =>
+        'CIDER::Schema::Result::LocationCollectionNumber',
+);
 
-Type: belongs_to
+__PACKAGE__->has_many(
+    series_numbers =>
+        'CIDER::Schema::Result::LocationSeriesNumber',
+);
 
-Related object: L<CIDER::Schema::Result::LocationUnitType>
+__PACKAGE__->add_columns(
+    barcode =>
+        { data_type => 'varchar' },
+);
+__PACKAGE__->add_unique_constraint( [ 'barcode' ] );
 
-=cut
-
+__PACKAGE__->add_columns(
+    unit_type =>
+        { data_type => 'tinyint', is_foreign_key => 1 },
+);
 __PACKAGE__->belongs_to(
-    unit_type => 'CIDER::Schema::Result::LocationUnitType',
+    unit_type =>
+        'CIDER::Schema::Result::UnitType',
     undef,
     { proxy => 'volume' }
-);
-
-=head2 titles
-
-Type: has_many
-
-Related object: L<CIDER::Schema::Result::LocationTitle>
-
-=cut
-
-__PACKAGE__->has_many(
-    titles => 'CIDER::Schema::Result::LocationTitle',
-);
-
-=head2 collection_numbers
-
-Type: has_many
-
-Related object: L<CIDER::Schema::Result::LocationCollectionNumber>
-
-=cut
-
-__PACKAGE__->has_many(
-    collection_numbers => 'CIDER::Schema::Result::LocationCollectionNumber',
-);
-
-=head2 series_numbers
-
-Type: has_many
-
-Related object: L<CIDER::Schema::Result::LocationSeriesNumber>
-
-=cut
-
-__PACKAGE__->has_many(
-    series_numbers => 'CIDER::Schema::Result::LocationSeriesNumber',
 );
 
 1;

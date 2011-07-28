@@ -24,9 +24,11 @@ Catalyst Controller for Location CRUD.
 
 sub location :Chained('/') :CaptureArgs(1) {
     my ( $self, $c, $barcode ) = @_;
-    
-    my $loc = $c->model( 'CIDERDB' )->resultset( 'Location' )->find( $barcode );
-    
+
+    my $loc = $c->model( 'CIDERDB' )->resultset( 'Location' )->find( {
+        barcode => $barcode,
+    } );
+
     $c->stash->{ barcode } = $barcode;
     $c->stash->{ location } = $loc;
 }
@@ -56,13 +58,13 @@ sub detail :Chained('location') :PathPart('') :Args(0) :FormConfig('location') {
 sub create :Chained('location') :Args(0) :FormConfig('location') {
     my ( $self, $c ) = @_;
 
-    my $barcode = $c->stash->{barcode};
+    my $barcode = $c->stash->{ barcode };
 
     unless ( defined( $barcode ) ) {
         $c->detach( $c->controller( 'Root' )->action_for( 'default' ) );
     }
 
-    if ( $c->stash->{location} ) {
+    if ( $c->stash->{ location } ) {
         # A location with that barcode already exists; redirect to its
         # detail page.
         $c->response->redirect(
@@ -92,7 +94,7 @@ sub create :Chained('location') :Args(0) :FormConfig('location') {
         }
 
         $c->flash->{ we_just_created_this } = 1;
-        
+
         $c->res->redirect(
             $c->uri_for( $self->action_for( 'detail' ), [ $barcode ] ) );
     }

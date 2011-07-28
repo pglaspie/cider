@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Wed Jul 27 19:16:34 2011
+-- Created on Thu Jul 28 13:09:05 2011
 -- 
 SET foreign_key_checks=0;
 
@@ -64,54 +64,6 @@ CREATE TABLE `item_restrictions` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `location_collection_number`;
-
---
--- Table: `location_collection_number`
---
-CREATE TABLE `location_collection_number` (
-  `id` integer NOT NULL auto_increment,
-  `location` char(16) NOT NULL,
-  `number` char(255) NOT NULL,
-  PRIMARY KEY (`id`)
-);
-
-DROP TABLE IF EXISTS `location_series_number`;
-
---
--- Table: `location_series_number`
---
-CREATE TABLE `location_series_number` (
-  `id` integer NOT NULL auto_increment,
-  `location` char(16) NOT NULL,
-  `number` char(255) NOT NULL,
-  PRIMARY KEY (`id`)
-);
-
-DROP TABLE IF EXISTS `location_title`;
-
---
--- Table: `location_title`
---
-CREATE TABLE `location_title` (
-  `id` integer NOT NULL auto_increment,
-  `location` char(16) NOT NULL,
-  `title` text NOT NULL,
-  PRIMARY KEY (`id`)
-);
-
-DROP TABLE IF EXISTS `location_unit_type`;
-
---
--- Table: `location_unit_type`
---
-CREATE TABLE `location_unit_type` (
-  `id` integer NOT NULL auto_increment,
-  `name` varchar(255) NOT NULL,
-  `volume` decimal(5, 2),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
 DROP TABLE IF EXISTS `log`;
 
 --
@@ -138,12 +90,12 @@ DROP TABLE IF EXISTS `object`;
 CREATE TABLE `object` (
   `id` integer NOT NULL auto_increment,
   `parent` integer,
-  `number` char(255) NOT NULL,
-  `title` char(255) NOT NULL,
+  `number` varchar(255) NOT NULL,
+  `title` varchar(255) NOT NULL,
   INDEX `object_idx_parent` (`parent`),
   PRIMARY KEY (`id`),
   UNIQUE `object_number` (`number`),
-  CONSTRAINT `object_fk_parent` FOREIGN KEY (`parent`) REFERENCES `object` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `object_fk_parent` FOREIGN KEY (`parent`) REFERENCES `object` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `object_set`;
@@ -246,6 +198,18 @@ CREATE TABLE `topic_term` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `unit_type`;
+
+--
+-- Table: `unit_type`
+--
+CREATE TABLE `unit_type` (
+  `id` tinyint NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL,
+  `volume` decimal(5, 2),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
 DROP TABLE IF EXISTS `users`;
 
 --
@@ -264,11 +228,13 @@ DROP TABLE IF EXISTS `location`;
 -- Table: `location`
 --
 CREATE TABLE `location` (
-  `barcode` char(16) NOT NULL,
-  `unit_type` integer NOT NULL,
+  `id` integer NOT NULL auto_increment,
+  `barcode` varchar(255) NOT NULL,
+  `unit_type` tinyint NOT NULL,
   INDEX `location_idx_unit_type` (`unit_type`),
-  PRIMARY KEY (`barcode`),
-  CONSTRAINT `location_fk_unit_type` FOREIGN KEY (`unit_type`) REFERENCES `location_unit_type` (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE `location_barcode` (`barcode`),
+  CONSTRAINT `location_fk_unit_type` FOREIGN KEY (`unit_type`) REFERENCES `unit_type` (`id`)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `series`;
@@ -316,6 +282,48 @@ CREATE TABLE `collection_relationship` (
   PRIMARY KEY (`id`),
   CONSTRAINT `collection_relationship_fk_collection` FOREIGN KEY (`collection`) REFERENCES `object` (`id`),
   CONSTRAINT `collection_relationship_fk_predicate` FOREIGN KEY (`predicate`) REFERENCES `relationship_predicate` (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `location_collection_number`;
+
+--
+-- Table: `location_collection_number`
+--
+CREATE TABLE `location_collection_number` (
+  `id` integer NOT NULL auto_increment,
+  `location` integer NOT NULL,
+  `number` varchar(255) NOT NULL,
+  INDEX `location_collection_number_idx_location` (`location`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `location_collection_number_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `location_series_number`;
+
+--
+-- Table: `location_series_number`
+--
+CREATE TABLE `location_series_number` (
+  `id` integer NOT NULL auto_increment,
+  `location` integer NOT NULL,
+  `number` varchar(255) NOT NULL,
+  INDEX `location_series_number_idx_location` (`location`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `location_series_number_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `location_title`;
+
+--
+-- Table: `location_title`
+--
+CREATE TABLE `location_title` (
+  `id` integer NOT NULL auto_increment,
+  `location` integer NOT NULL,
+  `title` varchar(255) NOT NULL,
+  INDEX `location_title_idx_location` (`location`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `location_title_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `item`;

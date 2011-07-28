@@ -15,57 +15,62 @@ CIDER::Schema::Result::Object
 
 =cut
 
-__PACKAGE__->table("object");
+__PACKAGE__->table( 'object' );
 
 __PACKAGE__->add_columns(
-  "id",
-  { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
-  "parent",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 1,
-    accessor => '_parent'},
-  "number",
-  { data_type => "char", is_nullable => 0, size => 255 },
-  "title",
-  { data_type => "char", is_nullable => 0, size => 255 },
+    id =>
+        { data_type => 'int', is_auto_increment => 1 },
 );
-__PACKAGE__->set_primary_key("id");
-__PACKAGE__->add_unique_constraint( [ 'number' ] );
+__PACKAGE__->set_primary_key('id');
+
+__PACKAGE__->add_columns(
+    parent =>
+        { data_type => 'int', is_foreign_key => 1, is_nullable => 1,
+          accessor => '_parent'},
+);
 
 __PACKAGE__->belongs_to(
-  "parent",
-  "CIDER::Schema::Result::Object",
-  { id => "parent" },
-  {
-    is_deferrable => 1,
-    join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
-  },
+    parent =>
+        'CIDER::Schema::Result::Object',
 );
 
 __PACKAGE__->has_many(
-  "objects",
-  "CIDER::Schema::Result::Object",
-  { "foreign.parent" => "self.id" },
-  { cascade_copy => 0, cascade_delete => 0 },
+    objects =>
+        'CIDER::Schema::Result::Object',
+    'parent',
+    { cascade_update => 0, cascade_delete => 0 }
+);
+
+__PACKAGE__->add_columns(
+    number =>
+        { data_type => 'varchar' },
+);
+__PACKAGE__->add_unique_constraint( [ 'number' ] );
+
+__PACKAGE__->add_columns(
+    title =>
+        { data_type => 'varchar' },
 );
 
 __PACKAGE__->might_have(
-    collection => 'CIDER::Schema::Result::Collection',
+    collection =>
+        'CIDER::Schema::Result::Collection',
     undef,
-    { cascade_update => 0, cascade_delete => 0 },
+    { cascade_update => 0, cascade_delete => 0 }
 );
 
 __PACKAGE__->might_have(
-    series => 'CIDER::Schema::Result::Series',
+    series =>
+        'CIDER::Schema::Result::Series',
     undef,
-    { cascade_update => 0, cascade_delete => 0 },
+    { cascade_update => 0, cascade_delete => 0 }
 );
 
 __PACKAGE__->might_have(
-    item => 'CIDER::Schema::Result::Item',
+    item =>
+        'CIDER::Schema::Result::Item',
     undef,
-    { cascade_update => 0, cascade_delete => 0 },
+    { cascade_update => 0, cascade_delete => 0 }
 );
 
 =head2 type_object
@@ -95,21 +100,24 @@ sub type {
 }
 
 __PACKAGE__->has_many(
-  "object_set_objects",
-  "CIDER::Schema::Result::ObjectSetObject",
-  { "foreign.object" => "self.id" },
-  { cascade_copy => 0, cascade_delete => 0 },
+    object_set_objects =>
+        'CIDER::Schema::Result::ObjectSetObject',
 );
 
-__PACKAGE__->many_to_many('sets' => 'object_set_objects', 'object_set');
+__PACKAGE__->many_to_many(
+    'sets' =>
+        'object_set_objects',
+    'object_set');
 
 __PACKAGE__->has_many(
-    logs => "CIDER::Schema::Result::Log",
+    logs =>
+        'CIDER::Schema::Result::Log',
     'object',
 );
 
 __PACKAGE__->has_one(
-    creation_log => "CIDER::Schema::Result::Log",
+    creation_log =>
+        'CIDER::Schema::Result::Log',
     'object',
     { where => { action => 'create' },
       proxy => {
@@ -120,13 +128,15 @@ __PACKAGE__->has_one(
 );
 
 __PACKAGE__->has_many(
-    modification_logs => "CIDER::Schema::Result::Log",
+    modification_logs =>
+        'CIDER::Schema::Result::Log',
     'object',
     { where => { action => 'update' } },
 );
 
 __PACKAGE__->has_many(
-    export_logs => "CIDER::Schema::Result::Log",
+    export_logs =>
+        'CIDER::Schema::Result::Log',
     'object',
     { where => { action => 'export' } },
 );
