@@ -1,4 +1,4 @@
-package CIDER::Schema::Result::PublicationStatus;
+package CIDER::Schema::Result::RecordContextType;
 
 use strict;
 use warnings;
@@ -7,11 +7,11 @@ use base 'DBIx::Class::Core';
 
 =head1 NAME
 
-CIDER::Schema::Result::PublicationStatus
+CIDER::Schema::Result::RecordContextType
 
 =cut
 
-__PACKAGE__->table( 'publication_status' );
+__PACKAGE__->table( 'record_context_type' );
 
 __PACKAGE__->add_columns(
     id =>
@@ -20,22 +20,15 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key( 'id' );
 
 __PACKAGE__->has_many(
-    collections =>
-        'CIDER::Schema::Result::Collection',
-    'publication_status',
-    { cascade_delete => 0 },
-);
-
-__PACKAGE__->has_many(
     record_contexts =>
         'CIDER::Schema::Result::RecordContext',
-    { 'foreign.publication_status' => 'self.id' },
-    { cascade_delete => 0 },
+    'rc_type',
+    { cascade_copy => 0, cascade_delete => 0 },
 );
 
 __PACKAGE__->add_columns(
     name =>
-        { data_type => 'varchar', size => 10 },
+        { data_type => 'varchar', size => 20 },
 );
 __PACKAGE__->add_unique_constraint( [ 'name' ] );
 use overload '""' => sub { shift->name() }, fallback => 1;

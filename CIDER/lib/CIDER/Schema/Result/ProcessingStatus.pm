@@ -23,7 +23,7 @@ __PACKAGE__->has_many(
     collections =>
         'CIDER::Schema::Result::Collection',
     'processing_status',
-    { cascade_copy => 0, cascade_delete => 0 },
+    { cascade_delete => 0 },
 );
 
 __PACKAGE__->add_columns(

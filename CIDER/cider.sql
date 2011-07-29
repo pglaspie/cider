@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Thu Jul 28 17:56:09 2011
+-- Created on Fri Jul 29 12:21:36 2011
 -- 
 SET foreign_key_checks=0;
 
@@ -36,7 +36,8 @@ DROP TABLE IF EXISTS `dc_type`;
 CREATE TABLE `dc_type` (
   `id` tinyint NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE `dc_type_name` (`name`)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `dca_staff`;
@@ -83,6 +84,17 @@ DROP TABLE IF EXISTS `format`;
 CREATE TABLE `format` (
   `id` integer NOT NULL auto_increment,
   `class` enum('container', 'bound_volume', 'three_dimensional_object', 'audio_visual_media', 'document', 'physical_image', 'digital_object', 'browsing_object') NOT NULL,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `function`;
+
+--
+-- Table: `function`
+--
+CREATE TABLE `function` (
+  `id` integer NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
@@ -199,15 +211,28 @@ CREATE TABLE `publication_status` (
   UNIQUE `publication_status_name` (`name`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `record_context`;
+DROP TABLE IF EXISTS `record_context_relationship_type`;
 
 --
--- Table: `record_context`
+-- Table: `record_context_relationship_type`
 --
-CREATE TABLE `record_context` (
-  `id` integer NOT NULL auto_increment,
-  `name` varchar(128) NOT NULL,
-  PRIMARY KEY (`id`)
+CREATE TABLE `record_context_relationship_type` (
+  `id` tinyint NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE `record_context_relationship_type_name` (`name`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `record_context_type`;
+
+--
+-- Table: `record_context_type`
+--
+CREATE TABLE `record_context_type` (
+  `id` tinyint NOT NULL auto_increment,
+  `name` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE `record_context_type_name` (`name`)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `relationship_predicate`;
@@ -413,6 +438,36 @@ CREATE TABLE `item` (
   CONSTRAINT `item_fk_restrictions` FOREIGN KEY (`restrictions`) REFERENCES `item_restrictions` (`id`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `record_context`;
+
+--
+-- Table: `record_context`
+--
+CREATE TABLE `record_context` (
+  `id` integer NOT NULL auto_increment,
+  `record_id` varchar(255) NOT NULL,
+  `publication_status` tinyint,
+  `name_entry` varchar(255) NOT NULL,
+  `rc_type` tinyint NOT NULL,
+  `date_from` varchar(10),
+  `date_to` varchar(10),
+  `circa` enum('0','1') NOT NULL DEFAULT '0',
+  `ongoing` enum('0','1') NOT NULL DEFAULT '0',
+  `abstract` text,
+  `history` text,
+  `context` text,
+  `function` integer,
+  INDEX `record_context_idx_function` (`function`),
+  INDEX `record_context_idx_publication_status` (`publication_status`),
+  INDEX `record_context_idx_rc_type` (`rc_type`),
+  PRIMARY KEY (`id`),
+  UNIQUE `record_context_name_entry` (`name_entry`),
+  UNIQUE `record_context_record_id` (`record_id`),
+  CONSTRAINT `record_context_fk_function` FOREIGN KEY (`function`) REFERENCES `function` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `record_context_fk_publication_status` FOREIGN KEY (`publication_status`) REFERENCES `publication_status` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `record_context_fk_rc_type` FOREIGN KEY (`rc_type`) REFERENCES `record_context_type` (`id`)
+) ENGINE=InnoDB;
+
 DROP TABLE IF EXISTS `collection`;
 
 --
@@ -440,8 +495,8 @@ CREATE TABLE `collection` (
   UNIQUE `collection_pid` (`pid`),
   CONSTRAINT `collection_fk_documentation` FOREIGN KEY (`documentation`) REFERENCES `documentation` (`id`),
   CONSTRAINT `collection_fk_id` FOREIGN KEY (`id`) REFERENCES `object` (`id`),
-  CONSTRAINT `collection_fk_processing_status` FOREIGN KEY (`processing_status`) REFERENCES `processing_status` (`id`),
-  CONSTRAINT `collection_fk_publication_status` FOREIGN KEY (`publication_status`) REFERENCES `publication_status` (`id`)
+  CONSTRAINT `collection_fk_processing_status` FOREIGN KEY (`processing_status`) REFERENCES `processing_status` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `collection_fk_publication_status` FOREIGN KEY (`publication_status`) REFERENCES `publication_status` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `item_group`;
@@ -455,6 +510,63 @@ CREATE TABLE `item_group` (
   INDEX `item_group_idx_item` (`item`),
   PRIMARY KEY (`id`),
   CONSTRAINT `item_group_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `record_context_alternate_name`;
+
+--
+-- Table: `record_context_alternate_name`
+--
+CREATE TABLE `record_context_alternate_name` (
+  `id` integer NOT NULL auto_increment,
+  `record_context` integer NOT NULL,
+  `name` varchar(255) NOT NULL,
+  INDEX `record_context_alternate_name_idx_record_context` (`record_context`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `record_context_alternate_name_fk_record_context` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `record_context_notable_person`;
+
+--
+-- Table: `record_context_notable_person`
+--
+CREATE TABLE `record_context_notable_person` (
+  `id` integer NOT NULL auto_increment,
+  `record_context` integer NOT NULL,
+  `name` varchar(255) NOT NULL,
+  INDEX `record_context_notable_person_idx_record_context` (`record_context`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `record_context_notable_person_fk_record_context` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `record_context_occupation`;
+
+--
+-- Table: `record_context_occupation`
+--
+CREATE TABLE `record_context_occupation` (
+  `id` integer NOT NULL auto_increment,
+  `record_context` integer NOT NULL,
+  `date_from` varchar(10) NOT NULL,
+  `date_to` varchar(10),
+  INDEX `record_context_occupation_idx_record_context` (`record_context`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `record_context_occupation_fk_record_context` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `record_context_source`;
+
+--
+-- Table: `record_context_source`
+--
+CREATE TABLE `record_context_source` (
+  `id` integer NOT NULL auto_increment,
+  `record_context` integer NOT NULL,
+  `source` varchar(255) NOT NULL,
+  INDEX `record_context_source_idx_record_context` (`record_context`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `record_context_source_fk_record_context` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `browsing_object`;
@@ -562,20 +674,39 @@ CREATE TABLE `item_topic_term` (
   CONSTRAINT `item_topic_term_fk_topic_term` FOREIGN KEY (`topic_term`) REFERENCES `topic_term` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `collection_record_context`;
+DROP TABLE IF EXISTS `occupation_title`;
 
 --
--- Table: `collection_record_context`
+-- Table: `occupation_title`
 --
-CREATE TABLE `collection_record_context` (
-  `collection` integer NOT NULL,
-  `is_primary` enum('0','1') NOT NULL,
+CREATE TABLE `occupation_title` (
+  `id` integer NOT NULL auto_increment,
+  `occupation` integer NOT NULL,
+  `title` varchar(255) NOT NULL,
+  INDEX `occupation_title_idx_occupation` (`occupation`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `occupation_title_fk_occupation` FOREIGN KEY (`occupation`) REFERENCES `record_context_occupation` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `record_context_relationship`;
+
+--
+-- Table: `record_context_relationship`
+--
+CREATE TABLE `record_context_relationship` (
+  `id` integer NOT NULL auto_increment,
   `record_context` integer NOT NULL,
-  INDEX `collection_record_context_idx_collection` (`collection`),
-  INDEX `collection_record_context_idx_record_context` (`record_context`),
-  PRIMARY KEY (`collection`, `is_primary`, `record_context`),
-  CONSTRAINT `collection_record_context_fk_collection` FOREIGN KEY (`collection`) REFERENCES `collection` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `collection_record_context_fk_record_context` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  `type` tinyint NOT NULL,
+  `related_entity` integer NOT NULL,
+  `date_from` varchar(10),
+  `date_to` varchar(10),
+  INDEX `record_context_relationship_idx_record_context` (`record_context`),
+  INDEX `record_context_relationship_idx_related_entity` (`related_entity`),
+  INDEX `record_context_relationship_idx_type` (`type`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `record_context_relationship_fk_record_context` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `record_context_relationship_fk_related_entity` FOREIGN KEY (`related_entity`) REFERENCES `record_context` (`id`),
+  CONSTRAINT `record_context_relationship_fk_type` FOREIGN KEY (`type`) REFERENCES `record_context_relationship_type` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `document`;
@@ -735,6 +866,22 @@ CREATE TABLE `three_dimensional_object` (
   CONSTRAINT `three_dimensional_object_fk_format` FOREIGN KEY (`format`) REFERENCES `format` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `three_dimensional_object_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `three_dimensional_object_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `collection_record_context`;
+
+--
+-- Table: `collection_record_context`
+--
+CREATE TABLE `collection_record_context` (
+  `collection` integer NOT NULL,
+  `is_primary` enum('0','1') NOT NULL,
+  `record_context` integer NOT NULL,
+  INDEX `collection_record_context_idx_collection` (`collection`),
+  INDEX `collection_record_context_idx_record_context` (`record_context`),
+  PRIMARY KEY (`collection`, `is_primary`, `record_context`),
+  CONSTRAINT `collection_record_context_fk_collection` FOREIGN KEY (`collection`) REFERENCES `collection` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `collection_record_context_fk_record_context` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `digital_object`;

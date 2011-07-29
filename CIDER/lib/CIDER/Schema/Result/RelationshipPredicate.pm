@@ -5,6 +5,12 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
+=head1 NAME
+
+CIDER::Schema::Result::RelationshipPredicate;
+
+=cut
+
 __PACKAGE__->table( 'relationship_predicate' );
 
 __PACKAGE__->add_columns(
