@@ -47,10 +47,18 @@ sub init_schema {
     $schema->deploy( undef, $db_dir );
 
     $schema->populate(
-        'RecordContext',
+        'RecordContextType',
         [
             [qw/id name/],
-            [1, 'Context 1'],
+            [1, 'corporateBody'],
+        ]
+    );
+
+    $schema->populate(
+        'RecordContext',
+        [
+            [qw/id record_id name_entry rc_type/],
+            [1, 'RCR00001', 'Context 1', 1],
         ]
     );
 

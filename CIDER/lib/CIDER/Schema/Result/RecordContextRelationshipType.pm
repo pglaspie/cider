@@ -1,4 +1,4 @@
-package CIDER::Schema::Result::DCType;
+package CIDER::Schema::Result::RecordContextRelationshipType;
 
 use strict;
 use warnings;
@@ -7,11 +7,11 @@ use base 'DBIx::Class::Core';
 
 =head1 NAME
 
-CIDER::Schema::Result::ItemType
+CIDER::Schema::Result::RecordContextRelationshipType
 
 =cut
 
-__PACKAGE__->table( 'dc_type' );
+__PACKAGE__->table( 'record_context_relationship_type' );
 
 __PACKAGE__->add_columns(
     id =>
@@ -20,10 +20,10 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key( 'id' );
 
 __PACKAGE__->has_many(
-    items =>
-        'CIDER::Schema::Result::Item',
-    'dc_type',
-    { cascade_copy => 0, cascade_delete => 0 },
+    record_context_relationships =>
+        'CIDER::Schema::Result::RecordContextRelationship',
+    'type',
+    { cascade_delete => 0 }
 );
 
 __PACKAGE__->add_columns(
@@ -31,6 +31,6 @@ __PACKAGE__->add_columns(
         { data_type => 'varchar' },
 );
 __PACKAGE__->add_unique_constraint( [ 'name' ] );
-use overload '""' => sub { shift->name() }, fallback => 1;
+use overload '""' => sub { shift->name }, fallback => 1;
 
 1;

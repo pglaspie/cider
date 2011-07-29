@@ -54,10 +54,98 @@ __PACKAGE__->many_to_many(
     'collection',
 );
 
+__PACKAGE__->add_columns(
+    record_id =>
+        { data_type => 'varchar' },
+);
+__PACKAGE__->add_unique_constraint( [ 'record_id' ] );
 
 __PACKAGE__->add_columns(
-    name =>
-        { data_type => 'varchar', is_nullable => 0, size => 128 },
+    publication_status =>
+        { data_type => 'tinyint', is_foreign_key => 1, is_nullable => 1 },
+);
+__PACKAGE__->belongs_to(
+    publication_status =>
+        'CIDER::Schema::Result::PublicationStatus',
+);
+
+__PACKAGE__->add_columns(
+    name_entry =>
+        { data_type => 'varchar' },
+);
+__PACKAGE__->add_unique_constraint( [ 'name_entry' ] );
+
+__PACKAGE__->add_columns(
+    rc_type =>
+        { data_type => 'tinyint', is_foreign_key => 1 },
+);
+__PACKAGE__->belongs_to(
+    rc_type =>
+        'CIDER::Schema::Result::RecordContextType',
+);
+
+__PACKAGE__->has_many(
+    alt_names =>
+        'CIDER::Schema::Result::RecordContextAlternateName',
+    'record_context',
+);
+
+__PACKAGE__->add_columns(
+    date_from =>
+        { data_type => 'varchar', is_nullable => 1, size => 10 },
+    date_to =>
+        { data_type => 'varchar', is_nullable => 1, size => 10 },
+    circa =>
+        { data_type => 'boolean', default_value => 0 },
+    ongoing =>
+        { data_type => 'boolean', default_value => 0 },
+);
+
+__PACKAGE__->add_columns(
+    abstract =>
+        { data_type => 'text', is_nullable => 1 },
+    history =>
+        { data_type => 'text', is_nullable => 1 },
+);
+
+__PACKAGE__->has_many(
+    notable_persons =>
+        'CIDER::Schema::Result::RecordContextNotablePerson',
+    'record_context',
+);
+
+__PACKAGE__->add_columns(
+    context =>
+        { data_type => 'text', is_nullable => 1 },
+);
+
+__PACKAGE__->has_many(
+    sources =>
+        'CIDER::Schema::Result::RecordContextSource',
+    'record_context',
+);
+
+__PACKAGE__->add_columns(
+    function =>
+        { data_type => 'int', is_foreign_key => 1, is_nullable => 1 },
+);
+__PACKAGE__->belongs_to(
+    function =>
+        'CIDER::Schema::Result::Function',
+);
+
+__PACKAGE__->has_many(
+    occupations =>
+        'CIDER::Schema::Result::RecordContextOccupation',
+    'record_context',
+);
+
+__PACKAGE__->has_many(
+    # This can't be called 'relationships' because there's already a
+    # method by that name!
+    record_context_relationships =>
+        'CIDER::Schema::Result::RecordContextRelationship',
+    'record_context',
 );
 
 1;
