@@ -7,6 +7,7 @@ use FindBin;
 $ENV{CIDER_SITE_CONFIG} = "$FindBin::Bin/conf/cider.conf";
 #$ENV{CIDER_DEBUG}       = 0;
 
+use utf8;
 use Carp qw(croak);
 use English;
 use File::Path qw(make_path remove_tree);
@@ -31,6 +32,7 @@ sub init_schema {
 
     my $schema = CIDER::Schema->
         connect( $dsn, '', '', {
+            sqlite_unicode => 1,
             on_connect_call => 'use_foreign_keys',
         });
 
@@ -153,7 +155,7 @@ sub init_schema {
         [
             [qw/id notes
                 documentation processing_status/],
-            [1, 'Test notes.',
+            [1, 'Test notes.  Unicode: « ☃ ° » yay.',
              1, 1],
             [2, 'Test notes.',
              1, 1],

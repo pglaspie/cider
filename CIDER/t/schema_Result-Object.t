@@ -15,8 +15,17 @@ use CIDERTest;
 my $schema = CIDERTest->init_schema;
 $schema->user( 1 );
 
+use utf8;
+
 use Test::More;
 use Test::Exception;
+
+# See:  http://www.effectiveperlprogramming.com/blog/1226
+if ( Test::Builder->VERSION < 2 ) {
+    foreach my $method ( qw(output failure_output) ) {
+        binmode Test::More->builder->$method, ':encoding(UTF-8)';
+    }
+}
 
 my @collections = $schema->resultset('Object')->root_objects;
 
@@ -33,6 +42,9 @@ is( $collection_1->type, 'collection', 'type is collection.' );
 
 is( $collection_1->languages->first->language_name, 'English',
     'The collection language is English.' );
+
+is( $collection_1->notes, 'Test notes.  Unicode: « ☃ ° » yay.',
+    'Unicode is working.' );
 
 my @series = $collection_1->children;
 is (scalar @series, 1, 'There is one child series.');
