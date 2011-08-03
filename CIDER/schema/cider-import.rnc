@@ -1,0 +1,9 @@
+start = element import { (create | update)+ }
+
+create = element create {
+  grammar { include "cider.rnc" }+
+}
+
+update = element update {
+  grammar { include "cider.rnc" { required = empty } }+
+}
