@@ -407,12 +407,10 @@
         </element>
       </optional>
       <optional>
-        <element name="notablePersons">
-          <zeroOrMore>
-            <element name="person">
-              <ref name="line"/>
-            </element>
-          </zeroOrMore>
+        <element name="structureNotes">
+          <optional>
+            <ref name="multiline"/>
+          </optional>
         </element>
       </optional>
       <optional>
