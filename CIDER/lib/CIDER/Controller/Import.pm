@@ -38,13 +38,17 @@ sub import_FORM_VALID {
     my $file = $form->param_value( 'file' );
 
     my $importer = $c->model( 'Import' )->importer;
-    my $rows = 0;
-    eval { $rows = $importer->import_from_csv( $file->fh ); };
+    my ( $created, $updated );
+    eval { ( $created, $updated ) = $importer->import_from_xml( $file->fh ); };
     if ( $@ ) {
         $c->flash->{ error } = $@;
     } else {
         $c->flash->{ import_was_successful } = 1;
-        $c->flash->{ rows } = $rows . ( $rows == 1 ? ' row' : ' rows' );
+        $c->flash->{ file } = $file->filename;
+        $c->flash->{ created }
+            = "$created object" . ( $created == 1 ? '' : 's' );
+        $c->flash->{ updated }
+            = "$updated object" . ( $updated == 1 ? '' : 's' );
     }
 
     $c->res->redirect( $c->req->uri );

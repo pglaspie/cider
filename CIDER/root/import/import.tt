@@ -8,7 +8,8 @@
 </div>
 [% ELSIF import_was_successful %]
 <div class="success">
-You have successfully imported [% rows %].
+You have successfully imported "[% file %]".
+It created [% created %] and updated [% updated %].
 </div>
 [% END %]
 

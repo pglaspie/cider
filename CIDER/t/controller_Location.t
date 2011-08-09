@@ -31,7 +31,7 @@ is( $mech->status, 404, 'Nonexistent location, page not found' );
 
 $mech->get_ok( '/location/8001' );
 
-$mech->content_contains( 'bound', 'Unit type list is populated.' );
+$mech->content_contains( 'volume', 'Unit type list is populated.' );
 
 $mech->content_contains( 'John', 'Location has first title.' );
 $mech->content_contains( 'Jane', 'Location has second title.' );

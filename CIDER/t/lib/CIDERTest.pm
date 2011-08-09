@@ -2,6 +2,10 @@ package CIDERTest;
 use strict;
 use warnings;
 
+use base qw( Exporter );
+our @EXPORT    = qw( elt );
+our @EXPORT_OK = qw( elt );
+
 use FindBin;
 
 $ENV{CIDER_SITE_CONFIG} = "$FindBin::Bin/conf/cider.conf";
@@ -94,7 +98,7 @@ sub init_schema {
         'ProcessingStatus',
         [
             [qw/id name description/],
-            [1, 'test_status', 'Test Status'],
+            [1, 'minimal', 'Minimal processing'],
         ]
     );
 
@@ -110,7 +114,7 @@ sub init_schema {
         'DCType',
         [
             [qw/id name/],
-            [1, 'Test Type'],
+            [1, 'Text'],
         ]
     );
 
@@ -231,8 +235,8 @@ sub init_schema {
         [
          [qw/id name volume/],
          [1, '1.2 cu. ft. box', 1.2],
-         [2, 'bound volume', undef],
-         [3, 'digital object', undef],
+         [2, 'Bound volume', undef],
+         [3, 'Digital objects', undef],
         ]
     );
 
@@ -270,6 +274,12 @@ sub init_schema {
     return $schema;
 }
 
+use XML::LibXML;
+
+sub elt {
+    return XML::LibXML->new->parse_balanced_chunk( @_ )->firstChild;
+}
+
 1;
 
 __END__
@@ -302,3 +312,11 @@ who stole it in turn from DBIC...)
 This method removes the test SQLite database in t/db/cider.db
 and then creates a new database populated with default test data.
 It also (re)creates the search index in t/db/index.
+
+=head1 FUNCTIONS
+
+=head2 elt
+
+    my $elt = elt '<foo><bar/><baz>Garply</baz></foo>';
+
+This function parses a single XML element from a string.

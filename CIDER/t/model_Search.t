@@ -15,8 +15,6 @@ use CIDERTest;
 my $schema = CIDERTest->init_schema;
 $schema->user( 1 );
 
-use Text::CSV::Slurp;
-
 use CIDER;
 my $model = CIDER->model( 'Search' );
 my $query = KinoSearch::Search::TermQuery->new(
@@ -69,42 +67,46 @@ is( $hits->total_hits, 2, 'Found two New Titles.' );
 
 my $importer = CIDER->model( 'Import' )->importer;
 $importer->schema->user( 1 );
-my $csv = Text::CSV::Slurp->create( input => [ {
-    type => 'series',
-    title => 'Imported series 1',
-    number => 1,
-    description => 'foo',
-}, {
-    type => 'series',
-    title => 'Imported series 2',
-    description => 'foo',
-    # error - no number
-} ] );
-open my $handle, '<', \$csv;
-dies_ok( sub { $importer->import_from_csv( $handle ) }, 'Import fails.' );
+my $xml = <<END
+<import>
+  <create>
+    <series number="1">
+      <title>Imported series 1</title>
+    </series>
+    <series number="1"> <!-- duplicate number -->
+      <title>Imported series 2</title>
+    </series>
+  </create>
+</import>
+END
+;
+open my $handle, '<', \$xml;
+dies_ok( sub { $importer->import_from_xml( $handle ) }, 'Import fails.' );
 
 $hits = $model->search( query => 'Imported' );
 is( $hits->total_hits, 0, 'Found no Imported.' );
 
-$csv = Text::CSV::Slurp->create( input => [ {
-    type => 'series',
-    title => 'Imported series 1',
-    number => 1,
-    description => 'foo',
-}, {
-    type => 'series',
-    title => 'Imported series 2',
-    number => 2,
-    description => 'foo',
-} ] );
-open $handle, '<', \$csv;
-$importer->import_from_csv( $handle );
+$xml = <<END
+<import>
+  <create>
+    <series number="1">
+      <title>Imported series 1</title>
+    </series>
+    <series number="2">
+      <title>Imported series 2</title>
+    </series>
+  </create>
+</import>
+END
+;
+open $handle, '<', \$xml;
+$importer->import_from_xml( $handle );
 
 $hits = $model->search( query => 'Imported' );
 is( $hits->total_hits, 2, 'Found two Imported.' );
 
-# TO DO: should look for 'Status'
-$hits = $model->search( query => 'test_status' );
+# TO DO: should look for 'Minimal processing'
+$hits = $model->search( query => 'minimal' );
 is( $hits->total_hits, 2, 'Found two collections with processing status.' );
 
 $query = KinoSearch::Search::TermQuery->new(

@@ -15,13 +15,15 @@ CIDER::Schema::Result::Object
 
 =cut
 
+__PACKAGE__->load_components( 'UpdateFromXML' );
+
 __PACKAGE__->table( 'object' );
 
 __PACKAGE__->add_columns(
     id =>
         { data_type => 'int', is_auto_increment => 1 },
 );
-__PACKAGE__->set_primary_key('id');
+__PACKAGE__->set_primary_key( 'id' );
 
 __PACKAGE__->add_columns(
     parent =>
@@ -270,33 +272,67 @@ sub store_column {
 # parent: Custom user-facing accessor method for the 'parent' column.
 #         On set, confirms that no circular graphs are in the making.
 sub parent {
-    my ( $self, $new_parent ) = @_;
+    my $self = shift;
+    my ( $new_parent ) = @_;
 
-    if ( $new_parent ) {
-        unless ( ref $new_parent ) {
-            $new_parent = $self->result_source->resultset->find( $new_parent );
+    if ( @_ ) {
+        if ( !$new_parent ) {
+            $self->_parent( undef );
         }
+        else {
+            unless ( ref $new_parent ) {
+                $new_parent =
+                    $self->result_source->resultset->find( $new_parent );
+            }
 
-        if ( $new_parent->id == $self->id ) {
-            croak( sprintf "Cannot set a CIDER object (ID %s) to be "
-                       . "its own parent.",
-                   $self->id,
-               );
+            if ( $self->in_storage ) {
+
+                if ( $new_parent->id == $self->id ) {
+                    croak( sprintf "Cannot set a CIDER object (ID %s) to be "
+                               . "its own parent.",
+                           $self->id,
+                       );
+                }
+
+                if ( $new_parent->has_ancestor( $self ) ) {
+                    croak( sprintf "Cannot set a CIDER object (ID %s) to be "
+                               . "the parent of its ancestor (ID %s).",
+                           $new_parent->id,
+                           $self->id,
+                       );
+                }
+            }
+
+            # If we've made it this far, then this is a legal new parent.
+            $self->_parent( $new_parent->id );
         }
-
-        if ( $new_parent->has_ancestor( $self ) ) {
-            croak( sprintf "Cannot set a CIDER object (ID %s) to be "
-                       . "the parent of its ancestor (ID %s).",
-                   $new_parent->id,
-                   $self->id,
-               );
-        }
-
-        # If we've made it this far, then this is a legal new parent.
-        $self->_parent( $new_parent->id );
     }
 
     return $self->_parent;
+}
+
+sub update_from_xml {
+    my $self = shift;
+    my ( $elt ) = @_;
+
+    if ( $elt->hasAttribute( 'parent' ) ) {
+        my $parent_number = $elt->getAttribute( 'parent' );
+        my $parent = undef;
+        unless ( $parent_number eq '' ) {
+            my $rs = $self->result_source->resultset;
+            $parent = $rs->find( { number => $parent_number } );
+            unless ( $parent ) {
+                croak "Parent number '$parent_number' does not exist.";
+            }
+        }
+        $self->parent( $parent );
+    }
+
+    if ( my @titles = $elt->getChildrenByTagName( 'title' ) ) {
+        $self->title( $titles[0]->textContent );
+    }
+
+    $self->update_or_insert;
 }
 
 1;

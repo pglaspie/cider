@@ -15,17 +15,8 @@ use CIDERTest;
 my $schema = CIDERTest->init_schema;
 $schema->user( 1 );
 
-use utf8;
-
 use Test::More;
 use Test::Exception;
-
-# See:  http://www.effectiveperlprogramming.com/blog/1226
-if ( Test::Builder->VERSION < 2 ) {
-    foreach my $method ( qw(output failure_output) ) {
-        binmode Test::More->builder->$method, ':encoding(UTF-8)';
-    }
-}
 
 my @collections = $schema->resultset('Object')->root_objects;
 
@@ -40,11 +31,6 @@ isa_ok ($collection_1, 'CIDER::Schema::Result::Collection',
  );
 is( $collection_1->type, 'collection', 'type is collection.' );
 
-is( $collection_1->languages->first->language_name, 'English',
-    'The collection language is English.' );
-
-is( $collection_1->notes, 'Test notes.  Unicode: « ☃ ° » yay.',
-    'Unicode is working.' );
 
 my @series = $collection_1->children;
 is (scalar @series, 1, 'There is one child series.');
@@ -75,21 +61,6 @@ is ( $item_1->parent->id, $series_1->id,
      "The series is the parent of the item."
  );
 
-use DateTime;
-
-is( $item_1->date_from, '2000-01-01',
-    "Item 1's date_from is correct." );
-
-is( $item_2->date_to, '2010-01-01',
-    "Item 2's date_to is correct." );
-
-$item_2->date_to( '2011-01' );
-$item_2->update;
-
-is( $schema->resultset( 'Item' )->find( $item_2->id )->date_to,
-    '2011-01',
-    "Item 2's new date_to is correct." );
-
 # TO DO: re-implement date ranges on collections and series.
 
 # is( $collection_1->date_from, $item_1->date_from,
@@ -119,18 +90,56 @@ throws_ok { $collection_2->parent( $series_1 ) } qr/ancestor/,
 throws_ok { $collection_2->parent( $collection_2 ) } qr/its own/,
     "The series refuses to become its own parent.";
 
-my $material = $collection_1->add_to_material( {
-    material => 'Test Material 3'
-} );
-is( $collection_1->material->count, 3,
-    'Has 3 associated materials after adding' );
-$material->delete;
-is( $collection_1->material->count, 2,
-    'Has 2 associated materials after deleting' );
-is( $collection_1->material->first, 'Test Material 1',
-    'First associated material is correct' );
-$collection_1->delete;
-is( $schema->resultset( 'CollectionMaterial' )->count, 0,
-    'Deleting collection deletes associated material' );
+my $elt = elt <<END
+<foo>
+  <bar>Blah</bar>
+  <!-- Comment is ignored. -->
+  <baz>
+    <garply />
+  </baz>
+</foo>
+END
+;
+is_deeply( DBIx::Class::UpdateFromXML->xml_to_hashref( $elt ), {
+    bar => 'Blah',
+    baz => [ $elt->getElementsByTagName( 'garply' ) ],
+}, 'xml_to_hashref works' );
 
-done_testing();
+my $rs = $schema->resultset( 'Series' );
+
+my $series_2 = $rs->create_from_xml( elt <<END
+<series number='s2' parent='n3'>
+  <title>New sub-series</title>
+</series>
+END
+);
+
+isa_ok( $series_2, 'CIDER::Schema::Result::Series',
+        'Imported series' );
+
+is( $series_1->number_of_children, 3,
+    'After import create, ' . $series_1->title . ' has 3 children.' );
+
+$series_2->update_from_xml( elt <<END
+<series parent="n1">
+  <title>Updated sub-series</title>
+</series>
+END
+);
+
+is( $collection_1->number_of_children, 1,
+    'After import update, ' . $collection_1->title . ' has 1 child.' );
+is( $series_2->title, 'Updated sub-series',
+    'Import update changed the title.' );
+
+$series_2->update_from_xml( elt '<series parent="" />' );
+
+is( scalar $schema->resultset( 'Object' )->root_objects, 3,
+    'After import update, there are 3 root objects.' );
+
+throws_ok {
+    $series_2->update_from_xml( elt '<series parent="foo" />' );
+} qr/does not exist/,
+    'Import updating parent to nonexistent parent is an error.';
+
+done_testing;

@@ -29,6 +29,11 @@ __PACKAGE__->has_many(
 __PACKAGE__->add_columns(
     name =>
         { data_type => 'varchar' },
+);
+__PACKAGE__->add_unique_constraint( [ 'name' ] );
+use overload '""' => sub { shift->name() }, fallback => 1;
+
+__PACKAGE__->add_columns(
     volume =>
         { data_type => 'decimal', is_nullable => 1, size => [5, 2] },
 );

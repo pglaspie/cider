@@ -1,4 +1,4 @@
-package CIDER::Schema::Base::TypeObject;
+package CIDER::Schema::Base::Result::TypeObject;
 
 use strict;
 use warnings;
@@ -10,11 +10,11 @@ use Sub::Name qw( subname );
 
 =head1 NAME
 
-CIDER::Schema::Result::Base::TypeObject
+CIDER::Schema::Base::Result::TypeObject
 
 =head1 DESCRIPTION
 
-Generic base class for type-specific field objects, i.e. Collection,
+Generic base class for type-specific results, i.e. Collection,
 Series, and Item.
 
 =cut
