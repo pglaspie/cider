@@ -3,7 +3,7 @@ package CIDER::Schema::Result::Item;
 use strict;
 use warnings;
 
-use base 'CIDER::Schema::Base::TypeObject';
+use base 'CIDER::Schema::Base::Result::TypeObject';
 
 =head1 NAME
 
@@ -11,7 +11,11 @@ CIDER::Schema::Result::Item
 
 =cut
 
+__PACKAGE__->load_components( 'UpdateFromXML' );
+
 __PACKAGE__->table( 'item' );
+
+__PACKAGE__->resultset_class( 'CIDER::Schema::Base::ResultSet::TypeObject' );
 
 __PACKAGE__->setup_object;
 
@@ -172,7 +176,7 @@ __PACKAGE__->has_many(
         'CIDER::Schema::Result::ItemAuthorityName',
 );
 __PACKAGE__->many_to_many(
-    item_names =>
+    authority_names =>
         'item_authority_names',
     'name',
 );
@@ -187,6 +191,75 @@ The type identifier for this class.
 
 sub type {
     return 'item';
+}
+
+=head2 classes
+
+The list of ItemClass objects associated with this item.
+
+=cut
+
+# TO DO: make this a relationship?
+
+sub classes {
+    my $self = shift;
+
+    return (
+        $self->groups,
+        $self->file_folders,
+        $self->containers,
+        $self->bound_volumes,
+        $self->three_dimensional_objects,
+        $self->audio_visual_media,
+        $self->documents,
+        $self->physical_images,
+        $self->digital_objects,
+        $self->browsing_objects,
+    );
+}
+
+# Override the DBIC delete() method to work recursively on our related
+# objects, rather than relying on the database to do cascading delete.
+sub delete {
+    my $self = shift;
+
+    $_->delete for (
+        $self->item_authority_names,
+        $self->item_topic_terms,
+        $self->item_geographic_terms,
+        $self->classes,
+    );
+
+    $self->next::method( @_ );
+
+    return $self;
+}
+
+sub update_from_xml {
+    my $self = shift;
+    my ( $elt ) = @_;
+
+    $self->object->update_from_xml( $elt );
+
+    my $hr = $self->xml_to_hashref( $elt );
+
+    if ( exists $hr->{ date } ) {
+        my $dateRange = $hr->{ date };
+        if ( ref( $dateRange ) eq 'ARRAY' ) {
+            $self->date_from( $dateRange->[0]->textContent );
+            $self->date_to  ( $dateRange->[1]->textContent );
+        }
+        else {
+            $self->date_from( $dateRange );
+        }
+    }
+
+    $self->update_cv_from_xml_hashref(
+        $hr, dc_type => 'name' );
+
+    # TO DO: other columns & relationships
+
+    return $self->update_or_insert;
 }
 
 1;

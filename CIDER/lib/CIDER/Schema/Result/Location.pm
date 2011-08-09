@@ -4,12 +4,16 @@ use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
+use XML::LibXML;
+use Carp;
 
 =head1 NAME
 
 CIDER::Schema::Result::Location;
 
 =cut
+
+__PACKAGE__->load_components( 'UpdateFromXML' );
 
 __PACKAGE__->table( 'location' );
 
@@ -50,5 +54,26 @@ __PACKAGE__->belongs_to(
     undef,
     { proxy => 'volume' }
 );
+
+sub update_from_xml {
+    my $self = shift;
+    my ( $elt ) = @_;
+
+    my $hr = $self->xml_to_hashref( $elt );
+
+    $self->update_cv_from_xml_hashref(
+        $hr, unit_type => 'name' );
+
+    $self->update_or_insert;
+
+    $self->update_has_many_from_xml_hashref(
+        $hr, titles => 'title' );
+    $self->update_has_many_from_xml_hashref(
+        $hr, collection_numbers => 'number' );
+    $self->update_has_many_from_xml_hashref(
+        $hr, series_numbers => 'number' );
+
+    return $self;
+}
 
 1;

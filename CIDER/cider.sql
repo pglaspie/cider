@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Fri Jul 29 12:21:36 2011
+-- Created on Mon Aug  8 20:40:03 2011
 -- 
 SET foreign_key_checks=0;
 
@@ -292,7 +292,8 @@ CREATE TABLE `unit_type` (
   `id` tinyint NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
   `volume` decimal(5, 2),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE `unit_type_name` (`name`)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `users`;

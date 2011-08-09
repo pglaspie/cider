@@ -1,6 +1,14 @@
 use strict;
 use warnings;
+use utf8;
 use Test::More;
+
+# See:  http://www.effectiveperlprogramming.com/blog/1226
+if ( Test::Builder->VERSION < 2 ) {
+    foreach my $method ( qw(output failure_output) ) {
+        binmode Test::More->builder->$method, ':encoding(UTF-8)';
+    }
+}
 
 eval "use Test::WWW::Mechanize::Catalyst 'CIDER'";
 if ($@) {
@@ -118,7 +126,7 @@ is( $csv->[0]->{ title }, 'Test Collection with kids',
     'Collection title is correct' );
 is( $csv->[0]->{ type }, 'collection',
     'Collection type is correct' );
-is( $csv->[0]->{ notes }, 'Test notes.',
+is( $csv->[0]->{ notes }, 'Test notes.  Unicode: « ☃ ° » yay.',
     'Collection notes are correct' );
 is( $csv->[1]->{ title }, 'Test Series 1',
     'Series title is correct' );

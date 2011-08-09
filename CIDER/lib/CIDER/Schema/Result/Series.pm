@@ -3,7 +3,7 @@ package CIDER::Schema::Result::Series;
 use strict;
 use warnings;
 
-use base 'CIDER::Schema::Base::TypeObject';
+use base 'CIDER::Schema::Base::Result::TypeObject';
 
 =head1 NAME
 
@@ -11,7 +11,11 @@ CIDER::Schema::Result::Series
 
 =cut
 
+__PACKAGE__->load_components( 'UpdateFromXML' );
+
 __PACKAGE__->table( 'series' );
+
+__PACKAGE__->resultset_class( 'CIDER::Schema::Base::ResultSet::TypeObject' );
 
 __PACKAGE__->setup_object;
 
@@ -38,6 +42,17 @@ The type identifier for this class.
 
 sub type {
     return 'series';
+}
+
+sub update_from_xml {
+    my $self = shift;
+    my ( $elt ) = @_;
+
+    $self->object->update_from_xml( $elt );
+
+    # TO DO: update columns
+
+    return $self->update_or_insert;
 }
 
 1;

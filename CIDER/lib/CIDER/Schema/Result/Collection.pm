@@ -3,7 +3,7 @@ package CIDER::Schema::Result::Collection;
 use strict;
 use warnings;
 
-use base 'CIDER::Schema::Base::TypeObject';
+use base 'CIDER::Schema::Base::Result::TypeObject';
 
 =head1 NAME
 
@@ -11,7 +11,11 @@ CIDER::Schema::Result::Collection
 
 =cut
 
+__PACKAGE__->load_components( 'UpdateFromXML' );
+
 __PACKAGE__->table( 'collection' );
+
+__PACKAGE__->resultset_class( 'CIDER::Schema::Base::ResultSet::TypeObject' );
 
 __PACKAGE__->setup_object;
 
@@ -164,6 +168,35 @@ sub delete {
     );
 
     $self->next::method( @_ );
+
+    return $self;
+}
+
+sub update_from_xml {
+    my $self = shift;
+    my ( $elt ) = @_;
+
+    $self->object->update_from_xml( $elt );
+
+    my $hr = $self->xml_to_hashref( $elt );
+
+    # TO DO: other columns & relationships
+
+    $self->update_cv_from_xml_hashref(
+        $hr, documentation => 'name' );
+    $self->update_cv_from_xml_hashref(
+        $hr, processing_status => 'name' );
+    $self->update_cv_from_xml_hashref(
+        $hr, publication_status => 'name' );
+
+    $self->update_or_insert;
+
+    $self->update_has_many_from_xml_hashref(
+        $hr, material => 'material', 'associatedMaterial' );
+    $self->update_has_many_from_xml_hashref(
+        $hr, languages => 'language' );
+    $self->update_has_many_from_xml_hashref(
+        $hr, subjects => 'subject' );
 
     return $self;
 }

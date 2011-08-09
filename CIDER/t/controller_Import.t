@@ -21,56 +21,61 @@ $mech->submit_form( with_fields => {
     password => 'foo',
 } );
 
-use Text::CSV::Slurp;
 sub test_import {
-    my $csv = Text::CSV::Slurp->create( input => [ @_ ] );
+    my ( $xml ) = @_;
     $mech->get_ok( '/import' );
     $mech->submit_form_ok( { with_fields => {
         # This magic is needed to upload a file without actually
         # making a file.  From the WWW::Mechanize docs.
-        file => [ [ undef, 'import.csv', Content => $csv ], 1 ]
+        file => [ [ undef, 'import.xml', Content => $xml ], 1 ]
     } }, 'Submit file to be imported' );
 }
 
-test_import( {
-    type => undef,
-    id => 4,
-    parent => 'n3',
-    title => 'Test import renaming',
-    number => 999,
-    date_from => '2000',
-    dc_type => 1,
-}, {
-    type => 'item',
-    parent => 999,
-    title => 'Test import creation',
-    number => 69105,
-    date_from => '2000',
-    dc_type => 1,
-} );
+test_import( <<END
+<import>
+  <update>
+    <series number="n3">
+      <title>Test import renaming</title>
+    </series>
+  </update>
+  <create>
+    <series number="69105" parent="n3">
+      <title>Test import creation</title>
+    </series>
+  </create>
+</import>
+END
+);
 
-$mech->content_contains( 'successfully imported 2 rows' );
+$mech->content_contains( 'successfully imported' );
+$mech->content_contains( 'created 1 object and updated 1 object' );
 
-$mech->get_ok( '/object/4' );
+$mech->get_ok( '/object/3' );
 $mech->content_contains( 'Test import renaming' );
-$mech->content_contains( '999' );
+$mech->content_contains( 'n3' );
 
 $mech->follow_link_ok( { text => 'Test import creation' } );
 $mech->content_contains( '69105' );
 
-test_import( {
-    type => 'series',
-    parent => 'n3',
-    title => 'Test import error',
-} );
-$mech->content_contains( 'import failed' );
-# TO DO: make the error message nicer
-# $mech->content_contains( 'number is required' );
+test_import( <<END
+<import>
+  <update>
+    <series number="n3" parent="n3">
+      <title>Test import error</title>
+    </series>
+  </update>
+</import>
+END
+);
 
-$mech->get_ok( '/object/4' );
+$mech->content_contains( 'import failed' );
+$mech->content_contains( 'its own parent' );
+
+$mech->get_ok( '/object/3' );
 $mech->content_lacks( 'Test import error' );
 
-test_import( { type => 'series', number => 88 } );
-$mech->content_contains( 'import failed' );
+# TO DO: validation test
+# test_import( { type => 'series', number => 88 } );
+# $mech->content_contains( 'import failed' );
 
 done_testing();
