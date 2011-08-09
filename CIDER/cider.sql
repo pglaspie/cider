@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Mon Aug  8 20:40:03 2011
+-- Created on Tue Aug  9 18:20:41 2011
 -- 
 SET foreign_key_checks=0;
 
@@ -456,6 +456,7 @@ CREATE TABLE `record_context` (
   `ongoing` enum('0','1') NOT NULL DEFAULT '0',
   `abstract` text,
   `history` text,
+  `structure_notes` text,
   `context` text,
   `function` integer,
   INDEX `record_context_idx_function` (`function`),
@@ -525,20 +526,6 @@ CREATE TABLE `record_context_alternate_name` (
   INDEX `record_context_alternate_name_idx_record_context` (`record_context`),
   PRIMARY KEY (`id`),
   CONSTRAINT `record_context_alternate_name_fk_record_context` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS `record_context_notable_person`;
-
---
--- Table: `record_context_notable_person`
---
-CREATE TABLE `record_context_notable_person` (
-  `id` integer NOT NULL auto_increment,
-  `record_context` integer NOT NULL,
-  `name` varchar(255) NOT NULL,
-  INDEX `record_context_notable_person_idx_record_context` (`record_context`),
-  PRIMARY KEY (`id`),
-  CONSTRAINT `record_context_notable_person_fk_record_context` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `record_context_occupation`;

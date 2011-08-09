@@ -106,12 +106,8 @@ __PACKAGE__->add_columns(
         { data_type => 'text', is_nullable => 1 },
     history =>
         { data_type => 'text', is_nullable => 1 },
-);
-
-__PACKAGE__->has_many(
-    notable_persons =>
-        'CIDER::Schema::Result::RecordContextNotablePerson',
-    'record_context',
+    structure_notes =>
+        { data_type => 'text', is_nullable => 1 },
 );
 
 __PACKAGE__->add_columns(

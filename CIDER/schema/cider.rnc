@@ -79,7 +79,7 @@ recordContext = element recordContext {
   element ongoing { xsd:boolean? }?,
   element abstract { multiline? }?,
   element history { multiline? }?,
-  element notablePersons { element person { line }* }?,
+  element structureNotes { multiline? }?,
   element context { multiline? }?,
   element sources { element source { line }* }?,
   element function { function? }?,
