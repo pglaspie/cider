@@ -74,8 +74,15 @@ $mech->content_contains( 'its own parent' );
 $mech->get_ok( '/object/3' );
 $mech->content_lacks( 'Test import error' );
 
-# TO DO: validation test
-# test_import( { type => 'series', number => 88 } );
-# $mech->content_contains( 'import failed' );
+test_import( <<END
+<import>
+  <create>
+    <series number=88 />
+  </create>
+</import>
+END
+);
+diag( $mech->content );
+$mech->content_contains( 'invalid' );
 
 done_testing();

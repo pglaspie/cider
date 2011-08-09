@@ -6,10 +6,16 @@ use Carp;
 
 use CIDER::Schema;
 
+has 'rngschema_file' => (
+    is => 'rw',
+    isa => 'Str',
+);
+
 has 'schema' => (
     is => 'rw',
     isa => 'DBIx::Class',
 );
+
 
 sub import_from_xml {
     my $self = shift;
@@ -19,7 +25,12 @@ sub import_from_xml {
     binmode $handle;
     my $doc = XML::LibXML->load_xml( IO => $handle, line_numbers => 1 );
 
-    # TO DO: validate against the RELAX-NG schema
+    # TO DO: load this statically?
+    my $rngschema =
+        XML::LibXML::RelaxNG->new( location => $self->rngschema_file );
+
+    eval { $rngschema->validate( $doc ) };
+    croak "XML import file is invalid:\n$@\n" if $@;
 
     my $schema = $self->schema;
 
