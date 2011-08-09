@@ -4,7 +4,9 @@ required = notAllowed
 
 object =
   attribute number { number },
-  attribute parent { number? }?,
+  # TO DO: This causes a libxml2 error:
+  # attribute parent { number? }?,  
+  attribute parent { number | empty }?,
   ( element title { line } | required )
 
 collection = element collection {
@@ -25,7 +27,7 @@ collection = element collection {
   element languages { element language { lang }* }?,
   element subjects { element subject { line }* }?,
   ( element processingStatus { processingStatus } | required ),
-  element permanentURL { xsd:anyURI? }?,
+  element permanentURL { url? }?,
   element pid { pid? }?,
   # Default publicationStatus is "draft".
   element publicationStatus { publicationStatus? }?,
@@ -117,56 +119,56 @@ group = element group {
 }
 
 fileFolder = element fileFolder {
-  ( element location { locationID } | required ),
+  element location { locationID },
   element notes { multiline? }?
 }
 
 container = element container {
-  ( element location { locationID } | required ),
+  element location { locationID },
   element format { format? }?,
   element notes { multiline? }?
 }
 
 boundVolume = element boundVolume {
-  ( element location { locationID } | required ),
+  element location { locationID },
   element format { format? }?,
   element notes { multiline? }?,
   element rights { multiline? }?
 }
 
 threeDimensionalObject = element threeDimensionalObject {
-  ( element location { locationID } | required ),
+  element location { locationID },
   element format { format? }?,
   element notes { multiline? }?,
   element rights { multiline? }?
 }
 
 audioVisualMedia = element audioVisualMedia {
-  ( element location { locationID } | required ),
+  element location { locationID },
   element format { format? }?,
   element notes { multiline? }?,
   element rights { multiline? }?
 }
 
 document = element document {
-  ( element location { locationID } | required ),
+  element location { locationID },
   element format { format? }?,
   element dimensions { line? }?,
   element rights { multiline? }?
 }
 
 physicalImage = element physicalImage {
-  ( element location { locationID } | required ),
+  element location { locationID },
   element format { format? }?,
   element dimensions { line? }?,
   element rights { multiline? }?
 }
 
 digitalObject = element digitalObject {
-  ( element location { locationID } | required ),
+  element location { locationID },
   element format { format? }?,
-  ( element pid { pid } | required ),
-  element permanentURL { xsd:anyURI? }?,
+  element pid { pid },
+  element permanentURL { url? }?,
   element notes { multiline? }?,
   element rights { multiline? }?,
   element relationships { relationship* }?,
@@ -327,7 +329,9 @@ locationID = line
 
 # A line is a non-empty string containing no line separators,
 # paragraph separators, or control characters (except tab).
-line = xsd:string { pattern = "([^\p{Zl}\p{Zp}\p{C}]|\t)+" }
+# TO DO: the minLength is redundant because of the + in the pattern,
+# but XML::LibXML::RelaxNG seems to admit empty strings without it
+line = xsd:string { pattern = "([^\p{Zl}\p{Zp}\p{C}]|\t)+" minLength = "1" }
 
 # A multiline string is non-empty but otherwise unconstrained.
 multiline = xsd:string { minLength = "1" }
@@ -342,3 +346,6 @@ date = xsd:date | xsd:gYearMonth | xsd:gYear
 # A lang is an ISO 639-2 3-letter language code.
 # TO DO: does xsd:language include other 3-letter codes?
 lang = xsd:language { length = "3" }
+
+# A url is a uri whose scheme is http or https.
+url = xsd:anyURI { pattern = "https?:.*" }

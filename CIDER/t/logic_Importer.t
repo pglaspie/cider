@@ -21,7 +21,10 @@ use Test::Exception;
 use CIDER::Logic::Importer;
 use FindBin;
 
-my $importer = CIDER::Logic::Importer->new( schema => $schema );
+my $importer = CIDER::Logic::Importer->new(
+    schema => $schema,
+    rngschema_file => "$FindBin::Bin/../schema/cider-import.rng",
+);
 
 isa_ok ($importer, 'CIDER::Logic::Importer');
 
@@ -63,72 +66,208 @@ throws_ok {
   </create>
 </import>
 END
-             );
+);
 } qr/import failed at line 3/,
     'Error message includes line number.';
 
 
 # TO DO: these are all validation tests
 
-# dies_ok {
-#     test_import( { type => 'series', number => 88, description => 'foo'  } );
-# } "Title required on create.";
+throws_ok {
+    test_import( '<import><create><series number="88" /></create></import>' );
+} qr/invalid/,
+    'Title required on create.';
 
-# dies_ok {
-#     test_import( { id => 1, title => 'Renumbered collection', number => 23 },
-#                  { id => 2, title => 'No number' } ) # number will be ''
-# } "Number can't be empty on update";
+throws_ok {
+    test_import( <<END
+<import>
+  <update>
+    <collection number="">
+      <title>No number</title>
+    </collection>
+  </update>
+</import>
+END
+);
+} qr/invalid/,
+    "Number can't be empty on update.";
 
-# is( $schema->resultset( 'Collection' )->find( 1 )->number, 'n1',
-#     'Number was not updated on failed import.' );
+throws_ok {
+    test_import( <<END
+<import>
+  <create>
+    <collection number="123">
+      <title>New collection</title>
+      <documentation>yes</documentation>
+    </collection>
+  </create>
+</import>
+END
+);
+} qr/invalid/,
+    "Collection processing status can't be missing on create.";
 
-# dies_ok {
-#     test_import( { type => 'collection',
-#                    title => 'New collection', number => 123,
-#                    documentation => 1 } )
-# } "Collection processing status can't be missing on create.";
+throws_ok {
+    test_import( <<END
+<import>
+  <create>
+    <collection number="123">
+      <title>New collection</title>
+      <processingStatus>minimal</processingStatus>
+    </collection>
+  </create>
+</import>
+END
+);
+} qr/invalid/,
+    "Collection documentation can't be missing on create.";
 
-# dies_ok {
-#     test_import( { type => 'collection',
-#                    title => 'New collection', number => 123,
-#                    processing_status => 1 } )
-# } "Collection documentation can't be missing on create.";
+throws_ok {
+    test_import( <<END
+<import>
+  <create>
+    <series>
+      <title>New unnumbered series</title>
+    </series>
+  </create>
+</import>
+END
+);
+} qr/invalid/,
+    "Number can't be missing on create.";
 
-# dies_ok {
-#     test_import( { type => 'series',
-#                    title => 'New unnumbered series', description => 'foo' } )
-# } "Series number can't be missing on create.";
+throws_ok {
+    test_import( <<END
+<import>
+  <create>
+    <item number="123">
+      <title>New undated item</title>
+      <restrictions>none</restrictions>
+      <accessionNumber>2000.001</accessionNumber>
+      <classes><group/></classes>
+    </item>
+  </create>
+</import>
+END
+);
+} qr/invalid/,
+    "Item date can't be missing on create.";
 
-# dies_ok {
-#     test_import( { type => 'item',
-#                    title => 'New undated item', number => 123, dc_type => 1 } )
-# } "Item start date can't be missing on create.";
+throws_ok {
+    test_import( <<END
+<import>
+  <update>
+    <item number="n4">
+      <date>1-1-2001</date>
+    </item>
+  </update>
+</import>
+END
+);
+} qr/invalid/,
+    'Date format must be ISO-8601.';
 
-# dies_ok {
-#     test_import( { type => 'item',
-#                    number => 55, title => 'foo', dc_type => 1,
-#                    date_from => '1-1-2001' } )
-# } 'Start date format must be ISO-8601 on create.';
+throws_ok {
+    test_import( <<END
+<import>
+  <update>
+    <item number="n4">
+      <classes>
+        <digitalObject>
+          <location>8001</location>
+          <pid>123</pid>
+          <fileCreationDate>2001-01-32</fileCreationDate>
+        </digitalObject>
+      </classes>
+    </item>
+  </update>
+</import>
+END
+);
+} qr/invalid/,
+    'File creation date format must be ISO-8601.';
 
-# dies_ok {
-#     test_import( { id => 1, date_from => '1-1-2001' } )
-# } 'Start date format must be ISO-8601 on update.';
+throws_ok {
+    test_import( <<END
+<import>
+  <update>
+    <collection number="n1">
+      <permanentURL>invalid:uri</permanentURL>
+    </collection>
+  </update>
+</import>
+END
+);
+} qr/invalid/,
+    'Permanent URL must be an http or https URI.';
 
-# dies_ok {
-#     test_import( { id => 4, file_creation_date => '2001-1-32' } )
-# } 'File creation date format must be ISO-8601.';
+lives_ok {
+    test_import( <<END
+<import>
+  <update>
+    <collection number="n1">
+      <permanentURL>https://example.com</permanentURL>
+    </collection>
+  </update>
+</import>
+END
+);
+} 'HTTPS permanent URL is ok.';
 
-# dies_ok {
-#     test_import( { id => 1, permanent_url => 'invalid:uri' } )
-# } 'Permanent URL must be an http or https URI.';
+lives_ok {
+    test_import( <<END
+<import>
+  <update>
+    <collection number="n1">
+      <permanentURL></permanentURL>
+    </collection>
+  </update>
+</import>
+END
+);
+} 'Permanent URL can be unset.';
 
-# lives_ok {
-#     test_import( { id => 1, permanent_url => 'https://example.com' } )
-# } 'HTTPS permanent URL is ok.';
+lives_ok {
+test_import( <<END
+<import>
+  <update>
+    <series number="n3" parent="n2" />
+  </update>
+  <update>
+    <series number="n3" parent="" />
+  </update>
+</import>
+END
+);
+} 'libxml2 bug is fixed (or workarounded).';
 
-# lives_ok {
-#     test_import( { id => 1, permanent_url => '' } )
-# } 'Permanent URL can be unset.';
+throws_ok {
+test_import( <<END
+<import>
+  <update>
+    <collection number="n1">
+      <documentation>true</documentation>
+    </collection>
+  </update>
+</import>
+END
+);
+} qr/invalid/,
+    'Documentation must be yes or no.';
+
+throws_ok {
+test_import( <<END
+<import>
+  <update>
+    <collection number="n1">
+      <publicationStatus>final</publicationStatus>
+    </collection>
+  </update>
+</import>
+END
+);
+} qr/invalid/,
+    "Publication status can't be 'final'.";
 
 # TO DO:
 # These should all be errors:
