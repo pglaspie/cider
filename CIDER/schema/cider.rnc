@@ -31,7 +31,8 @@ collection = element collection {
   element pid { pid? }?,
   # Default publicationStatus is "draft".
   element publicationStatus { publicationStatus? }?,
-  element relationships { relationship* }?
+  element relationships { relationship* }?,
+  auditTrail?
 }
 
 series = element series {
@@ -39,7 +40,8 @@ series = element series {
   element bulkDate { dateRange? }?,
   element description { multiline? }?,
   element arrangement { multiline? }?,
-  element notes { multiline? }?
+  element notes { multiline? }?,
+  auditTrail?
 }
 
 item = element item {
@@ -61,7 +63,8 @@ item = element item {
   element issue { line? }?,
   element abstract { multiline? }?,
   element citation { multiline? }?,
-  ( element classes { class+ } | required )
+  ( element classes { class+ } | required ),
+  auditTrail?
 }
 
 recordContext = element recordContext {
@@ -89,7 +92,8 @@ recordContext = element recordContext {
       element date { dateRange? }?
     }*
   }?,
-  element relationships { recordContextRelationship* }?
+  element relationships { recordContextRelationship* }?,
+  auditTrail?
 }
 
 location = element location {
@@ -215,6 +219,19 @@ recordContextRelationship = element relationship {
   element relatedEntity { recordID },
   element date { dateRange? }?
 }
+
+
+# Audit Trail
+
+auditTrail = element auditTrail {
+  element create { log },
+  ( element update { log }
+  | element export { log } )*
+}
+
+log = 
+  element timestamp { xsd:dateTime },
+  element user { dcaStaff }
 
 
 # Authority Lists
