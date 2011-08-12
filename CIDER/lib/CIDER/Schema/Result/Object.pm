@@ -107,42 +107,20 @@ __PACKAGE__->has_many(
 );
 
 __PACKAGE__->many_to_many(
-    'sets' =>
+    sets =>
         'object_set_objects',
     'object_set');
 
-__PACKAGE__->has_many(
-    logs =>
-        'CIDER::Schema::Result::Log',
-    'object',
+__PACKAGE__->add_columns(
+    audit_trail =>
+        { data_type => 'int', is_foreign_key => 1 },
 );
-
-__PACKAGE__->has_one(
-    creation_log =>
-        'CIDER::Schema::Result::Log',
-    'object',
-    { where => { action => 'create' },
-      proxy => {
-          created_by => 'user',
-          date_created => 'date',
-      },
-    },
+__PACKAGE__->belongs_to(
+    audit_trail =>
+        'CIDER::Schema::Result::AuditTrail',
+    undef,
+    { cascade_delete => 1 }
 );
-
-__PACKAGE__->has_many(
-    modification_logs =>
-        'CIDER::Schema::Result::Log',
-    'object',
-    { where => { action => 'update' } },
-);
-
-__PACKAGE__->has_many(
-    export_logs =>
-        'CIDER::Schema::Result::Log',
-    'object',
-    { where => { action => 'export' } },
-);
-
 
 sub children {
     my $self = shift;
@@ -195,7 +173,6 @@ sub delete {
 
     $_->delete for ( $self->children,
                      $self->object_set_objects,
-                     $self->logs,
                    );
 
     $self->next::method( @_ );
@@ -205,36 +182,14 @@ sub delete {
     return $self;
 }
 
-sub update {
-    my $self = shift;
-
-    $self->next::method( @_ );
-
-    $self->add_to_modification_logs( {
-        user => $self->result_source->schema->user
-    } );
-
-    $self->result_source->schema->indexer->update( $self );
-
-    return $self;
-}
-
 sub export {
     my $self = shift;
 
-    $self->add_to_export_logs( {
-        user => $self->result_source->schema->user
+    $self->audit_trail->add_to_export_logs( {
+        staff => $self->result_source->schema->user->staff
     } );
 }
 
-sub date_available {
-    my $self = shift;
-
-    my $rs = $self->export_logs->search( undef, {
-        order_by => { -desc => 'timestamp' }
-    } );
-    return $rs->first->date;
-}
 
 =head2 date_from
 =head2 date_to
@@ -331,8 +286,6 @@ sub update_from_xml {
     if ( my @titles = $elt->getChildrenByTagName( 'title' ) ) {
         $self->title( $titles[0]->textContent );
     }
-
-    $self->update_or_insert;
 }
 
 1;

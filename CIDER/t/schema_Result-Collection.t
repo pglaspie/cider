@@ -22,7 +22,7 @@ use lib (
 
 use CIDERTest;
 my $schema = CIDERTest->init_schema;
-$schema->user( 1 );
+$schema->user( $schema->resultset( 'User' )->find( 1 ) );
 
 my $collection = $schema->resultset( 'Collection' )->find( 1 );
 

@@ -13,7 +13,7 @@ use lib (
 
 use CIDERTest;
 my $schema = CIDERTest->init_schema;
-$schema->user( 1 );
+$schema->user( $schema->resultset( 'User' )->find( 1 ) );
 
 use CIDER;
 my $model = CIDER->model( 'Search' );
@@ -66,7 +66,9 @@ $hits = $model->search( query => 'New Title' );
 is( $hits->total_hits, 2, 'Found two New Titles.' );
 
 my $importer = CIDER->model( 'Import' )->importer;
-$importer->schema->user( 1 );
+my $ischema = $importer->schema;
+$ischema->user( $schema->resultset( 'User' )->find( 1 ) );
+
 my $xml = <<END
 <import>
   <create>

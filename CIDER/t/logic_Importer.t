@@ -13,7 +13,7 @@ use lib (
 
 use CIDERTest;
 my $schema = CIDERTest->init_schema;
-$schema->user( 1 );
+$schema->user( $schema->resultset( 'User' )->find( 1 ) );
 
 use Test::More;
 use Test::Exception;
@@ -69,9 +69,6 @@ END
 );
 } qr/import failed at line 3/,
     'Error message includes line number.';
-
-
-# TO DO: these are all validation tests
 
 throws_ok {
     test_import( '<import><create><series number="88" /></create></import>' );

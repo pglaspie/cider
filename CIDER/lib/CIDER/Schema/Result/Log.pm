@@ -13,94 +13,40 @@ CIDER::Schema::Result::Log
 
 =cut
 
-__PACKAGE__->table("log");
-
-=head1 ACCESSORS
-
-=head2 id
-
-  data_type: 'integer'
-  is_auto_increment: 1
-  is_nullable: 0
-
-=head2 action
-
-  data_type: 'char'
-  is_nullable: 1
-  size: 16
-
-=head2 timestamp
-
-  data_type: 'datetime'
-  is_nullable: 1
-
-=head2 user
-
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 1
-
-=head2 object
-
-  data_type: 'integer'
-  is_nullable: 1
-
-=cut
+__PACKAGE__->table( 'log' );
 
 __PACKAGE__->add_columns(
-  "id",
-  { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
-  "action",
-  { data_type => "char", is_nullable => 0, size => 16 },
-  "timestamp",
-  { data_type => "datetime", is_nullable => 0, set_on_create => 1 },
-  "user",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
-  "object",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
+    id =>
+        { data_type => 'int', is_auto_increment => 1 },
 );
-__PACKAGE__->set_primary_key("id");
+__PACKAGE__->set_primary_key( 'id' );
 
-=head1 RELATIONS
-
-=head2 user
-
-Type: belongs_to
-
-Related object: L<CIDER::Schema::Result::User>
-
-=cut
-
+__PACKAGE__->add_columns(
+    audit_trail =>
+        { data_type => 'int', is_foreign_key => 1 },
+);
 __PACKAGE__->belongs_to(
-  "user",
-  "CIDER::Schema::Result::User",
-  { id => "user" },
-  {
-    is_deferrable => 1,
-    join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
-  },
+    audit_trail =>
+        'CIDER::Schema::Result::AuditTrail',
 );
 
-=head2 object
+__PACKAGE__->add_columns(
+    action =>
+        { data_type => 'enum',
+          extra => { list => [ qw(create update export) ] } },
+    timestamp =>
+        { data_type => 'datetime', set_on_create => 1 },
+);
 
-Type: belongs_to
-
-Related object: L<CIDER::Schema::Result::Object>
-
-=cut
-
+__PACKAGE__->add_columns(
+    staff =>
+        { data_type => 'int', is_foreign_key => 1 },
+);
 __PACKAGE__->belongs_to(
-  "object",
-  "CIDER::Schema::Result::Object",
-  { id => "object" },
-  {
-    is_deferrable => 1,
-    join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
-  },
+    staff =>
+        'CIDER::Schema::Result::Staff',
+    undef,
+    { proxy => 'user' }
 );
 
 sub date {

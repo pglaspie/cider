@@ -77,12 +77,12 @@ $mech->content_lacks( 'Test import error' );
 test_import( <<END
 <import>
   <create>
-    <series number=88 />
+    <series number="88" />
   </create>
 </import>
 END
 );
-diag( $mech->content );
+
 $mech->content_contains( 'invalid' );
 
 done_testing();

@@ -13,38 +13,39 @@ CIDER::Schema::Result::ObjectSet
 
 =cut
 
-__PACKAGE__->table("object_set");
+__PACKAGE__->table( 'object_set' );
 
 __PACKAGE__->add_columns(
-  "id",
-  { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
-  "name",
-  { data_type => "char", is_nullable => 1, size => 255 },
-  "owner",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
+    id =>
+        { data_type => 'int', is_auto_increment => 1 },
 );
-__PACKAGE__->set_primary_key("id");
+__PACKAGE__->set_primary_key( 'id' );
 
+__PACKAGE__->add_columns(
+    name =>
+        { data_type => 'varchar' },
+);
+
+__PACKAGE__->add_columns(
+    owner =>
+        { data_type => 'int', is_foreign_key => 1 },
+);
 __PACKAGE__->belongs_to(
-  "owner",
-  "CIDER::Schema::Result::User",
-  { id => "owner" },
-  {
-    is_deferrable => 1,
-    join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
-  },
+    owner =>
+        'CIDER::Schema::Result::User',
+    'owner',
 );
 
 __PACKAGE__->has_many(
-  "object_set_objects",
-  "CIDER::Schema::Result::ObjectSetObject",
-  { "foreign.object_set" => "self.id" },
-  { cascade_copy => 0, cascade_delete => 0 },
+    object_set_objects =>
+        'CIDER::Schema::Result::ObjectSetObject',
+    'object_set',
 );
-
-__PACKAGE__->many_to_many('objects' => 'object_set_objects', 'object');
+__PACKAGE__->many_to_many(
+    objects =>
+        'object_set_objects',
+    'object',
+);
 
 sub delete {
     my $self = shift;
@@ -138,13 +139,14 @@ sub search_and_replace {
         croak "Can't search-and-replace a non-homogenous set.";
     }
 
+    my $field = $args_ref->{ field };
     my $count = 0;
     for my $object ( $self->objects ) {
-        my $field = $args_ref->{ field };
-        my $value = $object->$field;
+        my $type_obj = $object->type_object;
+        my $value = $type_obj->$field;
         if ( $value =~ s/$$args_ref{old}/$$args_ref{new}/eg ) {
-            $object->$field( $value );
-            $object->update;
+            $type_obj->$field( $value );
+            $type_obj->update;
             $count++;
         }
     }
@@ -160,6 +162,7 @@ sub set_field {
         croak "Can't batch-set the fields of a non-homogenous set.";
     }
 
+    # TO DO: get type-specific resultset
     $self->objects->update( { $field => $new_value } );
 }
 

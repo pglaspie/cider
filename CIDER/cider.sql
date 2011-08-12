@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Tue Aug  9 18:20:41 2011
+-- Created on Fri Aug 12 15:38:11 2011
 -- 
 SET foreign_key_checks=0;
 
@@ -13,6 +13,16 @@ CREATE TABLE `application` (
   `id` integer NOT NULL auto_increment,
   `function` enum('checksum', 'media_image', 'virus_check') NOT NULL,
   `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `audit_trail`;
+
+--
+-- Table: `audit_trail`
+--
+CREATE TABLE `audit_trail` (
+  `id` integer NOT NULL auto_increment,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -38,18 +48,6 @@ CREATE TABLE `dc_type` (
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE `dc_type_name` (`name`)
-) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS `dca_staff`;
-
---
--- Table: `dca_staff`
---
-CREATE TABLE `dca_staff` (
-  `id` integer NOT NULL auto_increment,
-  `first_name` varchar(255) NOT NULL,
-  `last_name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `documentation`;
@@ -121,54 +119,6 @@ CREATE TABLE `item_restrictions` (
   `name` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS `log`;
-
---
--- Table: `log`
---
-CREATE TABLE `log` (
-  `id` integer NOT NULL auto_increment,
-  `action` char(16) NOT NULL,
-  `timestamp` datetime NOT NULL,
-  `user` integer NOT NULL,
-  `object` integer NOT NULL,
-  INDEX `log_idx_object` (`object`),
-  INDEX `log_idx_user` (`user`),
-  PRIMARY KEY (`id`),
-  CONSTRAINT `log_fk_object` FOREIGN KEY (`object`) REFERENCES `object` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `log_fk_user` FOREIGN KEY (`user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS `object`;
-
---
--- Table: `object`
---
-CREATE TABLE `object` (
-  `id` integer NOT NULL auto_increment,
-  `parent` integer,
-  `number` varchar(255) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  INDEX `object_idx_parent` (`parent`),
-  PRIMARY KEY (`id`),
-  UNIQUE `object_number` (`number`),
-  CONSTRAINT `object_fk_parent` FOREIGN KEY (`parent`) REFERENCES `object` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS `object_set`;
-
---
--- Table: `object_set`
---
-CREATE TABLE `object_set` (
-  `id` integer NOT NULL auto_increment,
-  `name` char(255),
-  `owner` integer,
-  INDEX `object_set_idx_owner` (`owner`),
-  PRIMARY KEY (`id`),
-  CONSTRAINT `object_set_fk_owner` FOREIGN KEY (`owner`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `object_set_object`;
@@ -271,6 +221,18 @@ CREATE TABLE `stabilization_procedure` (
   UNIQUE `stabilization_procedure_code` (`code`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `staff`;
+
+--
+-- Table: `staff`
+--
+CREATE TABLE `staff` (
+  `id` integer NOT NULL auto_increment,
+  `first_name` varchar(255) NOT NULL,
+  `last_name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
 DROP TABLE IF EXISTS `topic_term`;
 
 --
@@ -296,18 +258,6 @@ CREATE TABLE `unit_type` (
   UNIQUE `unit_type_name` (`name`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `users`;
-
---
--- Table: `users`
---
-CREATE TABLE `users` (
-  `id` integer NOT NULL auto_increment,
-  `username` char(64),
-  `password` char(64) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
 DROP TABLE IF EXISTS `location`;
 
 --
@@ -323,21 +273,38 @@ CREATE TABLE `location` (
   CONSTRAINT `location_fk_unit_type` FOREIGN KEY (`unit_type`) REFERENCES `unit_type` (`id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `series`;
+DROP TABLE IF EXISTS `object`;
 
 --
--- Table: `series`
+-- Table: `object`
 --
-CREATE TABLE `series` (
-  `id` integer NOT NULL,
-  `bulk_date_from` varchar(10),
-  `bulk_date_to` varchar(10),
-  `description` text,
-  `arrangement` text,
-  `notes` text,
-  INDEX (`id`),
+CREATE TABLE `object` (
+  `id` integer NOT NULL auto_increment,
+  `parent` integer,
+  `number` varchar(255) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `audit_trail` integer NOT NULL,
+  INDEX `object_idx_audit_trail` (`audit_trail`),
+  INDEX `object_idx_parent` (`parent`),
   PRIMARY KEY (`id`),
-  CONSTRAINT `series_fk_id` FOREIGN KEY (`id`) REFERENCES `object` (`id`)
+  UNIQUE `object_number` (`number`),
+  CONSTRAINT `object_fk_audit_trail` FOREIGN KEY (`audit_trail`) REFERENCES `audit_trail` (`id`),
+  CONSTRAINT `object_fk_parent` FOREIGN KEY (`parent`) REFERENCES `object` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `user`;
+
+--
+-- Table: `user`
+--
+CREATE TABLE `user` (
+  `id` integer NOT NULL auto_increment,
+  `username` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `staff` integer,
+  INDEX `user_idx_staff` (`staff`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `user_fk_staff` FOREIGN KEY (`staff`) REFERENCES `staff` (`id`)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `user_roles`;
@@ -351,23 +318,6 @@ CREATE TABLE `user_roles` (
   INDEX `user_roles_idx_role_id` (`role_id`),
   PRIMARY KEY (`user_id`, `role_id`),
   CONSTRAINT `user_roles_fk_role_id` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
-) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS `collection_relationship`;
-
---
--- Table: `collection_relationship`
---
-CREATE TABLE `collection_relationship` (
-  `id` integer NOT NULL auto_increment,
-  `collection` integer NOT NULL,
-  `predicate` tinyint NOT NULL,
-  `pid` varchar(255) NOT NULL,
-  INDEX `collection_relationship_idx_collection` (`collection`),
-  INDEX `collection_relationship_idx_predicate` (`predicate`),
-  PRIMARY KEY (`id`),
-  CONSTRAINT `collection_relationship_fk_collection` FOREIGN KEY (`collection`) REFERENCES `object` (`id`),
-  CONSTRAINT `collection_relationship_fk_predicate` FOREIGN KEY (`predicate`) REFERENCES `relationship_predicate` (`id`)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `location_collection_number`;
@@ -410,6 +360,72 @@ CREATE TABLE `location_title` (
   INDEX `location_title_idx_location` (`location`),
   PRIMARY KEY (`id`),
   CONSTRAINT `location_title_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `log`;
+
+--
+-- Table: `log`
+--
+CREATE TABLE `log` (
+  `id` integer NOT NULL auto_increment,
+  `audit_trail` integer NOT NULL,
+  `action` enum('create', 'update', 'export') NOT NULL,
+  `timestamp` datetime NOT NULL,
+  `staff` integer NOT NULL,
+  INDEX `log_idx_audit_trail` (`audit_trail`),
+  INDEX `log_idx_staff` (`staff`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `log_fk_audit_trail` FOREIGN KEY (`audit_trail`) REFERENCES `audit_trail` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `log_fk_staff` FOREIGN KEY (`staff`) REFERENCES `staff` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `object_set`;
+
+--
+-- Table: `object_set`
+--
+CREATE TABLE `object_set` (
+  `id` integer NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL,
+  `owner` integer NOT NULL,
+  INDEX `object_set_idx_owner` (`owner`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `object_set_fk_owner` FOREIGN KEY (`owner`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `series`;
+
+--
+-- Table: `series`
+--
+CREATE TABLE `series` (
+  `id` integer NOT NULL,
+  `bulk_date_from` varchar(10),
+  `bulk_date_to` varchar(10),
+  `description` text,
+  `arrangement` text,
+  `notes` text,
+  INDEX (`id`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `series_fk_id` FOREIGN KEY (`id`) REFERENCES `object` (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `collection_relationship`;
+
+--
+-- Table: `collection_relationship`
+--
+CREATE TABLE `collection_relationship` (
+  `id` integer NOT NULL auto_increment,
+  `collection` integer NOT NULL,
+  `predicate` tinyint NOT NULL,
+  `pid` varchar(255) NOT NULL,
+  INDEX `collection_relationship_idx_collection` (`collection`),
+  INDEX `collection_relationship_idx_predicate` (`predicate`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `collection_relationship_fk_collection` FOREIGN KEY (`collection`) REFERENCES `object` (`id`),
+  CONSTRAINT `collection_relationship_fk_predicate` FOREIGN KEY (`predicate`) REFERENCES `relationship_predicate` (`id`)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `item`;
@@ -459,12 +475,15 @@ CREATE TABLE `record_context` (
   `structure_notes` text,
   `context` text,
   `function` integer,
+  `audit_trail` integer NOT NULL,
+  INDEX `record_context_idx_audit_trail` (`audit_trail`),
   INDEX `record_context_idx_function` (`function`),
   INDEX `record_context_idx_publication_status` (`publication_status`),
   INDEX `record_context_idx_rc_type` (`rc_type`),
   PRIMARY KEY (`id`),
   UNIQUE `record_context_name_entry` (`name_entry`),
   UNIQUE `record_context_record_id` (`record_id`),
+  CONSTRAINT `record_context_fk_audit_trail` FOREIGN KEY (`audit_trail`) REFERENCES `audit_trail` (`id`),
   CONSTRAINT `record_context_fk_function` FOREIGN KEY (`function`) REFERENCES `function` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `record_context_fk_publication_status` FOREIGN KEY (`publication_status`) REFERENCES `publication_status` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `record_context_fk_rc_type` FOREIGN KEY (`rc_type`) REFERENCES `record_context_type` (`id`)
@@ -915,7 +934,7 @@ CREATE TABLE `digital_object` (
   CONSTRAINT `digital_object_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`),
   CONSTRAINT `digital_object_fk_media_app` FOREIGN KEY (`media_app`) REFERENCES `application` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `digital_object_fk_stabilization_procedure` FOREIGN KEY (`stabilization_procedure`) REFERENCES `stabilization_procedure` (`id`),
-  CONSTRAINT `digital_object_fk_stabilized_by` FOREIGN KEY (`stabilized_by`) REFERENCES `dca_staff` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `digital_object_fk_stabilized_by` FOREIGN KEY (`stabilized_by`) REFERENCES `staff` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `digital_object_fk_virus_app` FOREIGN KEY (`virus_app`) REFERENCES `application` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 

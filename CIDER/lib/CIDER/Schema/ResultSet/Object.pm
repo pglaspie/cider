@@ -21,10 +21,14 @@ sub root_objects {
     }
 }
 
+# TO DO: move these to ResultSet::TypeObject?
+
 sub update {
     my $self = shift;
 
     my $ret = $self->next::method( @_ );
+
+    # TO DO: update audit trail?
 
     $self->result_source->schema->indexer->update_rs( $self );
 

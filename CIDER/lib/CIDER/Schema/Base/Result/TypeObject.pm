@@ -21,14 +21,12 @@ Series, and Item.
 
 
 my @proxy_fields = qw( parent number title
-                       objects sets
-                       logs creation_log created_by date_created
-                       modification_logs export_logs
+                       objects sets audit_trail
                      );
 
 my @proxy_methods = qw( children number_of_children
                         ancestors has_ancestor descendants
-                        export date_available
+                        export
                       );
 
 sub setup_object {
@@ -76,19 +74,22 @@ sub new {
 sub insert {
     my $self = shift;
 
-    $self->next::method( @_ );
-
-    unless ( $self->object->created_by ) {
+    unless ( $self->audit_trail ) {
         # The object was just created, so log its creation and add it
         # to the index.
 
-        $self->object->created_by( $self->result_source->schema->user );
+        $self->audit_trail( $self->object->create_related( 'audit_trail', {} ) );
+        $self->audit_trail->created_by(
+            $self->result_source->schema->user->staff );
+
+        $self->next::method( @_ );
 
         $self->result_source->schema->indexer->add( $self->object );
     }
     else {
         # Otherwise, we're just changing the object's type; treat it
         # as an update.
+        $self->next::method( @_ );
         $self->_update;
     }
 
@@ -109,15 +110,11 @@ sub update {
 sub _update {
     my $self = shift;
 
-    $self->object->add_to_modification_logs( {
-        user => $self->result_source->schema->user
+    $self->audit_trail->add_to_modification_logs( {
+        staff => $self->result_source->schema->user->staff
     } );
 
     $self->result_source->schema->indexer->update( $self->object );
-
-    # TO DO: typically both the object and the type object will be
-    # updated at once, which leads to two update log entries; it would
-    # be nice to coalesce these.
 }
 
 sub store_column {
