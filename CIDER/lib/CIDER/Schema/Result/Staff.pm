@@ -1,4 +1,4 @@
-package CIDER::Schema::Result::DCAStaff;
+package CIDER::Schema::Result::Staff;
 
 use strict;
 use warnings;
@@ -7,11 +7,11 @@ use base 'DBIx::Class::Core';
 
 =head1 NAME
 
-CIDER::Schema::Result::DCAStaff
+CIDER::Schema::Result::Staff
 
 =cut
 
-__PACKAGE__->table( 'dca_staff' );
+__PACKAGE__->table( 'staff' );
 
 __PACKAGE__->add_columns(
     id =>
@@ -23,6 +23,16 @@ __PACKAGE__->has_many(
     digital_objects =>
         'CIDER::Schema::Result::DigitalObject',
     'stabilized_by',
+);
+
+__PACKAGE__->has_many(
+    logs =>
+        'CIDER::Schema::Result::Log',
+);
+
+__PACKAGE__->might_have(
+    user =>
+        'CIDER::Schema::Result::User',
 );
 
 __PACKAGE__->add_columns(

@@ -13,10 +13,11 @@ use lib (
 
 use CIDERTest;
 my $schema = CIDERTest->init_schema;
-$schema->user( 1 );
+$schema->user( $schema->resultset( 'User' )->find( 1 ) );
 
 use Test::More;
 use Test::Exception;
+use DateTime;
 
 my @collections = $schema->resultset('Object')->root_objects;
 
@@ -57,9 +58,9 @@ isa_ok ($item_1, 'CIDER::Schema::Result::Item',
  );
 is( $item_1->type, 'item', 'type is item.' );
 
-is ( $item_1->parent->id, $series_1->id,
-     "The series is the parent of the item."
- );
+is( $item_1->parent->id, $series_1->id,
+    "The series is the parent of the item."
+);
 
 # TO DO: re-implement date ranges on collections and series.
 
@@ -71,18 +72,22 @@ is ( $item_1->parent->id, $series_1->id,
 
 my $collection_2 = $collections[1];
 
-is ($series_1->has_ancestor( $collection_2 ), 0,
+is( $series_1->has_ancestor( $collection_2 ), 0,
     'Before moving, the series does not see the collection as ancestor.' );
+is( $series_1->audit_trail->modification_logs, 0,
+    'Before moving, the series has no update logs.' );
 
 $series_1->parent( $collection_2 );
 $series_1->update;
 
-is (scalar($collection_2->children), 1,
+is( $collection_2->children, 1,
     'After moving, there is one child series in the second collection.');
-is (scalar($collection_1->children), 0,
+is( $collection_1->children, 0,
     'After moving, there are no child series in the first collection.');
-is ($series_1->has_ancestor( $collection_2 ), 1,
+is( $series_1->has_ancestor( $collection_2 ), 1,
     'After moving, the series claims the collection as ancestor.' );
+is( $series_1->audit_trail->modification_logs, 1,
+    'After moving, the series has one update log.' );
 
 throws_ok { $collection_2->parent( $series_1 ) } qr/ancestor/,
     "The series refuses to become its ancestor's parent.";
@@ -120,6 +125,10 @@ isa_ok( $series_2, 'CIDER::Schema::Result::Series',
 is( $series_1->number_of_children, 3,
     'After import create, ' . $series_1->title . ' has 3 children.' );
 
+my $trail = $series_2->audit_trail;
+is( $trail->created_by->user->id, 1,
+    'Created by user 1.' );
+
 $series_2->update_from_xml( elt <<END
 <series parent="n1">
   <title>Updated sub-series</title>
@@ -141,5 +150,14 @@ throws_ok {
     $series_2->update_from_xml( elt '<series parent="foo" />' );
 } qr/does not exist/,
     'Import updating parent to nonexistent parent is an error.';
+
+
+$series_2->export;
+is( $trail->date_available, DateTime->today,
+    'Date available is today.' );
+
+$series_2->delete;
+is( $schema->resultset( 'AuditTrail' )->find( $trail->id ), undef,
+    'Audit trail was deleted.' );
 
 done_testing;

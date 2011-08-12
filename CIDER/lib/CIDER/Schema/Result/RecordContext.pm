@@ -144,4 +144,46 @@ __PACKAGE__->has_many(
     'record_context',
 );
 
+__PACKAGE__->add_columns(
+    audit_trail =>
+        { data_type => 'int', is_foreign_key => 1 },
+);
+__PACKAGE__->belongs_to(
+    audit_trail =>
+        'CIDER::Schema::Result::AuditTrail',
+    undef,
+    { cascade_delete => 1 }
+);
+
+sub insert {
+    my $self = shift;
+
+    $self->audit_trail( $self->create_related( 'audit_trail', {} ) );
+    $self->audit_trail->created_by( $self->result_source->schema->user->staff );
+
+    $self->next::method( @_ );
+
+    return $self;
+}
+
+sub update {
+    my $self = shift;
+
+    $self->next::method( @_ );
+
+    $self->audit_trail->add_to_modification_logs( {
+        staff => $self->result_source->schema->user->staff
+    } );
+
+    return $self;
+}
+
+sub export {
+    my $self = shift;
+
+    $self->audit_trail->add_to_export_logs( {
+        staff => $self->result_source->schema->user->staff
+    } );
+}
+
 1;

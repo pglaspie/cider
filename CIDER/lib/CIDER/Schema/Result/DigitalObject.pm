@@ -81,7 +81,7 @@ __PACKAGE__->add_columns(
 );
 __PACKAGE__->belongs_to(
     stabilized_by =>
-        'CIDER::Schema::Result::DCAStaff',
+        'CIDER::Schema::Result::Staff',
 );
 
 __PACKAGE__->add_columns(

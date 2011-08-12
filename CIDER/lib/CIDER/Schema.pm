@@ -12,14 +12,13 @@ use File::Spec;
 __PACKAGE__->load_namespaces;
 
 # The 'user' field is used when adding to the audit trail.  Make sure
-# it's set before inserting or updating any objects!
-
-__PACKAGE__->mk_classdata( 'user' );
+# it's set to a Result::User object before inserting or updating any objects!
 
 # The 'search_index' field is initialized from the
 # CIDER::Model::CIDERDB config using the SchemaProxy trait.
 
 __PACKAGE__->mk_group_accessors( simple => qw(
+    user
     search_index
     _indexer
 ) );

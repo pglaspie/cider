@@ -23,7 +23,7 @@ sub create_from_xml {
     my $self = shift;
     my ( $elt ) = @_;
 
-    my $rs = $self->related_resultset( 'object' );
+    my $rs = $self->result_source->related_source( 'object' )->resultset;
     my $id = $elt->getAttribute( 'number' );
     if ( $rs->find( { number => $id } ) ) {
         croak "An object with number '$id' already exists.";
@@ -36,11 +36,11 @@ sub update_from_xml {
     my $self = shift;
     my ( $elt ) = @_;
 
-    my $rs = $self->related_resultset( 'object' );
+    my $rs = $self->result_source->related_source( 'object' )->resultset;
     my $id = $elt->getAttribute( 'number' );
     my $obj = $rs->find( { number => $id } );
     unless ( $obj ) {
-        croak "There is no object whose number is '$id'.";
+        croak "Object number '$id' does not exist.";
     }
     return $obj->type_object->update_from_xml( $elt );
 }

@@ -73,14 +73,14 @@ sub auto : Private {
             return 0; # abort request and go immediately to end()
         }
     } else {
-        $c->model( 'CIDERDB' )->schema->user( $c->user->id );
+        $c->model( 'CIDERDB' )->schema->user( $c->user );
     }
     return 1; # success; carry on to next action
 }
 
-=head1 AUTHOR
+=head1 AUTHORS
 
-Jason McIntosh
+Jason McIntosh, Doug Orleans
 
 =head1 LICENSE
 

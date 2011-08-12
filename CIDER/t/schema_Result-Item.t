@@ -11,7 +11,7 @@ use lib (
 
 use CIDERTest;
 my $schema = CIDERTest->init_schema;
-$schema->user( 1 );
+$schema->user( $schema->resultset( 'User' )->find( 1 ) );
 
 use Test::More;
 use Test::Exception;

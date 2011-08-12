@@ -53,6 +53,19 @@ sub init_schema {
     $schema->deploy( undef, $db_dir );
 
     $schema->populate(
+        'AuditTrail',
+        [
+            [qw/id/],
+            [1],
+            [2],
+            [3],
+            [4],
+            [5],
+            [6],
+        ]
+    );
+
+    $schema->populate(
         'RecordContextType',
         [
             [qw/id name/],
@@ -63,16 +76,24 @@ sub init_schema {
     $schema->populate(
         'RecordContext',
         [
-            [qw/id record_id name_entry rc_type/],
-            [1, 'RCR00001', 'Context 1', 1],
+            [qw/id record_id name_entry rc_type audit_trail/],
+            [1, 'RCR00001', 'Context 1', 1, 6],
+        ]
+    );
+
+    $schema->populate(
+        'Staff',
+        [
+            [qw/id first_name last_name/],
+            [1, 'Alice', 'Nelson'],
         ]
     );
 
     $schema->populate(
         'User',
         [
-            [qw/id username password/],
-            [1, 'alice', 'foo',],
+            [qw/id username password staff/],
+            [1, 'alice', 'foo', 1],
         ]
     );
 
@@ -145,12 +166,12 @@ sub init_schema {
     $schema->populate(
         'Object',
         [
-            [qw/id parent number title/],
-            [1, undef, 'n1', 'Test Collection with kids'],
-            [2, undef, 'n2', 'Test Collection without kids'],
-            [3, 1, 'n3', 'Test Series 1'],
-            [4, 3, 'n4', 'Test Item 1'],
-            [5, 3, 'n5', 'Test Item 2'],
+            [qw/id parent number title audit_trail/],
+            [1, undef, 'n1', 'Test Collection with kids', 1],
+            [2, undef, 'n2', 'Test Collection without kids', 2],
+            [3, 1, 'n3', 'Test Series 1', 3],
+            [4, 3, 'n4', 'Test Item 1', 4],
+            [5, 3, 'n5', 'Test Item 2', 5],
         ]
     );
 
@@ -195,7 +216,7 @@ sub init_schema {
     $schema->populate(
         'Log',
         [
-            [qw/user object action timestamp/],
+            [qw/audit_trail staff action timestamp/],
             [1, 1, 'create', '2011-01-01'],
             [1, 1, 'update', '2011-01-02'],
             [1, 1, 'update', '2011-03-01'],

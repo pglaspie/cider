@@ -793,7 +793,7 @@
             <!-- TO DO: should some of these be required? -->
             <element name="by">
               <optional>
-                <ref name="dcaStaff"/>
+                <ref name="staff"/>
               </optional>
             </element>
           </optional>
@@ -946,17 +946,20 @@
   </define>
   <define name="log">
     <element name="timestamp">
-      <data type="dateTime"/>
+      <choice>
+        <data type="date"/>
+        <data type="dateTime"/>
+      </choice>
     </element>
-    <element name="user">
-      <ref name="dcaStaff"/>
+    <element name="staff">
+      <ref name="staff"/>
     </element>
   </define>
   <!-- Authority Lists -->
   <define name="application">
     <ref name="line"/>
   </define>
-  <define name="dcaStaff">
+  <define name="staff">
     <element name="firstName">
       <ref name="line"/>
     </element>

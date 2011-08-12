@@ -182,7 +182,7 @@ digitalObject = element digitalObject {
   element tableOfContents { multiline? }?,
   element stabilization {
     # TO DO: should some of these be required?
-    element by { dcaStaff? }?,
+    element by { staff? }?,
     element date { date? }?,
     element procedure { stabilizationProcedure? }?,
     element notes { multiline? }?
@@ -230,14 +230,14 @@ auditTrail = element auditTrail {
 }
 
 log = 
-  element timestamp { xsd:dateTime },
-  element user { dcaStaff }
+  element timestamp { xsd:date | xsd:dateTime },
+  element staff { staff }
 
 
 # Authority Lists
 
 application = line
-dcaStaff = element firstName { line }, element lastName { line }
+staff = element firstName { line }, element lastName { line }
 fileExtension = line
 format = line
 function = line
