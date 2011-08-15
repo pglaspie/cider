@@ -138,6 +138,7 @@ sub init_schema {
         [
             [qw/id name/],
             [1, 'Text'],
+            [2, 'Image'],
         ]
     );
 

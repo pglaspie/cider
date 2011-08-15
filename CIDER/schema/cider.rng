@@ -981,8 +981,8 @@
       <ref name="line"/>
     </element>
     <optional>
-      <element name="notes">
-        <ref name="multiline"/>
+      <element name="note">
+        <ref name="line"/>
       </element>
     </optional>
   </define>
@@ -991,8 +991,8 @@
       <ref name="line"/>
     </element>
     <optional>
-      <element name="notes">
-        <ref name="multiline"/>
+      <element name="note">
+        <ref name="line"/>
       </element>
     </optional>
   </define>
@@ -1001,8 +1001,8 @@
       <ref name="line"/>
     </element>
     <optional>
-      <element name="notes">
-        <ref name="multiline"/>
+      <element name="note">
+        <ref name="line"/>
       </element>
     </optional>
   </define>

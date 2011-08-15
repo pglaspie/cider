@@ -37,7 +37,6 @@ $rs->create_from_xml( elt <<END
 <item number='x1' parent='n4'>
   <title>New sub-item</title>
   <date>2000</date>
-  <dcType>Text</dcType>
 </item>
 END
 );
@@ -45,11 +44,9 @@ $rs->create_from_xml( elt <<END
 <item number='x2' parent='n4'>
   <title>New sub-item</title>
   <date>2000</date>
-  <dcType>Text</dcType>
 </item>
 END
 );
-# TO DO: dcType should default to Text
 
 my $item = $rs->find( 4 );
 is( $item->number_of_children, 2,
@@ -58,8 +55,110 @@ for my $subitem ( $item->children ) {
     is( $subitem->type, 'item', 'Type is correct.' );
     is( $subitem->title, 'New sub-item', 'Title is correct.' );
     ok( $subitem->number, 'Number exists.' );
+    ok( !$subitem->circa, 'Circa is false.' );
     is( $subitem->date_from, '2000', 'Start date is correct.' );
+    is( $subitem->date_to, undef, 'End date is undefined.' );
     is( $subitem->dc_type, 'Text', 'DC Type is correct.' );
 }
+
+$item->update_from_xml( elt <<END
+<item>
+  <creators>
+    <creator>
+      <name>George Washington</name>
+      <note>First Prez</note>
+    </creator>
+  </creators>
+  <corporateNames>
+    <corporateName>
+      <name>Context Co.</name>
+    </corporateName>
+  </corporateNames>
+  <topicTerms>
+    <topicTerm>
+      <name>Bowling</name>
+    </topicTerm>
+    <topicTerm>
+      <name>Sledding</name>
+    </topicTerm>
+  </topicTerms>
+</item>
+END
+);
+
+is( $item->creators, 1,
+    'Item has one creator.' );
+my $gw = $item->creators->first;
+is( $gw->name, 'George Washington',
+    'Creator name is correct.' );
+is( $gw->note, 'First Prez',
+    'Creator note is correct.' );
+is( $item->corporate_names, 1,
+    'Item has one corporate_name.' );
+my $co = $item->corporate_names->first;
+is( $co->name, 'Context Co.',
+    'Corporate name is correct.' );
+is( $co->note, undef,
+    'Corporate name has no note.' );
+is( $item->topic_terms, 2,
+    'Item has two topic terms.' );
+
+$item->update_from_xml( elt <<END
+<item>
+  <creators>
+    <creator>
+      <name>Context Co.</name>
+      <note>Inc. 2011</note>
+    </creator>
+  </creators>
+  <personalNames>
+    <personalName>
+      <name>George Washington</name>
+      <note/>
+    </personalName>
+  </personalNames>
+  <topicTerms/>
+</item>
+END
+);
+
+is( $item->creators, 1,
+    'Item still has one creator.' );
+is( $item->creators->first->id, $co->id,
+    'Item creator was looked up.' );
+$co->discard_changes;
+is( $co->note, 'Inc. 2011',
+    'Creator note was updated.' );
+is( $item->personal_names, 1,
+    'Item has one personal name.' );
+is( $item->personal_names->first->id, $gw->id,
+    'Item personal name was looked up.' );
+$gw->discard_changes;
+is( $gw->note, undef,
+    'Personal name note was removed.' );
+is( $item->topic_terms, 0,
+    'Topic terms were removed.' );
+is( $schema->resultset( 'ItemTopicTerm' ), 0,
+    'Topic term links were deleted.' );
+is( $schema->resultset( 'TopicTerm' ), 3,
+    'Topic terms still exist.' );
+
+$item->update_from_xml( elt '<item><circa>true</circa></item>' );
+ok(  $item->circa, 'Circa "true" is true.' );
+$item->update_from_xml( elt '<item><circa>1</circa></item>' );
+ok(  $item->circa, 'Circa "1" is true.' );
+$item->update_from_xml( elt '<item><circa>false</circa></item>' );
+ok( !$item->circa, 'Circa "false" is false.' );
+$item->update_from_xml( elt '<item><circa>0</circa></item>' );
+ok( !$item->circa, 'Circa "0" is false.' );
+$item->update_from_xml( elt '<item><circa/></item>' );
+ok( !$item->circa, 'Circa empty is false.' );
+
+$item->update_from_xml( elt '<item><dcType>Image</dcType></item>' );
+is( $item->dc_type, 'Image',
+    'DC type updated.' );
+$item->update_from_xml( elt '<item><dcType/></item>' );
+is( $item->dc_type, 'Text',
+    'DC type set to default.' );
 
 done_testing;
