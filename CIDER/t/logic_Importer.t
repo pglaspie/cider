@@ -266,6 +266,26 @@ END
 } qr/invalid/,
     "Publication status can't be 'final'.";
 
+throws_ok {
+test_import( <<END
+<import>
+  <update>
+    <item number="n4">
+      <personalNames>
+        <personalName>
+          <name>George Washington</name>
+          <note>Line1
+                Line2</note>
+        </personalName>
+      </personalNames>
+    </item>
+  </update>
+</import>
+END
+);
+} qr/invalid/,
+    "Authority term note can't be multiline.";
+
 # TO DO:
 # These should all be errors:
 # nonexistent record_context or other foreign key (including location)

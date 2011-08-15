@@ -175,6 +175,13 @@ sub delete {
     return $self;
 }
 
+=head2 update_from_xml( $element )
+
+Update this object from an XML element.  The element is assumed to
+have been validated.
+
+=cut
+
 sub update_from_xml {
     my $self = shift;
     my ( $elt ) = @_;
@@ -202,7 +209,7 @@ sub update_from_xml {
     $self->update_text_from_xml_hashref(
         $hr, 'pid' );
 
-    # Controlled vocabularies
+    # Controlled vocabulary elements
 
     $self->update_cv_from_xml_hashref(
         $hr, documentation => 'name' );

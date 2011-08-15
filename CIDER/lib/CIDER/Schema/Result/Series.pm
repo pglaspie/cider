@@ -44,13 +44,29 @@ sub type {
     return 'series';
 }
 
+=head2 update_from_xml( $element )
+
+Update this object from an XML element.  The element is assumed to
+have been validated.
+
+=cut
+
 sub update_from_xml {
     my $self = shift;
     my ( $elt ) = @_;
 
-    $self->object->update_from_xml( $elt );
+    my $hr = $self->xml_to_hashref( $elt );
 
-    # TO DO: update columns
+    $self->object->update_from_xml( $elt, $hr );
+
+    $self->update_dates_from_xml_hashref(
+        $hr, 'bulk_date' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'description' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'arrangement' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'notes' );
 
     return $self->update_or_insert;
 }

@@ -5,6 +5,8 @@ use warnings;
 
 use base 'CIDER::Schema::Base::Result::TypeObject';
 
+use String::CamelCase qw( camelize );
+
 =head1 NAME
 
 CIDER::Schema::Result::Item
@@ -94,7 +96,7 @@ __PACKAGE__->has_many(
 __PACKAGE__->many_to_many(
     topic_terms =>
         'item_topic_terms',
-    'topic_term',
+    'term',
 );
 
 __PACKAGE__->has_many(
@@ -104,7 +106,7 @@ __PACKAGE__->has_many(
 __PACKAGE__->many_to_many(
     geographic_terms =>
         'item_geographic_terms',
-    'geographic_term',
+    'term',
 );
 
 __PACKAGE__->add_columns(
@@ -218,8 +220,53 @@ sub classes {
     );
 }
 
-# Override the DBIC delete() method to work recursively on our related
-# objects, rather than relying on the database to do cascading delete.
+=head2 insert
+
+Override TypeObject->insert to set default values.
+
+=cut
+
+sub insert {
+    my $self = shift;
+
+    if ( !defined( $self->dc_type ) ) {
+        my $rs = $self->result_source->related_source( 'dc_type' )->resultset;
+        $self->dc_type( $rs->find( { name => 'Text' } ) );
+    }
+
+    return $self->next::method( @_ );
+}
+
+=head2 store_column( $column, $value )
+
+Override store_column to set default values.
+
+=cut
+
+sub store_column {
+    my $self = shift;
+    my ( $column, $value ) = @_;
+
+    if ( !defined( $value ) || $value eq '' ) {
+        if ( $column eq 'circa' ) {
+            $value = 0;
+        }
+        elsif ( $column eq 'dc_type' ) {
+            my $rs = $self->result_source->related_source( $column )->resultset;
+            $value = $rs->find( { name => 'Text' } )->id;
+        }
+    }
+
+    return $self->next::method( $column, $value );
+}
+
+=head2 delete
+
+Override delete to work recursively on our related objects, rather
+than relying on the database to do cascading delete.
+
+=cut
+
 sub delete {
     my $self = shift;
 
@@ -230,28 +277,106 @@ sub delete {
         $self->classes,
     );
 
-    $self->next::method( @_ );
-
-    return $self;
+    return $self->next::method( @_ );
 }
+
+=head2 update_from_xml( $element )
+
+Update this object from an XML element.  The element is assumed to
+have been validated.
+
+=cut
 
 sub update_from_xml {
     my $self = shift;
     my ( $elt ) = @_;
 
-    $self->object->update_from_xml( $elt );
-
     my $hr = $self->xml_to_hashref( $elt );
 
+    $self->object->update_from_xml( $elt, $hr );
+
+    # Text elements
+
+    $self->update_boolean_from_xml_hashref(
+        $hr, 'circa' );
     $self->update_dates_from_xml_hashref(
         $hr, 'date' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'accession_number' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'description' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'volume' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'issue' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'abstract' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'citation' );
 
+    # Controlled vocabulary elements
+
+    $self->update_cv_from_xml_hashref(
+        $hr, restrictions => 'name' );
     $self->update_cv_from_xml_hashref(
         $hr, dc_type => 'name' );
 
-    # TO DO: other columns & relationships
+    $self->update_or_insert;
 
-    return $self->update_or_insert;
+    # Repeatables - These have to be done after the row is inserted,
+    # so that its id can be used as a foreign key.
+
+    $self->update_terms_from_xml_hashref(
+        $hr, creators => 'name' );
+    $self->update_terms_from_xml_hashref(
+        $hr, personal_names => 'name' );
+    $self->update_terms_from_xml_hashref(
+        $hr, corporate_names => 'name' );
+    $self->update_terms_from_xml_hashref(
+        $hr, topic_terms => 'term' );
+    $self->update_terms_from_xml_hashref(
+        $hr, geographic_terms => 'term' );
+
+    # TO DO: classes
+
+    return $self;
+}
+
+=head2 update_terms_from_xml_hashref( $hr, $relname, $proxy )
+
+Update an authority term many-to-many relationship from an XML element
+hashref.  $relname converted to mixed case is the tagname of the child
+element on $hr.  Its children have 'name' and (optional) 'note'
+elements, which are used to lookup/create/update the appropriate
+authority term.  $proxy is the name of the column on the link class
+that points to the authority term class.
+
+=cut
+
+sub update_terms_from_xml_hashref {
+    my $self = shift;
+    my ( $hr, $relname, $proxy ) = @_;
+
+    my $tag = lcfirst( camelize( $relname ) );
+    $relname = "item_$relname";
+    my $irs = $self->result_source->related_source( $relname );
+    my $rs = $irs->related_source( $proxy )->resultset;
+    if ( exists( $hr->{ $tag } ) ) {
+        $self->delete_related( $relname );
+        for my $term_elt ( @{ $hr->{ $tag } } ) {
+            my $term_hr = $self->xml_to_hashref( $term_elt );
+            my $term = $rs->find( { name => $term_hr->{ name } } );
+            if ( $term ) {
+                if ( exists $term_hr->{ note } ) {
+                    $term->update( { note => $term_hr->{ note } } );
+                }
+            }
+            else {
+                $term = $rs->create( $term_hr );
+            }
+            $self->create_related( $relname, { $proxy => $term } );
+        }
+    }
 }
 
 1;

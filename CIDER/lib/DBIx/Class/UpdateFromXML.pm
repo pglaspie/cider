@@ -56,6 +56,37 @@ sub update_text_from_xml_hashref {
     $self->$colname( $hr->{ $tag } ) if exists $hr->{ $tag };
 }
 
+=head2 update_boolean_from_xml_hashref( $hr, $colname [, $tag] )
+
+Update a boolean column from an XML element hashref.  $tag (which
+defaults to $colname converted to mixed case) is the tagname of the
+child element containing the boolean value.  'false' and '0' are
+considered false; an empty element is considered null; everything else
+is considered true.
+
+=cut
+
+sub update_boolean_from_xml_hashref {
+    my $self = shift;
+    my ( $hr, $colname, $tag ) = @_;
+
+    $tag ||= lcfirst( camelize( $colname ) );
+    if ( exists $hr->{ $tag } ) {
+        my $val = $hr->{ $tag };
+        if ( defined $val ) {
+            if ( $val eq 'false' || $val eq '0' ) {
+                $self->circa( 0 );
+            }
+            else {
+                $self->circa( 1 );
+            }
+        }
+        else {
+            $self->circa( undef );
+        }
+    }
+}
+
 =head2 update_dates_from_xml_hashref( $hr, $colname [, $tag] )
 
 Update a pair of date columns, ${colname}_from and ${colname}_to, from

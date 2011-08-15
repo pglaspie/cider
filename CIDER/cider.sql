@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Fri Aug 12 15:38:11 2011
+-- Created on Mon Aug 15 16:29:52 2011
 -- 
 SET foreign_key_checks=0;
 
@@ -658,12 +658,12 @@ DROP TABLE IF EXISTS `item_geographic_term`;
 --
 CREATE TABLE `item_geographic_term` (
   `item` integer NOT NULL,
-  `geographic_term` integer NOT NULL,
-  INDEX `item_geographic_term_idx_geographic_term` (`geographic_term`),
+  `term` integer NOT NULL,
   INDEX `item_geographic_term_idx_item` (`item`),
-  PRIMARY KEY (`item`, `geographic_term`),
-  CONSTRAINT `item_geographic_term_fk_geographic_term` FOREIGN KEY (`geographic_term`) REFERENCES `geographic_term` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `item_geographic_term_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  INDEX `item_geographic_term_idx_term` (`term`),
+  PRIMARY KEY (`item`, `term`),
+  CONSTRAINT `item_geographic_term_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `item_geographic_term_fk_term` FOREIGN KEY (`term`) REFERENCES `geographic_term` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `item_topic_term`;
@@ -673,12 +673,12 @@ DROP TABLE IF EXISTS `item_topic_term`;
 --
 CREATE TABLE `item_topic_term` (
   `item` integer NOT NULL,
-  `topic_term` integer NOT NULL,
+  `term` integer NOT NULL,
   INDEX `item_topic_term_idx_item` (`item`),
-  INDEX `item_topic_term_idx_topic_term` (`topic_term`),
-  PRIMARY KEY (`item`, `topic_term`),
+  INDEX `item_topic_term_idx_term` (`term`),
+  PRIMARY KEY (`item`, `term`),
   CONSTRAINT `item_topic_term_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `item_topic_term_fk_topic_term` FOREIGN KEY (`topic_term`) REFERENCES `topic_term` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `item_topic_term_fk_term` FOREIGN KEY (`term`) REFERENCES `topic_term` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `occupation_title`;

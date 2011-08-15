@@ -22,7 +22,7 @@ __PACKAGE__->set_primary_key( 'id' );
 __PACKAGE__->has_many(
     item_topic_terms =>
         'CIDER::Schema::Result::ItemTopicTerm',
-    'topic_term',
+    'term',
 );
 __PACKAGE__->many_to_many(
     items =>

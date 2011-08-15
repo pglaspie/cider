@@ -23,14 +23,14 @@ __PACKAGE__->belongs_to(
 );
 
 __PACKAGE__->add_columns(
-    topic_term =>
+    term =>
         { data_type => 'int', is_foreign_key => 1 },
 );
 __PACKAGE__->belongs_to(
-    topic_term =>
+    term =>
         'CIDER::Schema::Result::TopicTerm',
 );
 
-__PACKAGE__->set_primary_key( qw( item topic_term ) );
+__PACKAGE__->set_primary_key( qw( item term ) );
 
 1;
