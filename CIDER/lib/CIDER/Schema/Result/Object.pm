@@ -268,7 +268,7 @@ sub parent {
 
 sub update_from_xml {
     my $self = shift;
-    my ( $elt ) = @_;
+    my ( $elt, $hr ) = @_;
 
     if ( $elt->hasAttribute( 'parent' ) ) {
         my $parent_number = $elt->getAttribute( 'parent' );
@@ -283,9 +283,9 @@ sub update_from_xml {
         $self->parent( $parent );
     }
 
-    if ( my @titles = $elt->getChildrenByTagName( 'title' ) ) {
-        $self->title( $titles[0]->textContent );
-    }
+    $self->title( $hr->{ title } ) if exists $hr->{ title };
+
+    # TO DO: audit trail
 }
 
 1;
