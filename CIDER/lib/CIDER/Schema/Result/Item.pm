@@ -243,16 +243,8 @@ sub update_from_xml {
 
     my $hr = $self->xml_to_hashref( $elt );
 
-    if ( exists $hr->{ date } ) {
-        my $dateRange = $hr->{ date };
-        if ( ref( $dateRange ) eq 'ARRAY' ) {
-            $self->date_from( $dateRange->[0]->textContent );
-            $self->date_to  ( $dateRange->[1]->textContent );
-        }
-        else {
-            $self->date_from( $dateRange );
-        }
-    }
+    $self->update_dates_from_xml_hashref(
+        $hr, 'date' );
 
     $self->update_cv_from_xml_hashref(
         $hr, dc_type => 'name' );

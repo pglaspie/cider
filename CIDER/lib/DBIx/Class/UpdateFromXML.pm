@@ -12,7 +12,7 @@ use String::CamelCase qw( camelize );
 Converts an XML::LibXML::Element to a hashref whose keys are the
 tagNames of the child elements.  Each value is either an arrayref of
 child elements of that child, or a string if the child only has text
-content.
+content, or undef if the child is empty.
 
 For example, given <foo><bar>Blah</bar><baz><garply/></baz></foo>,
 it would return { bar => "Blah", baz => [ <garply/> ] }.
@@ -26,7 +26,10 @@ sub xml_to_hashref {
     my $hashref = { };
     for my $child ( $element->getChildrenByTagName( '*' ) ) {
         my @grandchildren = $child->nonBlankChildNodes;
-        if ( @grandchildren && $grandchildren[0]->nodeType == XML_TEXT_NODE ) {
+        if ( !@grandchildren ) {
+            $hashref->{ $child->tagName } = undef;
+        }
+        elsif ( $grandchildren[0]->nodeType == XML_TEXT_NODE ) {
             $hashref->{ $child->tagName } = $child->textContent;
         }
         else {
@@ -34,6 +37,53 @@ sub xml_to_hashref {
         }
     }
     return $hashref;
+}
+
+=head2 update_text_from_xml_hashref( $hr, $colname [, $tag] )
+
+Update a text column from an XML element hashref.  $tag (which
+defaults to $colname converted to mixed case) is the tagname of the
+child element containing the text value.
+
+=cut
+
+sub update_text_from_xml_hashref {
+    my $self = shift;
+    my ( $hr, $colname, $tag ) = @_;
+
+    $tag ||= lcfirst( camelize( $colname ) );
+
+    $self->$colname( $hr->{ $tag } ) if exists $hr->{ $tag };
+}
+
+=head2 update_dates_from_xml_hashref( $hr, $colname [, $tag] )
+
+Update a pair of date columns, ${colname}_from and ${colname}_to, from
+an XML element hashref.  $tag (which defaults to $colname converted to
+mixed case) is the tagname of the child element containing the
+date(s).
+
+=cut
+
+sub update_dates_from_xml_hashref {
+    my $self = shift;
+    my ( $hr, $colname, $tag ) = @_;
+
+    my $from = "${colname}_from";
+    my $to   = "${colname}_to";
+    $tag ||= lcfirst( camelize( $colname ) );
+
+    if ( exists( $hr->{ $tag } ) ) {
+        my $date = $hr->{ $tag };
+        if ( ref $date ) {
+            $self->$from( $date->[0]->textContent );
+            $self->$to  ( $date->[1]->textContent );
+        }
+        else {
+            $self->$from( $date );
+            $self->$to  ( undef );
+        }
+    }
 }
 
 =head2 update_cv_from_xml_hashref( $hr, $colname, $ident [, $tag] )

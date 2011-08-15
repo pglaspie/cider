@@ -62,6 +62,7 @@ sub init_schema {
             [4],
             [5],
             [6],
+            [7],
         ]
     );
 
@@ -78,6 +79,7 @@ sub init_schema {
         [
             [qw/id record_id name_entry rc_type audit_trail/],
             [1, 'RCR00001', 'Context 1', 1, 6],
+            [2, 'RCR00002', 'Context 2', 1, 7],
         ]
     );
 
@@ -136,6 +138,15 @@ sub init_schema {
         [
             [qw/id name/],
             [1, 'Text'],
+        ]
+    );
+
+    $schema->populate(
+        'RelationshipPredicate',
+        [
+            [qw/id predicate/],
+            [1, 'fedora-model:hasModel'],
+            [2, 'rel:hasDescription'],
         ]
     );
 

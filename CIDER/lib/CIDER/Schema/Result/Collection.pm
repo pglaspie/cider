@@ -5,6 +5,8 @@ use warnings;
 
 use base 'CIDER::Schema::Base::Result::TypeObject';
 
+use Carp;
+
 =head1 NAME
 
 CIDER::Schema::Result::Collection
@@ -161,6 +163,7 @@ sub delete {
     my $self = shift;
 
     $_->delete for (
+        $self->collection_record_contexts,
         $self->material,
         $self->languages,
         $self->subjects,
@@ -176,11 +179,30 @@ sub update_from_xml {
     my $self = shift;
     my ( $elt ) = @_;
 
-    $self->object->update_from_xml( $elt );
-
     my $hr = $self->xml_to_hashref( $elt );
 
-    # TO DO: other columns & relationships
+    $self->object->update_from_xml( $elt, $hr );
+
+    # Text elements
+
+    $self->update_dates_from_xml_hashref(
+        $hr, 'bulk_date' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'scope' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'organization' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'history' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'processing_notes' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'notes' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'permanent_url' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'pid' );
+
+    # Controlled vocabularies
 
     $self->update_cv_from_xml_hashref(
         $hr, documentation => 'name' );
@@ -191,12 +213,45 @@ sub update_from_xml {
 
     $self->update_or_insert;
 
+    # Repeatables - These have to be done after the row is inserted,
+    # so that its id can be used as a foreign key.
+
     $self->update_has_many_from_xml_hashref(
         $hr, material => 'material', 'associatedMaterial' );
     $self->update_has_many_from_xml_hashref(
         $hr, languages => 'language' );
     $self->update_has_many_from_xml_hashref(
         $hr, subjects => 'subject' );
+
+    my $schema = $self->result_source->schema;
+
+    if ( exists( $hr->{ recordContexts } ) ) {
+        $self->collection_record_contexts->delete;
+        if ( my $elts = $hr->{ recordContexts } ) {
+            my $rs = $schema->resultset( 'RecordContext' );
+            for my $rcs_elt ( @$elts ) {
+                my $rel = 'collection_' . $rcs_elt->tagName . '_record_contexts';
+                for my $rc_elt ( $rcs_elt->nonBlankChildNodes ) {
+                    my $id = $rc_elt->textContent;
+                    my $rc = $rs->find( { record_id => $id } );
+                    croak "There is no record context '$id'." unless $rc;
+                    $self->create_related( $rel, { record_context => $rc } );
+                }
+            }
+        }
+    }
+
+    if ( exists( $hr->{ relationships } ) ) {
+        $self->collection_relationships->delete;
+        my $rs = $schema->resultset( 'RelationshipPredicate' );
+        for my $rel ( @{ $hr->{ relationships } } ) {
+            my $pred = $rs->find(
+                { predicate => $rel->getAttribute( 'predicate' ) } );
+            my $pid = ( $rel->nonBlankChildNodes )[0]->textContent;
+            $self->add_to_collection_relationships(
+                { predicate => $pred, pid => $pid } );
+        }
+    }
 
     return $self;
 }
