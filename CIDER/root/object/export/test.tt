@@ -1,0 +1,6 @@
+[% c.res.content_type = 'text/plain' -%]
+[% object.type %]
+[% object.title %] : [% object.number %]
+
+-----------------------
+
