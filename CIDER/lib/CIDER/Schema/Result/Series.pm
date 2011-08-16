@@ -46,8 +46,8 @@ sub type {
 
 =head2 update_from_xml( $element )
 
-Update this object from an XML element.  The element is assumed to
-have been validated.
+Update (or insert) this object from an XML element.  The element is
+assumed to have been validated.  The object is returned.
 
 =cut
 

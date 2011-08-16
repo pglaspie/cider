@@ -73,6 +73,7 @@ __PACKAGE__->has_many(
 __PACKAGE__->has_many(
     digital_objects =>
         'CIDER::Schema::Result::DigitalObject',
+    # TO DO: why can't we just say 'format' here?
     { 'foreign.format' => 'self.id' },
 );
 
@@ -88,6 +89,7 @@ __PACKAGE__->add_columns(
 );
 use overload '""' => sub { shift->name() }, fallback => 1;
 
+__PACKAGE__->add_unique_constraint( [ qw(class name) ] );
 
 sub update {
     my $self = shift;

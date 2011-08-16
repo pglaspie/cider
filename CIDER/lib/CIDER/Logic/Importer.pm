@@ -39,10 +39,10 @@ sub import_from_xml {
     $schema->indexer->txn_begin;
 
     my ( $created, $updated ) = ( 0, 0 );
-    for my $cmd ( $doc->documentElement->nonBlankChildNodes ) {
+    for my $cmd ( $doc->documentElement->getChildrenByTagName( '*' ) ) {
         my $create = $cmd->nodeName eq 'create';
 
-        for my $elt ( $cmd->nonBlankChildNodes ) {
+        for my $elt ( $cmd->getChildrenByTagName( '*' ) ) {
             my $type = $elt->localname;
             my $class = ucfirst $elt->localname;
             my $rs = $schema->resultset( $class );

@@ -37,11 +37,13 @@ sub test_import {
 test_import( <<END
 <import>
   <create>
+    <!-- Comments are ignored here. -->
     <location locationID="xyz">
       <titles><title>Test location creation via XML import</title></titles>
       <unitType>Digital objects</unitType>
     </location>
   </create>
+  <!-- Comments are ignored here too. -->
   <update>
     <location locationID="xyz">
       <collectionNumbers><number>c123</number></collectionNumbers>

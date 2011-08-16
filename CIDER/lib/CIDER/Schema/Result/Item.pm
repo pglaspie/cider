@@ -5,7 +5,7 @@ use warnings;
 
 use base 'CIDER::Schema::Base::Result::TypeObject';
 
-use String::CamelCase qw( camelize );
+use String::CamelCase qw( camelize decamelize );
 
 =head1 NAME
 
@@ -201,12 +201,10 @@ The list of ItemClass objects associated with this item.
 
 =cut
 
-# TO DO: make this a relationship?
-
 sub classes {
     my $self = shift;
 
-    return (
+    my @classes = (
         $self->groups,
         $self->file_folders,
         $self->containers,
@@ -218,6 +216,7 @@ sub classes {
         $self->digital_objects,
         $self->browsing_objects,
     );
+    return @classes;
 }
 
 =head2 insert
@@ -229,10 +228,7 @@ Override TypeObject->insert to set default values.
 sub insert {
     my $self = shift;
 
-    if ( !defined( $self->dc_type ) ) {
-        my $rs = $self->result_source->related_source( 'dc_type' )->resultset;
-        $self->dc_type( $rs->find( { name => 'Text' } ) );
-    }
+    $self->dc_type( undef ) unless defined $self->dc_type;
 
     return $self->next::method( @_ );
 }
@@ -282,8 +278,8 @@ sub delete {
 
 =head2 update_from_xml( $element )
 
-Update this object from an XML element.  The element is assumed to
-have been validated.
+Update (or insert) this object from an XML element.  The element is
+assumed to have been validated.  The object is returned.
 
 =cut
 
@@ -317,9 +313,9 @@ sub update_from_xml {
     # Controlled vocabulary elements
 
     $self->update_cv_from_xml_hashref(
-        $hr, restrictions => 'name' );
+        $hr, 'restrictions' );
     $self->update_cv_from_xml_hashref(
-        $hr, dc_type => 'name' );
+        $hr, 'dc_type' );
 
     $self->update_or_insert;
 
@@ -337,7 +333,16 @@ sub update_from_xml {
     $self->update_terms_from_xml_hashref(
         $hr, geographic_terms => 'term' );
 
-    # TO DO: classes
+    if ( exists $hr->{ classes } ) {
+        $_->delete for $self->classes;
+        my $schema = $self->result_source->schema;
+        for my $class_elt ( @{ $hr->{ classes } } ) {
+            my $rel = decamelize( $class_elt->tagName );
+            $rel = "${rel}s" unless $rel eq 'audio_visual_media';
+            my $class = $self->new_related( $rel, { } );
+            $class->update_from_xml( $class_elt );
+        }
+    }
 
     return $self;
 }

@@ -3,7 +3,7 @@ package CIDER::Schema::Result::BrowsingObject;
 use strict;
 use warnings;
 
-use base 'CIDER::Schema::Base::ItemClass';
+use base 'CIDER::Schema::Base::Result::ItemClass';
 
 =head1 NAME
 
@@ -22,8 +22,6 @@ __PACKAGE__->add_columns(
 __PACKAGE__->belongs_to(
     format =>
         'CIDER::Schema::Result::Format',
-    undef,
-    { where => { class => 'browsing_object' } }
 );
 
 __PACKAGE__->add_columns(
@@ -40,5 +38,34 @@ __PACKAGE__->has_many(
         'CIDER::Schema::Result::BrowsingObjectRelationship',
     'browsing_object',
 );
+
+=head2 update_from_xml( $element )
+
+Update (or insert) this object from an XML element.  The element is
+assumed to have been validated.  The object is returned.
+
+=cut
+
+sub update_from_xml {
+    my $self = shift;
+    my ( $elt ) = @_;
+
+    my $hr = $self->xml_to_hashref( $elt );
+
+    $self->update_format_from_xml_hashref(
+        $hr );
+    $self->update_text_from_xml_hashref(
+        $hr, 'pid' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'thumbnail_pid' );
+
+    $self->update_or_insert;
+
+    # This needs to be done after the row is inserted, so its id can
+    # be used as a foreign key.
+    $self->update_relationships_from_xml_hashref( $hr );
+
+    return $self;
+}
 
 1;
