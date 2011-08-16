@@ -26,6 +26,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->belongs_to(
     digital_object =>
         'CIDER::Schema::Result::DigitalObject',
+    undef,
+    { proxy => 'item' }
 );
 
 __PACKAGE__->add_columns(
@@ -39,7 +41,7 @@ sub insert {
 
     $self->next::method( @_ );
 
-    $self->result_source->schema->indexer->update( $self->collection->object );
+    $self->result_source->schema->indexer->update( $self->item->object );
 
     return $self;
 }
@@ -49,7 +51,7 @@ sub update {
 
     $self->next::method( @_ );
 
-    $self->result_source->schema->indexer->update( $self->collection->object );
+    $self->result_source->schema->indexer->update( $self->item->object );
 
     return $self;
 }
@@ -59,7 +61,7 @@ sub delete {
 
     $self->next::method( @_ );
 
-    $self->result_source->schema->indexer->update( $self->collection->object );
+    $self->result_source->schema->indexer->update( $self->item->object );
 
     return $self;
 }

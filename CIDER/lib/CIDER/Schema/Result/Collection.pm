@@ -177,8 +177,8 @@ sub delete {
 
 =head2 update_from_xml( $element )
 
-Update this object from an XML element.  The element is assumed to
-have been validated.
+Update (or insert) this object from an XML element.  The element is
+assumed to have been validated.  The object is returned.
 
 =cut
 
@@ -205,18 +205,18 @@ sub update_from_xml {
     $self->update_text_from_xml_hashref(
         $hr, 'notes' );
     $self->update_text_from_xml_hashref(
-        $hr, 'permanent_url' );
+        $hr, permanent_url => 'permanentURL' );
     $self->update_text_from_xml_hashref(
         $hr, 'pid' );
 
     # Controlled vocabulary elements
 
     $self->update_cv_from_xml_hashref(
-        $hr, documentation => 'name' );
+        $hr, 'documentation' );
     $self->update_cv_from_xml_hashref(
-        $hr, processing_status => 'name' );
+        $hr, 'processing_status' );
     $self->update_cv_from_xml_hashref(
-        $hr, publication_status => 'name' );
+        $hr, 'publication_status' );
 
     $self->update_or_insert;
 
@@ -238,7 +238,7 @@ sub update_from_xml {
             my $rs = $schema->resultset( 'RecordContext' );
             for my $rcs_elt ( @$elts ) {
                 my $rel = 'collection_' . $rcs_elt->tagName . '_record_contexts';
-                for my $rc_elt ( $rcs_elt->nonBlankChildNodes ) {
+                for my $rc_elt ( $rcs_elt->getChildrenByTagName( '*' ) ) {
                     my $id = $rc_elt->textContent;
                     my $rc = $rs->find( { record_id => $id } );
                     croak "There is no record context '$id'." unless $rc;
@@ -248,17 +248,7 @@ sub update_from_xml {
         }
     }
 
-    if ( exists( $hr->{ relationships } ) ) {
-        $self->collection_relationships->delete;
-        my $rs = $schema->resultset( 'RelationshipPredicate' );
-        for my $rel ( @{ $hr->{ relationships } } ) {
-            my $pred = $rs->find(
-                { predicate => $rel->getAttribute( 'predicate' ) } );
-            my $pid = ( $rel->nonBlankChildNodes )[0]->textContent;
-            $self->add_to_collection_relationships(
-                { predicate => $pred, pid => $pid } );
-        }
-    }
+    $self->update_relationships_from_xml_hashref( $hr );
 
     return $self;
 }

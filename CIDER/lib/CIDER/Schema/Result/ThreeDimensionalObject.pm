@@ -3,7 +3,7 @@ package CIDER::Schema::Result::ThreeDimensionalObject;
 use strict;
 use warnings;
 
-use base 'CIDER::Schema::Base::ItemClass';
+use base 'CIDER::Schema::Base::Result::ItemClass';
 
 =head1 NAME
 
@@ -31,8 +31,6 @@ __PACKAGE__->add_columns(
 __PACKAGE__->belongs_to(
     format =>
         'CIDER::Schema::Result::Format',
-    undef,
-    { where => { class => 'three_dimensional_object' } }
 );
 
 __PACKAGE__->add_columns(
@@ -41,5 +39,30 @@ __PACKAGE__->add_columns(
     rights =>
         { data_type => 'text', is_nullable => 1 },
 );
+
+=head2 update_from_xml( $element )
+
+Update (or insert) this object from an XML element.  The element is
+assumed to have been validated.  The object is returned.
+
+=cut
+
+sub update_from_xml {
+    my $self = shift;
+    my ( $elt ) = @_;
+
+    my $hr = $self->xml_to_hashref( $elt );
+
+    $self->update_cv_from_xml_hashref(
+        $hr, location => 'barcode' );
+    $self->update_format_from_xml_hashref(
+        $hr );
+    $self->update_text_from_xml_hashref(
+        $hr, 'notes' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'rights' );
+
+    return $self->update_or_insert;
+}
 
 1;

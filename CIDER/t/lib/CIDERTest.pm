@@ -148,6 +148,15 @@ sub init_schema {
             [qw/id predicate/],
             [1, 'fedora-model:hasModel'],
             [2, 'rel:hasDescription'],
+            [3, 'rel:isSubsetOf'],
+        ]
+    );
+
+    $schema->populate(
+        'StabilizationProcedure',
+        [
+            [qw/id code name/],
+            [1, 'ACC-007', 'Digital Media Stabilization'],
         ]
     );
 

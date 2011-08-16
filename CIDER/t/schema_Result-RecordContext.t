@@ -24,15 +24,15 @@ is( $rc->rc_type, 'corporateBody',
     'Context 1 rc_type is correct.' );
 
 $schema->resultset( 'RecordContext')->create( {
-    record_id => 'RCR00002',
-    name_entry => 'Context 2',
+    record_id => 'RCR00023',
+    name_entry => 'Context 23',
     rc_type => 1,
 } );
 
-$rc = $schema->resultset( 'RecordContext' )->find( 2 );
+$rc = $schema->resultset( 'RecordContext' )->find( { record_id => 'RCR00023' } );
 my $trail = $rc->audit_trail;
 is( $trail->created_by->user->id, 1,
-    'Context 2 created by user 1.' );
+    'Context 23 created by user 1.' );
 is( $trail->date_created, DateTime->today,
     'Creation date is today.' );
 

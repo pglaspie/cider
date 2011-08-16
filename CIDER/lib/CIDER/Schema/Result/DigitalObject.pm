@@ -3,7 +3,7 @@ package CIDER::Schema::Result::DigitalObject;
 use strict;
 use warnings;
 
-use base 'CIDER::Schema::Base::ItemClass';
+use base 'CIDER::Schema::Base::Result::ItemClass';
 
 =head1 NAME
 
@@ -31,13 +31,11 @@ __PACKAGE__->add_columns(
 __PACKAGE__->belongs_to(
     format =>
         'CIDER::Schema::Result::DigitalObject',
-    undef,
-    { where => { class => 'digital_object' } }
 );
 
 __PACKAGE__->add_columns(
     pid =>
-        { data_type => 'varchar', is_nullable => 1 },
+        { data_type => 'varchar' },
     permanent_url =>
         { data_type => 'varchar', is_nullable => 1 },
     notes =>
@@ -110,8 +108,6 @@ __PACKAGE__->add_columns(
 __PACKAGE__->belongs_to(
     checksum_app =>
         'CIDER::Schema::Result::Application',
-    undef,
-    { where => { function => 'checksum' } }
 );
 
 __PACKAGE__->add_columns(
@@ -121,8 +117,6 @@ __PACKAGE__->add_columns(
 __PACKAGE__->belongs_to(
     media_app =>
         'CIDER::Schema::Result::Application',
-    undef,
-    { where => { function => 'media_image' } }
 );
 
 __PACKAGE__->add_columns(
@@ -132,8 +126,6 @@ __PACKAGE__->add_columns(
 __PACKAGE__->belongs_to(
     virus_app =>
         'CIDER::Schema::Result::Application',
-    undef,
-    { where => { function => 'virus_check' } }
 );
 
 __PACKAGE__->has_many(
@@ -146,5 +138,169 @@ __PACKAGE__->add_columns(
     file_creation_date =>
         { data_type => 'varchar', is_nullable => 1, size => 10 },
 );
+
+=head2 update_from_xml( $element )
+
+Update (or insert) this object from an XML element.  The element is
+assumed to have been validated.  The object is returned.
+
+=cut
+
+sub update_from_xml {
+    my $self = shift;
+    my ( $elt ) = @_;
+
+    my $hr = $self->xml_to_hashref( $elt );
+
+    $self->update_cv_from_xml_hashref(
+        $hr, location => 'barcode' );
+    $self->update_format_from_xml_hashref(
+        $hr );
+    $self->update_text_from_xml_hashref(
+        $hr, 'pid' );
+    $self->update_text_from_xml_hashref(
+        $hr, permanent_url => 'permanentURL' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'notes' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'rights' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'checksum' );
+    $self->update_term_from_xml_hashref(
+        $hr, 'file_extension' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'original_filename' );
+    $self->update_text_from_xml_hashref(
+        $hr, toc => 'tableOfContents' );
+    $self->update_text_from_xml_hashref(
+        $hr, 'file_creation_date' );
+
+    if ( exists $hr->{ stabilization } ) {
+        my $stab = $self->xml_elements_to_hashref( @{ $hr->{ stabilization } } );
+
+        if ( exists $stab->{ by } ) {
+            my $staff = $self->xml_elements_to_hashref( @{ $stab->{ by } } );
+            my $rs = $self->result_source
+                ->related_source( 'stabilized_by' )->resultset;
+            $self->stabilized_by( $rs->find_or_create( {
+                first_name => $staff->{ firstName },
+                last_name  => $staff->{ lastName }
+            } ) );
+        }
+
+        $self->update_text_from_xml_hashref(
+            $stab, stabilization_date => 'date' );
+        $self->update_cv_from_xml_hashref(
+            $stab, stabilization_procedure => 'code', 'procedure' );
+        $self->update_text_from_xml_hashref(
+            $stab, stabilization_notes => 'notes' );
+    }
+
+    my $apps = { };
+    if ( exists $hr->{ applications } ) {
+        $apps = $self->xml_elements_to_hashref( @{ $hr->{ applications } } );
+
+        $self->update_application_from_xml_hashref(
+            $apps, checksum_app => 'checksum' );
+        $self->update_application_from_xml_hashref(
+            $apps, media_app => 'mediaImage' );
+        $self->update_application_from_xml_hashref(
+            $apps, virus_app => 'virusCheck' );
+    }
+
+    $self->update_or_insert;
+
+    # These need to be done after the row is inserted, so its id can
+    # be used as a foreign key.
+
+    $self->update_relationships_from_xml_hashref( $hr );
+
+    $self->update_has_many_from_xml_hashref(
+        $apps, other_apps => 'application', 'other' );
+
+    return $self;
+}
+
+=head2 update_application_from_xml_hashref( $hr, $colname, $tag )
+
+Update an Application authority list column from an XML element
+hashref.  The application will be added to the authority list if it
+doesn't already exist.  The $tag is also the function of the application.
+
+=cut
+
+# TO DO: refactor update_term_from_xml_hashref?
+
+sub update_application_from_xml_hashref {
+    my $self = shift;
+    my ( $hr, $colname, $tag ) = @_;
+
+    if ( exists( $hr->{ $tag } ) ) {
+        my $rs = $self->result_source->related_source( $colname )->resultset;
+        my $obj = $rs->find_or_create( { name => $hr->{ $tag },
+                                         function => $tag } );
+        $self->set_inflated_column( $colname => $obj );
+    }
+}
+
+=head2 default_app( $column )
+
+Find or create the default application for an application column.
+
+=cut
+
+sub default_app {
+    my $self = shift;
+    my ( $column ) = @_;
+
+    my $rs = $self->result_source->related_source( $column )->resultset;
+    my $attrs;
+    if ( $column eq 'checksum_app' ) {
+        $attrs = { function => 'checksum',
+                   name     => 'Advanced Checksum Verifier' };
+    } elsif ( $column eq 'media_app' ) {
+        $attrs = { function => 'mediaImage',
+                   name     => 'WinImage' };
+    } elsif ( $column eq 'virus_app' ) {
+        $attrs = { function => 'virusCheck',
+                   name     => 'Office Scan' };
+    }
+    return $rs->find_or_create( $attrs );
+}
+
+=head2 insert
+
+Override insert to set default values.
+
+=cut
+
+sub insert {
+    my $self = shift;
+
+    $self->checksum_app( undef ) unless defined $self->checksum_app;
+    $self->media_app   ( undef ) unless defined $self->media_app;
+    $self->virus_app   ( undef ) unless defined $self->virus_app;
+
+    return $self->next::method( @_ );
+}
+
+=head2 store_column( $column, $value )
+
+Override store_column to set default values.
+
+=cut
+
+sub store_column {
+    my $self = shift;
+    my ( $column, $value ) = @_;
+
+    if ( !defined( $value ) || $value eq '' ) {
+        if ( $column =~ /_app/ ) {
+            $value = $self->default_app( $column )->id;
+        }
+    }
+
+    return $self->next::method( $column, $value );
+}
 
 1;

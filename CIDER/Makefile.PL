@@ -35,8 +35,7 @@ requires 'namespace::autoclean';
 requires 'DBIx::Class' => '0.08195';
 requires 'DBIx::Class::TimeStamp';
 requires 'Locale::Codes';
-requires 'Config::General'; # This should reflect the config file format you've chosen
-                 # See Catalyst::Plugin::ConfigLoader for supported formats
+requires 'Config::General';
 requires 'XML::LibXML';
 requires 'String::CamelCase';
 test_requires 'Test::More' => '0.88';

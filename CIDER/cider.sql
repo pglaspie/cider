@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Mon Aug 15 16:29:52 2011
+-- Created on Tue Aug 16 16:23:38 2011
 -- 
 SET foreign_key_checks=0;
 
@@ -13,7 +13,8 @@ CREATE TABLE `application` (
   `id` integer NOT NULL auto_increment,
   `function` enum('checksum', 'media_image', 'virus_check') NOT NULL,
   `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE `application_function_name` (`function`, `name`)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `audit_trail`;
@@ -83,7 +84,8 @@ CREATE TABLE `format` (
   `id` integer NOT NULL auto_increment,
   `class` enum('container', 'bound_volume', 'three_dimensional_object', 'audio_visual_media', 'document', 'physical_image', 'digital_object', 'browsing_object') NOT NULL,
   `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE `format_class_name` (`class`, `name`)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `function`;
@@ -901,7 +903,7 @@ CREATE TABLE `digital_object` (
   `item` integer NOT NULL,
   `location` integer NOT NULL,
   `format` integer,
-  `pid` varchar(255),
+  `pid` varchar(255) NOT NULL,
   `permanent_url` varchar(255),
   `notes` text,
   `rights` text,

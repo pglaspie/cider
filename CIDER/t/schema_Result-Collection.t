@@ -67,6 +67,7 @@ $collection->update_from_xml( elt <<END
     <language>eng</language>
     <language>ast</language>
   </languages>
+  <permanentURL>http://example.com/</permanentURL>
   <relationships>
     <relationship predicate="rel:hasDescription">
       <pid>desc</pid>
@@ -117,6 +118,9 @@ is( $cm_rs->count, 2,
 # is_deeply( [ $collection->languages ], [ 'eng', 'ast' ]
 is_deeply( [ $collection->languages ], [ 'ast', 'eng' ],
            'The modified collection has new languages.' );
+
+is( $collection->permanent_url, 'http://example.com/',
+    'The collection permanent URL was modified.' );
 
 is( $collection->collection_relationships, 2,
     'The modified collection has two relationships.' );

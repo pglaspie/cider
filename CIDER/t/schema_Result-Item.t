@@ -82,6 +82,63 @@ $item->update_from_xml( elt <<END
       <name>Sledding</name>
     </topicTerm>
   </topicTerms>
+  <classes>
+    <group/>
+    <fileFolder>
+      <location>11</location>
+    </fileFolder>
+    <container>
+      <location>9001</location>
+      <format>CookieJar</format>
+    </container>
+    <threeDimensionalObject>
+      <location>8002</location>
+      <format>CookieJar</format>
+    </threeDimensionalObject>
+    <threeDimensionalObject>
+      <location>8002</location>
+      <format>CookieJar</format>
+    </threeDimensionalObject>
+    <digitalObject>
+      <location>12</location>
+      <pid>xxx</pid>
+      <stabilization>
+        <by>
+          <firstName>Alice</firstName>
+          <lastName>Nelson</lastName>
+        </by>
+        <date>2010</date>
+        <procedure>ACC-007</procedure>
+      </stabilization>
+      <applications>
+        <mediaImage>GIMP</mediaImage>
+        <other>
+          <application>App1</application>
+          <application>App2</application>
+        </other>
+      </applications>
+    </digitalObject>
+    <digitalObject>
+      <location>12</location>
+      <pid>xyz</pid>
+      <stabilization>
+        <by>
+          <firstName>Bob</firstName>
+          <lastName>Dobalina</lastName>
+        </by>
+      </stabilization>
+      <applications>
+        <mediaImage>GIMP</mediaImage>
+      </applications>
+    </digitalObject>
+    <browsingObject>
+      <relationships>
+        <relationship predicate="rel:isSubsetOf">
+          <pid>superset</pid>
+        </relationship>
+      </relationships>
+    </browsingObject>
+  </classes>
 </item>
 END
 );
@@ -102,6 +159,42 @@ is( $co->note, undef,
     'Corporate name has no note.' );
 is( $item->topic_terms, 2,
     'Item has two topic terms.' );
+is( $item->classes, 8,
+    'Item has eight classes.' );
+is( $item->groups, 1,
+    'Item has one group.' );
+is( $item->file_folders->first->location->unit_type, 'Digital objects',
+    'File folder location has digital objects unit type.' );
+is( $item->containers->first->format, 'CookieJar',
+    'File folder format is correct.' );
+is( $item->three_dimensional_objects->first->format, 'CookieJar',
+    'Three dimensional object format is correct.' );
+isnt( $item->containers->first->format->id,
+      $item->three_dimensional_objects->first->format->id,
+      'The container and 3d-object format authority terms are not the same.' );
+my @tdos = $item->three_dimensional_objects;
+is( $tdos[0]->format->id, $tdos[1]->format->id,
+    'The 3d-object format authority terms are the same.' );
+my @dos = $item->digital_objects;
+is( $dos[0]->stabilized_by->user->username, 'alice',
+    'First digital object stabilized by alice.' );
+is( $dos[0]->stabilization_date, '2010',
+    'First digital object stabilization date is correct.' );
+is( $dos[0]->stabilization_procedure->name, 'Digital Media Stabilization',
+    'First digital object stabilization procedure is correct.' );
+is( $dos[0]->checksum_app, 'Advanced Checksum Verifier',
+    'Digital object checksum app is correct.' );
+is( $dos[0]->media_app, 'GIMP',
+    'Digital object media image app is correct.' );
+is_deeply( [ $dos[0]->other_apps ], [ 'App1', 'App2' ],
+    'Digital object other apps are correct.' );
+is( $dos[1]->stabilized_by->last_name, 'Dobalina',
+    'Second digital object stabilized by a new staff.' );
+is( $dos[0]->media_app->id, $dos[1]->media_app->id,
+    'The digital object media image apps are the same.' );
+is( $item->browsing_objects->first->browsing_object_relationships->first
+        ->predicate, 'rel:isSubsetOf',
+    'Browsing object relationship predicate is correct.' );
 
 $item->update_from_xml( elt <<END
 <item>

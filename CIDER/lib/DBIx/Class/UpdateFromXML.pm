@@ -23,17 +23,33 @@ sub xml_to_hashref {
     my $class = shift;
     my ( $element ) = @_;
 
+    my @children = $element->getChildrenByTagName( '*' );
+    return $class->xml_elements_to_hashref( @children );
+}
+
+=head2 xml_elements_to_hashref( @elements )
+
+Converts a list of XML::LibXML::Elements to a hashref whose keys are
+the tagNames of the elements.  Each value is either an arrayref of
+child elements of that element, or a string if the element only has
+text content, or undef if the element is empty.
+
+For example, given ( <bar>Blah</bar>, <baz><garply/></baz> ),
+it would return { bar => "Blah", baz => [ <garply/> ] }.
+
+=cut
+
+sub xml_elements_to_hashref {
+    my $class = shift;
+
     my $hashref = { };
-    for my $child ( $element->getChildrenByTagName( '*' ) ) {
-        my @grandchildren = $child->nonBlankChildNodes;
-        if ( !@grandchildren ) {
-            $hashref->{ $child->tagName } = undef;
-        }
-        elsif ( $grandchildren[0]->nodeType == XML_TEXT_NODE ) {
-            $hashref->{ $child->tagName } = $child->textContent;
+    for my $elt ( @_ ) {
+        my @children = $elt->getChildrenByTagName( '*' );
+        if ( !@children ) {
+            $hashref->{ $elt->tagName } = $elt->textContent || undef;
         }
         else {
-            $hashref->{ $child->tagName } = [ @grandchildren ];
+            $hashref->{ $elt->tagName } = [ @children ];
         }
     }
     return $hashref;
@@ -117,13 +133,13 @@ sub update_dates_from_xml_hashref {
     }
 }
 
-=head2 update_cv_from_xml_hashref( $hr, $colname, $ident [, $tag] )
+=head2 update_cv_from_xml_hashref( $hr, $colname [, $ident [, $tag]])
 
 Update a controlled vocabulary column from an XML element hashref.
 $tag (which defaults to $colname converted to mixed case) is the
 tagname of the child element whose text content is part of the
-controlled vocabulary.  $ident is the name of the text identifier
-field in the controlled vocabulary object.
+controlled vocabulary.  $ident (which defaults to 'name') is the name
+of the text identifier field in the controlled vocabulary object.
 
 =cut
 
@@ -131,11 +147,39 @@ sub update_cv_from_xml_hashref {
     my $self = shift;
     my ( $hr, $colname, $ident, $tag ) = @_;
 
+    $ident ||= 'name';
     $tag ||= lcfirst( camelize( $colname ) );
 
     if ( exists( $hr->{ $tag } ) ) {
         my $rs = $self->result_source->related_source( $colname )->resultset;
         my $obj = $rs->find( { $ident => $hr->{ $tag } } );
+        $self->set_inflated_column( $colname => $obj );
+    }
+}
+
+# TO DO: refactor the above & below methods
+
+=head2 update_term_from_xml_hashref( $hr, $colname [, $ident [, $tag]])
+
+Update an authority term column from an XML element hashref.  $tag
+(which defaults to $colname converted to mixed case) is the tagname of
+the child element whose text content is the authority term.  $ident
+(which defaults to 'name') is the name of the text field in the
+authority term object.  The term will be added to the authority list
+if it doesn't already exist.
+
+=cut
+
+sub update_term_from_xml_hashref {
+    my $self = shift;
+    my ( $hr, $colname, $ident, $tag ) = @_;
+
+    $ident ||= 'name';
+    $tag ||= lcfirst( camelize( $colname ) );
+
+    if ( exists( $hr->{ $tag } ) ) {
+        my $rs = $self->result_source->related_source( $colname )->resultset;
+        my $obj = $rs->find_or_create( { $ident => $hr->{ $tag } } );
         $self->set_inflated_column( $colname => $obj );
     }
 }
@@ -175,6 +219,34 @@ sub update_has_many_from_xml_hashref {
         $self->delete_related( $relname );
         $self->create_related( $relname, { $proxy => $_->textContent } )
             for @{ $hr->{ $tag } };
+    }
+}
+
+=head2 update_relationships_from_xml_hashref( $hr )
+
+Update a Relationship relationship from an XML element hashref.  The
+tagname of the child element is 'relationships'; it has a 'predicate'
+attribute and a 'pid' child element.  The table name is used to form
+the relationship name, e.g. 'collection_relationships'.
+
+=cut
+
+sub update_relationships_from_xml_hashref {
+    my $self = shift;
+    my ( $hr ) = @_;
+
+    if ( exists( $hr->{ relationships } ) ) {
+        my $relname = $self->table . '_relationships';
+        $self->delete_related( $relname );
+        my $schema = $self->result_source->schema;
+        my $rs = $schema->resultset( 'RelationshipPredicate' );
+        for my $rel ( @{ $hr->{ relationships } } ) {
+            my $pred = $rs->find(
+                { predicate => $rel->getAttribute( 'predicate' ) } );
+            my $pid = ( $rel->getChildrenByTagName( '*' ) )[0]->textContent;
+            $self->create_related( $relname,
+                                   { predicate => $pred, pid => $pid } );
+        }
     }
 }
 

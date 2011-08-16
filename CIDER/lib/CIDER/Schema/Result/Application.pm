@@ -68,6 +68,7 @@ __PACKAGE__->add_columns(
 );
 use overload '""' => sub { shift->name }, fallback => 1;
 
+__PACKAGE__->add_unique_constraint( [ qw( function name ) ] );
 
 sub update {
     my $self = shift;
