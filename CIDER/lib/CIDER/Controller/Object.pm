@@ -85,7 +85,7 @@ sub add_to_set :Chained('object') :Args(0) {
 
     my $object = $c->stash->{ object };
     if ( $set ) {
-        $object->add_to_sets( $set );
+        $set->add( $object );
     }
     else {
         $c->log->warn( "Attempt to add object " . $object->id

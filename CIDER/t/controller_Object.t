@@ -113,7 +113,15 @@ $mech->get( '/object/9999' );
 is( $mech->status, 404, 'Invalid object id gives 404 page.' );
 
 $mech->get( '/object/1' );
-$mech->submit_form_ok ( { with_fields => {
+$mech->content_contains( 'does not belong' );
+$mech->submit_form_ok( { with_fields => {
+    set_id => 1,
+} }, 'Add to set' );
+$mech->content_contains( 'belongs to the following' );
+$mech->has_tag( a => 'Test Set 1' );
+
+$mech->get( '/object/1' );
+$mech->submit_form_ok( { with_fields => {
     descendants => 1,
     template => 'export.csv',
 } }, 'Export to CSV' );
