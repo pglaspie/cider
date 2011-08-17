@@ -30,22 +30,8 @@ sub search :Path :Args(0) :FormConfig {
         # Perform the search.
         my $field = $form->param_value( 'field' );
         my $query = $form->param_value( 'query' );
-        my $query_str = $query;
 
-        if ( $field ne 'all' ) {
-            $query_str = "$field:($query)";
-
-            $query = KinoSearch::Search::TermQuery->new(
-                field => $field,
-
-                # NOTE: search is case-insensitive, but only because
-                # the terms in the index have been downcased, so we
-                # must downcase the query term.  (QueryParser does
-                # this automatically, but the TermQuery constructor
-                # does not.)
-                term => lc $query,
-            );
-        }
+        $query = "$field:($query)" unless ( $field eq 'all' );
 
         my $hits = $c->model( 'Search' )->search(
             query => $query,
@@ -64,7 +50,7 @@ sub search :Path :Args(0) :FormConfig {
             }
         }
         $c->stash->{ objects } = \@objects;
-        $c->stash->{ query } = $query_str;
+        $c->stash->{ query } = $query;
         $c->stash->{ template } = 'search/results.tt';
 
         # The results page has a create-a-new-set form on it.
@@ -77,14 +63,9 @@ sub search :Path :Args(0) :FormConfig {
         $set_creation_form->action(
             $c->uri_for( '/search/create_set' )
         );
-     
+
         # Stick the last query in the flash, for the create-set action's use.
-        if ( ref $query ) {
-            $c->flash->{ last_search_query } = $query->to_string;
-        }
-        else {
-            $c->flash->{ last_search_query } = $query;
-        }
+        $c->flash->{ last_search_query } = $query;
     }
 }
 
@@ -103,7 +84,7 @@ sub create_set :Path('create_set') :Args(0) :FormConfig('set/create') {
     my ( $self, $c ) = @_;
 
     my $form = $c->stash->{ form };
-    
+
     # Create the set object.
     my $name = $form->param( 'name' );
     my $rs = $c->model( 'CIDERDB::ObjectSet' );
@@ -113,13 +94,10 @@ sub create_set :Path('create_set') :Args(0) :FormConfig('set/create') {
     } );
 
     # Populate the new set with the results of the last query.
-    my $query;
-    if ( my $dumped_query = $c->flash->{ last_search_query } ) {
-        $query = $c->flash->{ last_search_query };
-    }
-    else {
+    my $query = $c->flash->{ last_search_query };
+    unless ( $query ) {
         $c->log->error('Went to create_set without a last_search_query '
-                       . ' defined. Redirecting to to the search page.');
+                       . ' defined. Redirecting to the search page.');
         $c->res->redirect( $c->uri_for( '/search' ) );
         return;
     }
@@ -130,7 +108,7 @@ sub create_set :Path('create_set') :Args(0) :FormConfig('set/create') {
 
     while ( my $hit = $hits->next ) {
         my $object = $c->model( 'CIDERDB::Object' )->find( $hit->{id} );
-        $set->add ( $object );
+        $set->add( $object->type_object );
     }
 
     # That done, redirect the user to the set list.
@@ -154,7 +132,7 @@ sub make_index :Private {
 
 =head1 AUTHOR
 
-Jason McIntosh
+Jason McIntosh, Doug Orleans
 
 =head1 LICENSE
 
