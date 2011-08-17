@@ -17,11 +17,7 @@ $schema->user( $schema->resultset( 'User' )->find( 1 ) );
 
 use CIDER;
 my $model = CIDER->model( 'Search' );
-my $query = KinoSearch::Search::TermQuery->new(
-    field => 'title',
-    term => 'item',
-);
-my $hits = $model->search( query => $query );
+my $hits = $model->search( query => 'title:Item' );
 is( $hits->total_hits, 2, 'Found two Items.' );
 is( $hits->next->{title}, 'Test Item 1', 'Found Test Item 1.' );
 is( $hits->next->{title}, 'Test Item 2', 'Found Test Item 2.' );
@@ -111,11 +107,7 @@ is( $hits->total_hits, 2, 'Found two Imported.' );
 $hits = $model->search( query => 'minimal' );
 is( $hits->total_hits, 2, 'Found two collections with processing status.' );
 
-$query = KinoSearch::Search::TermQuery->new(
-    field => 'corporate_names',
-    term => 'name',
-);
-$hits = $model->search( query => $query );
+$hits = $model->search( query => 'corporate_names:Name' );
 is( $hits->total_hits, 0, 'No corporate names yet.' );
 
 $item = $schema->resultset( 'Item' )->find( 4 );
@@ -123,20 +115,16 @@ my $name = $schema->resultset( 'AuthorityName' )->find( 1 );
 $item->add_to_corporate_names( $name );
 $item->update;
 
-$hits = $model->search( query => $query );
+$hits = $model->search( query => 'corporate_names:Name' );
 is( $hits->total_hits, 1, 'Item was re-indexed with corporate name.' );
 
 $name->name( 'Test Corp' );
 $name->update;
 
-$hits = $model->search( query => $query );
+$hits = $model->search( query => 'corporate_names:Name' );
 is( $hits->total_hits, 0, 'No hits for old corporate name.' );
 
-$query = KinoSearch::Search::TermQuery->new(
-    field => 'corporate_names',
-    term => 'corp',
-);
-$hits = $model->search( query => $query );
+$hits = $model->search( query => 'corporate_names:Corp' );
 is( $hits->total_hits, 1, 'Found new corporate name.' );
 
 $hits = $model->search( query => 'Material' );

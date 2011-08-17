@@ -20,12 +20,21 @@ sub ACCEPT_CONTEXT {
 
 sub search {
     my $self = shift;
+    my %params = @_;
 
     my $searcher = KinoSearch::Search::IndexSearcher->new(
         index => $self->schema->search_index,
     );
 
-    return $searcher->hits( @_ );
+    unless ( ref $params{ query } ) {
+        my $qp = KinoSearch::Search::QueryParser->new(
+            schema => $searcher->get_schema,
+        );
+        $qp->set_heed_colons( 1 );
+        $params{ query } = $qp->parse( $params{ query } );
+    }
+
+    return $searcher->hits( %params );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -60,7 +69,8 @@ params can be any of the following:
 =item *
 
 B<query> - Either a L<KinoSearch::Search::Query> object or a query
-string.  See L<KinoSearch::Search::QueryParser>.
+string.  If a query string, it will be parsed with set_heed_colons
+true.  See L<KinoSearch::Search::QueryParser>.
 
 =item *
 
