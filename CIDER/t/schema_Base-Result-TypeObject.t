@@ -20,15 +20,11 @@ $schema->resultset( 'Item' )->create( {
     number    => 12345,
     title     => 'Test Item 3',
     date_from => '2000-01-01',
-    dc_type   => 1,
 } );
 
 ok( my $obj = $schema->resultset( 'Object' )->find( { number => 12345 } ),
     'Created test item 3.' );
 my $item = $obj->type_object;
-
-# TO DO: test store_column
-# TO DO: test changing type
 
 my $trail = $item->audit_trail;
 
@@ -42,5 +38,20 @@ $item->update( { number => 54321 } );
 my $logs = $trail->modification_logs;
 is( $logs->count, 1, 'Modified once.' );
 is( $logs->first->user->id, 1, 'Modified by user 1.' );
+
+$obj->type_object->delete( 1 );
+$obj->create_related( 'collection', {
+    documentation => 1,
+    processing_status => 1,
+    notes => 'Now a collection',
+} );
+is( $schema->resultset( 'Item' )->find( $obj->id ), undef,
+    'Object is no longer an item.' );
+is( $obj->type, 'collection',
+    'Object is now a collection.' );
+
+my $coll = $obj->type_object;
+is( $coll->notes, 'Now a collection',
+    'Notes set.' );
 
 done_testing;
