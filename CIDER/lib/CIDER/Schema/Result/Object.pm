@@ -293,7 +293,10 @@ sub update_from_xml {
 
     $self->update_text_from_xml_hashref( $hr, 'title' );
 
-    # Audit trail is updated in the type object.
+    # If the object is already in storage, then we need to update it
+    # here; otherwise we have to wait to insert it until after the
+    # audit trail is set (when the type object is inserted).
+    $self->update if $self->in_storage;
 
     return $self;
 }

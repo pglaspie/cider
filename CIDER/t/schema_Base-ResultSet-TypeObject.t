@@ -63,7 +63,9 @@ throws_ok {
 
 $schema->resultset( 'Series' )->update_from_xml( elt <<END
 <series number="n1">
+  <title>Test Series 1</title>
   <description>Used to be a collection</description>
+  <auditTrail />
 </series>
 END
 );
@@ -72,7 +74,11 @@ is( $rs->find( $collections[1]->id ), undef,
 my $obj = $schema->resultset( 'Object' )->find( { number => 'n1' } );
 is( $obj->type, 'series',
     'Object n1 is a series.' );
+is( $obj->title, 'Test Series 1',
+    "Object n1's title was changed." );
 is( $obj->type_object->description, 'Used to be a collection',
     'Object n1 has a description.' );
+is( $obj->audit_trail->logs, 0,
+    'Logs were erased.' );
 
 done_testing;
