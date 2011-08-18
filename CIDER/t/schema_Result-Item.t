@@ -254,4 +254,6 @@ $item->update_from_xml( elt '<item><dcType/></item>' );
 is( $item->dc_type, 'Text',
     'DC type set to default.' );
 
+# TO DO: location not found
+
 done_testing;

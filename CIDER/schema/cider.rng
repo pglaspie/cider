@@ -344,7 +344,6 @@
   </define>
   <define name="recordContext">
     <element name="recordContext">
-      <!-- Default recordID is auto-generated. -->
       <attribute name="recordID">
         <ref name="recordID"/>
       </attribute>
@@ -449,11 +448,13 @@
         <element name="occupations">
           <zeroOrMore>
             <element name="occupation">
-              <zeroOrMore>
-                <element name="title">
-                  <ref name="line"/>
-                </element>
-              </zeroOrMore>
+              <element name="titles">
+                <oneOrMore>
+                  <element name="title">
+                    <ref name="line"/>
+                  </element>
+                </oneOrMore>
+              </element>
               <optional>
                 <element name="date">
                   <optional>

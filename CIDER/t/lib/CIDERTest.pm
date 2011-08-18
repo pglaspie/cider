@@ -71,6 +71,8 @@ sub init_schema {
         [
             [qw/id name/],
             [1, 'corporateBody'],
+            [2, 'family'],
+            [3, 'person'],
         ]
     );
 
@@ -149,6 +151,14 @@ sub init_schema {
             [1, 'fedora-model:hasModel'],
             [2, 'rel:hasDescription'],
             [3, 'rel:isSubsetOf'],
+        ]
+    );
+
+    $schema->populate(
+        'RecordContextRelationshipType',
+        [
+            [qw/id name/],
+            [1, 'reportsTo'],
         ]
     );
 
