@@ -11,6 +11,8 @@ CIDER::Schema::Result::RecordContextOccupation
 
 =cut
 
+__PACKAGE__->load_components( 'UpdateFromXML' );
+
 __PACKAGE__->table( 'record_context_occupation' );
 
 __PACKAGE__->add_columns(
@@ -40,5 +42,42 @@ __PACKAGE__->add_columns(
     date_to =>
         { data_type => 'varchar', is_nullable => 1, size => 10 },
 );
+
+=head2 delete
+
+Override delete to work recursively on our related objects, rather
+than relying on the database to do cascading delete.
+
+=cut
+
+sub delete {
+    my $self = shift;
+
+    $_->delete for $self->titles;
+
+    return $self->next::method( @_ );
+}
+
+=head2 update_from_xml( $element )
+
+Update (or insert) this object from an XML element.  The element is
+assumed to have been validated.  The object is returned.
+
+=cut
+
+sub update_from_xml {
+    my $self = shift;
+    my ( $elt ) = @_;
+
+    my $hr = $self->xml_to_hashref( $elt );
+
+    $self->update_dates_from_xml_hashref( $hr, 'date' );
+
+    $self->update_or_insert;
+
+    $self->update_has_many_from_xml_hashref( $hr, titles => 'title' );
+
+    return $self;
+}
 
 1;

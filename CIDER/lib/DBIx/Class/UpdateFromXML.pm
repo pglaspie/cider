@@ -91,14 +91,14 @@ sub update_boolean_from_xml_hashref {
         my $val = $hr->{ $tag };
         if ( defined $val ) {
             if ( $val eq 'false' || $val eq '0' ) {
-                $self->circa( 0 );
+                $self->$colname( 0 );
             }
             else {
-                $self->circa( 1 );
+                $self->$colname( 1 );
             }
         }
         else {
-            $self->circa( undef );
+            $self->$colname( undef );
         }
     }
 }

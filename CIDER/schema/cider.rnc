@@ -68,7 +68,6 @@ item = element item {
 }
 
 recordContext = element recordContext {
-  # Default recordID is auto-generated.
   attribute recordID { recordID },
   element publicationStatus { publicationStatus? }?,
   ( element nameEntry { line } | required ),
@@ -88,7 +87,7 @@ recordContext = element recordContext {
   element function { function? }?,
   element occupations {
     element occupation {
-      element title { line }*,
+      element titles { element title { line }+ },
       element date { dateRange? }?
     }*
   }?,
