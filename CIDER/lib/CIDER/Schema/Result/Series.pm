@@ -68,6 +68,8 @@ sub update_from_xml {
     $self->update_text_from_xml_hashref(
         $hr, 'notes' );
 
+    $self->update_audit_trail_from_xml_hashref( $hr );
+
     return $self->update_or_insert;
 }
 

@@ -139,4 +139,24 @@ $rc->delete;
 is( $schema->resultset( 'AuditTrail' )->find( $trail->id ), undef,
     'Audit trail was deleted.' );
 
+$rc = $rs->create_from_xml( elt <<END
+<recordContext recordID="new">
+  <nameEntry>New Context</nameEntry>
+  <auditTrail>
+    <create>
+      <timestamp>2000</timestamp>
+      <staff><firstName>X</firstName><lastName>Y</lastName></staff>
+    </create>
+  </auditTrail>
+</recordContext>
+END
+);
+
+is( $rc->audit_trail->logs, 1,
+    'Audit trail imported on create.' );
+is( $rc->audit_trail->created_by, 'Y, X',
+    'Creator name is correct.' );
+is( $rc->audit_trail->date_created, '2000-01-01T00:00:00',
+    'Creation date is correct.' );
+
 done_testing;

@@ -124,18 +124,6 @@ sub store_column {
     # Convert all empty strings to nulls.
     $value = undef if defined( $value ) && $value eq '';
 
-    if ( defined( $value ) ) {
-        # TO DO: need better way of determining these column types...
-        if ( $column =~ /date/ ) {
-            $self->throw_exception( "$column must be ISO-8601 format" )
-                unless iso_8601_date( $value );
-        }
-        elsif ( $column =~ /url/ ) {
-            $self->throw_exception( "$column must be HTTP or HTTPS URI" )
-                unless $RE{URI}{HTTP}{ -scheme => 'https?' }->matches( $value );
-        }
-    }
-
     return $self->next::method( $column, $value );
 }
 

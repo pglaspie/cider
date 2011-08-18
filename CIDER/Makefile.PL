@@ -38,6 +38,7 @@ requires 'Locale::Codes';
 requires 'Config::General';
 requires 'XML::LibXML';
 requires 'String::CamelCase';
+requires 'DateTime::Format::ISO8601';
 test_requires 'Test::More' => '0.88';
 test_requires 'Test::Exception';
 catalyst;

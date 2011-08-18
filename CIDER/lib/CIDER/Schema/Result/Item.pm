@@ -344,6 +344,8 @@ sub update_from_xml {
         }
     }
 
+    $self->update_audit_trail_from_xml_hashref( $hr );
+
     return $self;
 }
 

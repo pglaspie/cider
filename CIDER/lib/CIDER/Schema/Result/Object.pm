@@ -266,6 +266,14 @@ sub parent {
     return $self->_parent;
 }
 
+=head2 update_from_xml( $element, $hashref )
+
+Update non-type-specific columns on this object from an XML element
+and hashref.  The element is assumed to have been validated.  The
+object is returned.
+
+=cut
+
 sub update_from_xml {
     my $self = shift;
     my ( $elt, $hr ) = @_;
@@ -283,9 +291,11 @@ sub update_from_xml {
         $self->parent( $parent );
     }
 
-    $self->title( $hr->{ title } ) if exists $hr->{ title };
+    $self->update_text_from_xml_hashref( $hr, 'title' );
 
-    # TO DO: audit trail
+    # Audit trail is updated in the type object.
+
+    return $self;
 }
 
 1;

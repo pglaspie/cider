@@ -76,6 +76,22 @@ $collection->update_from_xml( elt <<END
       <pid>model</pid>
     </relationship>
   </relationships>
+  <auditTrail>
+    <create>
+      <timestamp>1999-09-09</timestamp>
+      <staff>
+        <firstName>Collection</firstName>
+        <lastName>Creator</lastName>
+      </staff>
+    </create>
+    <update>
+      <timestamp>2010-10-10T10:10:10-04:00</timestamp>
+      <staff>
+        <firstName>Alice</firstName>
+        <lastName>Nelson</lastName>
+      </staff>
+    </update>
+  </auditTrail>
 </collection>
 END
 );
@@ -130,6 +146,18 @@ is( ( $collection->collection_relationships )[0]->predicate,
 is( ( $collection->collection_relationships )[1]->pid,
     'model',
    'Second relationship pid is correct.' );
+
+is( $collection->audit_trail->logs, 2,
+    'Audit trail was imported.' );
+is( $collection->audit_trail->creation_log->timestamp, '1999-09-09T00:00:00',
+    'Creation timestamp is correct.' );
+is( $collection->audit_trail->created_by, 'Creator, Collection',
+    'Creator name is correct.' );
+my $log = $collection->audit_trail->modification_logs->first;
+is( $log->timestamp, '2010-10-10T14:10:10',
+    'Modification timestamp is correct.' );
+is( $log->staff->user->username, 'alice',
+    'Modification user is correct.' );
 
 $collection->update_from_xml( elt <<END
 <collection>

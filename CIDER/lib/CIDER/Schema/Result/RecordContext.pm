@@ -317,7 +317,7 @@ sub update_from_xml {
         }
     }
 
-    # TO DO: audit_trail
+    $self->update_audit_trail_from_xml_hashref( $hr );
 
     return $self;
 }
