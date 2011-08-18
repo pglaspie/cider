@@ -64,7 +64,13 @@ sub new {
 
     my $obj = _delete_proxy_fields( $fields );
     my $row = $class->next::method( $fields );
-    $row->object( $row->new_related( 'object', $obj ) );
+
+    # If we're given an id already, it's because there's already an
+    # Object (i.e. we're just changing its type object), so don't make
+    # a new one.
+    unless ( $fields->{ id } ) {
+        $row->object( $row->new_related( 'object', $obj ) );
+    }
     return $row;
 }
 
