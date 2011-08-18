@@ -38,6 +38,4 @@ $trail->delete;
 is( $schema->resultset( 'Log' )->search_rs( { audit_trail => $trail->id } ), 0,
     'Logs were deleted.' );
 
-# TO DO: test import: create/update with/without auditTrail
-
 done_testing;

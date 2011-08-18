@@ -6,6 +6,7 @@ use warnings;
 use base 'DBIx::Class';
 use XML::LibXML;
 use String::CamelCase qw( camelize );
+use DateTime::Format::ISO8601;
 
 =head2 xml_to_hashref( $element )
 
@@ -246,6 +247,45 @@ sub update_relationships_from_xml_hashref {
             my $pid = ( $rel->getChildrenByTagName( '*' ) )[0]->textContent;
             $self->create_related( $relname,
                                    { predicate => $pred, pid => $pid } );
+        }
+    }
+}
+
+=head2 update_audit_trail_from_xml_hashref( $hr )
+
+Update the audit trail from an XML element hashref.  Each log
+timestamp may be a date, which is converted to a date/time by setting
+the time to 12am.
+
+This should be called after the object has been updated, so that the
+imported audit trail overrides the logs from that update.
+
+=cut
+
+sub update_audit_trail_from_xml_hashref {
+    my $self = shift;
+    my ( $hr ) = @_;
+
+    if ( exists( $hr->{ auditTrail } ) ) {
+        my $trail = $self->audit_trail;
+        $trail->logs->delete;
+        for my $log_elt ( @{ $hr->{ auditTrail } } ) {
+            my $log_hr = $self->xml_to_hashref( $log_elt );
+
+            my $ts = $log_hr->{ timestamp };
+            $ts = DateTime::Format::ISO8601->parse_datetime( $ts );
+
+            my $staff_hr = $self->xml_elements_to_hashref(
+                @{ $log_hr->{ staff } } );
+            my $staff_rs = $self->result_source->schema->resultset( 'Staff' );
+            my $staff = $staff_rs->find_or_create( {
+                first_name => $staff_hr->{ firstName },
+                last_name  => $staff_hr->{ lastName }
+            } );
+
+            $trail->add_to_logs( { action => $log_elt->tagName,
+                                   timestamp => $ts,
+                                   staff => $staff, } );
         }
     }
 }

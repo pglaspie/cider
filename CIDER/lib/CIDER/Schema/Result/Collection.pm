@@ -250,6 +250,8 @@ sub update_from_xml {
 
     $self->update_relationships_from_xml_hashref( $hr );
 
+    $self->update_audit_trail_from_xml_hashref( $hr );
+
     return $self;
 }
 
