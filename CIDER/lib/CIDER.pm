@@ -101,9 +101,9 @@ CIDER - Catalyst based application
 
 L<CIDER::Controller::Root>, L<Catalyst>
 
-=head1 AUTHOR
+=head1 AUTHORS
 
-Jason McIntosh
+Jason McIntosh, Doug Orleans
 
 =head1 LICENSE
 

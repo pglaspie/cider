@@ -15,6 +15,12 @@ CIDER::Schema::Result::CollectionLanguage
 __PACKAGE__->table( 'collection_language' );
 
 __PACKAGE__->add_columns(
+    id =>
+        { data_type => 'int', is_auto_increment => 1 },
+);
+__PACKAGE__->set_primary_key( 'id' );
+
+__PACKAGE__->add_columns(
     collection =>
         { data_type => 'int', is_foreign_key => 1 },
 );
@@ -46,8 +52,6 @@ sub language_name {
 
     return code2language( $self->language, LOCALE_LANG_ALPHA_3 );
 }
-
-__PACKAGE__->set_primary_key( qw( collection language ) );
 
 sub insert {
     my $self = shift;
