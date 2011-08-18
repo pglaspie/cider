@@ -42,7 +42,14 @@ sub update_from_xml {
     unless ( $obj ) {
         croak "Object number '$id' does not exist.";
     }
-    return $obj->type_object->update_from_xml( $elt );
+    my $type_obj = $obj->type_object;
+    my $type = $elt->tagName;
+    if ( $type ne $type_obj->type ) {
+        # This is a type change: replace the old type object with a new one.
+        $type_obj->delete( 1 ); # don't delete $obj!
+        $type_obj = $obj->new_related( $type, { } );
+    }
+    return $type_obj->update_from_xml( $elt );
 }
 
 1;

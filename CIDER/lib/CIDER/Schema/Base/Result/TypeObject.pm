@@ -42,10 +42,7 @@ sub setup_object {
     $class->belongs_to(
         object => 'CIDER::Schema::Result::Object',
         'id',
-        { proxy => [ @proxy_fields ],
-          cascade_update => 1,
-          cascade_delete => 1,
-        }
+        { proxy => [ @proxy_fields ] }
     );
 }
 
@@ -126,6 +123,26 @@ sub store_column {
 
     return $self->next::method( $column, $value );
 }
+
+=head2 delete( [ $keep_object ] )
+
+If $keep_object is true, then don't delete the associated Object
+(i.e. we're just changing its type).  Otherwise, cascade the delete--
+but delete self first, since its id is a foreign key.
+
+=cut
+
+sub delete {
+    my $self = shift;
+    my ( $keep_object ) = @_;
+
+    $self->next::method;
+
+    $self->object->delete unless $keep_object;
+
+    return $self;
+}
+
 
 no strict 'refs';
 for my $method ( @proxy_methods ) {

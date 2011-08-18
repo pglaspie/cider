@@ -61,4 +61,18 @@ throws_ok {
 } qr/not exist/,
     'Importing an unknown number is an error.';
 
+$schema->resultset( 'Series' )->update_from_xml( elt <<END
+<series number="n1">
+  <description>Used to be a collection</description>
+</series>
+END
+);
+is( $rs->find( $collections[1]->id ), undef,
+    'Object n1 is no longer a collection.' );
+my $obj = $schema->resultset( 'Object' )->find( { number => 'n1' } );
+is( $obj->type, 'series',
+    'Object n1 is a series.' );
+is( $obj->type_object->description, 'Used to be a collection',
+    'Object n1 has a description.' );
+
 done_testing;
