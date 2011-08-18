@@ -119,8 +119,6 @@ is( $rel->related_entity->name_entry, 'Context 1',
 is( $rel->date_from, '1900',
     'Relationship start date is correct.' );
 
-# TO DO: audit trail
-
 throws_ok {
     $rc->update_from_xml( elt <<END
 <recordContext>

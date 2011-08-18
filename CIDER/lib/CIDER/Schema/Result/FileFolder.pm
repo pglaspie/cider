@@ -42,10 +42,8 @@ sub update_from_xml {
 
     my $hr = $self->xml_to_hashref( $elt );
 
-    $self->update_cv_from_xml_hashref(
-        $hr, location => 'barcode' );
-    $self->update_text_from_xml_hashref(
-        $hr, 'notes' );
+    $self->update_location_from_xml_hashref( $hr );
+    $self->update_text_from_xml_hashref( $hr, 'notes' );
 
     return $self->update_or_insert;
 }

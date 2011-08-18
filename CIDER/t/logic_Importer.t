@@ -289,9 +289,6 @@ END
     "Authority term note can't be multiline.";
 
 # TO DO:
-# These should all be errors:
-# nonexistent record_context or other foreign key (including location)
-# hard-coded select fields out of range?
 #
 # check max lengths?
 # test changing type

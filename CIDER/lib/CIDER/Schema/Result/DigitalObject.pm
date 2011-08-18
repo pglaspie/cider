@@ -139,6 +139,24 @@ __PACKAGE__->add_columns(
         { data_type => 'varchar', is_nullable => 1, size => 10 },
 );
 
+=head2 delete
+
+Override delete to work recursively on our related objects, rather
+than relying on the database to do cascading delete.
+
+=cut
+
+sub delete {
+    my $self = shift;
+
+    $_->delete for (
+        $self->digital_object_relationships,
+        $self->other_apps,
+    );
+
+    return $self->next::method( @_ );
+}
+
 =head2 update_from_xml( $element )
 
 Update (or insert) this object from an XML element.  The element is
@@ -152,8 +170,8 @@ sub update_from_xml {
 
     my $hr = $self->xml_to_hashref( $elt );
 
-    $self->update_cv_from_xml_hashref(
-        $hr, location => 'barcode' );
+    $self->update_location_from_xml_hashref(
+        $hr );
     $self->update_format_from_xml_hashref(
         $hr );
     $self->update_text_from_xml_hashref(

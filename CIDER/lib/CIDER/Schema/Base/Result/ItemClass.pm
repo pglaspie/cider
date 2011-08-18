@@ -5,6 +5,8 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
+use Carp;
+
 =head1 NAME
 
 CIDER::Schema::Base::Result::ItemClass
@@ -36,6 +38,28 @@ sub setup_item {
     );
 }
 
+=head2 update_location_from_xml_hashref( $hr )
+
+Update a Location column from an XML element hashref.  Throws an error
+if the locationID does not refer to an existent Location.
+
+=cut
+
+sub update_location_from_xml_hashref {
+    my $self = shift;
+    my ( $hr ) = @_;
+
+    if ( exists( $hr->{ location } ) ) {
+        my $barcode = $hr->{ location };
+        my $rs = $self->result_source->related_source( 'location' )->resultset;
+        my $loc = $rs->find( { barcode => $barcode } );
+        unless ( $loc ) {
+            croak "Location '$barcode' does not exist.";
+        }
+        $self->location( $loc );
+    }
+}
+
 =head2 update_format_from_xml_hashref( $hr )
 
 Update a Format authority list column from an XML element hashref.
@@ -54,7 +78,7 @@ sub update_format_from_xml_hashref {
         my $rs = $self->result_source->related_source( 'format' )->resultset;
         my $obj = $rs->find_or_create( { name => $hr->{ format },
                                          class => $self->table } );
-        $self->set_inflated_column( format => $obj );
+        $self->format( $obj );
     }
 }
 

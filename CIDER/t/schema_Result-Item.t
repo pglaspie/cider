@@ -254,6 +254,21 @@ $item->update_from_xml( elt '<item><dcType/></item>' );
 is( $item->dc_type, 'Text',
     'DC type set to default.' );
 
-# TO DO: location not found
+throws_ok {
+    $item->update_from_xml( elt <<END
+<item>
+  <classes>
+    <fileFolder>
+      <location>nowhere</location>
+    </fileFolder>
+  </classes>
+</item>
+END
+);
+} qr/does not exist/,
+    'Unknown location is an error.';
+
+ok( $item->delete,
+    'Item deleted.' );
 
 done_testing;
