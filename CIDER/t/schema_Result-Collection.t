@@ -130,9 +130,7 @@ my $cm_rs = $schema->resultset( 'CollectionMaterial' );
 is( $cm_rs->count, 2,
     'Updating collection material deletes old material.' );
 
-# TO DO: it shouldn't alphabetize these!
-# is_deeply( [ $collection->languages ], [ 'eng', 'ast' ]
-is_deeply( [ $collection->languages ], [ 'ast', 'eng' ],
+is_deeply( [ $collection->languages ], [ 'eng', 'ast' ],
            'The modified collection has new languages.' );
 
 is( $collection->permanent_url, 'http://example.com/',

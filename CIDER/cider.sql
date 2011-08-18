@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Tue Aug 16 16:23:38 2011
+-- Created on Thu Aug 18 15:12:23 2011
 -- 
 SET foreign_key_checks=0;
 
@@ -602,10 +602,11 @@ DROP TABLE IF EXISTS `collection_language`;
 -- Table: `collection_language`
 --
 CREATE TABLE `collection_language` (
+  `id` integer NOT NULL auto_increment,
   `collection` integer NOT NULL,
   `language` char(3) NOT NULL,
   INDEX `collection_language_idx_collection` (`collection`),
-  PRIMARY KEY (`collection`, `language`),
+  PRIMARY KEY (`id`),
   CONSTRAINT `collection_language_fk_collection` FOREIGN KEY (`collection`) REFERENCES `collection` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
