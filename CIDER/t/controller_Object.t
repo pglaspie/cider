@@ -108,6 +108,9 @@ $mech->content_like( qr/\b0968\b/ );
 my $child = $schema->resultset( 'Object' )->find( { number => 'II' } );
 is( $child->parent->id, $obj->id, 'Item has correct parent.' );
 
+$mech->content_contains( '42 New test collection',
+                         'Breadcrumb trail includes number.' );
+
 $mech->get( '/object/9999' );
 is( $mech->status, 404, 'Invalid object id gives 404 page.' );
 

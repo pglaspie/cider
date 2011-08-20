@@ -46,6 +46,22 @@ sub setup_object {
     );
 }
 
+
+=head2 full_title
+
+A concatenation of the object's number and title.
+
+=cut
+
+# TO DO: also include date(s)
+
+sub full_title {
+    my $self = shift;
+
+    return join " ", $self->number, $self->title;
+}
+
+
 sub _delete_proxy_fields {
     my ( $fields ) = @_;
 
