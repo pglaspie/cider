@@ -67,7 +67,7 @@ elements:
 # Accession Number(s) (derived)
 
     - type: Hidden
-      name: parent_id
+      name: parent
 
 
     - type: Submit

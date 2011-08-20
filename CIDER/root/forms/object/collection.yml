@@ -216,7 +216,7 @@ elements:
                   others: predicate
 
     - type: Hidden
-      name: parent_id
+      name: parent
 
 
     - type: Submit
