@@ -10,11 +10,7 @@ if ( Test::Builder->VERSION < 2 ) {
     }
 }
 
-eval "use Test::WWW::Mechanize::Catalyst 'CIDER'";
-if ($@) {
-    plan skip_all => 'Test::WWW::Mechanize::Catalyst required';
-    exit 0;
-}
+use_ok 'Test::WWW::Mechanize::Catalyst', 'CIDER';
 
 use FindBin;
 use lib (
@@ -24,7 +20,7 @@ use lib (
 use CIDERTest;
 my $schema = CIDERTest->init_schema;
 
-ok( my $mech = Test::WWW::Mechanize::Catalyst->new, 'Created mech object' );
+my $mech = Test::WWW::Mechanize::Catalyst->new;
 
 use_ok( 'CIDER::Controller::Object' );
 
@@ -52,17 +48,17 @@ $mech->submit_form_ok( { with_fields => {
 
 $mech->content_contains( 'You have successfully created' );
 
-my $rs = $schema->resultset( 'Object' )->search( { number => '69105' } );
-is( $rs->first->audit_trail->created_by->first_name, 'Alice',
+my $obj = $schema->resultset( 'Object' )->find( { number => '69105' } );
+is( $obj->audit_trail->created_by->first_name, 'Alice',
     'Created by alice.' );
 
 $mech->submit_form_ok( { with_fields => {
     number => '42',
 } }, 'Submitted update form' );
 
-$rs = $schema->resultset( 'Object' )->search( { number => '42' } );
+$obj = $schema->resultset( 'Object' )->find( { number => '42' } );
 use DateTime;
-is( $rs->first->audit_trail->modification_logs->first->date, DateTime->today,
+is( $obj->audit_trail->modification_logs->first->date, DateTime->today,
     'Date modified is today.' );
 
 $mech->submit_form_ok( { with_fields => {
@@ -108,6 +104,9 @@ $mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
 $mech->content_contains( 'Æthelred' );
 $mech->content_like( qr/\b0968\b/ );
 #$mech->content_like( qr/\b2011-06\b/ );
+
+my $child = $schema->resultset( 'Object' )->find( { number => 'II' } );
+is( $child->parent->id, $obj->id, 'Item has correct parent.' );
 
 $mech->get( '/object/9999' );
 is( $mech->status, 404, 'Invalid object id gives 404 page.' );

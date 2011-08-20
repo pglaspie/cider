@@ -151,7 +151,7 @@ sub _create :Private {
         my $parent_id = $c->stash->{ parent_id };
 
         if ( $parent_id ) {
-            $form->default_values( { parent_id => $parent_id } );
+            $form->default_values( { parent => $parent_id } );
         }
 
         $form->default_values( { language => 'eng' } );

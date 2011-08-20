@@ -141,7 +141,7 @@ elements:
       label: Bibliographic Citation
       
     - type: Hidden
-      name: parent_id
+      name: parent
 
 
     - type: Submit
