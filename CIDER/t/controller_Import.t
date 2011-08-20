@@ -54,7 +54,7 @@ $mech->get_ok( '/object/3' );
 $mech->content_contains( 'Test import renaming' );
 $mech->content_contains( 'n3' );
 
-$mech->follow_link_ok( { text => 'Test import creation' } );
+$mech->follow_link_ok( { text_regex => qr/Test import creation/ } );
 $mech->content_contains( '69105' );
 
 test_import( <<END

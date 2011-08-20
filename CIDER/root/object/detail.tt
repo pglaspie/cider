@@ -5,10 +5,8 @@
 [% ancestors = object.ancestors %]
 <p>Return to:
 <a href="[% c.uri_for( c.controller('List').action_for('index') ) %]">Object root</a>
-[% IF ancestors %]
-  [% FOREACH ancestor = ancestors %]
-    &rarr; <a href="[% c.uri_for( c.controller('Object').action_for('detail'), [ancestor.id] ) %]">[% ancestor.title %]</a>
-  [% END %]
+[% FOREACH ancestor = ancestors %]
+  &rarr; <a href="[% c.uri_for( c.controller('Object').action_for('detail'), [ancestor.id] ) %]">[% ancestor.full_title %]</a>
 [% END %]
 </p>
 
@@ -64,9 +62,9 @@
 <form method="post" action="[% c.uri_for_action( c.controller('Object').action_for('create') ) %]">
 <p>Create a new
 <select id="child_type" name="type">
-<option vaulue="collection">collection</option>
-<option vaulue="series">series</option>
-<option vaulue="item">item</option>
+<option value="collection">collection</option>
+<option value="series">series</option>
+<option value="item">item</option>
 </select>
 as a child of this object. <input type="submit" name="go" value="Go" /></p>
 <input type="hidden" name="parent_id" value="[% object.id %]" />
