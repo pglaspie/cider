@@ -36,8 +36,7 @@ $mech->submit_form_ok( { with_fields => { type => 'collection' } },
 
 $mech->content_contains( 'Create a new collection' );
 
-# TO DO: language list is repeatable now
-# $mech->content_contains( 'Esperanto', 'Language list is populated.' );
+$mech->content_contains( 'Esperanto', 'Language list is populated.' );
 
 $mech->submit_form_ok( { with_fields => {
     title => 'New test collection',
@@ -51,6 +50,8 @@ $mech->content_contains( 'You have successfully created' );
 my $obj = $schema->resultset( 'Object' )->find( { number => '69105' } );
 is( $obj->audit_trail->created_by->first_name, 'Alice',
     'Created by alice.' );
+is( $obj->type_object->languages->first->language_name, 'English',
+    'Default language is English.' );
 
 $mech->submit_form_ok( { with_fields => {
     number => '42',
@@ -83,6 +84,21 @@ $mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
 $mech->get_ok( $mech->uri );
 $mech->content_contains( 'value="1999-12"', 'From date correct.' );
 $mech->content_contains( 'value="2003"', 'To date correct.' );
+
+$mech->submit_form_ok( { with_fields => {
+    'languages_1.language' => 'ger',
+    'languages_2.language' => 'fre',
+} }, 'Set multiple languages' );
+$mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
+is( $mech->value( 'languages_1.language' ), 'ger', 'German was set.' );
+is( $mech->value( 'languages_2.language' ), 'fre', 'French was set.' );
+
+$mech->submit_form_ok( { with_fields => {
+    'languages_1.language' => '',
+    'languages_2.language' => 'fre',
+} }, 'Delete German' );
+$mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
+is( $mech->value( 'languages_1.language' ), 'fre', 'German was deleted.' );
 
 $mech->submit_form_ok( { with_fields => { type => 'item' } },
                        'Asked for sub-item creation form' );

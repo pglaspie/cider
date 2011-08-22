@@ -57,7 +57,9 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
     my $type = $object->type;
     $form->load_config_filestem( "object/$type" );
 
-    $self->_build_language_field( $c, $form );
+    if ( $type eq 'collection' ) {
+        $self->_build_language_field( $c, $form );
+    }
 
     $form->get_field( 'submit' )->value( "Update \u$type" );
 
@@ -101,7 +103,10 @@ sub add_to_set :Chained('object') :Args(0) {
 sub create_collection :Path('create/collection') :Args(0) :FormConfig('object/collection') {
     my ( $self, $c ) = @_;
 
+    $self->_build_language_field( $c, $c->stash->{ form } );
+
     $c->stash->{ object_type } = 'collection';
+
     $c->forward('_create');
 }
 
@@ -144,8 +149,6 @@ sub _create :Private {
     my $form = $c->stash->{ form };
     my $type = $c->stash->{ object_type };
 
-    $self->_build_language_field( $c, $form );
-
     $form->get_field( 'submit' )->value( "Create \u$type" );
 
     if ( not $form->submitted ) {
@@ -155,7 +158,9 @@ sub _create :Private {
             $form->default_values( { parent => $parent_id } );
         }
 
-        $form->default_values( { language => 'eng' } );
+        if ( $type eq 'collection' ) {
+            $form->default_values( { 'languages_1.language' => 'eng' } );
+        }
     }
     elsif ( $form->submitted_and_valid ) {
         $c->forward( '_ensure_location', [ 'create' ] );
