@@ -58,7 +58,7 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
     $form->load_config_filestem( "object/$type" );
 
     if ( $type eq 'collection' ) {
-        $self->_build_language_field( $c, $form );
+        $self->_build_language_field( $c, $form, 1 );
     }
 
     $form->get_field( 'submit' )->value( "Update \u$type" );
@@ -73,6 +73,14 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
     elsif ( $form->submitted_and_valid ) {
         $c->forward( '_ensure_location', [ 'update' ] );
         $form->model->update( $object );
+
+        if ( $type eq 'collection' ) {
+            # If languages were not set, or removed, set the language
+            # to English.
+            if ( $object->languages == 0 ) {
+                $object->add_to_languages( { language => 'eng' } );
+            }
+        }
 
         $c->response->redirect(
             $c->uri_for( $self->action_for( 'detail' ), [ $object->number ] )
@@ -250,7 +258,7 @@ sub drop_held_object_here :Chained('object') :Args(0) {
 }
 
 sub _build_language_field {
-    my ( $self, $c, $form ) = @_;
+    my ( $self, $c, $form, $empty_first ) = @_;
 
     my $field = $form->get_field( 'language' );
 
@@ -259,6 +267,7 @@ sub _build_language_field {
             [ language2code( $_, LOCALE_LANG_ALPHA_3 ), $_ ]
         } all_language_names;
 
+        unshift @options, [ '', '' ] if $empty_first;
         $field->options( \@options );
     }
 }

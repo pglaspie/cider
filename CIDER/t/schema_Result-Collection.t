@@ -194,6 +194,10 @@ END
 } qr/no record context/,
     'Record context not found.';
 
+$collection->update_from_xml( elt '<collection><languages/></collection>' );
+is_deeply( [ $collection->languages ], [ 'eng' ],
+           'Default language is English.' );
+
 $collection->delete;
 is( $cm_rs->count, 0,
     'Deleting collection deletes associated material' );

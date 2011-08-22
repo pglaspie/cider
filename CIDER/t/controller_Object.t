@@ -105,6 +105,12 @@ $mech->submit_form_ok( { with_fields => {
 $mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
 is( $mech->value( 'languages_1.language' ), 'fre', 'German was deleted.' );
 
+$mech->submit_form_ok( { with_fields => {
+    'languages_1.language' => '',
+} }, 'Delete French' );
+$mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
+is( $mech->value( 'languages_1.language' ), 'eng', 'English is default.' );
+
 $mech->submit_form_ok( { with_fields => { type => 'item' } },
                        'Asked for sub-item creation form' );
 $mech->content_contains( 'Create a new item' );

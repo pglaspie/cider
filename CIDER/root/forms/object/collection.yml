@@ -160,11 +160,8 @@ elements:
               name: id
             - type: Select
               name: language
-              empty_first: 1
-# Having an empty options inhibits it trying to populate from a model.
-# The languages are populated programmatically from the controller.
-              options: []
               model_config:
+                options_from_model: 0
                 delete_if_empty: 1
 
     - type: Hidden

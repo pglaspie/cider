@@ -225,8 +225,15 @@ sub update_from_xml {
 
     $self->update_has_many_from_xml_hashref(
         $hr, material => 'material', 'associatedMaterial' );
+
     $self->update_has_many_from_xml_hashref(
         $hr, languages => 'language' );
+
+    # If languages were not set, or removed, set the language to English.
+    if ( $self->languages == 0 ) {
+        $self->add_to_languages( { language => 'eng' } );
+    }
+
     $self->update_has_many_from_xml_hashref(
         $hr, subjects => 'subject' );
 
