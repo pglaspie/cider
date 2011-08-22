@@ -24,9 +24,10 @@ Catalyst Controller.
 =cut
 
 sub object :Chained('/') :CaptureArgs(1) {
-    my ( $self, $c, $object_id ) = @_;
+    my ( $self, $c, $number ) = @_;
 
-    if ( my $object = $c->model( 'CIDERDB::Object' )->find( $object_id ) ) {
+    my $model = $c->model( 'CIDERDB::Object' );
+    if ( my $object = $model->find( { number => $number } ) ) {
         $c->stash->{ object } = $object->type_object;
     }
 
@@ -72,7 +73,7 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
         $form->model->update( $object );
 
         $c->response->redirect(
-            $c->uri_for( $self->action_for( 'detail' ), [$object->id] )
+            $c->uri_for( $self->action_for( 'detail' ), [ $object->number ] )
         );
     }
 }
@@ -93,7 +94,7 @@ sub add_to_set :Chained('object') :Args(0) {
     }
 
     $c->response->redirect(
-        $c->uri_for( $self->action_for( 'detail' ), [$object->id] )
+        $c->uri_for( $self->action_for( 'detail' ), [ $object->number ] )
     );
 }
 
@@ -164,7 +165,7 @@ sub _create :Private {
         $c->flash->{ we_just_created_this } = 1;
 
         $c->response->redirect(
-            $c->uri_for( $self->action_for( 'detail' ), [$object->id] )
+            $c->uri_for( $self->action_for( 'detail' ), [ $object->number ] )
         );
     }
 }
@@ -210,7 +211,7 @@ sub pick_up :Chained('object') :Args(0) {
 
     $c->response->redirect(
         $c->uri_for( $self->action_for( 'detail' ),
-                     [$c->stash->{ object }->id],
+                     [ $c->stash->{ object }->number ],
                  )
     );
 }
@@ -232,7 +233,7 @@ sub drop_held_object_here :Chained('object') :Args(0) {
     if ( $c->stash->{ object } ) {
         $c->response->redirect(
             $c->uri_for( $self->action_for( 'detail' ),
-                         [$c->stash->{ object }->id],
+                         [ $c->stash->{ object }->number ],
                      )
         );
     }

@@ -42,7 +42,7 @@ sub search :Path :Args(0) :FormConfig {
         while ( my $hit = $hits->next  ) {
             my $object = $c->model( 'CIDERDB::Object' )->find( $hit->{id} );
             if ( $object ) {
-                push @objects, $object;
+                push @objects, $object->type_object;
             }
             else {
                 $c->log->error( "Search hits included nonexistent object with"

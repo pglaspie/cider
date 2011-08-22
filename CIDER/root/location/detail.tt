@@ -10,7 +10,7 @@ You have successfully created a new location with barcode
 
 [% IF item %]
 It has been set as the location of <a href="[%
-c.uri_for( c.controller('Object').action_for('detail'), [item.id] )
+c.uri_for( c.controller('Object').action_for('detail'), [ item.number ] )
 %]">[% item.title %]</a>.
 [% END %]
 

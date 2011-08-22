@@ -50,7 +50,7 @@ END
 $mech->content_contains( 'successfully imported' );
 $mech->content_contains( 'created 1 object and updated 1 object' );
 
-$mech->get_ok( '/object/3' );
+$mech->get_ok( '/object/n3' );
 $mech->content_contains( 'Test import renaming' );
 $mech->content_contains( 'n3' );
 
@@ -71,7 +71,7 @@ END
 $mech->content_contains( 'import failed' );
 $mech->content_contains( 'its own parent' );
 
-$mech->get_ok( '/object/3' );
+$mech->get_ok( '/object/n3' );
 $mech->content_lacks( 'Test import error' );
 
 test_import( <<END

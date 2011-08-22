@@ -6,7 +6,7 @@
 <p>Return to:
 <a href="[% c.uri_for( c.controller('List').action_for('index') ) %]">Object root</a>
 [% FOREACH ancestor = ancestors %]
-  &rarr; <a href="[% c.uri_for( c.controller('Object').action_for('detail'), [ancestor.id] ) %]">[% ancestor.full_title %]</a>
+  &rarr; <a href="[% c.uri_for( c.controller('Object').action_for('detail'), [ ancestor.number ] ) %]">[% ancestor.full_title %]</a>
 [% END %]
 </p>
 
@@ -46,7 +46,7 @@
 [% IF held_object && held_object.id != object.id && !object.has_ancestor( held_object ) %]
 [%### "Drop" the currently held object, making it a child of the current
       object. %]
-<form method="post" action="[% c.uri_for_action( c.controller('Object').action_for('drop_held_object_here'), [object.id] ) %]">
+<form method="post" action="[% c.uri_for_action( c.controller('Object').action_for('drop_held_object_here'), [ object.number ] ) %]">
 <input type="submit" name="Drop" value="Make [% held_object.title %] a child of this object" />
 </form>
 [% END %]
@@ -54,7 +54,7 @@
 [% IF !held_object || held_object.id != object.id %]
 [%### "Pick up" the current object, storing it in the session's 'held_object'
       space. %]
-<form method="post" action="[% c.uri_for_action( c.controller('Object').action_for('pick_up'), [object.id] ) %]">
+<form method="post" action="[% c.uri_for_action( c.controller('Object').action_for('pick_up'), [ object.number ] ) %]">
 <input type="submit" name="Take" value="Move [% object.title %] to a new parent." />
 </form>
 [% END %]
@@ -82,7 +82,7 @@ as a child of this object. <input type="submit" name="go" value="Go" /></p>
 <p>This object does not belong to any of your sets.</p>
 [% END %]
 
-<form action="[% c.uri_for_action( c.controller('Object').action_for('add_to_set'), [object.id] ) %]">
+<form action="[% c.uri_for_action( c.controller('Object').action_for('add_to_set'), [ object.number ] ) %]">
 <p>
 Add object to:
 <select name="set_id">
@@ -96,7 +96,7 @@ Add object to:
 
 <h3>Export</h3>
 
-<form action="[% c.uri_for_action( c.controller('Object').action_for('export'), [object.id] ) %]">
+<form action="[% c.uri_for_action( c.controller('Object').action_for('export'), [ object.number ] ) %]">
 Export
 <select name="descendants">
 <option value="0">this object</option>
