@@ -18,7 +18,7 @@ all with "[% new_value %]"?
 [% FOREACH row IN replace %]
 <tr>
 <td><a href="[%
-c.uri_for( c.controller('Object').action_for('detail'), [row.obj.id] )
+c.uri_for( c.controller('Object').action_for('detail'), [ row.obj.number ] )
 %]">[% row.obj.title %]</a></td>
 <td>[% row.old %]</td>
 <td>[% row.new %]</td>

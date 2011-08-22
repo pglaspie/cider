@@ -16,7 +16,7 @@ object_id = object.id;
 [% END %]
 
 [%# Display the object's full title, hyperlinked to its CIDER detail page. %]
-<a href="[% c.uri_for( c.controller('Object').action_for('detail'), [object_id] ) %]">[% object.full_title %]</a>
+<a href="[% c.uri_for( c.controller('Object').action_for('detail'), [ object.number ] ) %]">[% object.full_title %]</a>
 </p>
 
 [%# This div is where the response to a display-kids call will get written %]

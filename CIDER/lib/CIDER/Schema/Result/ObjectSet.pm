@@ -57,6 +57,18 @@ sub delete {
     return $self->next::method( @_ );
 }
 
+=head contents
+
+A list of the TypeObjects in this set.
+
+=cut
+
+sub contents {
+    my $self = shift;
+
+    return map { $_->type_object } $self->objects;
+}
+
 sub add {
     my $self = shift;
     my ( $object_to_add ) = @_;

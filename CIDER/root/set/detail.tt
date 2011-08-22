@@ -7,7 +7,7 @@
 [% IF set.scalar.objects.count %]
 <p>This set contains the following objects:</p>
 <ul>
-  [% FOREACH object = set.objects %]
+  [% FOREACH object = set.contents %]
     <li>[% INCLUDE display_object.tt %] [% INCLUDE set/remove_from_set_button.tt %] </li>
   [% END %]
 </ul>

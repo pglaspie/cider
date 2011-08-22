@@ -111,10 +111,13 @@ is( $child->parent->id, $obj->id, 'Item has correct parent.' );
 $mech->content_contains( '42 New test collection',
                          'Breadcrumb trail includes number.' );
 
-$mech->get( '/object/9999' );
-is( $mech->status, 404, 'Invalid object id gives 404 page.' );
+# TO DO: test moving to a new parent
+# TO DO: test moving to root
 
-$mech->get( '/object/1' );
+$mech->get( '/object/9999' );
+is( $mech->status, 404, 'Invalid object number gives 404 page.' );
+
+$mech->get( '/object/n1' );
 $mech->content_contains( 'does not belong' );
 $mech->submit_form_ok( { with_fields => {
     set_id => 1,
@@ -122,7 +125,7 @@ $mech->submit_form_ok( { with_fields => {
 $mech->content_contains( 'belongs to the following' );
 $mech->has_tag( a => 'Test Set 1' );
 
-$mech->get( '/object/1' );
+$mech->get( '/object/n1' );
 $mech->submit_form_ok( { with_fields => {
     descendants => 1,
     template => 'export.csv',
@@ -148,7 +151,7 @@ is( $csv->[1]->{ parent }, $csv->[0]->{ number },
 is( $csv->[2]->{ type }, 'item',
     'Item type is correct' );
 
-$mech->get( '/object/1' );
+$mech->get( '/object/n1' );
 $mech->submit_form_ok ( { with_fields => {
     descendants => 1,
     template => 'export.xml',
