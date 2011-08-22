@@ -12,6 +12,8 @@ CIDER::Schema::Result::CollectionLanguage
 
 =cut
 
+__PACKAGE__->load_components( 'ConvertEmptyToNull' );
+
 __PACKAGE__->table( 'collection_language' );
 
 __PACKAGE__->add_columns(

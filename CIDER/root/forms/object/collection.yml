@@ -105,25 +105,27 @@ elements:
       name: notes
       id: notes
 
-# TO DO: fix this!
-    # - type: Hidden
-    #   name: language_count
-    # - type: Fieldset
-    #   legend: Languages
-    #   elements:
-    #     - type: Repeatable
-    #       nested_name: languages
-    #       counter_name: language_count
-    #       model_config:
-    #         empty_rows: 1
-    #       elements:
-    #         - type: Hidden
-    #           name: id
-    #         - type: Select
-    #           name: language
-    #           empty_first: 1
-#              model_config:
-#                delete_if_empty: 1
+    - type: Hidden
+      name: language_count
+    - type: Fieldset
+      legend: Languages
+      elements:
+        - type: Repeatable
+          nested_name: languages
+          counter_name: language_count
+          model_config:
+            empty_rows: 1
+          elements:
+            - type: Hidden
+              name: id
+            - type: Select
+              name: language
+              empty_first: 1
+# Having an empty options inhibits it trying to populate from a model.
+# The languages are populated programmatically from the controller.
+              options: []
+              model_config:
+                delete_if_empty: 1
 
     - type: Hidden
       name: subject_count
