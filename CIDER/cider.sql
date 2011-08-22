@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Thu Aug 18 15:12:23 2011
+-- Created on Mon Aug 22 16:54:41 2011
 -- 
 SET foreign_key_checks=0;
 
@@ -884,12 +884,13 @@ DROP TABLE IF EXISTS `collection_record_context`;
 -- Table: `collection_record_context`
 --
 CREATE TABLE `collection_record_context` (
+  `id` integer NOT NULL auto_increment,
   `collection` integer NOT NULL,
   `is_primary` enum('0','1') NOT NULL,
   `record_context` integer NOT NULL,
   INDEX `collection_record_context_idx_collection` (`collection`),
   INDEX `collection_record_context_idx_record_context` (`record_context`),
-  PRIMARY KEY (`collection`, `is_primary`, `record_context`),
+  PRIMARY KEY (`id`),
   CONSTRAINT `collection_record_context_fk_collection` FOREIGN KEY (`collection`) REFERENCES `collection` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `collection_record_context_fk_record_context` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;

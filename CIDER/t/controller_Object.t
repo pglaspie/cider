@@ -43,6 +43,8 @@ $mech->submit_form_ok( { with_fields => {
     number => '69105',
     processing_status => 1,
     documentation => 1,
+    'collection_primary_record_contexts_1.record_context', => 2,
+    'collection_secondary_record_contexts_1.record_context', => 1,
 } }, 'Submitted creation form' );
 
 $mech->content_contains( 'You have successfully created' );
@@ -52,6 +54,9 @@ is( $obj->audit_trail->created_by->first_name, 'Alice',
     'Created by alice.' );
 is( $obj->type_object->languages->first->language_name, 'English',
     'Default language is English.' );
+
+$mech->content_contains( '"selected">Context 1',
+                         'Record context was selected.' );
 
 $mech->submit_form_ok( { with_fields => {
     number => '42',

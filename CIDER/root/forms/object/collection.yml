@@ -58,7 +58,47 @@ elements:
       name: organization
       id: organization
 
-# Primary and Secondary Record Contexts
+    - type: Hidden
+      name: primary_record_context_count
+    - type: Fieldset
+      legend: Primary Record Contexts
+      elements:
+        - type: Repeatable
+          nested_name: collection_primary_record_contexts
+          counter_name: primary_record_context_count
+          model_config:
+            empty_rows: 1
+          elements:
+            - type: Hidden
+              name: id
+            - type: Select
+              name: record_context
+              empty_first: 1
+              model_config:
+                resultset: RecordContext
+                label_column: name_entry
+                delete_if_empty: 1
+
+    - type: Hidden
+      name: secondary_record_context_count
+    - type: Fieldset
+      legend: Secondary Record Contexts
+      elements:
+        - type: Repeatable
+          nested_name: collection_secondary_record_contexts
+          counter_name: primary_record_context_count
+          model_config:
+            empty_rows: 1
+          elements:
+            - type: Hidden
+              name: id
+            - type: Select
+              name: record_context
+              empty_first: 1
+              model_config:
+                resultset: RecordContext
+                label_column: name_entry
+                delete_if_empty: 1
 
     - type: Textarea
       label: Archival History
