@@ -59,8 +59,15 @@ $mech->content_contains( '"selected">Context 1',
                          'Record context was selected.' );
 
 $mech->submit_form_ok( { with_fields => {
+    number => 'n1',
+} }, 'Submitted update form' );
+$mech->content_contains( 'Sorry', 'Form submission error.' );
+$mech->content_contains( 'Number is already in use' );
+
+$mech->submit_form_ok( { with_fields => {
     number => '42',
 } }, 'Submitted update form' );
+$mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
 
 $obj = $schema->resultset( 'Object' )->find( { number => '42' } );
 use DateTime;
