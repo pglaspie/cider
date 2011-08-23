@@ -61,6 +61,9 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
         $self->_build_language_field( $c, $form, 1 );
     }
 
+    # The hidden 'parent' field is only used for creation.
+    $form->remove_element( $form->get_field( 'parent' ) );
+
     $form->get_field( 'submit' )->value( "Update \u$type" );
 
     $form->process;
@@ -168,6 +171,12 @@ sub _create :Private {
 
         if ( $type eq 'collection' ) {
             $form->default_values( { 'languages_1.language' => 'eng' } );
+        }
+        elsif ( $type eq 'item' ) {
+            $form->default_values( {
+                'dc_type' => $c->model( 'CIDERDB::DCType' )
+                    ->find( { name => 'Text' } )->id,
+            } );
         }
     }
     elsif ( $form->submitted_and_valid ) {
