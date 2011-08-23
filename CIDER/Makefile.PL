@@ -30,7 +30,7 @@ requires 'SQL::Translator' => '0.11006';
 requires 'Catalyst::Authentication::Store::DBIx::Class';
 requires 'CatalystX::Component::Traits' => '0.16';
 requires 'Catalyst::Controller::HTML::FormFu';
-requires 'HTML::FormFu::Model::DBIC';
+requires 'HTML::FormFu::Model::DBIC' => '0.09002';
 requires 'namespace::autoclean';
 requires 'DBIx::Class' => '0.08195';
 requires 'DBIx::Class::TimeStamp';

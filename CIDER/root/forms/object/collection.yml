@@ -11,11 +11,19 @@ default_args:
             rows: 8
 
 elements:
+    - type: Hidden
+      name: id
+
     - type: Text
       label: Collection Number
       name: number
       id: number
-      constraint: Required
+      constraints:
+        - type: Required
+        - type: DBIC::Unique
+          resultset: Object
+          id_field: id
+          message: Number is already in use
 
     - type: Text
       label: Collection Title
