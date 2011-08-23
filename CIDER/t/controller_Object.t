@@ -121,7 +121,6 @@ $mech->submit_form_ok( { with_fields => {
     circa => 1,
     date_from => '0968',
     date_to => '1016-04-23',
-    dc_type => 1,
 # TO DO: these are on classes now
 #    accession_date => '2011-06',
 #    stabilization_date => '9999',
@@ -131,12 +130,22 @@ $mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
 $mech->content_contains( 'Æthelred' );
 $mech->content_like( qr/\b0968\b/ );
 #$mech->content_like( qr/\b2011-06\b/ );
+$mech->content_contains( '"selected">Text<', 'Default type is Text.' );
 
 my $child = $schema->resultset( 'Object' )->find( { number => 'II' } );
 is( $child->parent->id, $obj->id, 'Item has correct parent.' );
 
 $mech->content_contains( '42 New test collection',
                          'Breadcrumb trail includes number.' );
+
+$mech->submit_form_ok( { with_fields => {
+    'item_creators_1.name' => 1,
+    'item_personal_names_1.name' => 1,
+    'item_corporate_names_1.name' => 1,
+} }, 'Added authority names.' );
+$mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
+
+$mech->content_contains( '"selected">Test Name<', 'Names added.' );
 
 # TO DO: test moving to a new parent
 # TO DO: test moving to root

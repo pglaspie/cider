@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Mon Aug 22 16:54:41 2011
+-- Created on Mon Aug 22 20:16:44 2011
 -- 
 SET foreign_key_checks=0;
 
@@ -644,12 +644,13 @@ DROP TABLE IF EXISTS `item_authority_name`;
 -- Table: `item_authority_name`
 --
 CREATE TABLE `item_authority_name` (
+  `id` integer NOT NULL auto_increment,
   `item` integer NOT NULL,
   `role` enum('creator', 'personal_name', 'corporate_name') NOT NULL,
   `name` integer NOT NULL,
   INDEX `item_authority_name_idx_item` (`item`),
   INDEX `item_authority_name_idx_name` (`name`),
-  PRIMARY KEY (`item`, `role`, `name`),
+  PRIMARY KEY (`id`),
   CONSTRAINT `item_authority_name_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `item_authority_name_fk_name` FOREIGN KEY (`name`) REFERENCES `authority_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -660,11 +661,12 @@ DROP TABLE IF EXISTS `item_geographic_term`;
 -- Table: `item_geographic_term`
 --
 CREATE TABLE `item_geographic_term` (
+  `id` integer NOT NULL auto_increment,
   `item` integer NOT NULL,
   `term` integer NOT NULL,
   INDEX `item_geographic_term_idx_item` (`item`),
   INDEX `item_geographic_term_idx_term` (`term`),
-  PRIMARY KEY (`item`, `term`),
+  PRIMARY KEY (`id`),
   CONSTRAINT `item_geographic_term_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `item_geographic_term_fk_term` FOREIGN KEY (`term`) REFERENCES `geographic_term` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -675,11 +677,12 @@ DROP TABLE IF EXISTS `item_topic_term`;
 -- Table: `item_topic_term`
 --
 CREATE TABLE `item_topic_term` (
+  `id` integer NOT NULL auto_increment,
   `item` integer NOT NULL,
   `term` integer NOT NULL,
   INDEX `item_topic_term_idx_item` (`item`),
   INDEX `item_topic_term_idx_term` (`term`),
-  PRIMARY KEY (`item`, `term`),
+  PRIMARY KEY (`id`),
   CONSTRAINT `item_topic_term_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `item_topic_term_fk_term` FOREIGN KEY (`term`) REFERENCES `topic_term` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;

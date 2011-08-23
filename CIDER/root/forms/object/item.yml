@@ -25,14 +25,25 @@ elements:
       constraints:
         - type: Required
 
-    # - type: Select
-    #   label: Creator
-    #   name: creator
-    #   empty_first: 1
-    #   model_config:
-    #     resultset: AuthorityName
-    #     attributes:
-    #       order_by: name
+    - type: Hidden
+      name: creator_count
+    - type: Fieldset
+      legend: Creators
+      elements:
+        - type: Repeatable
+          nested_name: item_creators
+          counter_name: creator_count
+          model_config:
+            empty_rows: 1
+          elements:
+            - type: Hidden
+              name: id
+            - type: Select
+              name: name
+              empty_first: 1
+              model_config:
+                resultset: AuthorityName
+                delete_if_empty: 1
 
     - type: Fieldset
       legend: Date
@@ -64,6 +75,7 @@ elements:
       empty_first: 1
       model_config:
         resultset: ItemRestrictions
+        label_column: description
         attributes:
           order_by: id
 
@@ -80,45 +92,85 @@ elements:
         attributes:
           order_by: name
 
-    # - type: Select
-    #   label: Personal Name
-    #   name: personal_name
-    #   id: personal_name
-    #   empty_first: 1
-    #   model_config:
-    #     resultset: AuthorityName
-    #     attributes:
-    #       order_by: name
+    - type: Hidden
+      name: personal_name_count
+    - type: Fieldset
+      legend: Personal Names
+      elements:
+        - type: Repeatable
+          nested_name: item_personal_names
+          counter_name: personal_name_count
+          model_config:
+            empty_rows: 1
+          elements:
+            - type: Hidden
+              name: id
+            - type: Select
+              name: name
+              empty_first: 1
+              model_config:
+                resultset: AuthorityName
+                delete_if_empty: 1
 
-    # - type: Select
-    #   label: Corporate Name
-    #   name: corporate_name
-    #   id: corporate_name
-    #   empty_first: 1
-    #   model_config:
-    #     resultset: AuthorityName
-    #     attributes:
-    #       order_by: name
+    - type: Hidden
+      name: corporate_name_count
+    - type: Fieldset
+      legend: Corporate Names
+      elements:
+        - type: Repeatable
+          nested_name: item_corporate_names
+          counter_name: corporate_name_count
+          model_config:
+            empty_rows: 1
+          elements:
+            - type: Hidden
+              name: id
+            - type: Select
+              name: name
+              empty_first: 1
+              model_config:
+                resultset: AuthorityName
+                delete_if_empty: 1
 
-    # - type: Select
-    #   label: Topic Term
-    #   name: topic_term
-    #   id: topic_term
-    #   empty_first: 1
-    #   model_config:
-    #     resultset: TopicTerm
-    #     attributes:
-    #       order_by: name
+    - type: Hidden
+      name: topic_term_count
+    - type: Fieldset
+      legend: Topic Terms
+      elements:
+        - type: Repeatable
+          nested_name: item_topic_terms
+          counter_name: topic_term_count
+          model_config:
+            empty_rows: 1
+          elements:
+            - type: Hidden
+              name: id
+            - type: Select
+              name: term
+              empty_first: 1
+              model_config:
+                resultset: TopicTerm
+                delete_if_empty: 1
 
-    # - type: Select
-    #   label: Geographic Term
-    #   name: geographic_term
-    #   id: geographic_term
-    #   empty_first: 1
-    #   model_config:
-    #     resultset: GeographicTerm
-    #     attributes:
-    #       order_by: name
+    - type: Hidden
+      name: geographic_term_count
+    - type: Fieldset
+      legend: Geographic Terms
+      elements:
+        - type: Repeatable
+          nested_name: item_geographic_terms
+          counter_name: geographic_term_count
+          model_config:
+            empty_rows: 1
+          elements:
+            - type: Hidden
+              name: id
+            - type: Select
+              name: term
+              empty_first: 1
+              model_config:
+                resultset: GeographicTerm
+                delete_if_empty: 1
 
     - type: Textarea
       label: Description
