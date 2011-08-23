@@ -1,0 +1,51 @@
+[% page.title = rc.name_entry %]
+
+<h2>[% page.title %]</h2>
+
+[% IF we_just_created_this %]
+<div class="success">
+<p>You have successfully created a new record context with name entry
+<em>[% rc.name_entry %]</em>.</p>
+</div>
+[% END %]
+
+[% IF we_just_updated_this %]
+<div class="success">
+<p>You have successfully updated this record context.</p>
+</div>
+[% END %]
+
+[% form %]
+
+[% IF rc.collections_rs.count > 0 %]
+
+<h3>Collections</h3>
+
+<p>[% rc.name_entry %] is the creator of the following collections:</p>
+
+[% FOR object IN rc.collections %]
+
+[% INCLUDE display_object.tt %]
+
+[% END %]
+
+[% ELSE %]
+
+<h3>Delete this record context</h3>
+<p>To permanently delete this record context, click the button below.</p>
+<p><form id="delete_form" action="[% c.uri_for_action( c.controller( 'RecordContext' ).action_for('delete'), [ rc.record_id ]) %]"><input type="submit" name="delete" value="Delete" /></form></p>
+
+[% END %]
+
+<h3>Export</h3>
+
+<form id="export_form" action="[% c.uri_for_action( c.controller( 'RecordContext' ).action_for( 'export' ), [ rc.record_id ] ) %]">
+Export this record context in
+<select name="template">
+[% FOREACH template_file = template_files %]
+  <option value="[% template_file %]">[% template_file %]</option>
+[% END %]
+</select>
+format.
+<input type="submit" value="Go" />
+</form>

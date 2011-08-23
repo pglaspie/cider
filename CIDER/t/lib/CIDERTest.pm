@@ -79,9 +79,18 @@ sub init_schema {
     $schema->populate(
         'RecordContext',
         [
-            [qw/id record_id name_entry rc_type audit_trail/],
-            [1, 'RCR00001', 'Context 1', 1, 6],
-            [2, 'RCR00002', 'Context 2', 1, 7],
+            [qw/id record_id name_entry rc_type date_from history audit_trail/],
+            [1, 'RCR00001', 'Context 1', 1, '1900', 'History 1', 6],
+            [2, 'RCR00002', 'Context 2', 1, '2000', 'History 2', 7],
+        ]
+    );
+
+    $schema->populate(
+        'RecordContextSource',
+        [
+            [qw/record_context source/],
+            [1, 'Source 1'],
+            [2, 'Source 2'],
         ]
     );
 
@@ -270,6 +279,16 @@ sub init_schema {
         [
             [qw/collection language/],
             [1, 'eng'],
+        ]
+    );
+
+    $schema->populate(
+        'CollectionRecordContext',
+        [
+            [qw/collection is_primary record_context/],
+            [1, 1, 1],
+            [2, 1, 1],
+            [2, 0, 2],
         ]
     );
 

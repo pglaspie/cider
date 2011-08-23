@@ -1,0 +1,151 @@
+method: post
+
+form_error_message: Sorry, there was in error in your submission. Please see below.
+
+model_config:
+  resultset: RecordContext
+
+default_args:
+  elements:
+    Textarea:
+      rows: 8
+
+elements:
+  - type: Hidden
+    name: id
+
+  - name: record_id
+    label: Record ID
+    constraints:
+      - type: Required
+      - type: DBIC::Unique
+        resultset: RecordContext
+        id_field: id
+        message: Record ID is already in use
+
+  - type: Select
+    name: publication_status
+    label: Publication Status
+    model_config:
+      resultset: PublicationStatus
+      attributes:
+        order_by: id
+
+  - name: name_entry
+    label: Name Entry
+    constraints:
+      - type: Required
+      - type: DBIC::Unique
+        resultset: RecordContext
+        id_field: id
+        message: Name entry is already in use
+
+  - type: Select
+    name: rc_type
+    label: Record Context Type
+    model_config:
+      resultset: RecordContextType
+      attributes:
+        order_by: id
+
+  - type: Hidden
+    name: alt_name_count
+  - type: Fieldset
+    legend: Alternate Names
+    elements:
+      - type: Repeatable
+        nested_name: alt_names
+        counter_name: alt_name_count
+        model_config:
+          empty_rows: 1
+        elements:
+          - type: Hidden
+            name: id
+          - type: Text
+            name: name
+            model_config:
+              delete_if_empty: 1
+
+  - type: Fieldset
+    legend: Date
+    elements:            
+      - type: Text
+        label: From
+        name: date_from
+        id: date_from
+        constraints:
+          - type: Required
+          - &Date
+            type: Callback
+            callback: 'CIDER::Logic::Utils::iso_8601_date'
+            message: ISO 8601 date must be YYYY, YYYY-MM, or YYYY-MM-DD
+
+      - type: Text
+        label: To
+        name: date_to
+        id: date_to
+        constraint: *Date
+
+      - type: Checkbox
+        label: Circa
+        name: circa
+
+      - type: Checkbox
+        label: Ongoing
+        name: ongoing
+
+  - type: Textarea
+    name: abstract
+    label: Abstract
+
+  - type: Textarea
+    name: history
+    label: History
+    constraint: Required
+
+  - type: Textarea
+    name: structure_notes
+    label: Structure Notes
+
+  - type: Textarea
+    name: context
+    label: Context
+
+  - type: Hidden
+    name: source_count
+  - type: Fieldset
+    legend: Sources
+    elements:
+      - type: Repeatable
+        nested_name: sources
+        counter_name: source_count
+        model_config:
+          empty_rows: 1
+        elements:
+          - type: Hidden
+            name: id
+          - type: Text
+            name: source
+            constraint:
+              type: Repeatable::Any
+              message: At least one source is required
+            model_config:
+              delete_if_empty: 1
+
+  - type: Select
+    name: function
+    label: Function
+    empty_first: 1
+    model_config:
+      resultset: Function
+      attributes:
+        order_by: name
+
+# TO DO: Occupations
+
+# TO DO: Relationships
+
+# TO DO: Audit Trail
+
+  - type: Submit
+    name: submit

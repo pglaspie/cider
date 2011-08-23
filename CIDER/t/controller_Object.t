@@ -205,4 +205,6 @@ use XML::LibXML;
 ok( XML::LibXML->load_xml( string => $mech->content ),
     'Export file is valid XML' );
 
+# TO DO: test delete button
+
 done_testing();
