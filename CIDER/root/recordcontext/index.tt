@@ -1,0 +1,9 @@
+[% page.title = 'Browse record contexts' %]
+
+<h2>[% page.title %]</h2>
+
+<p><a href="[% c.uri_for( c.controller( 'RecordContext' ).action_for( 'create' ) ) %]">Create a new record context</a></p>
+
+[% FOR rc IN c.model( 'CIDERDB::RecordContext' ).all %]
+<p><a href="[% c.uri_for( c.controller( 'RecordContext' ).action_for( 'detail' ), [ rc.record_id] ) %]">[% rc.record_id %] [% rc.name_entry %]</a></p>
+[% END %]
