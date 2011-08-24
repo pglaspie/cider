@@ -2,7 +2,8 @@
     <head>
       <title>CIDER - [% page.title %]</title>
       <link rel="stylesheet" href="[% c.uri_for('/static/css/style.css') %]" media="all">
-       <script type="text/javascript" src="[% c.uri_for('/static/js/jquery-1.4.4.min.js') %]"></script>
+       <script type="text/javascript" src="[% c.uri_for('/static/js/jquery-1.6.2.min.js') %]"></script>
+       <script type="text/javascript" src="[% c.uri_for('/static/js/jquery-ui-1.8.16.custom.min.js') %]"></script>
        <script type="text/javascript">var base_uri = "[% c.uri_for('/') %]";</script>
        <script type="text/javascript" src="[% c.uri_for('/static/js/cider.js') %]"></script>
      </head>

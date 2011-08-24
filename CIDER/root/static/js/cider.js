@@ -23,3 +23,11 @@ function handle_collapse_click( object_id ) {
     collapse_button.hide();
     div.slideUp('slow');
 }
+
+$( function() {
+    $( '#accordion' ).accordion( {
+        autoHeight: false,
+        collapsible: true,
+        navigation: true
+    } );
+} );
