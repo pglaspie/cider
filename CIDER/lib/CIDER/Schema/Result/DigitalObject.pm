@@ -194,7 +194,8 @@ sub update_from_xml {
         $hr, 'file_creation_date' );
 
     if ( exists $hr->{ stabilization } ) {
-        my $stab = $self->xml_elements_to_hashref( @{ $hr->{ stabilization } } );
+        my $stab =
+            $self->xml_elements_to_hashref( @{ $hr->{ stabilization } } );
 
         if ( exists $stab->{ by } ) {
             my $staff = $self->xml_elements_to_hashref( @{ $stab->{ by } } );
@@ -277,10 +278,10 @@ sub default_app {
         $attrs = { function => 'checksum',
                    name     => 'Advanced Checksum Verifier' };
     } elsif ( $column eq 'media_app' ) {
-        $attrs = { function => 'mediaImage',
+        $attrs = { function => 'media_image',
                    name     => 'WinImage' };
     } elsif ( $column eq 'virus_app' ) {
-        $attrs = { function => 'virusCheck',
+        $attrs = { function => 'virus_check',
                    name     => 'Office Scan' };
     }
     return $rs->find_or_create( $attrs );

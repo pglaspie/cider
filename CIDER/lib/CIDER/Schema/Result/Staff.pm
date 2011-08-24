@@ -41,11 +41,12 @@ __PACKAGE__->add_columns(
     last_name =>
         { data_type => 'varchar' },
 );
-use overload '""' => sub {
+use overload '""' => sub { shift->full_name }, fallback => 1;
+
+sub full_name {
     my $self = shift;
     return $self->last_name . ', ' . $self->first_name;
-}, fallback => 1;
-
+}
 
 sub update {
     my $self = shift;
