@@ -1,6 +1,7 @@
 [% c.res.content_type = 'text/plain' -%]
-[% object.type %]
-[% object.title %] : [% object.number %]
 
------------------------
-
+[% FOR object IN objects -%]
+   [% object.type %]
+   [% object.title %] : [% object.number %]
+   -----------------------
+[% END -%]
