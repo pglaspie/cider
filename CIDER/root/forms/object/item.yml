@@ -14,6 +14,9 @@ elements:
     - type: Hidden
       name: id
 
+    - type: Hidden
+      name: parent
+
     - type: Text
       label: Item Number
       name: number
@@ -183,25 +186,27 @@ elements:
       label: Description
       name: description
 
-    - type: Text
-      name: volume
-      label: Volume
+    - type: Fieldset
+      legend: Serial Publication
+      elements:
+        - type: Text
+          name: volume
+          label: Volume
 
-    - type: Text
-      name: issue
-      label: Issue
+        - type: Text
+          name: issue
+          label: Issue
 
-    - type: Textarea
-      name: abstract
-      label: Abstract
+    - type: Fieldset
+      legend: Scholarship
+      elements:
+        - type: Textarea
+          name: abstract
+          label: Abstract
 
-    - type: Textarea
-      name: citation
-      label: Bibliographic Citation
+        - type: Textarea
+          name: citation
+          label: Bibliographic Citation
       
-    - type: Hidden
-      name: parent
-
-
     - type: Submit
       name: submit
