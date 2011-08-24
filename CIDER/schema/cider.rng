@@ -455,13 +455,9 @@
                   </element>
                 </oneOrMore>
               </element>
-              <optional>
-                <element name="date">
-                  <optional>
-                    <ref name="dateRange"/>
-                  </optional>
-                </element>
-              </optional>
+              <element name="date">
+                <ref name="dateRange"/>
+              </element>
             </element>
           </zeroOrMore>
         </element>
