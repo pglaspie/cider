@@ -26,6 +26,10 @@ Welcome, [% c.user.username %]. <a href="[% c.uri_for( c.controller('Auth').acti
 <p>
 <a href="[% c.uri_for( c.controller('RecordContext').action_for('index') ) %]">Browse record contexts</a>
 </p>
+
+<p>
+<a href="[% c.uri_for( c.controller('Location').action_for('index') ) %]">Browse locations</a>
+</p>
 [% ELSE %]
 <p>
 Welcome to CIDER.

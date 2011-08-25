@@ -128,15 +128,15 @@ $mech->submit_form_ok( { with_fields => {
     circa => 1,
     date_from => '0968',
     date_to => '1016-04-23',
-# TO DO: these are on classes now
-#    accession_date => '2011-06',
-#    stabilization_date => '9999',
+    'digital_objects_1.location' => 8,
+    'digital_objects_1.pid' => 'test-pid',
+    'digital_objects_1.stabilization_date' => '2011-06',
 } }, 'Created a sub-item with partial dates' );
 
 $mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
 $mech->content_contains( 'Æthelred' );
 $mech->content_like( qr/\b0968\b/ );
-#$mech->content_like( qr/\b2011-06\b/ );
+$mech->content_like( qr/\b2011-06\b/ );
 $mech->content_contains( '"selected">Text<', 'Default type is Text.' );
 
 my $child = $schema->resultset( 'Object' )->find( { number => 'II' } );

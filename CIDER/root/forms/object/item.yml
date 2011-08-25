@@ -227,8 +227,8 @@ elements:
           elements:
             - type: Hidden
               name: id
-            - type: Label
-              value: 'Volume: (TO DO)'
+            - type: Block
+              content: 'Volume: (TO DO)'
 
     - type: Fieldset
       legend: File Folders
@@ -491,10 +491,10 @@ elements:
                       class: digital_object
                 - name: pid
                   label: PID
-                  constraints:
+                  # constraints:
                     # TO DO: this doesn't seem to do anything.
-                    - type: DependOn
-                      others: location
+                    # - type: DependOn
+                    #   others: location
                 - name: permanent_url
                   label: Permanent URL
                   constraint:

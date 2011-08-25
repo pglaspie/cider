@@ -9,62 +9,64 @@ elements:
   - type: Hidden
     name: return_uri
 
-  - type: Hidden
-    name: title_count
+  - name: barcode
+    label: Barcode or Location ID
+    constraint: Required
 
-  - type: Repeatable
-    nested_name: titles
-    counter_name: title_count
-    model_config:
-      empty_rows: 1
+  - type: Fieldset
+    legend: Titles
     elements:
       - type: Hidden
-        name: id
-
-      - type: Text
-        label: Title
-        name: title
+        name: title_count
+      - type: Repeatable
+        nested_name: titles
+        counter_name: title_count
         model_config:
-          delete_if_empty: 1
-        constraint:
-          - type: Repeatable::Any
-            message: This field is required
+          empty_rows: 1
+        elements:
+          - type: Hidden
+            name: id
+          - type: Text
+            name: title
+            model_config:
+              delete_if_empty: 1
+            constraint:
+              - type: Repeatable::Any
+                message: This field is required
 
-  - type: Hidden
-    name: collection_number_count
-
-  - type: Repeatable
-    nested_name: collection_numbers
-    counter_name: collection_number_count
-    model_config:
-      empty_rows: 1
+  - type: Fieldset
+    legend: Collection Numbers
     elements:
       - type: Hidden
-        name: id
-
-      - type: Text
-        label: Collection Number
-        name: number
+        name: collection_number_count
+      - type: Repeatable
+        nested_name: collection_numbers
+        counter_name: collection_number_count
         model_config:
-          delete_if_empty: 1
+          empty_rows: 1
+        elements:
+          - type: Hidden
+            name: id
+          - name: number
+            model_config:
+              delete_if_empty: 1
 
-  - type: Hidden
-    name: series_number_count
-
-  - type: Repeatable
-    nested_name: series_numbers
-    counter_name: series_number_count
-    model_config:
-      empty_rows: 1
+  - type: Fieldset
+    legend: Series Numbers
     elements:
       - type: Hidden
-        name: id
-
-      - type: Text
-        label: Series Number
-        name: number
+        name: series_number_count
+      - type: Repeatable
+        nested_name: series_numbers
+        counter_name: series_number_count
         model_config:
-          delete_if_empty: 1
+          empty_rows: 1
+        elements:
+          - type: Hidden
+            name: id
+          - name: number
+            model_config:
+              delete_if_empty: 1
 
   - type: Select
     label: Unit type
