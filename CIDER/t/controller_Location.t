@@ -28,8 +28,13 @@ $mech->submit_form( with_fields => {
 
 $mech->get( '/location/123' );
 is( $mech->status, 404, 'Nonexistent location, page not found' );
+$mech->back;
 
-$mech->get_ok( '/location/8001' );
+$mech->follow_link_ok( { text => 'Browse locations' } );
+
+$mech->follow_link_ok( { text => '8001 John Doe Papers' } );
+
+$mech->base_like( qr(/location/8001), 'URL has barcode' );
 
 $mech->content_contains( 'volume', 'Unit type list is populated.' );
 
@@ -37,14 +42,8 @@ $mech->content_contains( 'John', 'Location has first title.' );
 $mech->content_contains( 'Jane', 'Location has second title.' );
 
 $mech->get( '/location/create' );
-is( $mech->status, 404, 'Create with no barcode, page not found' );
-
-$mech->get_ok( '/location/8001/create' );
-is( $mech->uri->path, '/location/8001',
-    'Create existing barcode, redirects to detail page.' );
-
-$mech->get_ok( '/location/123/create' );
 $mech->submit_form_ok( { with_fields => {
+    barcode => '123',
     'titles_1.title' => 'Title 123',
     unit_type => 1,
 } }, 'Create new location.' );

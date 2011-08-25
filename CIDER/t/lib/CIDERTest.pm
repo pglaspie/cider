@@ -2,6 +2,8 @@ package CIDERTest;
 use strict;
 use warnings;
 
+$SIG{ __WARN__ } = sub { require Carp; Carp::confess };
+
 use base qw( Exporter );
 our @EXPORT    = qw( elt );
 our @EXPORT_OK = qw( elt );

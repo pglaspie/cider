@@ -195,6 +195,8 @@ sub _create :Private {
 sub _ensure_location :Private {
     my ( $self, $c, $action ) = @_;
 
+    # TO DO: an item has multiple locations now (possibly one per class)!
+
     my $form = $c->stash->{ form };
 
     my $barcode = $form->param_value( 'location' );

@@ -17,8 +17,55 @@ Catalyst Controller for Location CRUD.
 
 =cut
 
+=head2 index
+
+Display a list of record contexts with links to their detail pages.
+
+=cut
+
+sub index :Path( '' ) :Args( 0 ) { }
+
+=head2 create
+
+Create a new location.  If successful, redirect to its detail page,
+unless a return_uri was provided in the flash.
+
+=cut
+
+sub create :Local :Args( 0 ) :FormConfig( 'location' ) {
+    my ( $self, $c ) = @_;
+
+    my $form = $c->stash->{ form };
+    $form->get_field( 'submit' )->value( 'Create' );
+
+    if ( not $form->submitted ) {
+        if ( my $return_uri = $c->flash->{ return_uri } ) {
+            # We just created a new item or updated an existing item
+            # with a new location barcode.
+            $form->default_values( { return_uri => $return_uri } );
+        }
+        if ( my $barcode = $c->flash->{ barcode } ) {
+            $form->default_values( { barcode => $barcode } );
+        }
+    }
+    elsif ( $form->submitted_and_valid ) {
+        my $loc = $form->model->create;
+
+        if ( my $return_uri = $form->param_value( 'return_uri' ) ) {
+            $c->res->redirect( $return_uri );
+            return;
+        }
+
+        $c->flash->{ we_just_created_this } = 1;
+
+        $c->res->redirect(
+            $c->uri_for( $self->action_for( 'detail' ), [ $loc->barcode ] ) );
+    }
+}
 
 =head2 location
+
+Chained action to look up a location by barcode and put it in the stash.
 
 =cut
 
@@ -33,71 +80,92 @@ sub location :Chained('/') :CaptureArgs(1) {
     $c->stash->{ location } = $loc;
 }
 
+=head2 detail
+
+View and edit a location.
+
+=cut
+
 sub detail :Chained('location') :PathPart('') :Args(0) :FormConfig('location') {
     my ( $self, $c ) = @_;
 
-    my $form = $c->stash->{ form };
-
     my $loc = $c->stash->{ location };
-
     unless ( defined( $loc ) ) {
         $c->detach( $c->controller( 'Root' )->action_for( 'default' ) );
     }
 
+    $c->forward( $c->controller( 'Object' )
+                     ->action_for( '_setup_export_templates' ) );
+
+    my $form = $c->stash->{ form };
     $form->get_field( 'submit' )->value( 'Update location' );
 
     if ( $form->submitted_and_valid ) {
         $form->model->update( $loc );
-        $c->response->redirect( $c->req->uri );
+
+        $c->flash->{ we_just_updated_this } = 1;
+
+        $c->response->redirect(
+            $c->uri_for( $self->action_for( 'detail' ), [ $loc->barcode ] ) );
     }
     elsif ( not $form->submitted ) {
         $form->model->default_values( $loc );
     }
 }
 
-sub create :Chained('location') :Args(0) :FormConfig('location') {
+=head2 delete
+
+Delete a record context, then redirect to the index page.
+
+=cut
+
+sub delete :Chained( 'location' ) :Args( 0 ) {
     my ( $self, $c ) = @_;
 
-    my $barcode = $c->stash->{ barcode };
+    $c->stash->{ location }->delete;
+    $c->response->redirect( $c->uri_for( $self->action_for( 'index' ) ) );
+}
 
-    unless ( defined( $barcode ) ) {
+=head2 export
+
+Export a location.
+
+=cut
+
+sub export :Chained( 'location' ) :Args( 0 ) {
+    my ( $self, $c ) = @_;
+
+    $c->stash->{ locations } = [ $c->stash->{ location } ];
+
+    $c->forward( $self->action_for( '_export' ) );
+}
+
+# TO DO: refactor this vs. Object controller
+
+sub _export :Private {
+    my ( $self, $c ) = @_;
+
+    my $template_directory = $c->config->{ export }->{ template_directory };
+
+    my $template = $c->req->params->{ template };
+    my ( undef, undef, $template_file ) = File::Spec->splitpath( $template );
+
+    unless ( $template eq $template_file ) {
+        $c->log->error( "Request to load template '$template', "
+                        . "which is not a plain filename. " );
         $c->detach( $c->controller( 'Root' )->action_for( 'default' ) );
     }
 
-    if ( $c->stash->{ location } ) {
-        # A location with that barcode already exists; redirect to its
-        # detail page.
-        $c->response->redirect(
-            $c->uri_for( $self->action_for( 'detail' ), [ $barcode ] ) );
-        $c->detach;
+    $template_file = File::Spec->catfile( $template_directory,
+                                          $template_file );
+    unless ( -f $template_file && -r $template_file ) {
+        $c->log->error( "Request to load template '$template_file', but that "
+                        . "doesn't look like a template file I can read." );
+        $c->detach( $c->controller( 'Root' )->action_for( 'default' ) );
     }
+    $c->stash->{ template } = $template_file;
 
-    my $form = $c->stash->{ form };
-
-    $form->get_field( 'submit' )->value( 'Create location' );
-
-    if ( not $form->submitted ) {
-        if ( my $return_uri = $c->flash->{ return_uri } ) {
-            # We just created a new item or updated an existing item
-            # with a new location barcode.
-            $form->default_values( { return_uri => $return_uri } );
-        }
-    }
-    elsif ( $form->submitted_and_valid ) {
-        $form->add_valid( barcode => $barcode );
-
-        my $loc = $form->model->create;
-
-        if ( my $return_uri = $form->param_value( 'return_uri' ) ) {
-            $c->res->redirect( $return_uri );
-            return;
-        }
-
-        $c->flash->{ we_just_created_this } = 1;
-
-        $c->res->redirect(
-            $c->uri_for( $self->action_for( 'detail' ), [ $barcode ] ) );
-    }
+    $c->stash->{ current_view } = 'NoWrapperTT';
 }
 
 =head1 AUTHOR
