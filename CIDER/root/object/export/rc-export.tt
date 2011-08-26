@@ -6,3 +6,5 @@
       [% re.rc_type %]
       [% re.record_id %]
       [% re.name_entry %]
+   [% END %]
+[% END %]
