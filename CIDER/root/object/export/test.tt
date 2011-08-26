@@ -5,7 +5,7 @@
    [% object.title %] : [% object.number %]
    [% "Some arbitrary text to make sure the prototype is updating" %]
    [% FOR prc IN object.primary_record_contexts %]
-      [% prc %]
+      [% Dumper(prc) %]
    [% END %]
    -----------------------
 [% END -%]
