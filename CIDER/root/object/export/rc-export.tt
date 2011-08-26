@@ -1,0 +1,8 @@
+[% c.res.content_type = 'text/plain' -%]
+
+[% FOR rc IN objects -%]
+   [% rc.name_enty %]
+   [% FOR re IN rc.related_entity %]
+      [% re.rc_type %]
+      [% re.record_id %]
+      [% re.name_entry %]
