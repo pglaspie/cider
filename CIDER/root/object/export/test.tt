@@ -3,7 +3,8 @@
 [% FOR object IN objects -%]
    [% object.type %]
    [% object.title %] : [% object.number %]
-   [% FOR prc IN primary_record_contexts %]
+   [% "Some arbitrary text to make sure the prototype is updating" %]
+   [% FOR prc IN object.primary_record_contexts %]
       [% prc %]
    [% END %]
    -----------------------
