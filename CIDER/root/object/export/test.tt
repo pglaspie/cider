@@ -3,5 +3,8 @@
 [% FOR object IN objects -%]
    [% object.type %]
    [% object.title %] : [% object.number %]
+   [% FOR prc IN primary_record_contexts %]
+      [% prc %]
+   [% END %]
    -----------------------
 [% END -%]
