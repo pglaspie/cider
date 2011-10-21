@@ -161,6 +161,8 @@ $mech->get( '/object/9999' );
 is( $mech->status, 404, 'Invalid object number gives 404 page.' );
 
 $mech->get( '/object/n1' );
+$mech->content_contains( '2011.004;2011.005',
+                         'Derived accession numbers are displayed.' );
 $mech->content_contains( 'does not belong' );
 $mech->submit_form_ok( { with_fields => {
     set_id => 1,

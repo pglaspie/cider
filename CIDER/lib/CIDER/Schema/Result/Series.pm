@@ -11,7 +11,7 @@ CIDER::Schema::Result::Series
 
 =cut
 
-__PACKAGE__->load_components( 'UpdateFromXML' );
+__PACKAGE__->load_components( 'UpdateFromXML', 'DerivedElements' );
 
 __PACKAGE__->table( 'series' );
 

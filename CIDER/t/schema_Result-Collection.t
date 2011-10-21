@@ -32,6 +32,9 @@ is( $collection->languages->first->language_name, 'English',
 is( $collection->notes, 'Test notes.  Unicode: « ☃ ° » yay.',
     'Unicode is working.' );
 
+is( $collection->accession_numbers, '2011.004;2011.005',
+    'Accession numbers are derived.' );
+
 my $material = $collection->add_to_material( {
     material => 'Test Material 3'
 } );
