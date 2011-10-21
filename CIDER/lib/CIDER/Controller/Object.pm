@@ -276,7 +276,7 @@ sub _build_language_field {
     if ( $field ) {
         my @options = map {
             [ language2code( $_, LOCALE_LANG_ALPHA_3 ), $_ ]
-        } all_language_names;
+        } all_language_names( LOCALE_LANG_ALPHA_3 );
 
         unshift @options, [ '', '' ] if $empty_first;
         $field->options( \@options );
