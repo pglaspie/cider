@@ -50,8 +50,8 @@ item = element item {
   # Default circa is "false".
   element circa { xsd:boolean? }?,
   ( element date { dateRange } | required ),
-  ( element restrictions { restrictions } | required ),
-  ( element accessionNumber { accessionNumber } | required ),
+  ( element restrictions { restrictions } ),
+  ( element accessionNumber { accessionNumber } ),
   # Default dcType is "Text".
   element dcType { dcType? }?,
   element personalNames { element personalName { name }* }?,

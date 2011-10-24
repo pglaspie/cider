@@ -238,18 +238,12 @@
         </element>
         <ref name="required"/>
       </choice>
-      <choice>
-        <element name="restrictions">
-          <ref name="restrictions"/>
-        </element>
-        <ref name="required"/>
-      </choice>
-      <choice>
-        <element name="accessionNumber">
-          <ref name="accessionNumber"/>
-        </element>
-        <ref name="required"/>
-      </choice>
+      <element name="restrictions">
+        <ref name="restrictions"/>
+      </element>
+      <element name="accessionNumber">
+        <ref name="accessionNumber"/>
+      </element>
       <optional>
         <!-- Default dcType is "Text". -->
         <element name="dcType">
