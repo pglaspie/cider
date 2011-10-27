@@ -73,6 +73,20 @@ END
 );
 } 'Restrictions and accession number are optional for items.';
 
+test_import( <<END
+<import>
+  <update>
+    <item number="n4">
+      <accessionNumber/>
+    </item>
+  </update>
+</import>
+END
+);
+my $item = $schema->resultset( 'Item' )->find( 4 );
+is( $item->accession_number, undef,
+    'Item accession number removed.' );
+
 throws_ok {
     test_import( <<END
 <import>
