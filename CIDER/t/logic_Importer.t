@@ -58,6 +58,21 @@ ok( my $loc = $schema->resultset( 'Location' )->find( { barcode => 'xyz' } ),
 is_deeply( [ $loc->collection_numbers ], [ 'c123' ],
            'Updated the location.' );
 
+lives_ok {
+    test_import( <<END
+<import>
+  <create>
+    <item number="123">
+      <title>New item</title>
+      <date>2000</date>
+      <classes><group/></classes>
+    </item>
+  </create>
+</import>
+END
+);
+} 'Restrictions and accession number are optional for items.';
+
 throws_ok {
     test_import( <<END
 <import>
