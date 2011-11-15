@@ -11,7 +11,7 @@ all_from 'lib/CIDER.pm';
 
 requires 'Catalyst::Runtime' => '5.80029';
 requires 'Catalyst::Plugin::ConfigLoader';
-requires 'Catalyst::Plugin::Session::State::Cookie';
+requires 'Catalyst::Plugin::Session::State::Cookie' => '0.17';
 requires 'Catalyst::Plugin::Session::Store::File';
 requires 'Catalyst::Plugin::Scheduler';
 requires 'Catalyst::Plugin::StackTrace';
