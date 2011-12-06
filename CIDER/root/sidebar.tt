@@ -24,7 +24,7 @@ Welcome, [% c.user.username %]. <a href="[% c.uri_for( c.controller('Auth').acti
 </p>
 
 <p>
-<a href="[% c.uri_for( c.controller('RecordContext').action_for('index') ) %]"Record contexts</a>
+<a href="[% c.uri_for( c.controller('RecordContext').action_for('index') ) %]">Record contexts</a>
 </p>
 
 <p>

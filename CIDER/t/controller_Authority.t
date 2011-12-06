@@ -20,7 +20,7 @@ $mech->submit_form( with_fields => {
     password => 'foo',
 } );
 
-$mech->follow_link_ok( { text => 'Browse authority lists' } );
+$mech->follow_link_ok( { text => 'Authority lists' } );
 
 $mech->follow_link_ok( { text => 'Names' } );
 $mech->content_contains( 'Test Name' );

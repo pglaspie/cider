@@ -28,7 +28,7 @@ $homog_set->add( $item );
 my $series = $schema->resultset( 'Series' )->find( 3 );
 $heterog_set->add( $series );
 
-$mech->follow_link_ok( { text => 'Your sets' } );
+$mech->follow_link_ok( { text => 'Sets' } );
 
 $mech->follow_link_ok( { text => 'Test Set 2' } );
 $mech->content_contains( 'Test Series 1' );
@@ -49,7 +49,7 @@ $mech->back;
 $mech->submit_form_ok( { form_number => 1 }, 'Remove the first item' );
 $mech->content_lacks( 'Test Series 2' );
 $mech->content_contains( 'Set every' );
-$mech->follow_link( text => 'Your sets' );
+$mech->follow_link( text => 'Sets' );
 
 $mech->follow_link_ok( { text => 'Test Set 1' } );
 $mech->content_contains( 'Test Item 1' );

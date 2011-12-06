@@ -30,7 +30,7 @@ $mech->get( '/location/123' );
 is( $mech->status, 404, 'Nonexistent location, page not found' );
 $mech->back;
 
-$mech->follow_link_ok( { text => 'Browse locations' } );
+$mech->follow_link_ok( { text => 'Locations' } );
 
 $mech->follow_link_ok( { text => '8001 John Doe Papers' } );
 
