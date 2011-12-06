@@ -4,7 +4,7 @@ Welcome, [% c.user.username %]. <a href="[% c.uri_for( c.controller('Auth').acti
 </p>
 
 <p>
-<a href="[% c.uri_for( c.controller('List').action_for('index') ) %]">Browse object list</a>
+<a href="[% c.uri_for( c.controller('List').action_for('index') ) %]">Browse</a>
 </p>
 
 <p>
@@ -12,7 +12,7 @@ Welcome, [% c.user.username %]. <a href="[% c.uri_for( c.controller('Auth').acti
 </p>
 
 <p>
-<a href="[% c.uri_for( c.controller('Set').action_for('list') ) %]">Your sets</a>
+<a href="[% c.uri_for( c.controller('Set').action_for('list') ) %]">Sets</a>
 </p>
 
 <p>
@@ -20,15 +20,15 @@ Welcome, [% c.user.username %]. <a href="[% c.uri_for( c.controller('Auth').acti
 </p>
 
 <p>
-<a href="[% c.uri_for( c.controller('Authority').action_for('index') ) %]">Browse authority lists</a>
+<a href="[% c.uri_for( c.controller('Authority').action_for('index') ) %]">Authority lists</a>
 </p>
 
 <p>
-<a href="[% c.uri_for( c.controller('RecordContext').action_for('index') ) %]">Browse record contexts</a>
+<a href="[% c.uri_for( c.controller('RecordContext').action_for('index') ) %]"Record contexts</a>
 </p>
 
 <p>
-<a href="[% c.uri_for( c.controller('Location').action_for('index') ) %]">Browse locations</a>
+<a href="[% c.uri_for( c.controller('Location').action_for('index') ) %]">Locations</a>
 </p>
 [% ELSE %]
 <p>
