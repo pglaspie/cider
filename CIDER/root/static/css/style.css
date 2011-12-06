@@ -50,6 +50,10 @@ div.error {
     margin-bottom: 30px;
 }
 
+.required_message {
+    font-size: small;
+}
+
 label {
     display: block;
     margin-top: 5px;
@@ -74,6 +78,14 @@ fieldset.checkboxgroup, fieldset.repeatable, fieldset.radiogroup {
     border: 0;
     margin: 0;
     padding: 0;
+}
+
+/* 
+Add '*' after the label for required fields. This is an ugly way to 
+do this but it will have to work for now.
+*/
+.constraint_required label:after {
+    content: '*';
 }
 
 .checkboxgroup label {

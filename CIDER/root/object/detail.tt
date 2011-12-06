@@ -12,6 +12,10 @@
 
 <h2>[% page.title %]</h2>
 
+<div class="required_message">
+     <p>Fields marked with a '*' are required</p>
+</div>
+
 [% IF we_just_picked_this_up %]
 <div class="success">
 <p>To finish moving this object, navigate to a different object (or <a href="[% c.uri_for('/') %]">the object root</a>) however you like, and then click the button that says "Make [% object.title %] a child of this object".</p>

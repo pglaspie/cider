@@ -61,6 +61,9 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
         $self->_build_language_field( $c, $form, 1 );
     }
 
+    # Add contraint classes to required form fields
+    $form->auto_constraint_class('constraint_%t');
+
     # The hidden 'parent' field is only used for creation.
     $form->remove_element( $form->get_field( 'parent' ) );
 
