@@ -20,6 +20,7 @@ div#content {
     left: 201;
     border-left: 1px solid gray;
     padding-left: 10px;
+    margin-top: 10px;
 }
 
 .success {

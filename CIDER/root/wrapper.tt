@@ -9,7 +9,7 @@
      </head>
      <body>
        <div id="banner">
-         <h1>CIDER (prototype draft, July 2011)</h1>
+	 <a href="[% c.uri_for('/') %]"><h1><img src="[% c.uri_for('/static/images/cider-apple-hand.png') %]" width="200px" /></h1></a>
        </div>
       <div id="sidebar">
         [% INCLUDE sidebar.tt %]
