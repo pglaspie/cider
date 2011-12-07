@@ -5,8 +5,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 use Class::Method::Modifiers qw(around);
-use List::Util qw(min max);
-
 use Carp qw( croak );
 
 =head1 NAME
@@ -189,30 +187,6 @@ sub export {
         staff => $self->result_source->schema->user->staff
     } );
 }
-
-
-=head2 date_from
-=head2 date_to
-
-Collections, series, and items with children do not have dates.  The
-date_from and date_to accessors return the earliest/latest dates of
-an object's children.
-
-=cut
-
-# TO DO: fix this to handle ISO-8601 partial dates (e.g. YYYY or YYYY-MM).
-
-# for my $method ( qw(date_from date_to) ) {
-#     around $method => sub {
-#         my ( $orig, $self ) = ( shift, shift );
-
-#         my $date = $orig->( $self, @_ );
-#         return $date if defined $date;
-
-#         my @dates = map { $_->$method } $self->children;
-#         return ( $method eq 'date_from' ) ? min @dates : max @dates;
-#     };
-# }
 
 sub store_column {
     my $self = shift;

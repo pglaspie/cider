@@ -32,6 +32,13 @@ is( $collection->languages->first->language_name, 'English',
 is( $collection->notes, 'Test notes.  Unicode: « ☃ ° » yay.',
     'Unicode is working.' );
 
+is( $collection->date_from, '2000-01-01',
+    'Earliest date_from is derived.' );
+is( $collection->date_to, '2010-01-01',
+    'Latest date_from is derived.' );
+
+# TO DO: test missing date_to, missing day/month
+
 is( $collection->accession_numbers, '2011.004;2011.005',
     'Accession numbers are derived.' );
 

@@ -31,8 +31,15 @@ elements:
       id: title
       constraint: Required
 
-# Start Date (derived)
-# End Date (derived)
+    - type: Fieldset
+      legend: Date
+      elements:
+          - type: Label
+            label: From
+            name: date_from
+          - type: Label
+            label: To
+            name: date_to
 
     - type: Fieldset
       legend: Bulk Dates
