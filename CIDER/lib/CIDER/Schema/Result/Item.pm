@@ -37,7 +37,10 @@ __PACKAGE__->add_columns(
     circa =>
         { data_type => 'boolean', default_value => 0 },
     date_from =>
-        { data_type => 'varchar', size => 10 },
+        { data_type => 'varchar', size => 10,
+          # date_from is temporarily not required, while importing legacy data.
+          is_nullable => 1,
+        },
     date_to =>
         { data_type => 'varchar', is_nullable => 1, size => 10 },
 );

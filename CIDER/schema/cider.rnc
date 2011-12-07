@@ -49,7 +49,8 @@ item = element item {
   element creators { element creator { name }* }?,
   # Default circa is "false".
   element circa { xsd:boolean? }?,
-  ( element date { dateRange } | required ),
+  # date is temporarily not required, while importing legacy data.
+  element date { dateRange? }?,
   element restrictions { restrictions? }?,
   element accessionNumber { accessionNumber? }?,
   # Default dcType is "Text".

@@ -232,12 +232,14 @@
           </optional>
         </element>
       </optional>
-      <choice>
+      <optional>
+        <!-- date is temporarily not required, while importing legacy data. -->
         <element name="date">
-          <ref name="dateRange"/>
+          <optional>
+            <ref name="dateRange"/>
+          </optional>
         </element>
-        <ref name="required"/>
-      </choice>
+      </optional>
       <optional>
         <element name="restrictions">
           <optional>

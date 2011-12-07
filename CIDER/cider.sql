@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Mon Aug 22 20:16:44 2011
+-- Created on Wed Dec  7 16:57:06 2011
 -- 
 SET foreign_key_checks=0;
 
@@ -438,7 +438,7 @@ DROP TABLE IF EXISTS `item`;
 CREATE TABLE `item` (
   `id` integer NOT NULL,
   `circa` enum('0','1') NOT NULL DEFAULT '0',
-  `date_from` varchar(10) NOT NULL,
+  `date_from` varchar(10),
   `date_to` varchar(10),
   `restrictions` tinyint,
   `accession_number` varchar(255),
