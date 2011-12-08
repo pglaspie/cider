@@ -250,6 +250,9 @@ elements:
               model_config:
                 resultset: Location
                 delete_if_empty: 1 
+            - type: Label
+              name: format
+              label: Format
             - type: Textarea
               name: notes
               label: Notes

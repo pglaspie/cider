@@ -154,6 +154,13 @@ $mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
 
 $mech->content_contains( '"selected">Test Name<', 'Names added.' );
 
+$mech->submit_form_ok( { with_fields => {
+    'file_folders_1.location' => 8,
+} }, 'Added a file folder class.' );
+
+$mech->text_contains( 'FormatFile (document grouping)',
+                      'File folder format is correct.' );
+
 # TO DO: test moving to a new parent
 # TO DO: test moving to root
 
