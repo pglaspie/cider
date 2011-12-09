@@ -241,6 +241,7 @@
         </element>
       </optional>
       <optional>
+        <!-- Default restrictions is "none". -->
         <element name="restrictions">
           <optional>
             <ref name="restrictions"/>

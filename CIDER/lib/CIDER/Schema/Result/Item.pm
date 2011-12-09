@@ -47,7 +47,9 @@ __PACKAGE__->add_columns(
 
 __PACKAGE__->add_columns(
     restrictions =>
-        { data_type => 'tinyint', is_foreign_key => 1, is_nullable => 1 },
+        { data_type => 'tinyint', is_foreign_key => 1,
+          default_value => 1,   # 1 = 'none'
+        },
 );
 __PACKAGE__->belongs_to(
     restrictions =>

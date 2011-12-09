@@ -74,7 +74,6 @@ elements:
     - type: Select
       label: Restrictions
       name: restrictions
-      empty_first: 1
       model_config:
         resultset: ItemRestrictions
         label_column: description

@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Wed Dec  7 16:57:06 2011
+-- Created on Fri Dec  9 15:46:01 2011
 -- 
 SET foreign_key_checks=0;
 
@@ -440,7 +440,7 @@ CREATE TABLE `item` (
   `circa` enum('0','1') NOT NULL DEFAULT '0',
   `date_from` varchar(10),
   `date_to` varchar(10),
-  `restrictions` tinyint,
+  `restrictions` tinyint NOT NULL DEFAULT 1,
   `accession_number` varchar(255),
   `dc_type` tinyint NOT NULL,
   `description` text,

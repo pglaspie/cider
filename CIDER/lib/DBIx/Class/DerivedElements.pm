@@ -32,6 +32,18 @@ sub date_to {
     return maxstr map { $_->date_to || $_->date_from } $self->children;
 }
 
+=head restrictions
+
+Returns 'none', 'some', or 'all', depending on whether the descendant
+Items have restrictions or not.
+
+=cut
+
+sub restrictions {
+    my $self = shift;
+
+    return 'none';
+}
 
 =head accession_numbers
 

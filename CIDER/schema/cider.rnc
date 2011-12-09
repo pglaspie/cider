@@ -51,6 +51,7 @@ item = element item {
   element circa { xsd:boolean? }?,
   # date is temporarily not required, while importing legacy data.
   element date { dateRange? }?,
+  # Default restrictions is "none".
   element restrictions { restrictions? }?,
   element accessionNumber { accessionNumber? }?,
   # Default dcType is "Text".
