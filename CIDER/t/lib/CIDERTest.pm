@@ -174,15 +174,6 @@ sub init_schema {
     );
 
     $schema->populate(
-        'ItemRestrictions',
-        [
-            [qw/id name description/],
-            [1, 'none', 'No restrictions'],
-            [2, '20 years', 'Restricted 20 years'],
-        ]
-    );
-
-    $schema->populate(
         'StabilizationProcedure',
         [
             [qw/id code name/],

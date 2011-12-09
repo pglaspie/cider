@@ -42,24 +42,6 @@ is( $collection->date_to, '2010-01-01',
 is( $collection->accession_numbers, '2011.004;2011.005',
     'Accession numbers are derived.' );
 
-is( $collection->restrictions, 'none',
-    'Collection has no restrictions by default.' );
-my @items = $collection->children;
-$items[0]->update_from_xml(
-    elt '<item><restrictions>20 years</restrictions></item>' );
-$items[1]->update_from_xml(
-    elt '<item><restrictions>20 years</restrictions></item>' );
-is( $collection->restrictions, 'all',
-    'All items in the collection have restrictions.' );
-$items[0]->update_from_xml(
-    elt '<item><restrictions>none</restrictions></item>' );
-is( $collection->restrictions, 'some',
-    'Some items in the collection have restrictions.' );
-$items[1]->update_from_xml(
-    elt '<item><restrictions>none</restrictions></item>' );
-is( $collection->restrictions, 'none',
-    'No items in the collection have restrictions.' );
-
 my $material = $collection->add_to_material( {
     material => 'Test Material 3'
 } );
