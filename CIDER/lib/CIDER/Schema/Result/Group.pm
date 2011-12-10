@@ -29,4 +29,16 @@ sub update_from_xml {
     return $self->update_or_insert;
 }
 
+=head2 volume
+
+Returns the number of sub-items in this group.
+
+=cut
+
+sub volume {
+    my $self = shift;
+
+    return scalar $self->item->children;
+}
+
 1;

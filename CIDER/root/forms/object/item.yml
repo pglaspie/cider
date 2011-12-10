@@ -226,8 +226,9 @@ elements:
           elements:
             - type: Hidden
               name: id
-            - type: Block
-              content: 'Volume: (TO DO)'
+            - type: Label
+              name: volume
+              label: Volume
 
     - type: Fieldset
       legend: File Folders
