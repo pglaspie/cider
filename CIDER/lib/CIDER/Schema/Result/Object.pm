@@ -156,10 +156,28 @@ sub has_ancestor {
     return 0;
 }
 
+=head2 descendants
+
+Returns a list of all descendants, including self.
+
+=cut
+
 sub descendants {
     my $self = shift;
 
     return $self->type_object, map { $_->descendants } $self->children;
+}
+
+=head2 item_descendants
+
+Returns a list of all descendants that are Items.
+
+=cut
+
+sub item_descendants {
+    my $self = shift;
+
+    return grep { $_->type eq 'item' } $self->descendants;
 }
 
 # Override the DBIC delete() method to work recursively on our related

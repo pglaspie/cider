@@ -17,7 +17,8 @@ sub date_from {
 
     # Fortunately, ISO-8601 dates can be compared with string-compare,
     # so we can just use minstr/maxstr.
-    return minstr map { $_->date_from } $self->children;
+    return minstr grep { defined } map { $_->date_from }
+        $self->children;
 }
 
 =head date_to
@@ -29,9 +30,26 @@ Returns the latest date_to of all descendant Item objects.
 sub date_to {
     my $self = shift;
 
-    return maxstr map { $_->date_to || $_->date_from } $self->children;
+    return maxstr grep { defined } map { $_->date_to || $_->date_from }
+        $self->children;
 }
 
+=head restrictions
+
+Returns 'none', 'some', or 'all', depending on whether the descendant
+Items have restrictions or not.
+
+=cut
+
+sub restrictions {
+    my $self = shift;
+
+    my @items = $self->item_descendants;
+    my @restricted = grep { $_->restrictions ne 'none' } @items;
+    return 'none' if @restricted == 0;
+    return 'all' if @restricted == @items;
+    return 'some';
+}
 
 =head accession_numbers
 

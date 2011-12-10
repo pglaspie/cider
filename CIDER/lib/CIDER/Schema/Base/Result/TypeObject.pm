@@ -25,7 +25,7 @@ my @proxy_fields = qw( parent number title
                      );
 
 my @proxy_methods = qw( children number_of_children
-                        ancestors has_ancestor descendants
+                        ancestors has_ancestor descendants item_descendants
                         export
                       );
 

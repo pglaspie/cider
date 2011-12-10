@@ -1,8 +1,9 @@
 package CIDERTest;
 use strict;
 use warnings;
+use Carp qw( cluck );
 
-$SIG{ __WARN__ } = sub { require Carp; Carp::confess };
+$SIG{ __WARN__ } = sub { cluck shift };
 
 use base qw( Exporter );
 our @EXPORT    = qw( elt );
@@ -170,6 +171,15 @@ sub init_schema {
         [
             [qw/id name/],
             [1, 'reportsTo'],
+        ]
+    );
+
+    $schema->populate(
+        'ItemRestrictions',
+        [
+            [qw/id name description/],
+            [1, 'none', 'No restrictions'],
+            [2, '20 years', 'Restricted 20 years'],
         ]
     );
 

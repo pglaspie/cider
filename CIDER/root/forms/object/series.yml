@@ -32,8 +32,15 @@ elements:
       constraints:
         - type: Required
 
-# Start Date (derived)
-# End Date (derived)
+    - type: Fieldset
+      legend: Date
+      elements:
+          - type: Label
+            label: From
+            name: date_from
+          - type: Label
+            label: To
+            name: date_to
 
     - type: Fieldset
       legend: Bulk Date
@@ -53,7 +60,9 @@ elements:
             id: bulk_date_to
             constraint: *Date
 
-# Restrictions (derived)
+    - type: Label
+      label: Restrictions
+      name: restrictions
 
     - type: Textarea
       label: Description

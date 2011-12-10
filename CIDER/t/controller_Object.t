@@ -170,8 +170,20 @@ is( $mech->status, 404, 'Invalid object number gives 404 page.' );
 $mech->get( '/object/n1' );
 $mech->text_contains( '2000-01-01To2010-01-01',
                       'Derived date range is correct.' );
-$mech->content_contains( '2011.004;2011.005',
-                         'Derived accession numbers are displayed.' );
+$mech->text_contains( '2011.004;2011.005',
+                      'Derived accession numbers are displayed.' );
+$mech->text_contains( 'Restrictionsnone',
+                      'Derived restrictions is some.' );
+
+$mech->get( '/object/n4' );
+$mech->submit_form_ok( { with_fields => {
+    restrictions => 2,
+} }, 'Set item 1 restrictions' );
+
+$mech->get( '/object/n1' );
+$mech->text_contains( 'Restrictionssome',
+                      'Derived restrictions is some.' );
+
 $mech->content_contains( 'does not belong' );
 $mech->submit_form_ok( { with_fields => {
     set_id => 1,
