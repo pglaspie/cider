@@ -64,6 +64,10 @@ legend {
     font-weight: bold;
 }
 
+.button {
+    cursor: pointer;
+}
+
 fieldset.repeatable label {
     display: inline;
     font-weight: normal;
