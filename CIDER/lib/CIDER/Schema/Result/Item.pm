@@ -224,6 +224,19 @@ sub classes {
     return @classes;
 }
 
+=head2 locations
+
+A list of locations of the item's classes.  This list may include
+duplicates, if multiple classes have the same location.
+
+=cut
+
+sub locations {
+    my $self = shift;
+
+    return map { $_->location } grep { $_->can( 'location' ) } $self->classes;
+}
+
 =head2 insert
 
 Override TypeObject->insert to set default values.

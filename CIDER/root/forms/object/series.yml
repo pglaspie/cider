@@ -78,7 +78,9 @@ elements:
       name: notes
       id: notes
         
-# Extent (derived)
+    - type: Label
+      label: Extent
+      name: extent
 
     - type: Label
       label: Accession Number(s)

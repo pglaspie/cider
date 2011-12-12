@@ -59,7 +59,9 @@ elements:
             id: bulk_date_to
             constraint: *Date
 
-# Extent (derived)
+    - type: Label
+      label: Extent
+      name: extent
 
     - type: Label
       label: Restrictions
