@@ -64,7 +64,7 @@ legend {
     font-weight: bold;
 }
 
-.button {
+[role=button] {
     cursor: pointer;
 }
 

@@ -39,7 +39,7 @@ $(function() {
 	var form_class = '.' + class_name + '_form';
         var button_id = '#' + class_name + '_expand_button';
 
-	$(button_id).click(function() {
+	$(button_id).live('click keypress', function() {
 	    $(form_class).toggle('blind');
 	});
 	
@@ -55,8 +55,7 @@ $(function() {
 	    $(form_class).show();
 	}
     });
-});
-
+});    
 
 
 $( function() {

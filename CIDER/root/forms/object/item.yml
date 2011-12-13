@@ -246,7 +246,8 @@ elements:
           tag: legend
           id: file_folders_expand_button
           attributes:
-             class: 'button'
+             role: 'button'
+             tabindex: 0
           content: 'File Folders'
         - type: Hidden
           name: file_folder_count
@@ -282,7 +283,8 @@ elements:
           tag: legend
           id: containers_expand_button
           attributes:
-             class: 'button'
+             role: 'button'
+             tabindex: 0
           content: 'Container'
         - type: Hidden
           name: container_count
@@ -323,7 +325,8 @@ elements:
           tag: legend
           id: bound_volumes_expand_button
           attributes:
-              class: button
+              role: button
+              tabindex: 0
           content: Bound Volumes
         - type: Hidden
           name: bound_volume_count
@@ -367,7 +370,8 @@ elements:
           tag: legend
           id: three_dimensional_objects_expand_button
           attributes:
-             class: button
+             role: button
+             tabindex: 0
           content: "Three Dimensional Objects"
         - type: Hidden
           name: three_dimensional_object_count
@@ -411,7 +415,8 @@ elements:
           tag: legend
           id: audio_visual_media_expand_button
           attributes:
-             class: button
+             role: button
+             tabindex: 0
           content: Audio Visual Media 
         - type: Hidden
           name: audio_visual_media_count
@@ -455,7 +460,8 @@ elements:
           tag: legend
           id: documents_expand_button
           attributes:
-              class: button
+              role: button
+              tabindex: 0
           content: Documents
         - type: Hidden
           name: document_count
@@ -498,7 +504,8 @@ elements:
           tag: legend
           id: physical_images_expand_button
           attributes:
-             class: button
+             role: button
+             tabindex: 0
           content: Physical Images
         - type: Hidden
           name: physical_image_count
@@ -541,7 +548,8 @@ elements:
           tag: legend
           id: digital_objects_expand_button
           attributes:
-             class: button
+             role: button
+             tabindex: 0
           content: Digital Objects
         - type: Hidden
           name: digital_object_count
@@ -722,7 +730,8 @@ elements:
           tag: legend
           id: browsing_objects_expand_button
           attributes:
-             class: button
+             role: button
+             tabindex: 0
           content: Browsing Objects
         - type: Hidden
           name: browsing_object_count
