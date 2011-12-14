@@ -26,15 +26,38 @@ sub login :Path('login') :Args(0) :FormConfig {
 
     my $form = $c->stash->{form};
 
-    if ( $form->submitted_and_valid ) {
-        $c->authenticate(
-            {
-                username => $form->param_value( 'username' ),
-                password => $form->param_value( 'password' ),
-            }
-        );
+    my $username = $form->param_value( 'username' );
+    my $password = $form->param_value( 'password' );
 
-        $c->response->redirect($c->uri_for('/'));
+    my $auth_params = {
+                username => $username,
+                password => $password,
+    };
+
+    if ( $form->submitted_and_valid ) {
+        if ( $c->authenticate( $auth_params) )  {
+            
+            # passed LDAP authentication.
+            # Check to see if they are in the CIDER-user database.
+            my ( $cider_user ) = $c->model( 'CIDERDB::User' )
+                ->search( { username => $username } );
+            if ( $cider_user ) {
+                # authenticated in both places
+                # send them to the front page of the application
+                $c->res->redirect($c->uri_for( $c->req->params->{page} || '/' ));
+            } else {
+                # Tufts user but not in CIDER
+                $c->logout;
+                $form->force_error_message(1);
+                $form->form_error_message($form->stash->{not_in_cider_message});
+            }
+        } else {
+             # User failed LDAP authentication.
+             # Display an error and let them try again.
+             $form->force_error_message(1);
+             $form->form_error_message($form->stash->{bad_auth_message});
+        }
+
     }
 }
 

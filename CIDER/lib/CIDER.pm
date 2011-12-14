@@ -58,14 +58,6 @@ __PACKAGE__->config(
 
     encoding => 'utf-8',
 
-    authentication => {
-        realms => {
-            default => {
-                class => 'SimpleDB',
-                user_model => 'CIDERDB::User',
-            },
-        },
-    },
     'Plugin::Session' => {
         flash_to_stash => 1,
         expires => 1000000,

@@ -18,3 +18,8 @@ elements:
     - type: Submit
       name: submit
       value: Log in
+
+stash:
+  bad_auth_message: Sorry, that username / password combination is not valid. Please try again.
+
+  not_in_cider_message: Sorry, that Tufts user name is not valid for CIDER.  Please contact the CIDER administrators.
