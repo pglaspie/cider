@@ -237,6 +237,13 @@ my $collection = $nodes[0];
 like( $collection->toString, qr/>minimal</,
     'Processing status is exported as text.' );
 
+$mech->get( '/object/II' );
+$mech->submit_form_ok ( { with_fields => {
+    descendants => 0,
+    template => 'export.xml',
+} }, 'Export to XML' );
+$mech->content_contains( '>Test Name<', 'Authority name is exported.' );
+
 # TO DO: test delete button
 
 done_testing();

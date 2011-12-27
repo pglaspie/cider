@@ -2,7 +2,7 @@
 <?xml version='1.0' encoding='utf-8' ?>
 
 <cider>
-[% fields = [ 'id' 'number' 'title' 'date_from' 'date_to' 'bulk_date_from' 'bulk_date_to' 'restrictions' 'scope' 'organization' 'record_context' 'history' 'notes' 'language' 'processing_status' 'processing_notes' 'description' 'has_physical_documentation' 'permanent_url' 'pid' 'publication_status' 'arrangement' 'creator' 'circa' 'location' 'dc_type' 'format' 'funder' 'personal_name' 'corporate_name' 'topic_term' 'geographic_term' 'checksum' 'original_filename' 'accession_by' 'accession_date' 'accession_procedure' 'accesssion_number' 'stabilization_by' 'stabilization_date' 'stabilization_procedure' 'stabilization_notes' 'virus_app' 'media_app' 'other_app' 'toc' 'rsa' 'technical_metadata' 'file_creation_date' 'lc_class' 'file_extension' ] -%]
+[% fields = [ 'id' 'number' 'title' 'date_from' 'date_to' 'bulk_date_from' 'bulk_date_to' 'restrictions' 'scope' 'organization' 'record_context' 'history' 'notes' 'language' 'processing_status' 'processing_notes' 'description' 'has_physical_documentation' 'permanent_url' 'pid' 'publication_status' 'arrangement' 'creators' 'circa' 'location' 'dc_type' 'format' 'funder' 'personal_names' 'corporate_names' 'topic_terms' 'geographic_terms' 'checksum' 'original_filename' 'accession_by' 'accession_date' 'accession_procedure' 'accesssion_number' 'stabilization_by' 'stabilization_date' 'stabilization_procedure' 'stabilization_notes' 'virus_app' 'media_app' 'other_app' 'toc' 'rsa' 'technical_metadata' 'file_creation_date' 'lc_class' 'file_extension' ] -%]
 [% FOR object IN objects -%]
   <[% object.type %]>
 [% IF object.parent -%]
