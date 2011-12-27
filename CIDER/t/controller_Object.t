@@ -208,6 +208,8 @@ is( $csv->[0]->{ type }, 'collection',
     'Collection type is correct' );
 is( $csv->[0]->{ notes }, 'Test notes.  Unicode: « ☃ ° » yay.',
     'Collection notes are correct' );
+is( $csv->[0]->{ processing_status }, 'minimal',
+    'Processing status is exported as text.' );
 is( $csv->[1]->{ title }, 'Test Series 1',
     'Series title is correct' );
 is( $csv->[1]->{ type }, 'series',
@@ -225,8 +227,15 @@ $mech->submit_form_ok ( { with_fields => {
 is( $mech->ct, 'application/xml', 'MIME type is correct' );
 
 use XML::LibXML;
-ok( XML::LibXML->load_xml( string => $mech->content ),
+ok( my $doc = XML::LibXML->load_xml( string => $mech->content ),
     'Export file is valid XML' );
+my $root = $doc->documentElement;
+my @nodes = $root->nonBlankChildNodes;
+is( @nodes, 4,
+    'Document has four elements.' );
+my $collection = $nodes[0];
+like( $collection->toString, qr/>minimal</,
+    'Processing status is exported as text.' );
 
 # TO DO: test delete button
 

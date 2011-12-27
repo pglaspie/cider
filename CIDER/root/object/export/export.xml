@@ -11,7 +11,7 @@
 [% FOR field IN fields -%]
 [% value = object.$field -%]
 [% IF value -%]
-    <[% field %]>[% value.id || value | xml %]</[% field %]>
+    <[% field %]>[% value | xml %]</[% field %]>
 [% END -%]
 [% END -%]
   </[% object.type %]>

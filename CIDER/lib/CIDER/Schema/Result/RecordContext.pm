@@ -61,6 +61,7 @@ __PACKAGE__->add_columns(
         { data_type => 'varchar' },
 );
 __PACKAGE__->add_unique_constraint( [ 'record_id' ] );
+use overload '""' => sub { shift->record_id }, fallback => 1;
 
 __PACKAGE__->add_columns(
     publication_status =>

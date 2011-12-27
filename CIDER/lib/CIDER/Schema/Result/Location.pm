@@ -43,6 +43,7 @@ __PACKAGE__->add_columns(
         { data_type => 'varchar' },
 );
 __PACKAGE__->add_unique_constraint( [ 'barcode' ] );
+use overload '""' => sub { shift->barcode }, fallback => 1;
 
 __PACKAGE__->add_columns(
     unit_type =>
