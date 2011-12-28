@@ -57,6 +57,58 @@ $(function() {
     });
 });    
 
+/* Add remove form elements */ 
+$(function() {
+
+    var repeatable_fieldsets = $('fieldset.repeatable');
+
+    // Man this is ugly. All workarounds for HTML::FormFu's baroque HTML output...
+    // Iterate through repeatable field sets, grab relevant nodes, and create add and remove buttons.
+    $.each(repeatable_fieldsets, function() {
+	var fieldset = $(this);
+	var input_count = fieldset.prev();
+	var element_name = fieldset.children('div').attr('id');
+	var inputs = fieldset.children('div').children('div').children('input');
+	var counter = inputs.length;
+	var elements = inputs.parent();
+
+	var add_button = '<p role="button" id="' + element_name + '_add_button"><img src="' + base_uri + 'static/images/list-add-4.png" /></p>';
+	fieldset.children('div').prepend(add_button);
+
+	// create add button and add it to all elements but the first default one.
+	 var remove_button = '<span role="button" class="remove_button"><img src="' + base_uri + 'static/images/list-remove-4.png" /></span>';
+	 
+	elements.each(function(i) {
+	    if (i != 0) {
+		$(this).children('div').append(remove_button);
+	    }
+	});
+
+	// When add button is pressed, add a new field block.
+	$('#' + element_name + '_add_button').live('click keypress', function() {
+	    counter++;
+	    input_count.attr('value', counter);
+
+	    var new_element = elements.last().clone();
+	    var names = new_element.find('*[name^="' + element_name + '"]');
+
+	    $.each(names, function() {
+		var name = $(this).attr('name');
+		$(this).attr('name', name.replace(/\d/, counter));
+	    });
+	    
+	    fieldset.children('div').append(new_element);
+	});
+
+	// When remove button is pressed, remove the relevant block.
+	$('.remove_button').live('click keypress', function() {
+	    $(this).parent('div').parent('div').remove();
+	    counter--
+	    input_count.attr('value', counter);
+	});
+    });
+});
+
 
 $( function() {
     $( '#accordion' ).accordion( {

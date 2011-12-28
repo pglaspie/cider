@@ -167,39 +167,49 @@ elements:
     - type: Hidden
       name: language_count
     - type: Fieldset
+      attributes:
+         class: repeatable
       legend: Languages
       elements:
-        - type: Repeatable
-          nested_name: languages
-          counter_name: language_count
-          model_config:
-            empty_rows: 1
+        - type: Block
+          id: languages
           elements:
-            - type: Hidden
-              name: id
-            - type: Select
-              name: language
+            - type: Repeatable
+              nested_name: languages
+              counter_name: language_count
               model_config:
-                options_from_model: 0
-                delete_if_empty: 1
+                empty_rows: 1
+              elements:
+                - type: Hidden
+                  name: id
+                - type: Select
+                  name: language
+                  model_config:
+                    delete_if_empty: 1
+                    options_from_model: 0
 
     - type: Hidden
       name: subject_count
     - type: Fieldset
+      attributes:
+         class: repeatable    
       legend: Subjects
       elements:
-        - type: Repeatable
-          nested_name: subjects
-          counter_name: subject_count
-          model_config:
-            empty_rows: 1
+        - type: Block
+          id: subjects
           elements:
-            - type: Hidden
-              name: id
-            - type: Text
-              name: subject
+            - type: Repeatable
+              nested_name: subjects
+              counter_name: subject_count
               model_config:
-                delete_if_empty: 1
+                empty_rows: 1
+              elements:
+                - type: Hidden
+                  name: id
+                - type: Text
+                  name: subject
+                  model_config:
+                    delete_if_empty: 1
 
     - type: Select
       label: Processing Status
@@ -241,39 +251,44 @@ elements:
           order_by: id
 
     - type: Fieldset
+      attributes: 
+          class: repeatable
       legend: Relationships
-      elements:
-        - type: Hidden
-          name: relationship_count
-
-        - type: Repeatable
-          nested_name: collection_relationships
-          counter_name: relationship_count
-          model_config:
-            empty_rows: 1
+      elements: 
+        - type: Block
+          id: collection_relationships
           elements:
             - type: Hidden
-              name: id
-
-            - type: Select
-              label: Predicate
-              name: predicate
-              constraint:
-                - type: DependOn
-                  others: pid
-              empty_first: 1
+              name: relationship_count
+          
+            - type: Repeatable
+              nested_name: collection_relationships
+              counter_name: relationship_count
               model_config:
-                delete_if_empty: 1
-                resultset: RelationshipPredicate
-                attributes:
-                  order_by: id
+                empty_rows: 1
+              elements:
+                - type: Hidden
+                  name: id
 
-            - type: Text
-              label: PID
-              name: pid
-              constraint:
-                - type: DependOn
-                  others: predicate
+                - type: Select
+                  label: Predicate
+                  name: predicate
+                  constraint:
+                    - type: DependOn
+                      others: pid
+                  empty_first: 1
+                  model_config:
+                     delete_if_empty: 1
+                     resultset: RelationshipPredicate
+                  attributes:
+                    order_by: id
+
+                - type: Text
+                  label: PID
+                  name: pid
+                  constraint:
+                    - type: DependOn
+                      others: predicate
 
     - type: Hidden
       name: parent
