@@ -163,6 +163,9 @@ sub _create :Private {
     my $form = $c->stash->{ form };
     my $type = $c->stash->{ object_type };
 
+    # Add contraint classes to required form fields
+    $form->auto_constraint_class('constraint_%t');
+
     $form->get_field( 'submit' )->value( "Create \u$type" );
 
     if ( not $form->submitted ) {

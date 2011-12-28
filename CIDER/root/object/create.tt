@@ -2,4 +2,8 @@
 
 <h2>[% page.title %]</h2>
 
+<div class="required_message">
+     <p>Fields marked with a '*' are required</p>
+</div>
+
 [% form %]
