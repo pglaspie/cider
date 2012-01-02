@@ -10,7 +10,7 @@ sub root_objects {
     my $self = shift;
     my $resultset = $self->search(
         { parent => undef },
-        { order_by => 'title' },
+        { order_by => 'number' },
     );
 
     if ( wantarray ) {

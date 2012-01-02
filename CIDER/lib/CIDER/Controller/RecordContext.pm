@@ -23,7 +23,13 @@ Display a list of record contexts with links to their detail pages.
 
 =cut
 
-sub index :Path( '' ) :Args( 0 ) { }
+sub index :Path( '' ) :Args( 0 ) {
+    my ( $self, $c ) = @_;
+
+    my $model = $c->model( 'CIDERDB::RecordContext' );
+    my @rcs = $model->search( undef, { order_by => 'record_id' } );
+    $c->stash->{ rcs } = \@rcs;
+}
 
 =head2 create
 

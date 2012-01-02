@@ -124,7 +124,7 @@ sub children {
     my $self = shift;
 
     return map { $_->type_object }
-        $self->objects->search( undef, { order_by => 'title' } );
+        $self->objects->search( undef, { order_by => 'number' } );
 }
 
 sub number_of_children {
