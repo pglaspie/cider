@@ -44,6 +44,10 @@ sub create :Local :Args( 0 ) :FormConfig( 'location' ) {
     my $form = $c->stash->{ form };
     $form->get_field( 'submit' )->value( 'Create' );
 
+    # Add contraint classes to required form fields
+    $form->auto_constraint_class('constraint_%t');
+
+
     if ( not $form->submitted ) {
         if ( my $return_uri = $c->flash->{ return_uri } ) {
             # We just created a new item or updated an existing item
@@ -105,6 +109,10 @@ sub detail :Chained('location') :PathPart('') :Args(0) :FormConfig('location') {
 
     my $form = $c->stash->{ form };
     $form->get_field( 'submit' )->value( 'Update location' );
+
+    # Add contraint classes to required form fields
+    $form->auto_constraint_class('constraint_%t');
+
 
     if ( $form->submitted_and_valid ) {
         $form->model->update( $loc );

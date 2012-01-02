@@ -2,6 +2,10 @@
 
 <h2>[% page.title %]</h2>
 
+<div class="required_message">
+     <p>Fields marked with a '*' are required</p>
+</div>
+
 [% IF we_just_created_this %]
 <div class="success">
 <p>You have successfully created a new record context with name entry

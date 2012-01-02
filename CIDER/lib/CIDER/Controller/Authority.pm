@@ -88,6 +88,9 @@ sub browse :Chained( 'authority' ) :PathPart('') :Args(0)
     my ( $self, $c ) = @_;
 
     my $form = $c->stash->{ form };
+    # Add contraint classes to required form fields
+    $form->auto_constraint_class('constraint_%t');
+
     unless ( $c->stash->{ notes } ) {
         $form->remove_element( $form->get_field( 'note' ) );
     }
@@ -144,6 +147,10 @@ sub edit :Chained( 'get' ) :Args(0) :FormConfig {
     my ( $self, $c ) = @_;
 
     my $form = $c->stash->{ form };
+
+    # Add contraint classes to required form fields
+    $form->auto_constraint_class('constraint_%t');
+
     unless ( $c->stash->{ notes } ) {
         $form->remove_element( $form->get_field( 'note' ) );
     }

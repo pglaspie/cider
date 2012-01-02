@@ -43,6 +43,10 @@ sub create :Local :Args( 0 ) :FormConfig( 'recordcontext' ) {
     my $form = $c->stash->{ form };
     $form->get_field( 'submit' )->value( 'Create' );
 
+    # Add contraint classes to required form fields
+    $form->auto_constraint_class('constraint_%t');
+
+
     if ( $form->submitted_and_valid ) {
         my $rc = $form->model->create;
 
@@ -91,6 +95,9 @@ sub detail :Chained( 'recordcontext' ) :PathPart( '' ) :Args( 0 )
 
     my $form = $c->stash->{ form };
     $form->get_field( 'submit' )->value( 'Update' );
+
+    # Add contraint classes to required form fields
+    $form->auto_constraint_class('constraint_%t');
 
     if ( not $form->submitted ) {
         $form->model->default_values( $rc );
