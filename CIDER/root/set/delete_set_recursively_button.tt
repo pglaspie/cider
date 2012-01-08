@@ -1,0 +1,1 @@
+<form action=[% c.uri_for_action( c.controller('Set').action_for('delete_recursively'),[set.id]) %]  ><input type="submit" name="recursive_delete" value="Recursively delete this set" /> <input type="checkbox" name="confirm_recursive_delete" value="1">Yes, I'm sure I want to do this.</input></form>

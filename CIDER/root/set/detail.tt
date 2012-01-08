@@ -27,8 +27,16 @@
 [% END %]
 
 <h2>Delete this set</h2>
+[% IF there_was_a_recursive_deletion_failure %]
+<div class="form_error_message">
+<p>You must check the <em>I'm sure</em> checkbox to perform a recursive deletion.</p>
+</div>
+[% END %]
 <p>To permanently remove this set from your list, click the button below. (Deleting a set does not otherwise affect the objects it contains.)</p>
 <p>[% INCLUDE set/delete_set_button.tt %]</p>
+
+<p>To permanently delete this set <strong>and also delete all the objects it contains</strong>, active the checkbox and then click the button below. Please use caution -- this action is irreversible.</p>
+<p>[% INCLUDE set/delete_set_recursively_button.tt %]</p>
 
 <h2>Export</h2>
 
