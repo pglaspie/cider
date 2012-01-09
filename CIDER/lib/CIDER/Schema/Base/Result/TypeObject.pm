@@ -75,7 +75,7 @@ sub dates {
     if ( my $from = $self->date_from ) {
         my $to = $self->date_to;
         if ( $to && $to ne $from ) {
-            return "$from-$to";
+            return "$from&ndash;$to";
         }
         else {
             return $from;

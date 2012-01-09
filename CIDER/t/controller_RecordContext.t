@@ -25,8 +25,8 @@ $mech->follow_link_ok( { text => 'Record contexts' } );
 
 $mech->follow_link_ok( { text => 'RCR00001 Context 1' } );
 
-$mech->has_tag( 'a', 'n1 Test Collection with kids',
-                'Collections are displayed.' );
+$mech->has_tag_like( 'a', qr/n1 Test Collection with kids/,
+                     'Collections are displayed.' );
 
 $mech->submit_form_ok( { with_fields => {
     name_entry => 'Context 2',
