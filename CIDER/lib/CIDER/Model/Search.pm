@@ -22,15 +22,20 @@ sub search {
     my $self = shift;
     my %params = @_;
 
-    my $searcher = KinoSearch::Search::IndexSearcher->new(
+    my $searcher = Lucy::Search::IndexSearcher->new(
         index => $self->schema->search_index,
     );
 
     unless ( ref $params{ query } ) {
-        my $qp = KinoSearch::Search::QueryParser->new(
+        my $qp = Lucy::Search::QueryParser->new(
             schema => $searcher->get_schema,
         );
         $qp->set_heed_colons( 1 );
+
+		# Transform a request for all-caps 'NULL' into sentinel value 'CIDERNULL',
+		# as defined by the indexer.
+		$params{ query } =~ s/(\w+)\s*:\s*NULL/$1:CIDERNULL/g;
+
         $params{ query } = $qp->parse( $params{ query } );
     }
 
@@ -61,16 +66,16 @@ Catalyst Model for searching the index.
 
 =head2 search( [labeled params] )
 
-Search the index, using L<KinoSearch::Search::IndexSearcher>.  The
+Search the index, using L<Lucy::Search::IndexSearcher>.  The
 params can be any of the following:
 
 =over
 
 =item *
 
-B<query> - Either a L<KinoSearch::Search::Query> object or a query
+B<query> - Either a L<Lucy::Search::Query> object or a query
 string.  If a query string, it will be parsed with set_heed_colons
-true.  See L<KinoSearch::Search::QueryParser>.
+true.  See L<Lucy::Search::QueryParser>.
 
 =item *
 
@@ -86,12 +91,12 @@ C<offset> is taken into account.
 
 =item *
 
-B<sort_spec> - A L<KinoSearch::Search::SortSpec>, which will affect
+B<sort_spec> - A L<Lucy::Search::SortSpec>, which will affect
 how results are ranked and returned.
 
 =back
 
-Returns an instance of L<KinoSearch::Search::Hits>.
+Returns an instance of L<Lucy::Search::Hits>.
 
 =head1 AUTHORS
 

@@ -8,7 +8,12 @@ use Moose;
 use Text::CSV;
 use Carp;
 
-use KinoSearch;
+use Lucy;
+
+# Constants
+use Readonly;
+# $EMPTY_FIELD_VALUE is the indexed value for object fields with empty values.
+Readonly my $EMPTY_FIELD_VALUE => 'CIDERNULL';
 
 has schema => (
     is => 'ro',
@@ -22,7 +27,7 @@ has path_to_index => (
 
 has _indexer => (
     is => 'rw',
-    isa => 'Maybe[KinoSearch::Index::Indexer]',
+    isa => 'Maybe[Lucy::Index::Indexer]',
 );
 
 has _in_txn => (
@@ -32,27 +37,27 @@ has _in_txn => (
 
 # Create the index schema.
 # We'll try to have all the indexes share the same one...
-my $index_schema = KinoSearch::Plan::Schema->new;
-my $polyanalyzer = KinoSearch::Analysis::PolyAnalyzer->new(
+my $index_schema = Lucy::Plan::Schema->new;
+my $polyanalyzer = Lucy::Analysis::PolyAnalyzer->new(
     language => 'en',
 );
 
 # Define some basic types. Just being coarse for now.
-my $text_type = KinoSearch::Plan::FullTextType->new(
+my $text_type = Lucy::Plan::FullTextType->new(
     analyzer => $polyanalyzer,
     sortable => 1,
 );
 
-my $unstored_text = KinoSearch::Plan::FullTextType->new(
+my $unstored_text = Lucy::Plan::FullTextType->new(
     analyzer => $polyanalyzer,
     sortable => 0,
     stored   => 0,
 );
 
-my $string_type = KinoSearch::Plan::StringType->new( sortable => 1 );
-my $storage_only = KinoSearch::Plan::StringType->new( indexed => 0 );
-my $index_only = KinoSearch::Plan::StringType->new( stored => 0 );
-my $int_type    = KinoSearch::Plan::Int32Type->new;
+my $string_type = Lucy::Plan::StringType->new( sortable => 1 );
+my $storage_only = Lucy::Plan::StringType->new( indexed => 0 );
+my $index_only = Lucy::Plan::StringType->new( stored => 0 );
+my $int_type    = Lucy::Plan::Int32Type->new;
 
 # Define the fields.
 my @object_text_fields
@@ -140,7 +145,7 @@ sub make_index {
     # the current transaction to complete.
     $self->txn_rollback;
 
-    my $indexer = KinoSearch::Index::Indexer->new(
+    my $indexer = Lucy::Index::Indexer->new(
         index => $self->path_to_index,
         schema => $index_schema,
         create => 1,
@@ -318,7 +323,7 @@ around _indexer => sub {
 
     my $indexer = $self->$orig;
     unless ( $indexer ) {
-        $indexer = KinoSearch::Index::Indexer->new(
+        $indexer = Lucy::Index::Indexer->new(
             index => $self->path_to_index,
             schema => $index_schema,
             create => 1,
@@ -351,7 +356,7 @@ sub _add_to_indexer {
     # description, language_name.
 
     for my $field ( @object_text_fields ) {
-        $doc->{ $field } = $object->$field || '';
+        $doc->{ $field } = $object->$field || $EMPTY_FIELD_VALUE;
     }
 
 
@@ -360,7 +365,7 @@ sub _add_to_indexer {
     my $type_obj = $object->type_object;
     if ( $object->type eq 'collection' ) {
         for my $field ( @collection_text_fields ) {
-            $doc->{ $field } = $type_obj->$field || '';
+            $doc->{ $field } = $type_obj->$field || $EMPTY_FIELD_VALUE;
         }
         for my $field ( @collection_multitext_fields ) {
             $doc->{ $field } = join "\n", $type_obj->$field;
@@ -368,12 +373,12 @@ sub _add_to_indexer {
     }
     elsif ( $object->type eq 'series' ) {
         for my $field ( @series_text_fields ) {
-            $doc->{ $field } = $type_obj->$field || '';
+            $doc->{ $field } = $type_obj->$field || $EMPTY_FIELD_VALUE;
         }
     }
     elsif ( $object->type eq 'item' ) {
         for my $field ( @item_text_fields ) {
-            $doc->{ $field } = $type_obj->$field || '';
+            $doc->{ $field } = $type_obj->$field || $EMPTY_FIELD_VALUE;
         }
         for my $field ( @item_multitext_fields ) {
             $doc->{ $field } = join "\n", $type_obj->$field;

@@ -247,12 +247,15 @@ sub init_schema {
         ]
     );
 
+	# NOTES: Item 5 has no "volume", for the sake of field-based NULL searches.
+	# Item 4 has volume number 'null' in order to make sure that the system can tell
+	# that literal string apart from NULL. Edge-casey!
     $schema->populate(
         'Item',
         [
-            [qw/id description date_from date_to dc_type accession_number/],
-            [4, 'Test description.', '2000-01-01', '2008-01-01', 1, '2011.004'],
-            [5, 'Test description.', '2002-01-01', '2010-01-01', 1, '2011.005'],
+            [qw/id description date_from date_to dc_type accession_number volume/],
+            [4, 'Test description.', '2000-01-01', '2008-01-01', 1, '2011.004', 'null',],
+            [5, 'Test description.', '2002-01-01', '2010-01-01', 1, '2011.005', undef],
         ]
     );
 

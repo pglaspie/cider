@@ -1,2 +1,4 @@
 - at: @midnight
   event: /search/make_index
+- trigger: make_index
+  event: /search/make_index

@@ -55,4 +55,11 @@ $mech->submit_form_ok( { with_fields => {
 $mech->content_contains( '"title:(Item AND 1)" returned 1 object',
                          'Found 1 Item 1.' );
 
+$mech->get( '/search' );
+$mech->submit_form_ok( { with_fields => {
+    query => 'title:Item AND volume:NULL',
+} }, 'Search for title:Item and no description.' );
+$mech->content_contains( 'returned 1 object',
+                         'Found 1 item with no volume.' );
+                         
 done_testing;
