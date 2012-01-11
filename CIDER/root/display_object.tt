@@ -11,6 +11,8 @@ object_id = object.id;
 [%# XXX Do a FOR loop here, from 0..$level. Dunno syntax. %]
 
 <p>
+[[% object.type|ucfirst %]]
+
 [% IF object.number_of_children > 0 %]
     [% INCLUDE collapse_button.tt %] [% INCLUDE expand_button.tt %]
 [% END %]
