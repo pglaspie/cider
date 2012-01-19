@@ -115,3 +115,12 @@ in
 format.
 <input type="submit" value="Go" />
 </form>
+
+<h3>Clone</h3>
+<p>
+Click the button below to start preparing a new [% object.type %] object based on this one. You will have the opportunity to edit it before it is created.
+</p>
+
+<form action="[% c.uri_for_action( c.controller('Object').action_for('clone'), [ object.number ] ) %]">
+<input type="submit" name="clone_button" value="Clone this record" />
+</form>

@@ -297,6 +297,61 @@ sub export :Chained( 'object' ) :Args( 0 ) {
     $c->forward( $self->action_for( '_export' ) );
 }
 
+# The clone action is basically a variant of the detail action. It blanks out the
+# present object's "Number" field and presents a different template, one that creates
+# a new object rather than edits the existing one.
+sub clone :Chained( 'object') :Args( 0 ) :Form {
+	my ( $self, $c ) = @_;
+	my $object = $c->stash->{ object };
+
+    my $form = $self->form;
+    my $type = $object->type;
+    $form->load_config_filestem( "object/$type" );
+
+    if ( $type eq 'collection' ) {
+        $self->_build_language_field( $c, $form, 1 );
+    }
+
+    # Add contraint classes to required form fields
+    $form->auto_constraint_class('constraint_%t');
+
+	# Get rid of all form fields with the original object's IDs
+	$form->remove_element( $form->get_field( 'id' ) );
+
+	# Get rid of derived fields, since the new object won't have any defined.
+	my $derived_elements_ref = $form->get_all_elements( type => 'Label' );
+	for my $derived_element ( @{ $derived_elements_ref } ) {
+		$derived_element->parent->remove_element( $derived_element );
+	}
+
+    $form->get_field( 'submit' )->value( "Create \u$type" );
+
+    $form->process;
+
+    if ( not $form->submitted ) {
+        $form->model->default_values( $object );
+        
+        # Rub out all 'id' sub elements (for repeating fields and such)
+       	my $id_elements_ref = $form->get_all_elements( name => 'id' );
+		for my $id_element ( @{ $id_elements_ref } ) {
+			$id_element->value( '' );
+		}
+		
+		if ( $object->parent ) {
+			$form->default_values( { parent => $object->parent->id } );
+	    }
+	    else {
+	    	$form->remove_element( $form->get_field( 'parent' ) );
+	    }
+    }
+    else {
+    	$c->forward( $self->action_for( "create_$type" ) );
+    }
+
+	$c->stash->{ form } = $form;	
+	$c->stash->{ template } = 'object/clone.tt';
+}
+
 sub _export :Private {
     my ( $self, $c ) = @_;
 

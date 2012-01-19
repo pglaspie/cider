@@ -246,4 +246,26 @@ $mech->content_contains( '>Test Name<', 'Authority name is exported.' );
 
 # TO DO: test delete button
 
+$mech->get( '/object/n1' );
+$mech->submit_form_ok( { with_fields => {
+    clone_button => 1,
+} }, 'Clicked the clone button' );
+
+$mech->content_contains( 'This form will create', 'Loaded the clone form' );
+$mech->content_contains( 'Test Collection with kids', 'Clone form looks OK' );
+$mech->submit_form_ok( { with_fields => {
+    submit => 1,
+} }, 'Submitted the clone form' );
+
+$mech->content_contains( 'Number is already in use', 
+                         'Form rejected for the right reason',
+                        );
+
+$mech->submit_form_ok( { with_fields => {
+    submit => 1,
+    number => 'n1.clone',
+} }, 'Resubmitted the clone form' );
+
+$mech->content_contains( 'You have successfully created', 'Clone created successfully' );
+
 done_testing();
