@@ -94,16 +94,24 @@ $(function() {
 
 	    $.each(names, function() {
 		var name = $(this).attr('name');
-		$(this).attr('name', name.replace(/\d/, counter));
+		$(this).attr('name', name.replace(/\d+/, counter));
 	    });
+
+            var id = new_element.find('*[name$=".id"]');
+            id.val('');
 	    
 	    fieldset.children('div').append(new_element);
 	});
 
-	// When remove button is pressed, remove the relevant block.
+	// When remove button is pressed, remove the relevant input
+	// and replace it with a hidden empty field.
 	$('.remove_button').live('click keypress', function() {
-	    $(this).parent('div').parent('div').remove();
-	    counter--
+            button = $(this);
+            input = button.prev();
+            input.replaceWith('<input type="hidden" name="' + input.attr('name') + '">');
+            button.remove();
+
+	    counter--;
 	    input_count.attr('value', counter);
 	});
     });
