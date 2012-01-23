@@ -90,6 +90,7 @@ $(function() {
 	    input_count.attr('value', counter);
 
 	    var new_element = elements.last().clone();
+
 	    var names = new_element.find('*[name^="' + element_name + '"]');
 
 	    $.each(names, function() {
@@ -100,7 +101,11 @@ $(function() {
             var id = new_element.find('*[name$=".id"]');
             id.val('');
 	    
+	    // Clear old value from cloned element
+	    new_element.find('input[type="text"]').val('');
+
 	    fieldset.children('div').append(new_element);
+
 	});
 
 	// When remove button is pressed, remove the relevant input
