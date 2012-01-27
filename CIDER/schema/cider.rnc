@@ -328,6 +328,7 @@ unitType =
 | "0.40 cubic ft."
 | "0.25 cubic ft."
 | "0.20 cubic ft."
+| "0"
 | "Bound volume"
 | "Artifact"
 | "Audio-visual media"
