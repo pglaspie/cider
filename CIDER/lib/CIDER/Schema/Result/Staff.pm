@@ -25,6 +25,12 @@ __PACKAGE__->has_many(
     { 'foreign.stabilized_by' => 'self.id' },
 );
 
+__PACKAGE__->many_to_many(
+    items =>
+        'digital_objects',
+    'item'
+);
+
 __PACKAGE__->has_many(
     logs =>
         'CIDER::Schema::Result::Log',

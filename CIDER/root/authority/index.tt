@@ -2,9 +2,24 @@
 
 <h2>[% page.title %]</h2>
 
-[% FOR id IN list_ids %]
+[% FOR pair IN lists %]
+[% id = pair.key %]
+[% list = pair.value %]
 <p>
+[% IF list.sublists %]
+[% list.name %]
+<ul>
+[% FOR sublist_pair IN list.sublists %]
+[% sublist_id = sublist_pair.key %]
+[% sublist_name = sublist_pair.value %]
+<li><a href="[% c.uri_for( c.controller( 'Authority' ).action_for( 'browse' ),
+                           [ "$id-$sublist_id" ] ) %]"
+>[% sublist_name %] [% list.name %]</a>
+[% END %]
+</ul>
+[% ELSE %]
 <a href="[% c.uri_for( c.controller( 'Authority' ).action_for( 'browse' ),
-                       [ id ] ) %]">[% list_names.$id _ 's' %]</a>
+                       [ id ] ) %]">[% list.name %]</a>
+[% END %]
 </p>
 [% END %]
