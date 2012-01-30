@@ -75,8 +75,9 @@ $(function() {
 	var add_button = '<p role="button" id="' + element_name + '_add_button"><img src="' + base_uri + 'static/images/list-add-4.png" /></p>';
 	fieldset.children('div').prepend(add_button);
 
+/*
 	// create add button and add it to all elements but the first default one.
-	 var remove_button = '<span role="button" class="remove_button"><img src="' + base_uri + 'static/images/list-remove-4.png" /></span>';
+	var remove_button = '<span role="button" class="remove_button"><img src="' + base_uri + 'static/images/list-remove-4.png" /></span>';
 	 
 	elements.each(function(i) {
 	    if (i != 0) {
@@ -84,6 +85,7 @@ $(function() {
 	    }
 	});
 
+*/
 	// When add button is pressed, add a new field block.
 	$('#' + element_name + '_add_button').live('click keypress', function() {
 	    counter++;
@@ -107,7 +109,7 @@ $(function() {
 	    fieldset.children('div').append(new_element);
 
 	});
-
+/*
 	// When remove button is pressed, remove the relevant input
 	// and replace it with a hidden empty field.
 	$('.remove_button').live('click keypress', function() {
@@ -119,6 +121,7 @@ $(function() {
 	    counter--;
 	    input_count.attr('value', counter);
 	});
+*/
     });
 });
 

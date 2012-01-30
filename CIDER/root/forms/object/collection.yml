@@ -144,20 +144,25 @@ elements:
     - type: Hidden
       name: material_count
     - type: Fieldset
+      attributes:
+         class: repeatable
       legend: Associated Material
       elements:
-        - type: Repeatable
-          nested_name: material
-          counter_name: material_count
-          model_config:
-            empty_rows: 1
+        - type: Block
+          id: material
           elements:
-            - type: Hidden
-              name: id
-            - type: Text
-              name: material
+            - type: Repeatable
+              nested_name: material
+              counter_name: material_count
               model_config:
-                delete_if_empty: 1
+                empty_rows: 1
+              elements:
+                - type: Hidden
+                  name: id
+                - type: Text
+                  name: material
+                  model_config:
+                    delete_if_empty: 1
 
     - type: Textarea
       label: Notes
@@ -178,7 +183,8 @@ elements:
               nested_name: languages
               counter_name: language_count
               model_config:
-                empty_rows: 1
+                empty_rows: 0
+                new_rows_max: 100
               elements:
                 - type: Hidden
                   name: id
@@ -267,6 +273,7 @@ elements:
               counter_name: relationship_count
               model_config:
                 empty_rows: 1
+                new_rows_max: 100
               elements:
                 - type: Hidden
                   name: id

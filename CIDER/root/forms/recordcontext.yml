@@ -51,19 +51,25 @@ elements:
   - type: Hidden
     name: alt_name_count
   - type: Fieldset
+    attributes:
+        class: repeatable
     legend: Alternate Names
     elements:
-      - type: Repeatable
-        nested_name: alt_names
-        counter_name: alt_name_count
-        model_config:
-          empty_rows: 1
+      - type: Block
+        id: alt_names
         elements:
-          - type: Hidden
-            name: id
-          - name: name
+          - type: Repeatable
+            nested_name: alt_names
+            counter_name: alt_name_count
             model_config:
-              delete_if_empty: 1
+              empty_rows: 1
+              new_rows_max: 100
+            elements:
+              - type: Hidden
+                name: id
+              - name: name
+                model_config:
+                  delete_if_empty: 1
 
   - type: Fieldset
     legend: Date
@@ -109,22 +115,28 @@ elements:
   - type: Hidden
     name: source_count
   - type: Fieldset
+    attributes:
+        class: repeatable
     legend: Sources
     elements:
-      - type: Repeatable
-        nested_name: sources
-        counter_name: source_count
-        model_config:
-          empty_rows: 1
+      - type: Block
+        id: sources
         elements:
-          - type: Hidden
-            name: id
-          - name: source
-            constraint:
-              type: Repeatable::Any
-              message: At least one source is required
+          - type: Repeatable
+            nested_name: sources
+            counter_name: source_count
             model_config:
-              delete_if_empty: 1
+              empty_rows: 1
+              new_rows_max: 100
+            elements:
+              - type: Hidden
+                name: id
+              - name: source
+                constraint:
+                   type: Repeatable::Any
+                   message: At least one source is required
+                model_config:
+                   delete_if_empty: 1
 
   - type: Select
     name: function
