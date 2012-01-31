@@ -1,11 +1,17 @@
 method: post
+attributes:
+   class: form-stacked
 
 elements:
     - type: File
+      attributes:
+        class: clearfix
       label: File
       name: file
       constraint: Required
 
     - type: Submit
+      attributes:
+        class: "btn primary"
       name: submit
       value: Import

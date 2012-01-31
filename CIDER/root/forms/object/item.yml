@@ -1,4 +1,6 @@
 method: post
+attributes:
+   class: form-stacked
 
 form_error_message: Sorry, there was in error in your submission. Please see below.
 
@@ -9,7 +11,8 @@ default_args:
     elements:
         Textarea:
             rows: 8
-
+            attributes:
+               class: "xxlarge clearfix"
 
 
 elements:
@@ -22,6 +25,8 @@ elements:
 
     - label: Item Number
       name: number
+      attributes:
+         class: clearfix
       constraints:
         - type: Required
         - type: DBIC::Unique
@@ -31,6 +36,8 @@ elements:
 
     - label: Item Title
       name: title
+      attributes:
+         class: "span7 clearfix"
       constraints:
         - type: Required
 
@@ -54,6 +61,8 @@ elements:
                 - type: Hidden
                   name: id
                 - type: Select
+                  attributes:
+                     class: clearfix
                   name: name
                   empty_first: 1
                   model_config:
@@ -83,6 +92,8 @@ elements:
     - type: Select
       label: Restrictions
       name: restrictions
+      attributes:
+         class: clearfix
       model_config:
         resultset: ItemRestrictions
         label_column: description
@@ -91,10 +102,14 @@ elements:
 
     - name: accession_number
       label: Accession Number
+      attributes:
+        class: clearfix
 
     - type: Select
       label: Type
       name: dc_type
+      attributes:
+        class: "small clearfix"
       constraint: Required
       model_config:
         resultset: DCType
@@ -109,7 +124,7 @@ elements:
       legend: Personal Names
       elements:
         - type: Block
-          id: item_personal_names 
+          id: item_personal_names
           elements:
             - type: Repeatable
               nested_name: item_personal_names
@@ -122,6 +137,8 @@ elements:
                   name: id
                 - type: Select
                   name: name
+                  attributes:
+                    class: "xlarge clearfix"
                   empty_first: 1
                   model_config:
                     resultset: AuthorityName
@@ -148,6 +165,8 @@ elements:
                   name: id
                 - type: Select
                   name: name
+                  attributes:
+                     class: "xlarge clearfix"
                   empty_first: 1
                   model_config:
                     resultset: AuthorityName
@@ -174,6 +193,8 @@ elements:
                   name: id
                 - type: Select
                   name: term
+                  attributes:
+                    class: "xlarge clearfix"
                   empty_first: 1
                   model_config:
                      resultset: TopicTerm
@@ -199,6 +220,8 @@ elements:
                   name: id
                 - type: Select
                   name: term
+                  attributes:
+                    class: "xlarge clearfix"
                   empty_first: 1
                   model_config:
                     resultset: GeographicTerm
@@ -296,6 +319,8 @@ elements:
                 - type: Hidden
                   name: id
                 - type: Select
+                  attributes:
+                    class: clearfix
                   name: location
                   label: Location
                   empty_first: 1
@@ -304,6 +329,8 @@ elements:
                     delete_if_empty: 1 
                 - type: Label
                   name: format
+                  attributes:
+                     class: clearfix
                   label: Format
                 - type: Textarea
                   name: notes
@@ -333,6 +360,8 @@ elements:
                  - type: Hidden
                    name: id
                  - type: Select
+                   attributes:
+                      class: clearfix
                    name: location
                    label: Location
                    empty_first: 1
@@ -341,6 +370,8 @@ elements:
                      delete_if_empty: 1 
                  - type: Select
                    name: format
+                   attributes:
+                      class: clearfix
                    label: Format
                    empty_first: 1
                    model_config:
@@ -376,6 +407,8 @@ elements:
                   name: id
                 - type: Select
                   name: location
+                  attributes:
+                    class: clearfix
                   label: Location
                   empty_first: 1
                   model_config:
@@ -383,6 +416,8 @@ elements:
                     delete_if_empty: 1 
                 - type: Select
                   name: format
+                  attributes:
+                     class: clearfix
                   label: Format
                   empty_first: 1
                   model_config:
@@ -421,6 +456,8 @@ elements:
                   name: id
                 - type: Select
                   name: location
+                  attributes:
+                     class: clearfix
                   label: Location
                   empty_first: 1
                   model_config:
@@ -428,6 +465,8 @@ elements:
                     delete_if_empty: 1 
                 - type: Select
                   name: format
+                  attributes:
+                    class: clearfix
                   label: Format
                   empty_first: 1
                   model_config:
@@ -466,6 +505,8 @@ elements:
                   name: id
                 - type: Select
                   name: location
+                  attributes:
+                     class: clearfix
                   label: Location
                   empty_first: 1
                   model_config:
@@ -473,6 +514,8 @@ elements:
                     delete_if_empty: 1 
                 - type: Select
                   name: format
+                  attributes:
+                     class: clearfix
                   label: Format
                   empty_first: 1
                   model_config:
@@ -511,6 +554,8 @@ elements:
                   name: id
                 - type: Select
                   name: location
+                  attributes:
+                     class: clearfix
                   label: Location
                   empty_first: 1
                   model_config:
@@ -518,6 +563,8 @@ elements:
                     delete_if_empty: 1 
                 - type: Select
                   name: format
+                  attributes:
+                    class: clearfix
                   label: Format
                   empty_first: 1
                   model_config:
@@ -555,6 +602,8 @@ elements:
                   name: id
                 - type: Select
                   name: location
+                  attributes:
+                     class: clearfix
                   label: Location
                   empty_first: 1
                   model_config:
@@ -562,6 +611,8 @@ elements:
                     delete_if_empty: 1 
                 - type: Select
                   name: format
+                  attributes:
+                    class: clearfix
                   label: Format
                   empty_first: 1
                   model_config:
@@ -601,6 +652,8 @@ elements:
                   elements:
                     - type: Select
                       name: location
+                      attributes:
+                         class: clearfix
                       label: Location
                       empty_first: 1
                       model_config:
@@ -608,6 +661,8 @@ elements:
                         delete_if_empty: 1 
                     - type: Select
                       name: format
+                      attributes:
+                        class: clearfix
                       label: Format
                       empty_first: 1
                       model_config:
@@ -621,6 +676,8 @@ elements:
                       # - type: DependOn
                       #   others: location
                     - name: permanent_url
+                      attributes:
+                         class: clearfix
                       label: Permanent URL
                       constraint:
                         type: Regex
@@ -664,22 +721,29 @@ elements:
                                   resultset: RelationshipPredicate
                               attributes:
                                   order_by: id
-
                             - name: pid
                               label: PID
+                              attributes:
+                                  class: clearfix
                               # constraint:
                               #   - type: DependOn
                               #     others: predicate
 
                     - name: checksum
+                      attributes:
+                         class: "xlarge clearfix"
                       label: Checksum
                     - type: Select
                       name: file_extension
+                      attributes:
+                         class: "small clearfix"
                       label: File Extension
                       empty_first: 1
                       model_config:
                            resultset: FileExtension
                     - name: original_filename
+                      attributes:
+                         class: "xlarge clearfix"
                       label: Original Filename
                     - type: Textarea
                       name: toc
@@ -690,6 +754,8 @@ elements:
                       elements:
                         - type: Select
                           name: stabilized_by
+                          attributes:
+                            class: clearfix
                           label: By
                           empty_first: 1
                           model_config:
@@ -700,10 +766,14 @@ elements:
                                 - last_name
                                 - first_name
                         - name: stabilization_date
+                          attributes:
+                             class: clearfix
                           label: Date
                           constraint: *Date
                         - type: Select
                           name: stabilization_procedure
+                          attributes:
+                             class: clearfix
                           label: Procedure
                           empty_first: 1
                           model_config:
@@ -718,6 +788,8 @@ elements:
                       elements:
                         - type: Select
                           name: checksum_app
+                          attributes:
+                             class: clearfix
                           label: Checksum
                           model_config:
                              resultset: Application
@@ -725,6 +797,8 @@ elements:
                                function: checksum
                         - type: Select
                           name: media_app
+                          attributes:
+                             class: clearfix
                           label: Media Image
                           model_config:
                              resultset: Application
@@ -732,6 +806,8 @@ elements:
                                 function: media_image
                         - type: Select
                           name: virus_app
+                          attributes:
+                              class: clearfix
                           label: Virus Check
                           model_config:
                              resultset: Application
@@ -749,6 +825,8 @@ elements:
                                 empty_rows: 1
                               elements:
                                  - name: application
+                                   attributes:
+                                      class: clearfix
                                    model_config:
                                       delete_if_empty: 1
 
@@ -781,6 +859,8 @@ elements:
                   name: id
                 - type: Select
                   name: format
+                  attributes:
+                     class: clearfix
                   label: Format
                   empty_first: 1
                   model_config:
@@ -789,9 +869,13 @@ elements:
                         class: browsing_object
                 - name: pid
                   label: PID
+                  attributes:
+                     class: clearfix
                   model_config:
                     delete_if_empty: 1
                 - name: thumbnail_pid
+                  attributes:
+                      class: clearfix
                   label: Thumbnail PID
 
                 - type: Fieldset
@@ -811,6 +895,8 @@ elements:
 
                         - type: Select
                           name: predicate
+                          attributes:
+                             class: clearfix
                           label: Predicate
                           # constraint:
                           #   - type: DependOn
@@ -823,6 +909,8 @@ elements:
                                order_by: id
 
                         - name: pid
+                          attributes:
+                             class: clearfix
                           label: PID
                           # constraint:
                           #   - type: DependOn
@@ -831,4 +919,5 @@ elements:
     - type: Submit
       name: submit
       attributes:
+         class: "btn primary"
          style: "float:left;"

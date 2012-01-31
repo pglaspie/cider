@@ -1,8 +1,8 @@
 [% IF we_just_did_search_and_replace %]
 [% IF count %]
-<div class="success">
+<div class="alert-message success">
 <p>
-You have successfully updated [% count %] [% set.type_plural(count) %].
+You have successfully updated <strong>[% count %] [% set.type_plural(count) %]</strong>
 </p>
 </div>
 [% ELSE %]
@@ -18,7 +18,7 @@ c.uri_for( c.controller('Set').action_for('search_and_replace'), [set.id] )
 %]">
 <p>
 In every [% set.type %]'s
-<select name="field">
+<select class="clearfix" name="field">
 [% IF set.type == 'collection' %]
   [% INCLUDE set/collection_options.tt %]
 [% ELSIF set.type == 'series' %]
@@ -30,7 +30,7 @@ In every [% set.type %]'s
 field, replace every substring
 <input type="text" name="old_value" />
 with
-<input type="text" name="new_value" />.
-<input type="submit" value="Go" />
+<input type="text" name="new_value" />
+<input type="submit" class="btn" value="Go" />
 </p>
 </form>

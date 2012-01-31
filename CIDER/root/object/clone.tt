@@ -3,12 +3,12 @@
 [% USE scalar %]
 
 [% ancestors = object.ancestors %]
-<p>
-<a href="[% c.uri_for( c.controller('List').action_for('index') ) %]">Browse</a>
+<ul class="breadcrumb">
+<li><a href="[% c.uri_for( c.controller('List').action_for('index') ) %]">Browse</a></li>
 [% FOREACH ancestor = ancestors %]
-  &gt; <a href="[% c.uri_for( c.controller('Object').action_for('detail'), [ ancestor.number ] ) %]">[% ancestor.full_title %]</a>
+<li><span class="divider">&gt;</span><a href="[% c.uri_for( c.controller('Object').action_for('detail'), [ ancestor.number ] ) %]">[% ancestor.full_title %]</a></li>
 [% END %]
-</p>
+</ul>
 
 <h2>[% page.title %]</h2>
 
@@ -16,9 +16,11 @@
      <p>Fields marked with a '*' are required</p>
 </div>
 
-<div class="success">
-<p>This form will create a <strong>new</strong> object based on an existing one <em>([% object.title %], [% object.number %])</em>. It will have the same parent as that object. Once created, it won't affect that original object any further.</p>
-<p>Please note that you must manually assign a new Number for this object in order for it to be successfully created.</p>
+<div class="alert-message block-message warning">
+<a class="close" href="#">x</a>
+<p>This form will create a <em>new</em> object based on an existing one <strong>([% object.title %], [% object.number %])</strong> will have the same parent as that object. Once created, it won't affect that original object any further.</p>
+<br />
+<p>Please note that you must manually assign a new Number for this object in order for it to be successfully created.</p><br />
 <p>If you change your mind about creating this new object, simply <a href="[% c.uri_for( c.controller('Object').action_for('detail'), [ object.number ] ) %]">return to the original object</a>.</p>
 </div>
 

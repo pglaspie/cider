@@ -1,7 +1,11 @@
 method: post
+attributes:
+    class: form-stacked
 
 elements:
     - type: Select
+      attributes:
+        class: clearfix
       label: 'In field:'
       name: field
       options:
@@ -48,10 +52,14 @@ elements:
 
     - type: Text
       name: query
+      attributes:
+         class: "xlarge clearfix span7"
       id: query
       constraints:
         - type: Required
 
     - type: Submit
+      attributes:
+        class: "btn primary"
       name: submit
       value: Search

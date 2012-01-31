@@ -1,21 +1,56 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
       <title>CIDER - [% page.title %]</title>
-      <link rel="stylesheet" href="[% c.uri_for('/static/css/style.css') %]" media="all">
+       <link rel="stylesheet" href="[% c.uri_for('/static/bootstrap/bootstrap.css') %]" media="all">
+       <link rel="stylesheet" href="[% c.uri_for('/static/css/style.css') %]" media="all">
        <script type="text/javascript" src="[% c.uri_for('/static/js/jquery-1.6.2.min.js') %]"></script>
        <script type="text/javascript" src="[% c.uri_for('/static/js/jquery-ui-1.8.16.custom.min.js') %]"></script>
+
        <script type="text/javascript">var base_uri = "[% c.uri_for('/') %]";</script>
        <script type="text/javascript" src="[% c.uri_for('/static/js/cider.js') %]"></script>
+       <script type="text/javascript" src="[% c.uri_for('/static/bootstrap/js/bootstrap-alerts.js') %]"></script>
+       <style type="text/css">
+       	  body {
+            padding-top: 60px;
+          }
+       </style>
+
      </head>
      <body>
-       <div id="banner">
-	 <a href="[% c.uri_for('/') %]"><h1><img src="[% c.uri_for('/static/images/cider-apple-hand.png') %]" width="200px" /></h1></a>
-       </div>
-      <div id="sidebar">
-        [% INCLUDE sidebar.tt %]
+
+     <div class="topbar">
+      <div class="topbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="[% c.uri_for('/') %]">CIDER</a>
+          <ul class="nav">
+            <li><a href="[% c.uri_for('/list') %]">Browse</a></li>
+            <li><a href="[% c.uri_for('/search') %]">Search</a></li>
+            <li><a href="https://wikis.uit.tufts.edu/confluence/display/DCAcollectionmanagementtoolreplacementproject/Home">DCA Documentation</a></li>
+          </ul>
+        </div>
       </div>
-      <div id="content">
+    </div>
+
+    <div class="container-fluid">
+
+      <div class="sidebar">
+        <div class="well">
+	  [% INCLUDE sidebar.tt %]
+        </div>
+      </div>
+      
+      <div class="content">
         [% content %]
       </div>
+
+<!-- 
+Footer, if we want to implement it...
+      <footer>
+        <p>Here is some footer text</p>
+      </footer>
+-->
+
+    </div>
     </body>
 </html>

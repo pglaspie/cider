@@ -8,10 +8,10 @@
 
 
 [% IF we_just_created_this %]
-<div class="success">
+<div class="alert-message message-block success">
 <p>
 You have successfully created a new location with barcode
-<em>[% location.barcode %]</em>.
+<strong>[% location.barcode %]</strong>.
 
 [% IF item %]
 It has been set as the location of <a href="[%
@@ -24,17 +24,17 @@ c.uri_for( c.controller('Object').action_for('detail'), [ item.number ] )
 [% END %]
 
 [% IF we_just_updated_this %]
-<div class="success">
+<div class="alert-message success">
 <p>You have successfully updated this location.</p>
 </div>
 [% END %]
 
 [% form %]
 
-<h3>Delete this location</h3>
-<p>To permanently delete this location, click the button below.</p>
-<p><form id="delete_form" action="[% c.uri_for_action( c.controller( 'Location' ).action_for('delete'), [ location.barcode ]) %]"><input type="submit" name="delete" value="Delete" /></form></p>
+<form id="delete_form" action="[% c.uri_for_action( c.controller( 'Location' ).action_for('delete'), [ location.barcode ]) %]"><input type="submit" class="btn danger" style="margin-left:20px;" name="delete" value="Delete" /></form>
 
+
+<div class="well">
 <h3>Export</h3>
 
 <form id="export_form" action="[% c.uri_for_action( c.controller( 'Location' ).action_for( 'export' ), [ location.barcode ] ) %]">
@@ -45,5 +45,6 @@ Export this location in
 [% END %]
 </select>
 format.
-<input type="submit" value="Go" />
+<input type="submit" class="btn" value="Go" />
 </form>
+</div>

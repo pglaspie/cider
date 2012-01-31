@@ -1,47 +1,4 @@
-body {
-    width: 700px;
-    margin: auto;
-    margin-top: 10px;
-    position: relative;
-}
-
-div#sidebar {
-    width: 200px;
-}
-
-div#banner {
-    border-bottom: 1px solid black;
-}
-
-div#content {
-    width: 500px;
-    position: absolute;
-    top: 60;
-    left: 201;
-    border-left: 1px solid gray;
-    padding-left: 10px;
-    margin-top: 10px;
-}
-
-.objecttype {
-    font-size: small;
-}
-
-.success {
-    background: palegreen;
-    padding: 5px;
-    margin: 5px;
-}
-
-.error_message {
-    color: red;
-}
-
-.confirm {
-    background: skyblue;
-    padding: 5px;
-    margin: 5px;
-}
+/* Bootstrap customizations */
 
 div.form_error_message {
     background: pink;
@@ -49,48 +6,12 @@ div.form_error_message {
     margin: 5px;
 }
 
-div.error {
-    margin-top: 30px;
-    margin-bottom: 30px;
-}
-
 .required_message {
     font-size: small;
 }
 
-label {
-    display: block;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-legend {
-    font-weight: bold;
-}
-
 [role=button] {
     cursor: pointer;
-}
-
-fieldset {
-    border: 2px solid gray;
-    margin-top: 10px;
-}
-
-fieldset.repeatable label {
-    display: inline;
-    font-weight: normal;
-}
-
-fieldset.checkboxgroup legend, fieldset.repeatable legend, fieldset.radiogroup legend {
-    font-weight: bold;
-    padding-left: 0;
-}
-
-fieldset.checkboxgroup, fieldset.radiogroup {
-    border: 0;
-    margin: 0;
-    padding: 0;
 }
 
 /* 
@@ -101,60 +22,3 @@ do this but it will have to work for now.
     content: '*';
 }
 
-.checkboxgroup label {
-    display: inline;
-    font-weight: normal;
-}
-
-.radiogroup label {
-    display: inline;
-    font-weight: normal;
-}
-
-.text input {
-    width: 30em;
-    border: solid 1px gray;
-}
-
-.text input#username {
-    width: 20em;
-    border: solid 1px gray;
-}
-
-.password input {
-    width: 20em;
-    border: solid 1px gray;
-}
-
-.text input.name {
-    width: 20em;
-    border: solid 1px gray;
-}
-
-.submit {
-    margin-top: 20px;
-}
-
-textarea {
-    border: solid 1px gray;
-}
-
-table {
-    border-width: 1px;
-    border-style: solid;
-    border-spacing: 0;
-}
-
-th {
-    border-style: solid;
-    border-width: 1px;
-    background: cadetblue;
-    padding: 2px;
-}
-
-td {
-    border-width: 1px;
-    border-style: solid;
-    background: lightblue;
-    padding: 2px;
-}

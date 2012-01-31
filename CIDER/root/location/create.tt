@@ -8,10 +8,10 @@
 
 
 [% IF return_uri %]
-<div class="form_error_message">
+<div class="alert-message error">
 <p>
-No location with barcode <em>[% barcode %]</em> exists.  Please create
-the location below, after which the item <em>[% title %]</em>
+No location with barcode <strong>[% barcode %]</strong> exists.  Please create
+the location below, after which the item <strong>[% title %]</strong>
 will be [% action %]d.
 </p>
 </div>

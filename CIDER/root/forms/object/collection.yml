@@ -1,4 +1,6 @@
 method: post
+attributes:
+   class: form-stacked
 
 form_error_message: Sorry, there was in error in your submission. Please see below.
 
@@ -17,6 +19,8 @@ elements:
     - type: Text
       label: Collection Number
       name: number
+      attributes:
+        class: clearfix
       id: number
       constraints:
         - type: Required
@@ -29,6 +33,8 @@ elements:
       label: Collection Title
       name: title
       id: title
+      attributes:
+         class: "span7 clearfix"
       constraint: Required
 
     - type: Fieldset
@@ -60,21 +66,30 @@ elements:
             constraint: *Date
 
     - type: Label
+      attributes:
+        class: clearfix
       label: Extent
       name: extent
 
     - type: Label
+      
       label: Restrictions
       name: restrictions
+      attributes:
+         class: clearfix
 
     - type: Textarea
       label: Scope
       name: scope
+      attributes:
+        class: "xxlarge clearfix"
       id: scope
 
     - type: Textarea
       label: Organization
       name: organization
+      attributes:
+         class: "xxlarge clearfix"
       id: organization
 
     - type: Hidden
@@ -92,6 +107,8 @@ elements:
               name: id
             - type: Select
               name: record_context
+              attributes:
+                 class: "xlarge clearfix"
               empty_first: 1
               model_config:
                 resultset: RecordContext
@@ -113,6 +130,8 @@ elements:
               name: id
             - type: Select
               name: record_context
+              attributes:
+                class: "clearfix xlarge"
               empty_first: 1
               model_config:
                 resultset: RecordContext
@@ -122,11 +141,15 @@ elements:
     - type: Textarea
       label: Archival History
       name: history
+      attributes:
+         class: "xxlarge clearfix"
       id: history
 
     - type: Select
       label: Documentation
       name: documentation
+      attributes:
+         class: "clearfix xlarge"
       id: documentation
       empty_first: 1
       constraint: Required
@@ -139,6 +162,9 @@ elements:
     - type: Textarea
       label: Processing Notes
       name: processing_notes
+      attributes:
+         class: "xxlarge clearfix"
+         rows: 3
       id: processing_notes
 
     - type: Hidden
@@ -160,6 +186,8 @@ elements:
                 - type: Hidden
                   name: id
                 - type: Text
+                  attributes:
+                     class: "span7 clearfix"
                   name: material
                   model_config:
                     delete_if_empty: 1
@@ -167,6 +195,8 @@ elements:
     - type: Textarea
       label: Notes
       name: notes
+      attributes:
+         class: "xxlarge clearfix"
       id: notes
 
     - type: Hidden
@@ -183,12 +213,14 @@ elements:
               nested_name: languages
               counter_name: language_count
               model_config:
-                empty_rows: 0
+                empty_rows: 1
                 new_rows_max: 100
               elements:
                 - type: Hidden
                   name: id
                 - type: Select
+                  attributes:
+                     class: "clearfix"
                   name: language
                   model_config:
                     delete_if_empty: 1
@@ -214,6 +246,8 @@ elements:
                 - type: Hidden
                   name: id
                 - type: Text
+                  attributes:
+                     class: "span7 clearfix"
                   name: subject
                   model_config:
                     delete_if_empty: 1
@@ -221,6 +255,8 @@ elements:
     - type: Select
       label: Processing Status
       name: processing_status
+      attributes:
+         class: "clearfix"
       id: processing_status
       constraint: Required
       empty_first: 1
@@ -233,9 +269,13 @@ elements:
     - type: Label
       label: Accession Number(s)
       name: accession_numbers
+      attributes:
+         class: clearfix
 
     - type: Text
       name: permanent_url
+      attributes:
+        class: "clearfix"
       label: Permanent URL
       constraint:
         type: Regex
@@ -246,11 +286,15 @@ elements:
 
     - type: Text
       name: pid
+      attributes:
+        class: "clearfix"
       label: PID
       # TO DO: constrain uniqueness?
 
     - type: Select
       name: publication_status
+      attributes:
+         class: "small clearfix"
       label: Publication Status
       model_config:
         resultset: PublicationStatus
@@ -281,6 +325,8 @@ elements:
                 - type: Select
                   label: Predicate
                   name: predicate
+                  attributes:
+                      class: clearfix
                   constraint:
                     - type: DependOn
                       others: pid
@@ -292,6 +338,8 @@ elements:
                     order_by: id
 
                 - type: Text
+                  attributes:
+                    class: clearfix
                   label: PID
                   name: pid
                   constraint:
@@ -301,6 +349,8 @@ elements:
     - type: Hidden
       name: parent
 
-
     - type: Submit
       name: submit
+      attributes:
+        class: "btn primary"
+        style: "float:left;"

@@ -133,3 +133,10 @@ $( function() {
         navigation: true
     } );
 } );
+
+// Various class fixes for bootstrap
+$(function() {
+    $('div.label').removeClass('label');
+    $('div.label').removeClass('label');
+    $('fieldset').addClass('well');
+});

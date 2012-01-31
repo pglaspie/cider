@@ -67,7 +67,7 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
     # The hidden 'parent' field is only used for creation.
     $form->remove_element( $form->get_field( 'parent' ) );
 
-    $form->get_field( 'submit' )->value( "Update \u$type" );
+    $form->get_field( 'submit' )->value( "Update" );
 
     $form->process;
 
