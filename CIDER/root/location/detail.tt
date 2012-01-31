@@ -9,6 +9,7 @@
 
 [% IF we_just_created_this %]
 <div class="alert-message message-block success">
+<a class="close" href="#">x</a>
 <p>
 You have successfully created a new location with barcode
 <strong>[% location.barcode %]</strong>.
@@ -25,6 +26,7 @@ c.uri_for( c.controller('Object').action_for('detail'), [ item.number ] )
 
 [% IF we_just_updated_this %]
 <div class="alert-message success">
+<a class="close" href="#">x</a>
 <p>You have successfully updated this location.</p>
 </div>
 [% END %]

@@ -18,12 +18,14 @@
 
 [% IF we_just_picked_this_up %]
 <div class="alert-message success">
+<a class="close" href="#">x</a>
 <p>To finish moving this object, navigate to a different object (or <a href="[% c.uri_for('/') %]">the object root</a>) however you like, and then click the button that says "Make [% object.title %] a child of this object".</p>
 </div>
 [% END %]
 
 [% IF we_just_created_this %]
 <div class="alert-message success">
+<a class="close" href="#">x</a>
 <p>You have successfully created a new [% object.type %] with the title <strong>[% object.title %]</strong>.</p>
 </div>
 [% END %]

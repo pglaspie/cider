@@ -1,6 +1,18 @@
 
 $.ajaxSetup( { cache: false });
 var ajax_eyecandy = "<p>Loading...</p>";
+
+// Various class fixes for bootstrap
+$(function() {
+    // two of the 'div.label' things because FormFu can double up on 'label' classes (evil)
+    $('div.label').removeClass('label');
+    $('div.label').removeClass('label');
+
+    $('fieldset').addClass('well');
+    // Make the alert messages closable 
+    $('.alert-message').alert();
+
+});
     
 
 /* Expand and collapse for browse list */
@@ -134,9 +146,3 @@ $( function() {
     } );
 } );
 
-// Various class fixes for bootstrap
-$(function() {
-    $('div.label').removeClass('label');
-    $('div.label').removeClass('label');
-    $('fieldset').addClass('well');
-});

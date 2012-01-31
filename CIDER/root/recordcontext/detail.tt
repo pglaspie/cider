@@ -8,6 +8,7 @@
 
 [% IF we_just_created_this %]
 <div class="alert-message success">
+<a class="close" href="#">x</a>
 <p>You have successfully created a new record context with name entry
 <strong>[% rc.name_entry %]</strong>.</p>
 </div>
@@ -15,6 +16,7 @@
 
 [% IF we_just_updated_this %]
 <div class="alert-message success">
+<a class="close" href="#">x</a>
 <p>You have successfully updated this record context.</p>
 </div>
 [% END %]
