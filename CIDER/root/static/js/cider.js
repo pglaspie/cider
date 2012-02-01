@@ -8,7 +8,7 @@ $(function() {
     $('div.label').removeClass('label');
     $('div.label').removeClass('label');
 
-    $('fieldset').addClass('well');
+    $('fieldset').wrap('<div class="well" />');
     // Make the alert messages closable 
     $('.alert-message').alert();
 
