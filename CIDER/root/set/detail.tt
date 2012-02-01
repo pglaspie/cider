@@ -31,7 +31,7 @@
 <div class="well">
 <h2>Delete this set</h2>
 [% IF there_was_a_recursive_deletion_failure %]
-<div class="form_error_message">
+<div class="alert alert-error">
 <p>You must check the <em>I'm sure</em> checkbox to perform a recursive deletion.</p>
 </div>
 [% END %]

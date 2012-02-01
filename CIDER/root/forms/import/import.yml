@@ -12,6 +12,6 @@ elements:
 
     - type: Submit
       attributes:
-        class: "btn primary"
+        class: "btn btn-primary"
       name: submit
       value: Import

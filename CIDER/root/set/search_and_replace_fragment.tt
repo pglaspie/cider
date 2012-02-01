@@ -6,7 +6,7 @@ You have successfully updated <strong>[% count %] [% set.type_plural(count) %]</
 </p>
 </div>
 [% ELSE %]
-<div class="form_error_message">
+<div class="alert alert-error">
 <p>
 There are no [% set.type %]s with that substring.
 </p>

@@ -8,7 +8,7 @@
 
 
 [% IF we_just_created_this %]
-<div class="alert-message message-block success">
+<div class="alert alert-success">
 <a class="close" href="#">x</a>
 <p>
 You have successfully created a new location with barcode
@@ -25,7 +25,7 @@ c.uri_for( c.controller('Object').action_for('detail'), [ item.number ] )
 [% END %]
 
 [% IF we_just_updated_this %]
-<div class="alert-message success">
+<div class="alert alert-success">
 <a class="close" href="#">x</a>
 <p>You have successfully updated this location.</p>
 </div>
@@ -33,7 +33,7 @@ c.uri_for( c.controller('Object').action_for('detail'), [ item.number ] )
 
 [% form %]
 
-<form id="delete_form" action="[% c.uri_for_action( c.controller( 'Location' ).action_for('delete'), [ location.barcode ]) %]"><input type="submit" class="btn danger" style="margin-left:20px;" name="delete" value="Delete" /></form>
+<form id="delete_form" action="[% c.uri_for_action( c.controller( 'Location' ).action_for('delete'), [ location.barcode ]) %]"><input type="submit" class="btn btn-danger" style="margin-left:20px;" name="delete" value="Delete" /></form>
 
 
 <div class="well">

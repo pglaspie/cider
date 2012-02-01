@@ -82,14 +82,14 @@ elements:
       label: Scope
       name: scope
       attributes:
-        class: "xxlarge clearfix"
+        class: "span7 clearfix"
       id: scope
 
     - type: Textarea
       label: Organization
       name: organization
       attributes:
-         class: "xxlarge clearfix"
+         class: "span7 clearfix"
       id: organization
 
     - type: Hidden
@@ -108,7 +108,7 @@ elements:
             - type: Select
               name: record_context
               attributes:
-                 class: "xlarge clearfix"
+                 class: "span7 clearfix"
               empty_first: 1
               model_config:
                 resultset: RecordContext
@@ -131,7 +131,7 @@ elements:
             - type: Select
               name: record_context
               attributes:
-                class: "clearfix xlarge"
+                class: "clearfix span7"
               empty_first: 1
               model_config:
                 resultset: RecordContext
@@ -142,14 +142,14 @@ elements:
       label: Archival History
       name: history
       attributes:
-         class: "xxlarge clearfix"
+         class: "span7 clearfix"
       id: history
 
     - type: Select
       label: Documentation
       name: documentation
       attributes:
-         class: "clearfix xlarge"
+         class: "span7 clearfix"
       id: documentation
       empty_first: 1
       constraint: Required
@@ -163,7 +163,7 @@ elements:
       label: Processing Notes
       name: processing_notes
       attributes:
-         class: "xxlarge clearfix"
+         class: "span7 clearfix"
          rows: 3
       id: processing_notes
 
@@ -196,7 +196,7 @@ elements:
       label: Notes
       name: notes
       attributes:
-         class: "xxlarge clearfix"
+         class: "span7 clearfix"
       id: notes
 
     - type: Hidden
@@ -352,5 +352,5 @@ elements:
     - type: Submit
       name: submit
       attributes:
-        class: "btn primary"
+        class: "btn btn-primary"
         style: "float:left;"

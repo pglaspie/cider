@@ -8,7 +8,7 @@
 
 
 [% IF return_uri %]
-<div class="alert-message error">
+<div class="alert alert-error">
 <a class="close" href="#">x</a>
 <p>
 No location with barcode <strong>[% barcode %]</strong> exists.  Please create

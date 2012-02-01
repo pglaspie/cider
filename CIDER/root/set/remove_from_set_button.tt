@@ -1,1 +1,1 @@
-<form action=[% c.uri_for_action( c.controller('Set').action_for('remove_object'),[set.id], object.id) %]  ><input type="submit" name="remove" class="btn danger" value="Remove" /></form>
+<form action=[% c.uri_for_action( c.controller('Set').action_for('remove_object'),[set.id], object.id) %]  ><input type="submit" name="remove" class="btn btn-danger" value="Remove" /></form>

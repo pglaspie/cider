@@ -3,11 +3,11 @@
 <h2>[% page.title %]</h2>
 
 [% IF error %]
-<div class="form_error_message">
+<div class="alert alert-error">
 [% error %]
 </div>
 [% ELSIF import_was_successful %]
-<div class="success">
+<div class="alert alert-success">
 You have successfully imported "[% file %]".
 It created [% created %] and updated [% updated %].
 </div>

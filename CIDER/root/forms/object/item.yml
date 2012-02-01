@@ -12,7 +12,7 @@ default_args:
         Textarea:
             rows: 8
             attributes:
-               class: "xxlarge clearfix"
+               class: "span7 clearfix"
 
 
 elements:
@@ -138,7 +138,7 @@ elements:
                 - type: Select
                   name: name
                   attributes:
-                    class: "xlarge clearfix"
+                    class: "span7 clearfix"
                   empty_first: 1
                   model_config:
                     resultset: AuthorityName
@@ -166,7 +166,7 @@ elements:
                 - type: Select
                   name: name
                   attributes:
-                     class: "xlarge clearfix"
+                     class: "span7 clearfix"
                   empty_first: 1
                   model_config:
                     resultset: AuthorityName
@@ -919,5 +919,5 @@ elements:
     - type: Submit
       name: submit
       attributes:
-         class: "btn primary"
+         class: "btn btn-primary"
          style: "float:left;"

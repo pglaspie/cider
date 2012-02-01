@@ -53,13 +53,13 @@ elements:
     - type: Text
       name: query
       attributes:
-         class: "xlarge clearfix span7"
+         class: "clearfix span7"
       id: query
       constraints:
         - type: Required
 
     - type: Submit
       attributes:
-        class: "btn primary"
+        class: "btn btn-primary"
       name: submit
       value: Search

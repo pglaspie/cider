@@ -7,7 +7,7 @@
 </div>
 
 [% IF we_just_created_this %]
-<div class="alert-message success">
+<div class="alert alert-success">
 <a class="close" href="#">x</a>
 <p>You have successfully created a new record context with name entry
 <strong>[% rc.name_entry %]</strong>.</p>
@@ -15,7 +15,7 @@
 [% END %]
 
 [% IF we_just_updated_this %]
-<div class="alert-message success">
+<div class="alert alert-success">
 <a class="close" href="#">x</a>
 <p>You have successfully updated this record context.</p>
 </div>
@@ -38,7 +38,7 @@
 [% ELSE %]
 
 
-<form id="delete_form" action="[% c.uri_for_action( c.controller( 'RecordContext' ).action_for('delete'), [ rc.record_id ]) %]"><input type="submit" class="btn danger" style="margin-left:20px;" name="delete" value="Delete" /></form>
+<form id="delete_form" action="[% c.uri_for_action( c.controller( 'RecordContext' ).action_for('delete'), [ rc.record_id ]) %]"><input type="submit" class="btn btn-danger" style="margin-left:20px;" name="delete" value="Delete" /></form>
 
 [% END %]
 
@@ -52,7 +52,7 @@ Export this record context in
   <option value="[% template_file %]">[% template_file %]</option>
 [% END %]
 </select>
-format.
+format
 <input type="submit" class="btn" value="Go" />
 </form>
 </div>

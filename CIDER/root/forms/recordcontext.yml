@@ -12,7 +12,7 @@ default_args:
     Textarea:
       rows: 8
       attributes:
-         class: "xxlarge clearfix"
+         class: "span7 clearfix"
 
 elements:
   - type: Hidden
@@ -286,5 +286,5 @@ elements:
   - type: Submit
     name: submit
     attributes:
-      class: "btn primary"
+      class: "btn btn-primary"
       style: "float:left;"

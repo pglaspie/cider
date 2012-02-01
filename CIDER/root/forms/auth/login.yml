@@ -20,6 +20,6 @@ elements:
     - type: Submit
       name: submit
       attributes:
-         class: "btn primary"
+         class: "btn btn-primary"
          style: "margin-top:10px;"
       value: Log in
