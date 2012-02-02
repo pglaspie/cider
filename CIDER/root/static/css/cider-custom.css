@@ -22,3 +22,11 @@ do this but it will have to work for now.
     content: '*';
 }
 
+input[type="checkbox"] {
+    margin-bottom: 10px;
+}
+
+.checkbox-label {
+    float:left;
+    margin-right: 10px;
+}

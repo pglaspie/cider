@@ -7,10 +7,12 @@ $(function() {
     // two of the 'div.label' things because FormFu can double up on 'label' classes (evil)
     $('div.label').removeClass('label');
     $('div.label').removeClass('label');
+    $('div.checkbox').removeClass('checkbox').addClass('clearfix');
+    $('input[type="checkbox"]').prev('label').addClass('checkbox-label');
 
     $('fieldset').wrap('<div class="well" />');
     // Make the alert messages closable 
-    $('.alert-message').alert();
+    // $('.alert-message').alert();
 
 });
     
@@ -99,7 +101,7 @@ $(function() {
 
 */
 	// When add button is pressed, add a new field block.
-	$('#' + element_name + '_add_button').live('click keypress', function() {
+	$('#' + element_name + '_add_button').live('click keypress', function(e) {
 	    counter++;
 	    input_count.attr('value', counter);
 
