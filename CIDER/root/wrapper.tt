@@ -41,7 +41,7 @@
 
     <div class="container-fluid">
       <div class="row-fluid">
-         <div class="span3">
+         <div class="span2">
             <div class="well sidebar-nav">
 	  [% INCLUDE sidebar.tt %]
             </div>
@@ -51,6 +51,8 @@
       <div class="span9">
         [% content %]
       <div>
+
+
     </div>
 <!-- 
 Footer, if we want to implement it...

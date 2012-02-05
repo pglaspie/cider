@@ -3,19 +3,19 @@
 <h2>[% page.title %]</h2>
 
 [% IF added %]
-<div class="success">
+<div class="alert alert-success">
 <p>Added [% list.name %] "[% term %]".</p> 
 </div>
 [% END %]
 
 [% IF updated %]
-<div class="success">
+<div class="alert alert-success">
 <p>Updated [% list.name %] "[% term %]".</p>
 </div>
 [% END %]
 
 [% IF deleted %]
-<div class="success">
+<div class="alert alert-success">
 <p>Deleted [% list.name %] "[% term %]".</p>
 </div>
 [% END %]
