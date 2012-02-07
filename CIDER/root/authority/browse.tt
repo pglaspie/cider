@@ -4,28 +4,28 @@
 
 [% IF added %]
 <div class="alert alert-success">
-  <a class="close" data-dismiss="alert">&times;</a>
+  <a class="close" data-dismiss="alert" href="#">&times;</a>
 <p>Added [% list.name %] "[% term %]".</p> 
 </div>
 [% END %]
 
 [% IF updated %]
 <div class="alert alert-success">
-  <a class="close" data-dismiss="alert">&times;</a>
+  <a class="close" data-dismiss="alert" href="#">&times;</a>
 <p>Updated [% list.name %] "[% term %]".</p>
 </div>
 [% END %]
 
 [% IF deleted %]
 <div class="alert alert-success">
-  <a class="close" data-dismiss="alert">&times;</a>
+  <a class="close" data-dismiss="alert" href="#">&times;</a>
 <p>Deleted [% list.name %] "[% term %]".</p>
 </div>
 [% END %]
 
 [% form %]
 
-<table>
+<table class="table table-striped">
 <thead>
 <tr>
 [% FOR field IN list.fields %]
@@ -41,12 +41,12 @@
 [% name = field.name %]
 <td>[% term.$name %]</td>
 [% END %]
-<td><a href="[%
+<td><a class="btn btn-small" href="[%
     c.uri_for( c.controller( 'Authority' ).action_for( 'edit' ),
                [ list_id, term.id ] )
 %]">Edit</a>
 [%- # IF term.num_items == 0 -%]
-&nbsp;<a href="[%
+&nbsp;<a class="btn btn-small btn-danger" href="[%
      c.uri_for( c.controller( 'Authority' ).action_for( 'delete' ),
                 [ list_id, term.id ] )
 %]">Delete</a>
