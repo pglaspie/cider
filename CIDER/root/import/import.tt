@@ -4,13 +4,16 @@
 
 [% IF error %]
 <div class="alert alert-error">
+  <a class="close" data-dismiss="alert">
 [% error %]
 </div>
 [% ELSIF import_was_successful %]
 <div class="alert alert-success">
+  <a class="close" data-dismiss="alert">
 You have successfully imported "[% file %]".
 It created [% created %] and updated [% updated %].
 </div>
 [% END %]
 
 [% form %]
+</div>

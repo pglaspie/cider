@@ -1,5 +1,5 @@
 [% IF c.user %]
-<p>Welcome, [% c.user.username %]. <a href="[% c.uri_for( c.controller('Auth').action_for('logout') ) %]">Log out</a></p>
+<p style="padding-left:14px;">Welcome, [% c.user.username %]. <a href="[% c.uri_for( c.controller('Auth').action_for('logout') ) %]">Log out</a></p>
 <ul class="nav nav-list">
   <li><a href="[% c.uri_for( c.controller('List').action_for('index') ) %]">Browse</a></li>
   <li><a href="[% c.uri_for( c.controller('Search').action_for('search') ) %]">Search</a></li>

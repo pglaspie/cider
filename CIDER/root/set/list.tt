@@ -17,3 +17,5 @@
 
 <h3>Create a new set</h3>
 [% form %]
+
+</div>

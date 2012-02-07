@@ -3,3 +3,5 @@
 <h2>[% page.title %]</h2>
 
 [% form %]
+
+</div>

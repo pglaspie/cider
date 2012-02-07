@@ -9,13 +9,24 @@ $(function() {
     $('div.label').removeClass('label');
     $('div.checkbox').removeClass('checkbox').addClass('clearfix');
     $('input[type="checkbox"]').prev('label').addClass('checkbox-label');
-
     $('fieldset').wrap('<div class="well" />');
+
     // Make the alert messages closable 
-    // $('.alert-message').alert();
+    $('.alert-message').alert();
+
 
 });
+$(function() {
     
+    //collapsable TODO integrate this with class collapsing functionality
+    $('.collapsable').collapse('hide');
+    $('.collapsable').on('hide', function() {
+	$(this).prev().children('i').replaceWith('<i class="icon-chevron-right"></i>');
+    });
+    $('.collapsable').on('show', function() {
+	$(this).prev().children('i').replaceWith('<i class="icon-chevron-down"></i>');
+    });
+});
 
 /* Expand and collapse for browse list */
 function handle_expand_click( object_id ) {

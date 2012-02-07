@@ -8,7 +8,7 @@
 
 [% IF we_just_created_this %]
 <div class="alert alert-success">
-<a class="close" href="#">x</a>
+<a class="close" data-dismiss="alert" href="#">x</a>
 <p>You have successfully created a new record context with name entry
 <strong>[% rc.name_entry %]</strong>.</p>
 </div>
@@ -16,16 +16,27 @@
 
 [% IF we_just_updated_this %]
 <div class="alert alert-success">
-<a class="close" href="#">x</a>
+<a class="close" data-dismiss="alert" href="#">x</a>
 <p>You have successfully updated this record context.</p>
 </div>
 [% END %]
 
 [% form %]
 
+<form id="delete_form" action="[% c.uri_for_action( c.controller( 'RecordContext' ).action_for('delete'), [ rc.record_id ]) %]"><input type="submit" class="btn btn-danger" style="margin-left:20px;" name="delete" value="Delete" /></form>
+</div>
+
+<div class="span3">
+  <div class="well">
+    <h3>Utilities</h3>
+    <hr />
+
 [% IF rc.collections_rs.count > 0 %]
 
-<h3>Collections</h3>
+    <h3 data-toggle="collapse" data-target="#colls"><a href="#">Collections</a><i class="icon-chevron-right"></i></h3>
+
+    <div id="colls" class="collapsable">
+
 
 <p>[% rc.name_entry %] is the creator of the following collections:</p>
 
@@ -33,17 +44,17 @@
 
 [% INCLUDE display_object.tt %]
 
+</div>
+
 [% END %]
 
 [% ELSE %]
 
-
-<form id="delete_form" action="[% c.uri_for_action( c.controller( 'RecordContext' ).action_for('delete'), [ rc.record_id ]) %]"><input type="submit" class="btn btn-danger" style="margin-left:20px;" name="delete" value="Delete" /></form>
-
 [% END %]
 
-<div class="well">
-<h3>Export</h3>
+
+   <h3 data-toggle="collapse" data-target="#export"><a href="#">Export</a><i class="icon-chevron-right"></i></h3>
+   <div class="collapsable" id="export">
 
 <form id="export_form" action="[% c.uri_for_action( c.controller( 'RecordContext' ).action_for( 'export' ), [ rc.record_id ] ) %]">
 Export this record context in
@@ -55,4 +66,8 @@ Export this record context in
 format
 <input type="submit" class="btn" value="Go" />
 </form>
+
+</div>
+</div>
+</div>
 </div>

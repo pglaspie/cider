@@ -4,18 +4,21 @@
 
 [% IF added %]
 <div class="alert alert-success">
+  <a class="close" data-dismiss="alert">&times;</a>
 <p>Added [% list.name %] "[% term %]".</p> 
 </div>
 [% END %]
 
 [% IF updated %]
 <div class="alert alert-success">
+  <a class="close" data-dismiss="alert">&times;</a>
 <p>Updated [% list.name %] "[% term %]".</p>
 </div>
 [% END %]
 
 [% IF deleted %]
 <div class="alert alert-success">
+  <a class="close" data-dismiss="alert">&times;</a>
 <p>Deleted [% list.name %] "[% term %]".</p>
 </div>
 [% END %]
@@ -52,3 +55,4 @@
 [% END %]
 </tbody>
 </table>
+</div>

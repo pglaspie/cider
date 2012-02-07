@@ -17,7 +17,7 @@
 </div>
 
 <div class="alert alert-info">
-<a class="close" href="#">x</a>
+<a class="close" data-dismiss="alert" href="#">x</a>
 <p>This form will create a <em>new</em> object based on an existing one <strong>([% object.title %], [% object.number %])</strong> will have the same parent as that object. Once created, it won't affect that original object any further.</p>
 <br />
 <p>Please note that you must manually assign a new Number for this object in order for it to be successfully created.</p><br />
@@ -26,3 +26,4 @@
 
 [% form %]
 
+</div>

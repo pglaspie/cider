@@ -24,3 +24,5 @@
 [% FOREACH object = objects %]
 [% INCLUDE display_object.tt %]
 [% END %]
+
+</div>

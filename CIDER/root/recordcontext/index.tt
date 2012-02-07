@@ -7,3 +7,5 @@
 [% FOR rc IN rcs %]
 <p><a href="[% c.uri_for( c.controller( 'RecordContext' ).action_for( 'detail' ), [ rc.record_id] ) %]">[% rc.record_id %] [% rc.name_entry %]</a></p>
 [% END %]
+
+</div>

@@ -2,6 +2,7 @@
 
 [% USE scalar %]
 
+
 [% ancestors = object.ancestors %]
 <ul class="breadcrumb">
   <li><a href="[% c.uri_for( c.controller('List').action_for('index') ) %]">Browse</a></li>
@@ -18,14 +19,14 @@
 
 [% IF we_just_picked_this_up %]
 <div class="alert alert-success">
-<a class="close" href="#">x</a>
+<a class="close" data-dismiss="alert" href="#">x</a>
 <p>To finish moving this object, navigate to a different object (or <a href="[% c.uri_for('/') %]">the object root</a>) however you like, and then click the button that says "Make [% object.title %] a child of this object".</p>
 </div>
 [% END %]
 
 [% IF we_just_created_this %]
 <div class="alert alert-success">
-<a class="close" href="#">x</a>
+<a class="close" data-dismiss="alert" href="#">x</a>
 <p>You have successfully created a new [% object.type %] with the title <strong>[% object.title %]</strong>.</p>
 </div>
 [% END %]
@@ -39,9 +40,62 @@
 <form action="[% c.uri_for_action( c.controller('Object').action_for('clone'), [ object.number ] ) %]">
 <input type="submit" class="btn" name="clone_button" style="margin-left:20px;" value="Copy" />
 </form>
+</div>
 
-<div class="well">
-<h3>Children</h3>
+<div class="span3">
+  <div class="well">
+    <h3>Utilities</h3>
+    <hr />
+    <h3 data-toggle="collapse" data-target="#sets"><a href="#">Sets</a><i class="icon-chevron-right"></i></h3>
+    <div id="sets" class="collapsable">
+
+[% IF object.scalar.sets.count %]
+<p>This object belongs to the following sets:</p>
+<ul>
+  [% FOREACH set = object.sets %]
+  <li><a href="[% c.uri_for( c.controller('Set').action_for('detail'), [set.id] ) %]">[% set.name %]</a></li>
+  [% END %]
+</ul>
+[% ELSE %]
+<p>This object does not belong to any of your sets.</p>
+[% END %]
+
+<form class="form-stacked" action="[% c.uri_for_action( c.controller('Object').action_for('add_to_set'), [ object.number ] ) %]">
+<p>
+Add object to:
+<select name="set_id" class="clearfix">
+[% FOREACH set = c.user.sets_not_containing( object ) %]
+<option value="[% set.id %]">[% set.name %]</option>
+[% END %]
+<option value="NEW">New set...</option> 
+</select>
+<input type="submit" name="Submit" class="btn clearfix" value="Add" />
+</form>
+   </div>
+
+   <h3 data-toggle="collapse" data-target="#export"><a href="#">Export</a><i class="icon-chevron-right"></i></h3>
+   <div class="collapsable" id="export">
+
+<form class="form-stacked" action="[% c.uri_for_action( c.controller('Object').action_for('export'), [ object.number ] ) %]">
+Export
+<select name="descendants">
+<option value="0">this object</option>
+<option value="1">this object and all its descendants</option>
+</select>
+in
+<select name="template">
+[% FOREACH template_file = template_files %]
+  <option value="[% template_file %]">[% template_file %]</option>
+[% END %]
+</select>
+format.
+<input type="submit" class="btn" value="Go" />
+</form>
+</div>
+
+<h3 data-toggle="collapse" data-target="#children"><a href="#">Children</a><i class="icon-chevron-right"></i></h3>
+<div id="children" class="collapsable">
+
 [% IF object.children %]
   <p>This object contains these objects as children:</p>
   <ul>
@@ -70,6 +124,7 @@
 </form>
 [% END %]
 
+ 
 <form method="post" class="form-stacked" action="[% c.uri_for_action( c.controller('Object').action_for('create') ) %]">
 <p>Create a new
 <select id="child_type" name="type" class="clearfix">
@@ -80,52 +135,8 @@
 as a child of this object. <input type="submit" class="btn clearfix" name="go" value="Go" /></p>
 <input type="hidden" name="parent_id" value="[% object.id %]" />
 </form>
+
 </div>
-
-<div class="well">
-<h3>Sets</h3>
-[% IF object.scalar.sets.count %]
-<p>This object belongs to the following sets:</p>
-<ul>
-  [% FOREACH set = object.sets %]
-  <li><a href="[% c.uri_for( c.controller('Set').action_for('detail'), [set.id] ) %]">[% set.name %]</a></li>
-  [% END %]
-</ul>
-[% ELSE %]
-<p>This object does not belong to any of your sets.</p>
-[% END %]
-
-<form class="form-stacked" action="[% c.uri_for_action( c.controller('Object').action_for('add_to_set'), [ object.number ] ) %]">
-<p>
-Add object to:
-<select name="set_id" class="clearfix">
-[% FOREACH set = c.user.sets_not_containing( object ) %]
-<option value="[% set.id %]">[% set.name %]</option>
-[% END %]
-<option value="NEW">New set...</option> 
-</select>
-<input type="submit" name="Submit" class="btn clearfix" value="Add" />
-</form>
 </div>
-
-<div class="well">
-
-<h3>Export</h3>
-
-<form class="form-stacked" action="[% c.uri_for_action( c.controller('Object').action_for('export'), [ object.number ] ) %]">
-Export
-<select name="descendants">
-<option value="0">this object</option>
-<option value="1">this object and all its descendants</option>
-</select>
-in
-<select name="template">
-[% FOREACH template_file = template_files %]
-  <option value="[% template_file %]">[% template_file %]</option>
-[% END %]
-</select>
-format.
-<input type="submit" class="btn" value="Go" />
-</form>
 </div>
-
+</div>

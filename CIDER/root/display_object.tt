@@ -20,7 +20,7 @@ object_id = object.id;
 [%# Display the object's full title, hyperlinked to its CIDER detail page. %]
 <a href="[% c.uri_for( c.controller('Object').action_for('detail'), [ object.number ] ) %]">[% object.full_title %]</a>
 
-<span class="objecttype">[[% object.type %]]</span>
+<span class="label">[% object.type %]</span>
 </p>
 
 
