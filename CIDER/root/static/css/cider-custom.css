@@ -3,7 +3,7 @@
 div.form_error_message {
     background: pink;
     padding: 5px;
-    margin: 5px;
+    margin: 5px 5px 5px 0;
 }
 
 .required_message {
@@ -33,4 +33,9 @@ input[type="checkbox"] {
 
 label {
     font-weight: bold;
+}
+
+.error_message {
+    color: red;
+    font-style: italic;
 }
