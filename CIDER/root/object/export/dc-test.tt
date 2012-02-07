@@ -1,0 +1,17 @@
+[% c.res.content_type = 'application/xml' -%]
+<?xml version='1.0' encoding='utf-8' ?>
+<metadata>
+<number>[% objects.size %]</number>
+[% FOR object IN objects -%]
+  <dc> 
+    <title>[% object.title %]</title>
+[% IF object.creator -%]	      
+    <creator>[% object.creator %]</creator>
+[% END -%]
+    <date>[% object.date_from %]</date>
+    <type>[% object.dc_type %]</type>
+    <description>[% object.description %]</description>
+  </dc>
+[% END -%]
+</metadata>  
+
