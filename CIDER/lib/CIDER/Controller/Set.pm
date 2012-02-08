@@ -172,7 +172,7 @@ sub search_and_replace :Chained('set') :Args(0) {
 sub export :Chained('set') :Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->stash->{ objects } = [ $c->stash->{ set }->objects ];
+    $c->stash->{ objects } = [ $c->stash->{ set }->contents ];
 
     $c->forward( $c->controller( 'Object' )->action_for( '_export' ) );
 }
