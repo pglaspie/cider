@@ -1,0 +1,20 @@
+[% c.res.content_type = 'text/html' -%]
+<html>
+<head>
+<title>Coll/RCR</title>
+</head>
+<body>
+[% FOR object IN objects -%]
+<p>Back to: <a href="[% c.uri_for('/') %]object/[% object.number %]">[% object.title %]</a>
+<h1>[% object.title %], [% object.date_from %]-[% object.date_to %]</h1>
+<h2>Scope</h2
+<p>[% object.scope %]</p>
+<h2>Background note</h2>
+[% FOR rcrs IN object.collection_primary_record_contexts -%]
+[% FOR rcr IN rcrs.record_context -%] 
+<p>[% rcr.history %]</p>
+[% END -%]
+[% END -%]
+[% END -%]
+</body>
+</html>
