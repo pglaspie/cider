@@ -39,3 +39,7 @@ label {
     color: red;
     font-style: italic;
 }
+
+.hr-thin {
+    margin:10px 0;
+}
