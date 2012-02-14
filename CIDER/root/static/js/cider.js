@@ -21,10 +21,10 @@ $(function() {
     //collapsable TODO integrate this with class collapsing functionality
     $('.collapsable').collapse('hide');
     $('.collapsable').on('hide', function() {
-	$(this).prev().children('i').replaceWith('<i class="icon-chevron-right"></i>');
+	$(this).prev().children('i').replaceWith('<i class="icon-chevron-right collapse-icon"></i>');
     });
     $('.collapsable').on('show', function() {
-	$(this).prev().children('i').replaceWith('<i class="icon-chevron-down"></i>');
+	$(this).prev().children('i').replaceWith('<i class="icon-chevron-down collapse-icon"></i>');
     });
 });
 
@@ -82,12 +82,11 @@ $(function() {
     });
 });    
 
-/* Add remove form elements */ 
+/* Add repeatable form elements */ 
 $(function() {
 
     var repeatable_fieldsets = $('fieldset.repeatable');
 
-    // Man this is ugly. All workarounds for HTML::FormFu's baroque HTML output...
     // Iterate through repeatable field sets, grab relevant nodes, and create add and remove buttons.
     $.each(repeatable_fieldsets, function() {
 	var fieldset = $(this);
@@ -97,20 +96,10 @@ $(function() {
 	var counter = inputs.length;
 	var elements = inputs.parent();
 
-	var add_button = '<p role="button" id="' + element_name + '_add_button"><img src="' + base_uri + 'static/images/list-add-4.png" /></p>';
+	var add_button = '<a style="margin-bottom:10px;" class="btn btn-small" href="#" id="' + element_name + '_add_button"><i class="icon-plus"></i></a>';
 	fieldset.children('div').prepend(add_button);
 
-/*
-	// create add button and add it to all elements but the first default one.
-	var remove_button = '<span role="button" class="remove_button"><img src="' + base_uri + 'static/images/list-remove-4.png" /></span>';
-	 
-	elements.each(function(i) {
-	    if (i != 0) {
-		$(this).children('div').append(remove_button);
-	    }
-	});
 
-*/
 	// When add button is pressed, add a new field block.
 	$('#' + element_name + '_add_button').live('click keypress', function(e) {
 	    counter++;
@@ -134,19 +123,7 @@ $(function() {
 	    fieldset.children('div').append(new_element);
 
 	});
-/*
-	// When remove button is pressed, remove the relevant input
-	// and replace it with a hidden empty field.
-	$('.remove_button').live('click keypress', function() {
-            button = $(this);
-            input = button.prev();
-            input.replaceWith('<input type="hidden" name="' + input.attr('name') + '">');
-            button.remove();
 
-	    counter--;
-	    input_count.attr('value', counter);
-	});
-*/
     });
 });
 

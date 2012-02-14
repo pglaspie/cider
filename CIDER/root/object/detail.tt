@@ -46,7 +46,7 @@
   <div class="well">
     <h3>Utilities</h3>
     <hr />
-    <h3 data-toggle="collapse" data-target="#sets"><a href="#">Sets</a><i class="icon-chevron-right"></i></h3>
+    <h3 data-toggle="collapse" data-target="#sets"><a href="#">Sets</a><i class="icon-chevron-right collapse-icon"></i></h3>
     <div id="sets" class="collapsable">
 
 [% IF object.scalar.sets.count %]
@@ -73,7 +73,7 @@ Add object to:
 </form>
    </div>
 
-   <h3 data-toggle="collapse" data-target="#export"><a href="#">Export</a><i class="icon-chevron-right"></i></h3>
+   <h3 data-toggle="collapse" data-target="#export"><a href="#">Export</a><i class="icon-chevron-right collapse-icon"></i></h3>
    <div class="collapsable" id="export">
 
 <form class="form-stacked" action="[% c.uri_for_action( c.controller('Object').action_for('export'), [ object.number ] ) %]">
@@ -93,7 +93,7 @@ format.
 </form>
 </div>
 
-<h3 data-toggle="collapse" data-target="#children"><a href="#">Children</a><i class="icon-chevron-right"></i></h3>
+<h3 data-toggle="collapse" data-target="#children"><a href="#">Children</a><i class="icon-chevron-right collapse-icon"></i></h3>
 <div id="children" class="collapsable">
 
 [% IF object.children %]
@@ -120,7 +120,7 @@ format.
 [%### "Pick up" the current object, storing it in the session's 'held_object'
       space. %]
 <form method="post" class="form-stacked" action="[% c.uri_for_action( c.controller('Object').action_for('pick_up'), [ object.number ] ) %]">
-<input type="submit" name="Take" class="btn clearfix" value="Move [% object.title %] to a new parent." />
+<input type="submit" name="Take" class="btn clearfix" value="Move to a new parent." />
 </form>
 [% END %]
 

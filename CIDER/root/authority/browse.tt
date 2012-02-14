@@ -41,7 +41,7 @@
 [% name = field.name %]
 <td>[% term.$name %]</td>
 [% END %]
-<td><a class="btn btn-small" href="[%
+<td width="100px"><a class="btn btn-small" href="[%
     c.uri_for( c.controller( 'Authority' ).action_for( 'edit' ),
                [ list_id, term.id ] )
 %]">Edit</a>
