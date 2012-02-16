@@ -2,6 +2,22 @@
 
 [% USE scalar %]
 
+[% # Classes hash: variable_name => display_name 
+   # For display the item's class at the top of the detail page
+%]
+[% classes = { 
+   	   groups = 'group' 
+	   file_folders = 'folder'
+	   containers = 'container'
+	   bound_volumes = 'bound volume'
+	   three_dimensional_objects = '3D object'
+	   audio_visual_media = 'a/v media'
+	   documents = 'document'
+	   physical_images = 'physical image'
+	   digital_objects = 'digital object'
+	   browsing_objects = 'browsing object'
+	   }
+-%]
 
 [% ancestors = object.ancestors %]
 <ul class="breadcrumb">
@@ -12,6 +28,16 @@
 </ul>
 
 <h2>[% page.title %]</h2>
+
+[% IF object.type == 'item' -%]
+<div id="display-classes">
+[% FOR class IN classes.keys -%]
+[% IF object.$class -%]
+<span class="label label-info">[% classes.$class %]</span>
+[% END -%]
+[% END -%]
+</div>
+[% END -%]
 
 <div class="required_message">
      <p>Fields marked with a '*' are required</p>

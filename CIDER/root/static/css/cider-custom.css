@@ -41,7 +41,8 @@ label {
 }
 
 .hr-thin {
-    margin:10px 0;
+    margin:10px;
+    clear: right;
 }
 
 .collapse-icon {
@@ -49,4 +50,6 @@ label {
     margin-left: 5px;
 }
 
-    
+#display-classes {
+    margin-bottom: 20px;
+}
