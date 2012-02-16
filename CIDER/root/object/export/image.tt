@@ -1,7 +1,5 @@
 [% c.res.content_type = 'application/xml' -%]
-
-[% USE date %]
-
+[% USE date(format = '%Y-%m-%d') -%]
 <include>
 [% FOR object IN objects -%]
   <input OBJID="tufts:[% object.number %]" LABEL="[% object.title %]" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.fedora.info/definitions/">
@@ -35,7 +33,7 @@
 	    [% END -%]
 	    <dc:identifier>tufts:[% object.number %]</dc:identifier>
 	    <dc:publisher>Digital Collections and Archives, Tufts University</dc:publisher>
-	    <dc:date>[% object.audit_trail.created_by %]</dc:date>
+	    <dc:date>[% object.audit_trail.date_created %]</dc:date>
 	    [% IF object.date_from %]
 	    <dc:date>[% object.date_from %]</dc:date>
 	    [% END -%]
@@ -126,8 +124,10 @@
 	      <fedora-model:hasModel rdf:resource="info:fedora/cm:Image.4DS" xmlns:fedora-model="info:fedora/fedora-system:def/model#"/>
 	      <itemID xmlns="http://www.openarchives.org/OAI/2.0/">oai:tufts:[% object.number %]</itemID>
 	      [% FOR digital_object IN object.digital_objects -%]
-	      [% FOR relationship IN digital_object.relationships -%]
+	      [% FOR relationship IN digital_object.digital_object_relationships -%]
 	      <[% relationship.predicate %] rdf:resource="info:fedora/[% relationship.pid %]" />
+	      [% END -%]
+	      [% END -%]
             </rdf:Description>
 	 </rdf:RDF>
        </xmlContent>
