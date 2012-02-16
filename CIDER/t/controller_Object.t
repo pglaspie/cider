@@ -222,7 +222,7 @@ is( $csv->[2]->{ type }, 'item',
 $mech->get( '/object/n1' );
 $mech->submit_form_ok ( { with_fields => {
     descendants => 1,
-    template => 'export.xml',
+    template => 'xml-export.tt',
 } }, 'Export to XML' );
 is( $mech->ct, 'application/xml', 'MIME type is correct' );
 
@@ -240,7 +240,7 @@ like( $collection->toString, qr/>minimal</,
 $mech->get( '/object/II' );
 $mech->submit_form_ok ( { with_fields => {
     descendants => 0,
-    template => 'export.xml',
+    template => 'xml-export.tt',
 } }, 'Export to XML' );
 $mech->content_contains( '>Test Name<', 'Authority name is exported.' );
 
