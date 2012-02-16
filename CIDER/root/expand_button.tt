@@ -1,1 +1,1 @@
-<span id="expand_button_[% object.id %]" onclick="handle_expand_click([% object.id %])" role="button" style="display: inline;"><i class="icon-folder-close"></i></span>
+<span id="expand_button_[% object.id %]" onclick="handle_expand_click([% object.id %])" role="button" style="display: inline;"><i class="icon-plus"></i></span>
