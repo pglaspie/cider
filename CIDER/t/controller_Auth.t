@@ -27,6 +27,6 @@ $mech->submit_form_ok( { with_fields => {
     password => 'foo',
 } } );
 
-$mech->content_contains( 'Welcome, alice.' );
+$mech->content_contains( 'alice' );
 
 done_testing();
