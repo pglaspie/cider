@@ -22,7 +22,13 @@ __PACKAGE__->set_primary_key( 'id' );
 __PACKAGE__->has_many(
     digital_objects =>
         'CIDER::Schema::Result::DigitalObject',
-    'stabilized_by',
+    { 'foreign.stabilized_by' => 'self.id' },
+);
+
+__PACKAGE__->many_to_many(
+    items =>
+        'digital_objects',
+    'item'
 );
 
 __PACKAGE__->has_many(

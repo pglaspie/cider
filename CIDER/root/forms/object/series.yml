@@ -1,4 +1,6 @@
 method: post
+attributes:
+   class: form-stacked
 
 form_error_message: Sorry, there was in error in your submission. Please see below.
 
@@ -9,7 +11,8 @@ default_args:
     elements:
         Textarea:
             rows: 8
-
+            attributes:
+              class: "span7 clearfix"
 elements:
     - type: Hidden
       name: id
@@ -17,6 +20,8 @@ elements:
     - type: Text
       label: Series Number
       name: number
+      attributes:
+         class: clearfix
       id: number
       constraints:
         - type: Required
@@ -28,12 +33,21 @@ elements:
     - type: Text
       label: Series Title
       name: title
+      attributes:
+         class: "span7 clearfix"
       id: title
       constraints:
         - type: Required
 
-# Start Date (derived)
-# End Date (derived)
+    - type: Fieldset
+      legend: Date
+      elements:
+          - type: Label
+            label: From
+            name: date_from
+          - type: Label
+            label: To
+            name: date_to
 
     - type: Fieldset
       legend: Bulk Date
@@ -41,6 +55,8 @@ elements:
           - type: Text
             label: From
             name: bulk_date_from
+            attributes:
+               class: clearfix
             id: bulk_date_from
             constraint: &Date
               type: Callback
@@ -50,10 +66,16 @@ elements:
           - type: Text
             label: To
             name: bulk_date_to
+            attributes:
+               class: clearfix
             id: bulk_date_to
             constraint: *Date
 
-# Restrictions (derived)
+    - type: Label
+      label: Restrictions
+      name: restrictions
+      attributes:
+         class: clearfix
 
     - type: Textarea
       label: Description
@@ -69,9 +91,15 @@ elements:
       name: notes
       id: notes
         
-# Extent (derived)
+    - type: Label
+      label: Extent
+      name: extent
+      attributes:
+         class: clearfix
 
 # Accession Number(s) (derived)
+      attributes:
+         class: clearfix
 
     - type: Hidden
       name: parent
@@ -79,3 +107,6 @@ elements:
 
     - type: Submit
       name: submit
+      attributes:
+         class: "btn btn-primary"
+         style: "float:left;margin-top:13px;"

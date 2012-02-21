@@ -86,6 +86,24 @@ sub delete :Chained('set') :Args(0) {
     $c->res->redirect( $c->uri_for( $self->action_for( 'list' ) ) );
 }
 
+sub delete_recursively :Chained('set') :Args(0) {
+	my ( $self, $c ) = @_;
+	
+	my $set = $c->stash->{ set };
+	
+	# Carry this action out only if the "I'm sure" checkbox is checked.
+	if ( $c->req->params->{ confirm_recursive_delete } ) {
+		for my $object ( $set->objects ) {
+			$object->delete;
+		}
+		$c->forward( $self->action_for( 'delete' ) );
+	}
+	else {
+		$c->flash->{ there_was_a_recursive_deletion_failure } = 1;
+	    $c->res->redirect( $c->uri_for( $self->action_for( 'detail' ), [$set->id] ) );
+	}	
+}
+
 sub batch_edit :Chained('set') :Args(0) {
     my ( $self, $c ) = @_;
 
@@ -154,7 +172,7 @@ sub search_and_replace :Chained('set') :Args(0) {
 sub export :Chained('set') :Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->stash->{ objects } = [ $c->stash->{ set }->objects ];
+    $c->stash->{ objects } = [ $c->stash->{ set }->contents ];
 
     $c->forward( $c->controller( 'Object' )->action_for( '_export' ) );
 }

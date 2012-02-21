@@ -1,4 +1,6 @@
 method: post
+attributes:
+   class: form-stacked
 
 form_error_message: Sorry, there was in error in your submission. Please see below.
 
@@ -9,8 +11,12 @@ default_args:
     elements:
         Textarea:
             rows: 8
+            attributes:
+               class: "span7 clearfix"
+
 
 elements:
+
     - type: Hidden
       name: id
 
@@ -19,6 +25,8 @@ elements:
 
     - label: Item Number
       name: number
+      attributes:
+         class: clearfix
       constraints:
         - type: Required
         - type: DBIC::Unique
@@ -28,28 +36,38 @@ elements:
 
     - label: Item Title
       name: title
+      attributes:
+         class: "span7 clearfix"
       constraints:
         - type: Required
 
     - type: Hidden
       name: creator_count
     - type: Fieldset
+      attributes:
+         class: repeatable
       legend: Creators
       elements:
-        - type: Repeatable
-          nested_name: item_creators
-          counter_name: creator_count
-          model_config:
-            empty_rows: 1
+        - type: Block
+          id: item_creators
           elements:
-            - type: Hidden
-              name: id
-            - type: Select
-              name: name
-              empty_first: 1
+            - type: Repeatable
+              nested_name: item_creators
+              counter_name: creator_count
               model_config:
-                resultset: AuthorityName
-                delete_if_empty: 1
+                empty_rows: 1
+                new_rows_max: 100
+              elements:
+                - type: Hidden
+                  name: id
+                - type: Select
+                  attributes:
+                     class: clearfix
+                  name: name
+                  empty_first: 1
+                  model_config:
+                    resultset: AuthorityName
+                    delete_if_empty: 1
 
     - type: Fieldset
       legend: Date
@@ -61,7 +79,7 @@ elements:
           - label: From
             name: date_from
             constraints:
-              - type: Required
+            # Date is temporarily not required, while importing legacy data.
               - &Date
                 type: Callback
                 callback: 'CIDER::Logic::Utils::iso_8601_date'
@@ -74,7 +92,8 @@ elements:
     - type: Select
       label: Restrictions
       name: restrictions
-      empty_first: 1
+      attributes:
+         class: clearfix
       model_config:
         resultset: ItemRestrictions
         label_column: description
@@ -83,10 +102,14 @@ elements:
 
     - name: accession_number
       label: Accession Number
+      attributes:
+        class: clearfix
 
     - type: Select
       label: Type
       name: dc_type
+      attributes:
+        class: "small clearfix"
       constraint: Required
       model_config:
         resultset: DCType
@@ -96,82 +119,113 @@ elements:
     - type: Hidden
       name: personal_name_count
     - type: Fieldset
+      attributes:
+         class: repeatable
       legend: Personal Names
       elements:
-        - type: Repeatable
-          nested_name: item_personal_names
-          counter_name: personal_name_count
-          model_config:
-            empty_rows: 1
+        - type: Block
+          id: item_personal_names
           elements:
-            - type: Hidden
-              name: id
-            - type: Select
-              name: name
-              empty_first: 1
+            - type: Repeatable
+              nested_name: item_personal_names
+              counter_name: personal_name_count
               model_config:
-                resultset: AuthorityName
-                delete_if_empty: 1
+                empty_rows: 1
+                new_rows_max: 100
+              elements:
+                - type: Hidden
+                  name: id
+                - type: Select
+                  name: name
+                  attributes:
+                    class: "span7 clearfix"
+                  empty_first: 1
+                  model_config:
+                    resultset: AuthorityName
+                    delete_if_empty: 1
 
     - type: Hidden
       name: corporate_name_count
     - type: Fieldset
+      attributes:
+         class: repeatable
       legend: Corporate Names
       elements:
-        - type: Repeatable
-          nested_name: item_corporate_names
-          counter_name: corporate_name_count
-          model_config:
-            empty_rows: 1
+        - type: Block
+          id: item_corporate_names
           elements:
-            - type: Hidden
-              name: id
-            - type: Select
-              name: name
-              empty_first: 1
+            - type: Repeatable
+              nested_name: item_corporate_names
+              counter_name: corporate_name_count
               model_config:
-                resultset: AuthorityName
-                delete_if_empty: 1
+                empty_rows: 1
+                new_rows_max: 100
+              elements:
+                - type: Hidden
+                  name: id
+                - type: Select
+                  name: name
+                  attributes:
+                     class: "span7 clearfix"
+                  empty_first: 1
+                  model_config:
+                    resultset: AuthorityName
+                    delete_if_empty: 1
 
     - type: Hidden
       name: topic_term_count
     - type: Fieldset
+      attributes:
+         class: repeatable
       legend: Topic Terms
       elements:
-        - type: Repeatable
-          nested_name: item_topic_terms
-          counter_name: topic_term_count
-          model_config:
-            empty_rows: 1
+        - type: Block
+          id: item_topic_terms
           elements:
-            - type: Hidden
-              name: id
-            - type: Select
-              name: term
-              empty_first: 1
+            - type: Repeatable
+              nested_name: item_topic_terms
+              counter_name: topic_term_count
               model_config:
-                resultset: TopicTerm
-                delete_if_empty: 1
+                empty_rows: 1
+                new_rows_max: 100
+              elements:
+                - type: Hidden
+                  name: id
+                - type: Select
+                  name: term
+                  attributes:
+                    class: "xlarge clearfix"
+                  empty_first: 1
+                  model_config:
+                     resultset: TopicTerm
+                     delete_if_empty: 1
 
     - type: Hidden
       name: geographic_term_count
     - type: Fieldset
+      attributes:
+         class: repeatable
       legend: Geographic Terms
-      elements:
-        - type: Repeatable
-          nested_name: item_geographic_terms
-          counter_name: geographic_term_count
-          model_config:
-            empty_rows: 1
+      elements: 
+        - type: Block
+          id: item_geographic_terms 
           elements:
-            - type: Hidden
-              name: id
-            - type: Select
-              name: term
-              empty_first: 1
+            - type: Repeatable
+              nested_name: item_geographic_terms
+              counter_name: geographic_term_count
               model_config:
-                resultset: GeographicTerm
-                delete_if_empty: 1
+                empty_rows: 1
+              elements:
+                - type: Hidden
+                  name: id
+                - type: Select
+                  name: term
+                  attributes:
+                    class: "xlarge clearfix"
+                  empty_first: 1
+                  model_config:
+                    resultset: GeographicTerm
+                    delete_if_empty: 1
 
     - type: Textarea
       label: Description
@@ -214,6 +268,16 @@ elements:
               name: citation
               label: Bibliographic Citation
       
+    - type: Block
+      tag: h2
+      content: Classes
+
+    - type: Block
+      attributes:
+        class: required_message
+      content_xml: "<p>Click class label to expand</p>"
+      
+
     - type: Fieldset
       legend: Groups
       elements:
@@ -227,12 +291,19 @@ elements:
           elements:
             - type: Hidden
               name: id
-            - type: Block
-              content: 'Volume: (TO DO)'
+            - type: Label
+              name: volume
+              label: Volume
 
     - type: Fieldset
-      legend: File Folders
       elements:
+        - type: Block
+          tag: legend
+          id: file_folders_expand_button
+          attributes:
+             role: 'button'
+             tabindex: 0
+          content: 'File Folders'
         - type: Hidden
           name: file_folder_count
         - type: Repeatable
@@ -241,22 +312,39 @@ elements:
           model_config:
             empty_rows: 1
           elements:
-            - type: Hidden
-              name: id
-            - type: Select
-              name: location
-              label: Location
-              empty_first: 1
-              model_config:
-                resultset: Location
-                delete_if_empty: 1 
-            - type: Textarea
-              name: notes
-              label: Notes
+            - type: Block
+              attributes:
+                 class: 'file_folders_form'
+              elements:
+                - type: Hidden
+                  name: id
+                - type: Select
+                  attributes:
+                    class: clearfix
+                  name: location
+                  label: Location
+                  empty_first: 1
+                  model_config:
+                    resultset: Location
+                    delete_if_empty: 1 
+                - type: Label
+                  name: format
+                  attributes:
+                     class: clearfix
+                  label: Format
+                - type: Textarea
+                  name: notes
+                  label: Notes
 
     - type: Fieldset
-      legend: Containers
       elements:
+        - type: Block
+          tag: legend
+          id: containers_expand_button
+          attributes:
+             role: 'button'
+             tabindex: 0
+          content: 'Container'
         - type: Hidden
           name: container_count
         - type: Repeatable
@@ -265,30 +353,44 @@ elements:
           model_config:
             empty_rows: 1
           elements:
-            - type: Hidden
-              name: id
-            - type: Select
-              name: location
-              label: Location
-              empty_first: 1
-              model_config:
-                resultset: Location
-                delete_if_empty: 1 
-            - type: Select
-              name: format
-              label: Format
-              empty_first: 1
-              model_config:
-                resultset: Format
-                condition:
-                  class: container
-            - type: Textarea
-              name: notes
-              label: Notes
+            - type: Block
+              attributes:
+                class: 'containers_form'
+              elements:
+                 - type: Hidden
+                   name: id
+                 - type: Select
+                   attributes:
+                      class: clearfix
+                   name: location
+                   label: Location
+                   empty_first: 1
+                   model_config:
+                     resultset: Location
+                     delete_if_empty: 1 
+                 - type: Select
+                   name: format
+                   attributes:
+                      class: clearfix
+                   label: Format
+                   empty_first: 1
+                   model_config:
+                     resultset: Format
+                     condition:
+                       class: container
+                 - type: Textarea
+                   name: notes
+                   label: Notes
 
     - type: Fieldset
-      legend: Bound Volumes
       elements:
+        - type: Block
+          tag: legend
+          id: bound_volumes_expand_button
+          attributes:
+              role: button
+              tabindex: 0
+          content: Bound Volumes
         - type: Hidden
           name: bound_volume_count
         - type: Repeatable
@@ -296,34 +398,48 @@ elements:
           counter_name: bound_volume_count
           model_config:
             empty_rows: 1
-          elements:
-            - type: Hidden
-              name: id
-            - type: Select
-              name: location
-              label: Location
-              empty_first: 1
-              model_config:
-                resultset: Location
-                delete_if_empty: 1 
-            - type: Select
-              name: format
-              label: Format
-              empty_first: 1
-              model_config:
-                resultset: Format
-                condition:
-                  class: bound_volume
-            - type: Textarea
-              name: notes
-              label: Notes
-            - type: Textarea
-              name: rights
-              label: Rights
+          elements: 
+            - type: Block
+              attributes:
+                class: 'bound_volumes_form'
+              elements:
+                - type: Hidden
+                  name: id
+                - type: Select
+                  name: location
+                  attributes:
+                    class: clearfix
+                  label: Location
+                  empty_first: 1
+                  model_config:
+                    resultset: Location
+                    delete_if_empty: 1 
+                - type: Select
+                  name: format
+                  attributes:
+                     class: clearfix
+                  label: Format
+                  empty_first: 1
+                  model_config:
+                    resultset: Format
+                    condition:
+                       class: bound_volume
+                - type: Textarea
+                  name: notes
+                  label: Notes
+                - type: Textarea
+                  name: rights
+                  label: Rights
 
     - type: Fieldset
-      legend: Three Dimensional Objects
       elements:
+        - type: Block
+          tag: legend
+          id: three_dimensional_objects_expand_button
+          attributes:
+             role: button
+             tabindex: 0
+          content: "Three Dimensional Objects"
         - type: Hidden
           name: three_dimensional_object_count
         - type: Repeatable
@@ -332,33 +448,47 @@ elements:
           model_config:
             empty_rows: 1
           elements:
-            - type: Hidden
-              name: id
-            - type: Select
-              name: location
-              label: Location
-              empty_first: 1
-              model_config:
-                resultset: Location
-                delete_if_empty: 1 
-            - type: Select
-              name: format
-              label: Format
-              empty_first: 1
-              model_config:
-                resultset: Format
-                condition:
-                  class: three_dimensional_object
-            - type: Textarea
-              name: notes
-              label: Notes
-            - type: Textarea
-              name: rights
-              label: Rights
+            - type: Block
+              attributes:
+                class: 'three_dimensional_objects_form'
+              elements:
+                - type: Hidden
+                  name: id
+                - type: Select
+                  name: location
+                  attributes:
+                     class: clearfix
+                  label: Location
+                  empty_first: 1
+                  model_config:
+                    resultset: Location
+                    delete_if_empty: 1 
+                - type: Select
+                  name: format
+                  attributes:
+                    class: clearfix
+                  label: Format
+                  empty_first: 1
+                  model_config:
+                    resultset: Format
+                    condition:
+                       class: three_dimensional_object
+                - type: Textarea
+                  name: notes
+                  label: Notes
+                - type: Textarea
+                  name: rights
+                  label: Rights
 
     - type: Fieldset
-      legend: Audio Visual Media
       elements:
+        - type: Block
+          tag: legend
+          id: audio_visual_media_expand_button
+          attributes:
+             role: button
+             tabindex: 0
+          content: Audio Visual Media 
         - type: Hidden
           name: audio_visual_media_count
         - type: Repeatable
@@ -366,34 +496,48 @@ elements:
           counter_name: audio_visual_media_count
           model_config:
             empty_rows: 1
-          elements:
-            - type: Hidden
-              name: id
-            - type: Select
-              name: location
-              label: Location
-              empty_first: 1
-              model_config:
-                resultset: Location
-                delete_if_empty: 1 
-            - type: Select
-              name: format
-              label: Format
-              empty_first: 1
-              model_config:
-                resultset: Format
-                condition:
-                  class: audio_visual_media
-            - type: Textarea
-              name: notes
-              label: Notes
-            - type: Textarea
-              name: rights
-              label: Rights
+          elements: 
+            - type: Block
+              attributes:
+                class: audio_visual_media_form
+              elements:
+                - type: Hidden
+                  name: id
+                - type: Select
+                  name: location
+                  attributes:
+                     class: clearfix
+                  label: Location
+                  empty_first: 1
+                  model_config:
+                    resultset: Location
+                    delete_if_empty: 1 
+                - type: Select
+                  name: format
+                  attributes:
+                     class: clearfix
+                  label: Format
+                  empty_first: 1
+                  model_config:
+                    resultset: Format
+                    condition:
+                      class: audio_visual_media
+                - type: Textarea
+                  name: notes
+                  label: Notes
+                - type: Textarea
+                  name: rights
+                  label: Rights
 
     - type: Fieldset
-      legend: Documents
       elements:
+        - type: Block
+          tag: legend
+          id: documents_expand_button
+          attributes:
+              role: button
+              tabindex: 0
+          content: Documents
         - type: Hidden
           name: document_count
         - type: Repeatable
@@ -402,32 +546,46 @@ elements:
           model_config:
             empty_rows: 1
           elements:
-            - type: Hidden
-              name: id
-            - type: Select
-              name: location
-              label: Location
-              empty_first: 1
-              model_config:
-                resultset: Location
-                delete_if_empty: 1 
-            - type: Select
-              name: format
-              label: Format
-              empty_first: 1
-              model_config:
-                resultset: Format
-                condition:
-                  class: document
-            - name: dimensions
-              label: Dimensions
-            - type: Textarea
-              name: rights
-              label: Rights
+            - type: Block
+              attributes:
+                class: documents_form
+              elements:
+                - type: Hidden
+                  name: id
+                - type: Select
+                  name: location
+                  attributes:
+                     class: clearfix
+                  label: Location
+                  empty_first: 1
+                  model_config:
+                    resultset: Location
+                    delete_if_empty: 1 
+                - type: Select
+                  name: format
+                  attributes:
+                    class: clearfix
+                  label: Format
+                  empty_first: 1
+                  model_config:
+                    resultset: Format
+                    condition:
+                      class: document
+                - name: dimensions
+                  label: Dimensions
+                - type: Textarea
+                  name: rights
+                  label: Rights
 
     - type: Fieldset
-      legend: Physical Images
       elements:
+        - type: Block
+          tag: legend
+          id: physical_images_expand_button
+          attributes:
+             role: button
+             tabindex: 0
+          content: Physical Images
         - type: Hidden
           name: physical_image_count
         - type: Repeatable
@@ -436,46 +594,16 @@ elements:
           model_config:
             empty_rows: 1
           elements:
-            - type: Hidden
-              name: id
-            - type: Select
-              name: location
-              label: Location
-              empty_first: 1
-              model_config:
-                resultset: Location
-                delete_if_empty: 1 
-            - type: Select
-              name: format
-              label: Format
-              empty_first: 1
-              model_config:
-                resultset: Format
-                condition:
-                  class: physical_image
-            - name: dimensions
-              label: Dimensions
-            - type: Textarea
-              name: rights
-              label: Rights
-
-    - type: Fieldset
-      legend: Digital Objects
-      elements:
-        - type: Hidden
-          name: digital_object_count
-        - type: Repeatable
-          nested_name: digital_objects
-          counter_name: digital_object_count
-          model_config:
-            empty_rows: 1
-          elements:
-            - type: Hidden
-              name: id
-            - type: Fieldset
+            - type: Block
+              attributes:
+                class: physical_images_form
               elements:
+                - type: Hidden
+                  name: id
                 - type: Select
                   name: location
+                  attributes:
+                     class: clearfix
                   label: Location
                   empty_first: 1
                   model_config:
@@ -483,157 +611,238 @@ elements:
                     delete_if_empty: 1 
                 - type: Select
                   name: format
+                  attributes:
+                    class: clearfix
                   label: Format
                   empty_first: 1
                   model_config:
                     resultset: Format
                     condition:
-                      class: digital_object
-                - name: pid
-                  label: PID
-                  # constraints:
-                    # TO DO: this doesn't seem to do anything.
-                    # - type: DependOn
-                    #   others: location
-                - name: permanent_url
-                  label: Permanent URL
-                  constraint:
-                    type: Regex
-                    common:
-                      - URI
-                      - HTTP
-                      - { '-scheme': 'https?' }
-                - type: Textarea
-                  name: notes
-                  label: Notes
+                       class: physical_image
+                - name: dimensions
+                  label: Dimensions
                 - type: Textarea
                   name: rights
                   label: Rights
 
+    - type: Fieldset
+      elements:
+        - type: Block
+          tag: legend
+          id: digital_objects_expand_button
+          attributes:
+             role: button
+             tabindex: 0
+          content: Digital Objects
+        - type: Hidden
+          name: digital_object_count
+        - type: Repeatable
+          nested_name: digital_objects
+          counter_name: digital_object_count
+          model_config:
+            empty_rows: 1
+          elements: 
+            - type: Block
+              attributes:
+                 class: digital_objects_form
+              elements:
+                - type: Hidden
+                  name: id
                 - type: Fieldset
-                  legend: Relationships
-                  elements:
-                    - type: Hidden
-                      name: relationship_count
-
-                    - type: Repeatable
-                      nested_name: digital_object_relationships
-                      counter_name: relationship_count
-                      model_config:
-                        empty_rows: 1
-                      elements:
-                        - type: Hidden
-                          name: id
-
-                        - type: Select
-                          label: Predicate
-                          name: predicate
-                          # TO DO: these constraints don't seem to
-                          # work when nested this way?
-                          # constraint:
-                          #   - type: DependOn
-                          #     others: pid
-                          empty_first: 1
-                          model_config:
-                            delete_if_empty: 1
-                            resultset: RelationshipPredicate
-                            attributes:
-                              order_by: id
-
-                        - name: pid
-                          label: PID
-                          # constraint:
-                          #   - type: DependOn
-                          #     others: predicate
-
-                - name: checksum
-                  label: Checksum
-                - type: Select
-                  name: file_extension
-                  label: File Extension
-                  empty_first: 1
-                  model_config:
-                    resultset: FileExtension
-                - name: original_filename
-                  label: Original Filename
-                - type: Textarea
-                  name: toc
-                  label: Table of Contents
-
-                - type: Fieldset
-                  legend: Stabilization
                   elements:
                     - type: Select
-                      name: stabilized_by
-                      label: By
+                      name: location
+                      attributes:
+                         class: clearfix
+                      label: Location
                       empty_first: 1
                       model_config:
-                        resultset: Staff
-                        label_column: full_name
-                        attributes:
-                          order_by:
-                            - last_name
-                            - first_name
-                    - name: stabilization_date
-                      label: Date
-                      constraint: *Date
+                        resultset: Location
+                        delete_if_empty: 1 
                     - type: Select
-                      name: stabilization_procedure
-                      label: Procedure
+                      name: format
+                      attributes:
+                        class: clearfix
+                      label: Format
                       empty_first: 1
                       model_config:
-                        resultset: StabilizationProcedure
-                        label_column: name
+                         resultset: Format
+                         condition:
+                            class: digital_object
+                    - name: pid
+                      label: PID
+                      # constraints:
+                      # TO DO: this doesn't seem to do anything.
+                      # - type: DependOn
+                      #   others: location
+                    - name: permanent_url
+                      attributes:
+                         class: clearfix
+                      label: Permanent URL
+                      constraint:
+                        type: Regex
+                        common:
+                          - URI
+                          - HTTP
+                          - { '-scheme': 'https?' }
                     - type: Textarea
                       name: notes
                       label: Notes
+                    - type: Textarea
+                      name: rights
+                      label: Rights
 
-                - type: Fieldset
-                  legend: Applications
-                  elements:
-                    - type: Select
-                      name: checksum_app
-                      label: Checksum
-                      model_config:
-                        resultset: Application
-                        condition:
-                          function: checksum
-                    - type: Select
-                      name: media_app
-                      label: Media Image
-                      model_config:
-                        resultset: Application
-                        condition:
-                          function: media_image
-                    - type: Select
-                      name: virus_app
-                      label: Virus Check
-                      model_config:
-                        resultset: Application
-                        condition:
-                          function: virus_check
-                    - type: Hidden
-                      name: other_app_count
                     - type: Fieldset
-                      legend: Other
+                      legend: Relationships
                       elements:
+                        - type: Hidden
+                          name: relationship_count
+
                         - type: Repeatable
-                          nested_name: other_apps
-                          counter_name: other_app_count
+                          nested_name: digital_object_relationships
+                          counter_name: relationship_count
                           model_config:
                             empty_rows: 1
                           elements:
-                            - name: application
-                              model_config:
-                                delete_if_empty: 1
+                            - type: Hidden
+                              name: id
 
-                - name: file_creation_date
-                  label: File Creation Date
-                  constraint: *Date
+                            - type: Select
+                              label: Predicate
+                              name: predicate
+                              # TO DO: these constraints don't seem to
+                              # work when nested this way?
+                              # constraint:
+                              #   - type: DependOn
+                              #     others: pid
+                              empty_first: 1
+                              model_config:
+                                  delete_if_empty: 1
+                                  resultset: RelationshipPredicate
+                              attributes:
+                                  order_by: id
+                            - name: pid
+                              label: PID
+                              attributes:
+                                  class: clearfix
+                              # constraint:
+                              #   - type: DependOn
+                              #     others: predicate
+
+                    - name: checksum
+                      attributes:
+                         class: "xlarge clearfix"
+                      label: Checksum
+                    - type: Select
+                      name: file_extension
+                      attributes:
+                         class: "small clearfix"
+                      label: File Extension
+                      empty_first: 1
+                      model_config:
+                           resultset: FileExtension
+                    - name: original_filename
+                      attributes:
+                         class: "xlarge clearfix"
+                      label: Original Filename
+                    - type: Textarea
+                      name: toc
+                      label: Table of Contents
+
+                    - type: Fieldset
+                      legend: Stabilization
+                      elements:
+                        - type: Select
+                          name: stabilized_by
+                          attributes:
+                            class: clearfix
+                          label: By
+                          empty_first: 1
+                          model_config:
+                             resultset: Staff
+                             label_column: full_name
+                          attributes:
+                             order_by:
+                                - last_name
+                                - first_name
+                        - name: stabilization_date
+                          attributes:
+                             class: clearfix
+                          label: Date
+                          constraint: *Date
+                        - type: Select
+                          name: stabilization_procedure
+                          attributes:
+                             class: clearfix
+                          label: Procedure
+                          empty_first: 1
+                          model_config:
+                             resultset: StabilizationProcedure
+                             label_column: name
+                        - type: Textarea
+                          name: notes
+                          label: Notes
+
+                    - type: Fieldset
+                      legend: Applications
+                      elements:
+                        - type: Select
+                          name: checksum_app
+                          attributes:
+                             class: clearfix
+                          label: Checksum
+                          model_config:
+                             resultset: Application
+                             condition:
+                               function: checksum
+                        - type: Select
+                          name: media_app
+                          attributes:
+                             class: clearfix
+                          label: Media Image
+                          model_config:
+                             resultset: Application
+                             condition:
+                                function: media_image
+                        - type: Select
+                          name: virus_app
+                          attributes:
+                              class: clearfix
+                          label: Virus Check
+                          model_config:
+                             resultset: Application
+                             condition:
+                                function: virus_check
+                        - type: Hidden
+                          name: other_app_count
+                        - type: Fieldset
+                          legend: Other
+                          elements:
+                            - type: Repeatable
+                              nested_name: other_apps
+                              counter_name: other_app_count
+                              model_config:
+                                empty_rows: 1
+                              elements:
+                                 - name: application
+                                   attributes:
+                                      class: clearfix
+                                   model_config:
+                                      delete_if_empty: 1
+
+                    - name: file_creation_date
+                      label: File Creation Date
+                      constraint: *Date
 
     - type: Fieldset
-      legend: Browsing Objects
       elements:
+        - type: Block
+          tag: legend
+          id: browsing_objects_expand_button
+          attributes:
+             role: button
+             tabindex: 0
+          content: Browsing Objects
         - type: Hidden
           name: browsing_object_count
         - type: Repeatable
@@ -642,56 +851,73 @@ elements:
           model_config:
             empty_rows: 1
           elements:
-            - type: Hidden
-              name: id
-            - type: Select
-              name: format
-              label: Format
-              empty_first: 1
-              model_config:
-                resultset: Format
-                condition:
-                  class: browsing_object
-            - name: pid
-              label: PID
-              model_config:
-                delete_if_empty: 1
-            - name: thumbnail_pid
-              label: Thumbnail PID
-
-            - type: Fieldset
-              legend: Relationships
+            - type: Block
+              attributes:
+                class: browsing_objects_form
               elements:
                 - type: Hidden
-                  name: relationship_count
-
-                - type: Repeatable
-                  nested_name: browsing_object_relationships
-                  counter_name: relationship_count
+                  name: id
+                - type: Select
+                  name: format
+                  attributes:
+                     class: clearfix
+                  label: Format
+                  empty_first: 1
                   model_config:
-                    empty_rows: 1
+                     resultset: Format
+                     condition:
+                        class: browsing_object
+                - name: pid
+                  label: PID
+                  attributes:
+                     class: clearfix
+                  model_config:
+                    delete_if_empty: 1
+                - name: thumbnail_pid
+                  attributes:
+                      class: clearfix
+                  label: Thumbnail PID
+
+                - type: Fieldset
+                  legend: Relationships
                   elements:
                     - type: Hidden
-                      name: id
+                      name: relationship_count
 
-                    - type: Select
-                      name: predicate
-                      label: Predicate
-                      # constraint:
-                      #   - type: DependOn
-                      #     others: pid
-                      empty_first: 1
+                    - type: Repeatable
+                      nested_name: browsing_object_relationships
+                      counter_name: relationship_count
                       model_config:
-                        delete_if_empty: 1
-                        resultset: RelationshipPredicate
-                        attributes:
-                          order_by: id
+                        empty_rows: 1
+                      elements:
+                        - type: Hidden
+                          name: id
 
-                    - name: pid
-                      label: PID
-                      # constraint:
-                      #   - type: DependOn
-                      #     others: predicate
+                        - type: Select
+                          name: predicate
+                          attributes:
+                             class: clearfix
+                          label: Predicate
+                          # constraint:
+                          #   - type: DependOn
+                          #     others: pid
+                          empty_first: 1
+                          model_config:
+                            delete_if_empty: 1
+                            resultset: RelationshipPredicate
+                            attributes:
+                               order_by: id
+
+                        - name: pid
+                          attributes:
+                             class: clearfix
+                          label: PID
+                          # constraint:
+                          #   - type: DependOn
+                          #     others: predicate
 
     - type: Submit
       name: submit
+      attributes:
+         class: "btn btn-primary"
+         style: "float:left;"

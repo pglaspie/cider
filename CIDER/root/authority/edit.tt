@@ -1,5 +1,7 @@
-[% page.title = 'Edit ' _ list_name %]
+[% page.title = 'Edit ' _ name %]
 
 <h2>[% page.title %]</h2>
 
 [% form %]
+
+</div>

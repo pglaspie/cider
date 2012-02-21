@@ -1,36 +1,27 @@
 [% IF c.user %]
-<p>
-Welcome, [% c.user.username %]. <a href="[% c.uri_for( c.controller('Auth').action_for('logout') ) %]">Log out</a>
-</p>
-
-<p>
-<a href="[% c.uri_for( c.controller('List').action_for('index') ) %]">Browse object list</a>
-</p>
-
-<p>
-<a href="[% c.uri_for( c.controller('Search').action_for('search') ) %]">Search</a>
-</p>
-
-<p>
-<a href="[% c.uri_for( c.controller('Set').action_for('list') ) %]">Your sets</a>
-</p>
-
-<p>
-<a href="[% c.uri_for( c.controller('Import').action_for('import') ) %]">Import</a>
-</p>
-
-<p>
-<a href="[% c.uri_for( c.controller('Authority').action_for('index') ) %]">Browse authority lists</a>
-</p>
-
-<p>
-<a href="[% c.uri_for( c.controller('RecordContext').action_for('index') ) %]">Browse record contexts</a>
-</p>
-
-<p>
-<a href="[% c.uri_for( c.controller('Location').action_for('index') ) %]">Browse locations</a>
-</p>
+<div id="user" style="padding:14px;">
+Welcome, 
+<span class="dropdown">
+  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+     [% c.user.username %]
+     <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu">
+    <li><a href="[% c.uri_for( c.controller('Auth').action_for('logout') ) %]">Log out</a></li>
+  </ul>
+</span>
+</div>
+<ul class="nav nav-list">
+  <li><a href="[% c.uri_for( c.controller('List').action_for('index') ) %]">Browse</a></li>
+  <li><a href="[% c.uri_for( c.controller('Search').action_for('search') ) %]">Search</a></li>
+  <li><a href="[% c.uri_for( c.controller('Set').action_for('list') ) %]">Sets</a></li>
+  <li><a href="[% c.uri_for( c.controller('Import').action_for('import') ) %]">Import</a></li>
+  <li><a href="[% c.uri_for( c.controller('Authority').action_for('index') ) %]">Authority lists</a></li>
+  <li><a href="[% c.uri_for( c.controller('RecordContext').action_for('index') ) %]">Record contexts</a></li>
+  <li><a href="[% c.uri_for( c.controller('Location').action_for('index') ) %]">Locations</a></li>
+</ul>
 [% ELSE %]
+<div style="padding:14px;">
 <p>
 Welcome to CIDER.
 </p>
@@ -38,4 +29,5 @@ Welcome to CIDER.
 <p>
 Please log in using the controls at right.
 </p>
+</div>
 [% END %]

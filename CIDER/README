@@ -1,1 +1,16 @@
 Run script/cider_server.pl to test the application.
+
+
+To make changes to the database schema:
+
+1. Make changes to the appropriate column definitions in the Perl DBIC
+class file(s) in lib/CIDER/Schema/Result/.
+
+2. Run "script/cider_ddl.pl" to generate a new version of cider.sql.
+
+3. Run "svn diff cider.sql --diff-cmd script/cider_sqlt_diff.pl" to
+generate a sequence of SQL commands reflecting the changes.
+
+4. Update your MySQL database by entering the above commands at the
+mysql command prompt.
+

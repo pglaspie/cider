@@ -1,4 +1,6 @@
 method: post
+attributes:
+   class: form-stacked
 
 form_error_message: Sorry, there was in error in your submission. Please see below.
 
@@ -10,6 +12,8 @@ elements:
     name: return_uri
 
   - name: barcode
+    attributes:
+       class: clearfix
     label: Barcode or Location ID
     constraint: Required
 
@@ -28,6 +32,8 @@ elements:
             name: id
           - type: Text
             name: title
+            attributes:
+               class: clearfix
             model_config:
               delete_if_empty: 1
             constraint:
@@ -40,6 +46,8 @@ elements:
       - type: Hidden
         name: collection_number_count
       - type: Repeatable
+        attributes:
+           class: clearfix
         nested_name: collection_numbers
         counter_name: collection_number_count
         model_config:
@@ -57,6 +65,8 @@ elements:
       - type: Hidden
         name: series_number_count
       - type: Repeatable
+        attributes:
+           class: clearfix
         nested_name: series_numbers
         counter_name: series_number_count
         model_config:
@@ -71,6 +81,8 @@ elements:
   - type: Select
     label: Unit type
     name: unit_type
+    attributes:
+       class: clearfix
     constraint: Required
     empty_first: 1
     model_config:
@@ -78,3 +90,6 @@ elements:
 
   - type: Submit
     name: submit
+    attributes:
+      class: "btn btn-primary"
+      style: "float:left;margin-top:18px;"

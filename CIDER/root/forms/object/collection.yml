@@ -1,4 +1,6 @@
 method: post
+attributes:
+   class: form-stacked
 
 form_error_message: Sorry, there was in error in your submission. Please see below.
 
@@ -17,6 +19,8 @@ elements:
     - type: Text
       label: Collection Number
       name: number
+      attributes:
+        class: clearfix
       id: number
       constraints:
         - type: Required
@@ -29,10 +33,19 @@ elements:
       label: Collection Title
       name: title
       id: title
+      attributes:
+         class: "span7 clearfix"
       constraint: Required
 
-# Start Date (derived)
-# End Date (derived)
+    - type: Fieldset
+      legend: Date
+      elements:
+          - type: Label
+            label: From
+            name: date_from
+          - type: Label
+            label: To
+            name: date_to
 
     - type: Fieldset
       legend: Bulk Dates
@@ -52,18 +65,31 @@ elements:
             id: bulk_date_to
             constraint: *Date
 
-# Extent (derived)
+    - type: Label
+      attributes:
+        class: clearfix
+      label: Extent
+      name: extent
 
-# Restrictions (derived)
+    - type: Label
+      
+      label: Restrictions
+      name: restrictions
+      attributes:
+         class: clearfix
 
     - type: Textarea
       label: Scope
       name: scope
+      attributes:
+        class: "span7 clearfix"
       id: scope
 
     - type: Textarea
       label: Organization
       name: organization
+      attributes:
+         class: "span7 clearfix"
       id: organization
 
     - type: Hidden
@@ -81,6 +107,8 @@ elements:
               name: id
             - type: Select
               name: record_context
+              attributes:
+                 class: "span7 clearfix"
               empty_first: 1
               model_config:
                 resultset: RecordContext
@@ -102,6 +130,8 @@ elements:
               name: id
             - type: Select
               name: record_context
+              attributes:
+                class: "clearfix span7"
               empty_first: 1
               model_config:
                 resultset: RecordContext
@@ -111,11 +141,15 @@ elements:
     - type: Textarea
       label: Archival History
       name: history
+      attributes:
+         class: "span7 clearfix"
       id: history
 
     - type: Select
       label: Documentation
       name: documentation
+      attributes:
+         class: "span7 clearfix"
       id: documentation
       empty_first: 1
       constraint: Required
@@ -128,71 +162,101 @@ elements:
     - type: Textarea
       label: Processing Notes
       name: processing_notes
+      attributes:
+         class: "span7 clearfix"
+         rows: 3
       id: processing_notes
 
     - type: Hidden
       name: material_count
     - type: Fieldset
+      attributes:
+         class: repeatable
       legend: Associated Material
       elements:
-        - type: Repeatable
-          nested_name: material
-          counter_name: material_count
-          model_config:
-            empty_rows: 1
+        - type: Block
+          id: material
           elements:
-            - type: Hidden
-              name: id
-            - type: Text
-              name: material
+            - type: Repeatable
+              nested_name: material
+              counter_name: material_count
               model_config:
-                delete_if_empty: 1
+                empty_rows: 1
+              elements:
+                - type: Hidden
+                  name: id
+                - type: Text
+                  attributes:
+                     class: "span7 clearfix"
+                  name: material
+                  model_config:
+                    delete_if_empty: 1
 
     - type: Textarea
       label: Notes
       name: notes
+      attributes:
+         class: "span7 clearfix"
       id: notes
 
     - type: Hidden
       name: language_count
     - type: Fieldset
+      attributes:
+         class: repeatable
       legend: Languages
       elements:
-        - type: Repeatable
-          nested_name: languages
-          counter_name: language_count
-          model_config:
-            empty_rows: 1
+        - type: Block
+          id: languages
           elements:
-            - type: Hidden
-              name: id
-            - type: Select
-              name: language
+            - type: Repeatable
+              nested_name: languages
+              counter_name: language_count
               model_config:
-                options_from_model: 0
-                delete_if_empty: 1
+                empty_rows: 1
+                new_rows_max: 100
+              elements:
+                - type: Hidden
+                  name: id
+                - type: Select
+                  attributes:
+                     class: "clearfix"
+                  name: language
+                  model_config:
+                    delete_if_empty: 1
+                    options_from_model: 0
 
     - type: Hidden
       name: subject_count
     - type: Fieldset
+      attributes:
+         class: repeatable    
       legend: Subjects
       elements:
-        - type: Repeatable
-          nested_name: subjects
-          counter_name: subject_count
-          model_config:
-            empty_rows: 1
+        - type: Block
+          id: subjects
           elements:
-            - type: Hidden
-              name: id
-            - type: Text
-              name: subject
+            - type: Repeatable
+              nested_name: subjects
+              counter_name: subject_count
               model_config:
-                delete_if_empty: 1
+                empty_rows: 1
+                new_rows_max: 100
+              elements:
+                - type: Hidden
+                  name: id
+                - type: Text
+                  attributes:
+                     class: "span7 clearfix"
+                  name: subject
+                  model_config:
+                    delete_if_empty: 1
 
     - type: Select
       label: Processing Status
       name: processing_status
+      attributes:
+         class: "clearfix"
       id: processing_status
       constraint: Required
       empty_first: 1
@@ -203,9 +267,13 @@ elements:
           order_by: id
 
 # Accession Number(s) (derived)
+      attributes:
+         class: clearfix
 
     - type: Text
       name: permanent_url
+      attributes:
+        class: "clearfix"
       label: Permanent URL
       constraint:
         type: Regex
@@ -216,11 +284,15 @@ elements:
 
     - type: Text
       name: pid
+      attributes:
+        class: "clearfix"
       label: PID
       # TO DO: constrain uniqueness?
 
     - type: Select
       name: publication_status
+      attributes:
+         class: "small clearfix"
       label: Publication Status
       model_config:
         resultset: PublicationStatus
@@ -228,43 +300,55 @@ elements:
           order_by: id
 
     - type: Fieldset
+      attributes: 
+          class: repeatable
       legend: Relationships
-      elements:
-        - type: Hidden
-          name: relationship_count
-
-        - type: Repeatable
-          nested_name: collection_relationships
-          counter_name: relationship_count
-          model_config:
-            empty_rows: 1
+      elements: 
+        - type: Block
+          id: collection_relationships
           elements:
             - type: Hidden
-              name: id
-
-            - type: Select
-              label: Predicate
-              name: predicate
-              constraint:
-                - type: DependOn
-                  others: pid
-              empty_first: 1
+              name: relationship_count
+          
+            - type: Repeatable
+              nested_name: collection_relationships
+              counter_name: relationship_count
               model_config:
-                delete_if_empty: 1
-                resultset: RelationshipPredicate
-                attributes:
-                  order_by: id
+                empty_rows: 1
+                new_rows_max: 100
+              elements:
+                - type: Hidden
+                  name: id
 
-            - type: Text
-              label: PID
-              name: pid
-              constraint:
-                - type: DependOn
-                  others: predicate
+                - type: Select
+                  label: Predicate
+                  name: predicate
+                  attributes:
+                      class: clearfix
+                  constraint:
+                    - type: DependOn
+                      others: pid
+                  empty_first: 1
+                  model_config:
+                     delete_if_empty: 1
+                     resultset: RelationshipPredicate
+                  attributes:
+                    order_by: id
+
+                - type: Text
+                  attributes:
+                    class: clearfix
+                  label: PID
+                  name: pid
+                  constraint:
+                    - type: DependOn
+                      others: predicate
 
     - type: Hidden
       name: parent
 
-
     - type: Submit
       name: submit
+      attributes:
+        class: "btn btn-primary"
+        style: "float:left;"

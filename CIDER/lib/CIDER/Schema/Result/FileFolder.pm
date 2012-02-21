@@ -48,4 +48,15 @@ sub update_from_xml {
     return $self->update_or_insert;
 }
 
+=head2 format
+
+Returns the string "File (document grouping)" (since that is the only
+format applicable to this class).
+
+=cut
+
+sub format {
+    return 'File (document grouping)';
+}
+
 1;

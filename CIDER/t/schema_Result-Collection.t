@@ -32,6 +32,79 @@ is( $collection->languages->first->language_name, 'English',
 is( $collection->notes, 'Test notes.  Unicode: « ☃ ° » yay.',
     'Unicode is working.' );
 
+my @items = $collection->item_descendants;
+
+is( $collection->date_from, '2000-01-01',
+    'Earliest date_from is derived.' );
+is( $collection->date_to, '2010-01-01',
+    'Latest date_from is derived.' );
+
+# TO DO: test missing date_to, missing day/month
+
+is( $collection->extent, '',
+    'No locations, extent is empty string.' );
+is( $collection->extent->volume, 0,
+    'No locations, extent volume is 0.' );
+
+$items[0]->update_from_xml( elt <<END
+<item>
+  <classes>
+    <document>
+      <location>8001</location>
+    </document>
+    <boundVolume>
+      <location>9001</location>
+    </boundVolume>
+    <digitalObject>
+      <location>11</location>
+      <pid>foo</pid>
+    </digitalObject>
+    <audioVisualMedia>
+      <location>11</location>
+    </audioVisualMedia>
+  </classes>
+</item>
+END
+);
+
+$items[1]->update_from_xml( elt <<END
+<item>
+  <classes>
+    <document>
+      <location>8002</location>
+    </document>
+    <digitalObject>
+      <location>11</location>
+      <pid>foo</pid>
+    </digitalObject>
+  </classes>
+</item>
+END
+);
+
+is( $collection->extent, '2.4 cubic feet, 1 bound volume, and 2 digital objects',
+    'Derived extent is correct.' );
+is( $collection->extent->volume, 2.4,
+    'Derived extent volume is correct.' );
+is( $collection->extent->count( 'Bound volume' ), 1,
+    'Derived bound volume count is correct.' );
+is( $collection->extent->count( 'Digital objects' ), 2,
+    'Derived digital objects count is correct.' );
+
+is( $collection->accession_numbers, '2011.004;2011.005',
+    'Accession numbers are derived.' );
+
+is( $collection->restrictions, 'none',
+    'Collection has no restrictions by default.' );
+$items[0]->update_from_xml(
+    elt '<item><restrictions>20 years</restrictions></item>' );
+is( $collection->restrictions, 'some',
+    'Some items in the collection have restrictions.' );
+$items[1]->update_from_xml(
+    elt '<item><restrictions>20 years</restrictions></item>' );
+is( $collection->restrictions, 'all',
+    'All items in the collection have restrictions.' );
+
 my $material = $collection->add_to_material( {
     material => 'Test Material 3'
 } );

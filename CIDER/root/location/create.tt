@@ -2,14 +2,21 @@
 
 <h2>[% page.title %]</h2>
 
+<div class="required_message">
+     <p>Fields marked with a '*' are required</p>
+</div>
+
+
 [% IF return_uri %]
-<div class="form_error_message">
+<div class="alert alert-error">
+<a class="close" data-dismiss="alert" href="#">x</a>
 <p>
-No location with barcode <em>[% barcode %]</em> exists.  Please create
-the location below, after which the item <em>[% title %]</em>
+No location with barcode <strong>[% barcode %]</strong> exists.  Please create
+the location below, after which the item <strong>[% title %]</strong>
 will be [% action %]d.
 </p>
 </div>
 [% END %]
 
 [% form %]
+</div>

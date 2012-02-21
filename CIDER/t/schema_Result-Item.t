@@ -165,8 +165,10 @@ is( $item->groups, 1,
     'Item has one group.' );
 is( $item->file_folders->first->location->unit_type, 'Digital objects',
     'File folder location has digital objects unit type.' );
-is( $item->containers->first->format, 'CookieJar',
+is( $item->file_folders->first->format, 'File (document grouping)',
     'File folder format is correct.' );
+is( $item->containers->first->format, 'CookieJar',
+    'Container format is correct.' );
 is( $item->three_dimensional_objects->first->format, 'CookieJar',
     'Three dimensional object format is correct.' );
 isnt( $item->containers->first->format->id,

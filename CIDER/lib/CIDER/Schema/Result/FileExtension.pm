@@ -25,6 +25,12 @@ __PACKAGE__->has_many(
     'file_extension',
 );
 
+__PACKAGE__->many_to_many(
+    items =>
+        'digital_objects',
+    'item'
+);
+
 __PACKAGE__->add_columns(
     extension =>
         { data_type => 'varchar' },

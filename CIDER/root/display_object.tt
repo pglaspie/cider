@@ -11,13 +11,20 @@ object_id = object.id;
 [%# XXX Do a FOR loop here, from 0..$level. Dunno syntax. %]
 
 <p>
+
+
 [% IF object.number_of_children > 0 %]
     [% INCLUDE collapse_button.tt %] [% INCLUDE expand_button.tt %]
 [% END %]
 
 [%# Display the object's full title, hyperlinked to its CIDER detail page. %]
 <a href="[% c.uri_for( c.controller('Object').action_for('detail'), [ object.number ] ) %]">[% object.full_title %]</a>
+
+<span class="label pull-right">[% object.type %]</span>
+<hr class="hr-thin" />
 </p>
+
+
 
 [%# This div is where the response to a display-kids call will get written %]
 <div id="children_of_[% object.id %]" style="display:none;" class="children">

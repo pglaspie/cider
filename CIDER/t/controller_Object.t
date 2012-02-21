@@ -154,6 +154,13 @@ $mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
 
 $mech->content_contains( '"selected">Test Name<', 'Names added.' );
 
+$mech->submit_form_ok( { with_fields => {
+    'file_folders_1.location' => 8,
+} }, 'Added a file folder class.' );
+
+$mech->text_contains( 'FormatFile (document grouping)',
+                      'File folder format is correct.' );
+
 # TO DO: test moving to a new parent
 # TO DO: test moving to root
 
@@ -161,6 +168,22 @@ $mech->get( '/object/9999' );
 is( $mech->status, 404, 'Invalid object number gives 404 page.' );
 
 $mech->get( '/object/n1' );
+$mech->text_contains( '2000-01-01To2010-01-01',
+                      'Derived date range is correct.' );
+$mech->text_contains( '2011.004;2011.005',
+                      'Derived accession numbers are displayed.' );
+$mech->text_contains( 'Restrictionsnone',
+                      'Derived restrictions is some.' );
+
+$mech->get( '/object/n4' );
+$mech->submit_form_ok( { with_fields => {
+    restrictions => 2,
+} }, 'Set item 1 restrictions' );
+
+$mech->get( '/object/n1' );
+$mech->text_contains( 'Restrictionssome',
+                      'Derived restrictions is some.' );
+
 $mech->content_contains( 'does not belong' );
 $mech->submit_form_ok( { with_fields => {
     set_id => 1,
@@ -185,6 +208,8 @@ is( $csv->[0]->{ type }, 'collection',
     'Collection type is correct' );
 is( $csv->[0]->{ notes }, 'Test notes.  Unicode: « ☃ ° » yay.',
     'Collection notes are correct' );
+is( $csv->[0]->{ processing_status }, 'minimal',
+    'Processing status is exported as text.' );
 is( $csv->[1]->{ title }, 'Test Series 1',
     'Series title is correct' );
 is( $csv->[1]->{ type }, 'series',
@@ -197,14 +222,50 @@ is( $csv->[2]->{ type }, 'item',
 $mech->get( '/object/n1' );
 $mech->submit_form_ok ( { with_fields => {
     descendants => 1,
-    template => 'export.xml',
+    template => 'xml-export.tt',
 } }, 'Export to XML' );
 is( $mech->ct, 'application/xml', 'MIME type is correct' );
 
 use XML::LibXML;
-ok( XML::LibXML->load_xml( string => $mech->content ),
+ok( my $doc = XML::LibXML->load_xml( string => $mech->content ),
     'Export file is valid XML' );
+my $root = $doc->documentElement;
+my @nodes = $root->nonBlankChildNodes;
+is( @nodes, 4,
+    'Document has four elements.' );
+my $collection = $nodes[0];
+like( $collection->toString, qr/>minimal</,
+    'Processing status is exported as text.' );
+
+$mech->get( '/object/II' );
+$mech->submit_form_ok ( { with_fields => {
+    descendants => 0,
+    template => 'xml-export.tt',
+} }, 'Export to XML' );
+$mech->content_contains( '>Test Name<', 'Authority name is exported.' );
 
 # TO DO: test delete button
+
+$mech->get( '/object/n1' );
+$mech->submit_form_ok( { with_fields => {
+    clone_button => 1,
+} }, 'Clicked the clone button' );
+
+$mech->content_contains( 'This form will create', 'Loaded the clone form' );
+$mech->content_contains( 'Test Collection with kids', 'Clone form looks OK' );
+$mech->submit_form_ok( { with_fields => {
+    submit => 1,
+} }, 'Submitted the clone form' );
+
+$mech->content_contains( 'Number is already in use', 
+                         'Form rejected for the right reason',
+                        );
+
+$mech->submit_form_ok( { with_fields => {
+    submit => 1,
+    number => 'n1.clone',
+} }, 'Resubmitted the clone form' );
+
+$mech->content_contains( 'You have successfully created', 'Clone created successfully' );
 
 done_testing();

@@ -23,7 +23,13 @@ Display a list of record contexts with links to their detail pages.
 
 =cut
 
-sub index :Path( '' ) :Args( 0 ) { }
+sub index :Path( '' ) :Args( 0 ) {
+    my ( $self, $c ) = @_;
+
+    my $model = $c->model( 'CIDERDB::Location' );
+    my @locs = $model->search( undef, { order_by => 'barcode' } );
+    $c->stash->{ locs } = \@locs;
+}
 
 =head2 create
 
@@ -37,6 +43,10 @@ sub create :Local :Args( 0 ) :FormConfig( 'location' ) {
 
     my $form = $c->stash->{ form };
     $form->get_field( 'submit' )->value( 'Create' );
+
+    # Add contraint classes to required form fields
+    $form->auto_constraint_class('constraint_%t');
+
 
     if ( not $form->submitted ) {
         if ( my $return_uri = $c->flash->{ return_uri } ) {
@@ -99,6 +109,10 @@ sub detail :Chained('location') :PathPart('') :Args(0) :FormConfig('location') {
 
     my $form = $c->stash->{ form };
     $form->get_field( 'submit' )->value( 'Update location' );
+
+    # Add contraint classes to required form fields
+    $form->auto_constraint_class('constraint_%t');
+
 
     if ( $form->submitted_and_valid ) {
         $form->model->update( $loc );

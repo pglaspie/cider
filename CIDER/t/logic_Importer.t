@@ -135,22 +135,24 @@ END
 } qr/invalid/,
     "Number can't be missing on create.";
 
-throws_ok {
-    test_import( <<END
-<import>
-  <create>
-    <item number="123">
-      <title>New undated item</title>
-      <restrictions>none</restrictions>
-      <accessionNumber>2000.001</accessionNumber>
-      <classes><group/></classes>
-    </item>
-  </create>
-</import>
-END
-);
-} qr/invalid/,
-    "Item date can't be missing on create.";
+# date is temporarily not required, while importing legacy data.
+#
+# throws_ok {
+#     test_import( <<END
+# <import>
+#   <create>
+#     <item number="123">
+#       <title>New undated item</title>
+#       <restrictions>none</restrictions>
+#       <accessionNumber>2000.001</accessionNumber>
+#       <classes><group/></classes>
+#     </item>
+#   </create>
+# </import>
+# END
+# );
+# } qr/invalid/,
+#     "Item date can't be missing on create.";
 
 throws_ok {
     test_import( <<END

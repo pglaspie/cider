@@ -20,17 +20,17 @@ $mech->submit_form( with_fields => {
     password => 'foo',
 } );
 
-$mech->follow_link_ok( { text => 'Browse authority lists' } );
+$mech->follow_link_ok( { text => 'Authority lists' } );
 
-$mech->follow_link_ok( { text => 'Names' } );
+$mech->follow_link_ok( { text => 'Name' } );
 $mech->content_contains( 'Test Name' );
 $mech->back;
 
-$mech->follow_link_ok( { text => 'Geographic Terms' } );
+$mech->follow_link_ok( { text => 'Geographic Term' } );
 $mech->content_contains( 'Test Geographic Term' );
 $mech->back;
 
-$mech->follow_link_ok( { text => 'Topic Terms' } );
+$mech->follow_link_ok( { text => 'Topic Term' } );
 $mech->content_contains( 'Test Topic Term' );
 $mech->back;
 
@@ -38,7 +38,7 @@ $mech->get( '/authority/foobar' );
 is( $mech->status, 404, 'Unknown list goes to 404' );
 $mech->back;
 
-$mech->follow_link( text => 'Names' );
+$mech->follow_link( text => 'Name' );
 $mech->submit_form_ok( { with_fields => {
     note => 'New Note',
 } }, 'Submit create form with no name' );

@@ -30,7 +30,7 @@ __PACKAGE__->add_columns(
 );
 __PACKAGE__->belongs_to(
     format =>
-        'CIDER::Schema::Result::DigitalObject',
+        'CIDER::Schema::Result::Format',
 );
 
 __PACKAGE__->add_columns(

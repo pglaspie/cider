@@ -49,7 +49,9 @@ item = element item {
   element creators { element creator { name }* }?,
   # Default circa is "false".
   element circa { xsd:boolean? }?,
-  ( element date { dateRange } | required ),
+  # date is temporarily not required, while importing legacy data.
+  element date { dateRange? }?,
+  # Default restrictions is "none".
   ( element restrictions { restrictions } | required ),
   ( element accessionNumber { accessionNumber } | required ),
   # Default dcType is "Text".
@@ -326,6 +328,7 @@ unitType =
 | "0.40 cubic ft."
 | "0.25 cubic ft."
 | "0.20 cubic ft."
+| "zero"
 | "Bound volume"
 | "Artifact"
 | "Audio-visual media"

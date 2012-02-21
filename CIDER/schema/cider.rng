@@ -232,13 +232,16 @@
           </optional>
         </element>
       </optional>
-      <choice>
+      <optional>
+        <!-- date is temporarily not required, while importing legacy data. -->
         <element name="date">
-          <ref name="dateRange"/>
+          <optional>
+            <ref name="dateRange"/>
+          </optional>
         </element>
-        <ref name="required"/>
-      </choice>
+      </optional>
       <choice>
+        <!-- Default restrictions is "none". -->
         <element name="restrictions">
           <ref name="restrictions"/>
         </element>
@@ -1102,6 +1105,7 @@
       <value>0.40 cubic ft.</value>
       <value>0.25 cubic ft.</value>
       <value>0.20 cubic ft.</value>
+      <value>zero</value>
       <value>Bound volume</value>
       <value>Artifact</value>
       <value>Audio-visual media</value>

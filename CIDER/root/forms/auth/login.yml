@@ -1,4 +1,6 @@
 method: post
+attributes:
+   class: form-stacked
 
 elements:
     - type: Text
@@ -17,4 +19,7 @@ elements:
 
     - type: Submit
       name: submit
+      attributes:
+         class: "btn btn-primary"
+         style: "margin-top:10px;"
       value: Log in

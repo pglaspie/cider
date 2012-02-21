@@ -1,7 +1,11 @@
 method: post
+attributes:
+   class: form-stacked
 
 elements:
     - type: Text
+      attributes:
+         class: "clearfix span7"
       label: Name
       name: name
       id: name
@@ -10,4 +14,6 @@ elements:
 
     - type: Submit
       name: submit
+      attributes:
+         class: "btn btn-primary"
       value: Create Set

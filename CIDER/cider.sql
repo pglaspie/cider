@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Mon Aug 22 20:16:44 2011
+-- Created on Fri Dec  9 15:46:01 2011
 -- 
 SET foreign_key_checks=0;
 
@@ -34,7 +34,7 @@ DROP TABLE IF EXISTS `authority_name`;
 --
 CREATE TABLE `authority_name` (
   `id` integer NOT NULL auto_increment,
-  `name` varchar(255) NOT NULL,
+  `name` text NOT NULL,
   `note` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
@@ -71,7 +71,7 @@ DROP TABLE IF EXISTS `file_extension`;
 --
 CREATE TABLE `file_extension` (
   `id` integer NOT NULL auto_increment,
-  `extension` varchar(255) NOT NULL,
+  `extension` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -95,7 +95,7 @@ DROP TABLE IF EXISTS `function`;
 --
 CREATE TABLE `function` (
   `id` integer NOT NULL auto_increment,
-  `name` varchar(255) NOT NULL,
+  `name` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -106,7 +106,7 @@ DROP TABLE IF EXISTS `geographic_term`;
 --
 CREATE TABLE `geographic_term` (
   `id` integer NOT NULL auto_increment,
-  `name` varchar(255) NOT NULL,
+  `name` text NOT NULL,
   `note` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
@@ -118,8 +118,8 @@ DROP TABLE IF EXISTS `item_restrictions`;
 --
 CREATE TABLE `item_restrictions` (
   `id` tinyint NOT NULL auto_increment,
-  `name` varchar(255) NOT NULL,
-  `description` varchar(255) NOT NULL,
+  `name` text NOT NULL,
+  `description` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -218,7 +218,7 @@ DROP TABLE IF EXISTS `stabilization_procedure`;
 CREATE TABLE `stabilization_procedure` (
   `id` tinyint NOT NULL auto_increment,
   `code` varchar(10) NOT NULL,
-  `name` varchar(255),
+  `name` text,
   PRIMARY KEY (`id`),
   UNIQUE `stabilization_procedure_code` (`code`)
 ) ENGINE=InnoDB;
@@ -230,8 +230,8 @@ DROP TABLE IF EXISTS `staff`;
 --
 CREATE TABLE `staff` (
   `id` integer NOT NULL auto_increment,
-  `first_name` varchar(255) NOT NULL,
-  `last_name` varchar(255) NOT NULL,
+  `first_name` text NOT NULL,
+  `last_name` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -242,7 +242,7 @@ DROP TABLE IF EXISTS `topic_term`;
 --
 CREATE TABLE `topic_term` (
   `id` integer NOT NULL auto_increment,
-  `name` varchar(255) NOT NULL,
+  `name` text NOT NULL,
   `note` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
@@ -284,7 +284,7 @@ CREATE TABLE `object` (
   `id` integer NOT NULL auto_increment,
   `parent` integer,
   `number` varchar(255) NOT NULL,
-  `title` varchar(255) NOT NULL,
+  `title` text NOT NULL,
   `audit_trail` integer NOT NULL,
   INDEX `object_idx_audit_trail` (`audit_trail`),
   INDEX `object_idx_parent` (`parent`),
@@ -301,8 +301,8 @@ DROP TABLE IF EXISTS `user`;
 --
 CREATE TABLE `user` (
   `id` integer NOT NULL auto_increment,
-  `username` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
+  `username` text NOT NULL,
+  `password` text NOT NULL,
   `staff` integer,
   INDEX `user_idx_staff` (`staff`),
   PRIMARY KEY (`id`),
@@ -330,7 +330,7 @@ DROP TABLE IF EXISTS `location_collection_number`;
 CREATE TABLE `location_collection_number` (
   `id` integer NOT NULL auto_increment,
   `location` integer NOT NULL,
-  `number` varchar(255) NOT NULL,
+  `number` text NOT NULL,
   INDEX `location_collection_number_idx_location` (`location`),
   PRIMARY KEY (`id`),
   CONSTRAINT `location_collection_number_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -344,7 +344,7 @@ DROP TABLE IF EXISTS `location_series_number`;
 CREATE TABLE `location_series_number` (
   `id` integer NOT NULL auto_increment,
   `location` integer NOT NULL,
-  `number` varchar(255) NOT NULL,
+  `number` text NOT NULL,
   INDEX `location_series_number_idx_location` (`location`),
   PRIMARY KEY (`id`),
   CONSTRAINT `location_series_number_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -358,7 +358,7 @@ DROP TABLE IF EXISTS `location_title`;
 CREATE TABLE `location_title` (
   `id` integer NOT NULL auto_increment,
   `location` integer NOT NULL,
-  `title` varchar(255) NOT NULL,
+  `title` text NOT NULL,
   INDEX `location_title_idx_location` (`location`),
   PRIMARY KEY (`id`),
   CONSTRAINT `location_title_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -389,7 +389,7 @@ DROP TABLE IF EXISTS `object_set`;
 --
 CREATE TABLE `object_set` (
   `id` integer NOT NULL auto_increment,
-  `name` varchar(255) NOT NULL,
+  `name` text NOT NULL,
   `owner` integer NOT NULL,
   INDEX `object_set_idx_owner` (`owner`),
   PRIMARY KEY (`id`),
@@ -403,8 +403,8 @@ DROP TABLE IF EXISTS `series`;
 --
 CREATE TABLE `series` (
   `id` integer NOT NULL,
-  `bulk_date_from` varchar(10),
-  `bulk_date_to` varchar(10),
+  `bulk_date_from` text,
+  `bulk_date_to` text,
   `description` text,
   `arrangement` text,
   `notes` text,
@@ -422,7 +422,7 @@ CREATE TABLE `collection_relationship` (
   `id` integer NOT NULL auto_increment,
   `collection` integer NOT NULL,
   `predicate` tinyint NOT NULL,
-  `pid` varchar(255) NOT NULL,
+  `pid` text NOT NULL,
   INDEX `collection_relationship_idx_collection` (`collection`),
   INDEX `collection_relationship_idx_predicate` (`predicate`),
   PRIMARY KEY (`id`),
@@ -438,14 +438,14 @@ DROP TABLE IF EXISTS `item`;
 CREATE TABLE `item` (
   `id` integer NOT NULL,
   `circa` enum('0','1') NOT NULL DEFAULT '0',
-  `date_from` varchar(10) NOT NULL,
-  `date_to` varchar(10),
-  `restrictions` tinyint,
-  `accession_number` varchar(255),
+  `date_from` text,
+  `date_to` text,
+  `restrictions` tinyint NOT NULL DEFAULT 1,
+  `accession_number` text,
   `dc_type` tinyint NOT NULL,
   `description` text,
-  `volume` varchar(255),
-  `issue` varchar(255),
+  `volume` text,
+  `issue` text,
   `abstract` text,
   `citation` text,
   INDEX `item_idx_dc_type` (`dc_type`),
@@ -468,8 +468,8 @@ CREATE TABLE `record_context` (
   `publication_status` tinyint,
   `name_entry` varchar(255) NOT NULL,
   `rc_type` tinyint NOT NULL,
-  `date_from` varchar(10),
-  `date_to` varchar(10),
+  `date_from` text,
+  `date_to` text,
   `circa` enum('0','1') NOT NULL DEFAULT '0',
   `ongoing` enum('0','1') NOT NULL DEFAULT '0',
   `abstract` text,
@@ -498,8 +498,8 @@ DROP TABLE IF EXISTS `collection`;
 --
 CREATE TABLE `collection` (
   `id` integer NOT NULL,
-  `bulk_date_from` varchar(10),
-  `bulk_date_to` varchar(10),
+  `bulk_date_from` text,
+  `bulk_date_to` text,
   `scope` text,
   `organization` text,
   `history` text,
@@ -543,7 +543,7 @@ DROP TABLE IF EXISTS `record_context_alternate_name`;
 CREATE TABLE `record_context_alternate_name` (
   `id` integer NOT NULL auto_increment,
   `record_context` integer NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `name` text NOT NULL,
   INDEX `record_context_alternate_name_idx_record_context` (`record_context`),
   PRIMARY KEY (`id`),
   CONSTRAINT `record_context_alternate_name_fk_record_context` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -557,8 +557,8 @@ DROP TABLE IF EXISTS `record_context_occupation`;
 CREATE TABLE `record_context_occupation` (
   `id` integer NOT NULL auto_increment,
   `record_context` integer NOT NULL,
-  `date_from` varchar(10) NOT NULL,
-  `date_to` varchar(10),
+  `date_from` text NOT NULL,
+  `date_to` text,
   INDEX `record_context_occupation_idx_record_context` (`record_context`),
   PRIMARY KEY (`id`),
   CONSTRAINT `record_context_occupation_fk_record_context` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -572,7 +572,7 @@ DROP TABLE IF EXISTS `record_context_source`;
 CREATE TABLE `record_context_source` (
   `id` integer NOT NULL auto_increment,
   `record_context` integer NOT NULL,
-  `source` varchar(255) NOT NULL,
+  `source` text NOT NULL,
   INDEX `record_context_source_idx_record_context` (`record_context`),
   PRIMARY KEY (`id`),
   CONSTRAINT `record_context_source_fk_record_context` FOREIGN KEY (`record_context`) REFERENCES `record_context` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -587,8 +587,8 @@ CREATE TABLE `browsing_object` (
   `id` integer NOT NULL auto_increment,
   `item` integer NOT NULL,
   `format` integer,
-  `pid` varchar(255),
-  `thumbnail_pid` varchar(255),
+  `pid` text,
+  `thumbnail_pid` text,
   INDEX `browsing_object_idx_format` (`format`),
   INDEX `browsing_object_idx_item` (`item`),
   PRIMARY KEY (`id`),
@@ -618,7 +618,7 @@ DROP TABLE IF EXISTS `collection_material`;
 CREATE TABLE `collection_material` (
   `id` integer NOT NULL auto_increment,
   `collection` integer NOT NULL,
-  `material` varchar(255) NOT NULL,
+  `material` text NOT NULL,
   INDEX `collection_material_idx_collection` (`collection`),
   PRIMARY KEY (`id`),
   CONSTRAINT `collection_material_fk_collection` FOREIGN KEY (`collection`) REFERENCES `collection` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -632,7 +632,7 @@ DROP TABLE IF EXISTS `collection_subject`;
 CREATE TABLE `collection_subject` (
   `id` integer NOT NULL auto_increment,
   `collection` integer NOT NULL,
-  `subject` varchar(255) NOT NULL,
+  `subject` text NOT NULL,
   INDEX `collection_subject_idx_collection` (`collection`),
   PRIMARY KEY (`id`),
   CONSTRAINT `collection_subject_fk_collection` FOREIGN KEY (`collection`) REFERENCES `collection` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -695,7 +695,7 @@ DROP TABLE IF EXISTS `occupation_title`;
 CREATE TABLE `occupation_title` (
   `id` integer NOT NULL auto_increment,
   `occupation` integer NOT NULL,
-  `title` varchar(255) NOT NULL,
+  `title` text NOT NULL,
   INDEX `occupation_title_idx_occupation` (`occupation`),
   PRIMARY KEY (`id`),
   CONSTRAINT `occupation_title_fk_occupation` FOREIGN KEY (`occupation`) REFERENCES `record_context_occupation` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -711,8 +711,8 @@ CREATE TABLE `record_context_relationship` (
   `record_context` integer NOT NULL,
   `type` tinyint NOT NULL,
   `related_entity` integer NOT NULL,
-  `date_from` varchar(10),
-  `date_to` varchar(10),
+  `date_from` text,
+  `date_to` text,
   INDEX `record_context_relationship_idx_record_context` (`record_context`),
   INDEX `record_context_relationship_idx_related_entity` (`related_entity`),
   INDEX `record_context_relationship_idx_type` (`type`),
@@ -732,7 +732,7 @@ CREATE TABLE `document` (
   `item` integer NOT NULL,
   `location` integer NOT NULL,
   `format` integer,
-  `dimensions` varchar(255),
+  `dimensions` text,
   `rights` text,
   INDEX `document_idx_format` (`format`),
   INDEX `document_idx_item` (`item`),
@@ -811,7 +811,7 @@ CREATE TABLE `browsing_object_relationship` (
   `id` integer NOT NULL auto_increment,
   `browsing_object` integer NOT NULL,
   `predicate` tinyint NOT NULL,
-  `pid` varchar(255) NOT NULL,
+  `pid` text NOT NULL,
   INDEX `browsing_object_relationship_idx_browsing_object` (`browsing_object`),
   INDEX `browsing_object_relationship_idx_predicate` (`predicate`),
   PRIMARY KEY (`id`),
@@ -849,7 +849,7 @@ CREATE TABLE `physical_image` (
   `item` integer NOT NULL,
   `location` integer NOT NULL,
   `format` integer,
-  `dimensions` varchar(255),
+  `dimensions` text,
   `rights` text,
   INDEX `physical_image_idx_format` (`format`),
   INDEX `physical_image_idx_item` (`item`),
@@ -908,22 +908,22 @@ CREATE TABLE `digital_object` (
   `item` integer NOT NULL,
   `location` integer NOT NULL,
   `format` integer,
-  `pid` varchar(255) NOT NULL,
-  `permanent_url` varchar(255),
+  `pid` text NOT NULL,
+  `permanent_url` text,
   `notes` text,
   `rights` text,
-  `checksum` varchar(255),
+  `checksum` text,
   `file_extension` integer,
-  `original_filename` varchar(255),
+  `original_filename` text,
   `toc` text,
   `stabilized_by` integer,
-  `stabilization_date` varchar(10),
+  `stabilization_date` text,
   `stabilization_procedure` tinyint,
   `stabilization_notes` text,
   `checksum_app` integer,
   `media_app` integer,
   `virus_app` integer,
-  `file_creation_date` varchar(10),
+  `file_creation_date` text,
   INDEX `digital_object_idx_checksum_app` (`checksum_app`),
   INDEX `digital_object_idx_file_extension` (`file_extension`),
   INDEX `digital_object_idx_format` (`format`),
@@ -953,7 +953,7 @@ DROP TABLE IF EXISTS `digital_object_application`;
 CREATE TABLE `digital_object_application` (
   `id` integer NOT NULL auto_increment,
   `digital_object` integer NOT NULL,
-  `application` varchar(255) NOT NULL,
+  `application` text NOT NULL,
   INDEX `digital_object_application_idx_digital_object` (`digital_object`),
   PRIMARY KEY (`id`),
   CONSTRAINT `digital_object_application_fk_digital_object` FOREIGN KEY (`digital_object`) REFERENCES `digital_object` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -968,7 +968,7 @@ CREATE TABLE `digital_object_relationship` (
   `id` integer NOT NULL auto_increment,
   `digital_object` integer NOT NULL,
   `predicate` tinyint NOT NULL,
-  `pid` varchar(255) NOT NULL,
+  `pid` text NOT NULL,
   INDEX `digital_object_relationship_idx_digital_object` (`digital_object`),
   INDEX `digital_object_relationship_idx_predicate` (`predicate`),
   PRIMARY KEY (`id`),

@@ -2,11 +2,17 @@
 
 <h2>[% page.title %]</h2>
 
+<div class="required_message">
+     <p>Fields marked with a '*' are required</p>
+</div>
+
+
 [% IF we_just_created_this %]
-<div class="success">
+<div class="alert alert-success">
+<a class="close" data-dismiss="alert" href="#">x</a>
 <p>
 You have successfully created a new location with barcode
-<em>[% location.barcode %]</em>.
+<strong>[% location.barcode %]</strong>.
 
 [% IF item %]
 It has been set as the location of <a href="[%
@@ -19,18 +25,22 @@ c.uri_for( c.controller('Object').action_for('detail'), [ item.number ] )
 [% END %]
 
 [% IF we_just_updated_this %]
-<div class="success">
+<div class="alert alert-success">
+<a class="close" data-dismiss="alert" href="#">x</a>
 <p>You have successfully updated this location.</p>
 </div>
 [% END %]
 
 [% form %]
 
-<h3>Delete this location</h3>
-<p>To permanently delete this location, click the button below.</p>
-<p><form id="delete_form" action="[% c.uri_for_action( c.controller( 'Location' ).action_for('delete'), [ location.barcode ]) %]"><input type="submit" name="delete" value="Delete" /></form></p>
-
-<h3>Export</h3>
+<form id="delete_form" action="[% c.uri_for_action( c.controller( 'Location' ).action_for('delete'), [ location.barcode ]) %]"><input type="submit" class="btn btn-danger" style="margin-left:20px;" name="delete" value="Delete" /></form>
+</div>
+<div class="span3">
+  <div class="well"> 
+    <h3>Utilities</h3>
+    <hr />
+   <h3 data-toggle="collapse" data-target="#export"><a href="#">Export</a><i class="icon-chevron-right"></i></h3>
+   <div class="collapsable" id="export">
 
 <form id="export_form" action="[% c.uri_for_action( c.controller( 'Location' ).action_for( 'export' ), [ location.barcode ] ) %]">
 Export this location in
@@ -40,5 +50,8 @@ Export this location in
 [% END %]
 </select>
 format.
-<input type="submit" value="Go" />
+<input type="submit" class="btn" value="Go" />
 </form>
+</div>
+</div>
+</div>

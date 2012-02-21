@@ -2,35 +2,126 @@
 
 [% USE scalar %]
 
+[% # Classes hash: variable_name => display_name 
+   # For display the item's class at the top of the detail page
+%]
+[% classes = { 
+   	   groups = 'group' 
+	   file_folders = 'folder'
+	   containers = 'container'
+	   bound_volumes = 'bound volume'
+	   three_dimensional_objects = '3D object'
+	   audio_visual_media = 'a/v media'
+	   documents = 'document'
+	   physical_images = 'physical image'
+	   digital_objects = 'digital object'
+	   browsing_objects = 'browsing object'
+	   }
+-%]
+
 [% ancestors = object.ancestors %]
-<p>Return to:
-<a href="[% c.uri_for( c.controller('List').action_for('index') ) %]">Object root</a>
+<ul class="breadcrumb">
+  <li><a href="[% c.uri_for( c.controller('List').action_for('index') ) %]">Browse</a></li>
 [% FOREACH ancestor = ancestors %]
-  &rarr; <a href="[% c.uri_for( c.controller('Object').action_for('detail'), [ ancestor.number ] ) %]">[% ancestor.full_title %]</a>
+  <li><span class="divider">&gt;</span><a href="[% c.uri_for( c.controller('Object').action_for('detail'), [ ancestor.number ] ) %]">[% ancestor.full_title %]</a></li>
 [% END %]
-</p>
+</ul>
 
 <h2>[% page.title %]</h2>
 
+[% IF object.type == 'item' -%]
+<div id="display-classes">
+[% FOR class IN classes.keys -%]
+[% IF object.$class -%]
+<span class="label label-info">[% classes.$class %]</span>
+[% END -%]
+[% END -%]
+</div>
+[% END -%]
+
+<div class="required_message">
+     <p>Fields marked with a '*' are required</p>
+</div>
+
 [% IF we_just_picked_this_up %]
-<div class="success">
+<div class="alert alert-success">
+<a class="close" data-dismiss="alert" href="#">x</a>
 <p>To finish moving this object, navigate to a different object (or <a href="[% c.uri_for('/') %]">the object root</a>) however you like, and then click the button that says "Make [% object.title %] a child of this object".</p>
 </div>
 [% END %]
 
 [% IF we_just_created_this %]
-<div class="success">
-<p>You have successfully created a new [% object.type %] with the title <em>[% object.title %]</em>.</p>
+<div class="alert alert-success">
+<a class="close" data-dismiss="alert" href="#">x</a>
+<p>You have successfully created a new [% object.type %] with the title <strong>[% object.title %]</strong>.</p>
 </div>
 [% END %]
 
+
+
 [% form %]
 
-<h3>Delete this object</h3>
-<p>To permanently delete this object, click the button below.</p>
-<p>[% INCLUDE object/delete_object_button.tt %]</p>
 
-<h3>Children</h3>
+<span class="control_button" style="margin:0;">[% INCLUDE object/delete_object_button.tt %]</span>
+<form action="[% c.uri_for_action( c.controller('Object').action_for('clone'), [ object.number ] ) %]">
+<input type="submit" class="btn" name="clone_button" style="margin-left:20px;" value="Copy" />
+</form>
+</div>
+
+<div class="span3">
+  <div class="well">
+    <h3>Utilities</h3>
+    <hr />
+    <h3 data-toggle="collapse" data-target="#sets"><a href="#">Sets</a><i class="icon-chevron-right collapse-icon"></i></h3>
+    <div id="sets" class="collapsable">
+
+[% IF object.scalar.sets.count %]
+<p>This object belongs to the following sets:</p>
+<ul>
+  [% FOREACH set = object.sets %]
+  <li><a href="[% c.uri_for( c.controller('Set').action_for('detail'), [set.id] ) %]">[% set.name %]</a></li>
+  [% END %]
+</ul>
+[% ELSE %]
+<p>This object does not belong to any of your sets.</p>
+[% END %]
+
+<form class="form-stacked" action="[% c.uri_for_action( c.controller('Object').action_for('add_to_set'), [ object.number ] ) %]">
+<p>
+Add object to:
+<select name="set_id" class="clearfix">
+[% FOREACH set = c.user.sets_not_containing( object ) %]
+<option value="[% set.id %]">[% set.name %]</option>
+[% END %]
+<option value="NEW">New set...</option> 
+</select>
+<input type="submit" name="Submit" class="btn clearfix" value="Add" />
+</form>
+   </div>
+
+   <h3 data-toggle="collapse" data-target="#export"><a href="#">Export</a><i class="icon-chevron-right collapse-icon"></i></h3>
+   <div class="collapsable" id="export">
+
+<form class="form-stacked" action="[% c.uri_for_action( c.controller('Object').action_for('export'), [ object.number ] ) %]">
+Export
+<select name="descendants">
+<option value="0">this object</option>
+<option value="1">this object and all its descendants</option>
+</select>
+in
+<select name="template">
+[% FOREACH template_file = template_files %]
+  <option value="[% template_file %]">[% template_file %]</option>
+[% END %]
+</select>
+format.
+<input type="submit" class="btn" value="Go" />
+</form>
+</div>
+
+<h3 data-toggle="collapse" data-target="#children"><a href="#">Children</a><i class="icon-chevron-right collapse-icon"></i></h3>
+<div id="children" class="collapsable">
+
 [% IF object.children %]
   <p>This object contains these objects as children:</p>
   <ul>
@@ -46,68 +137,32 @@
 [% IF held_object && held_object.id != object.id && !object.has_ancestor( held_object ) %]
 [%### "Drop" the currently held object, making it a child of the current
       object. %]
-<form method="post" action="[% c.uri_for_action( c.controller('Object').action_for('drop_held_object_here'), [ object.number ] ) %]">
-<input type="submit" name="Drop" value="Make [% held_object.title %] a child of this object" />
+<form class="form-stacked" method="post" action="[% c.uri_for_action( c.controller('Object').action_for('drop_held_object_here'), [ object.number ] ) %]">
+<input type="submit" class="btn clearfix" name="Drop" value="Make [% held_object.title %] a child of this object" />
 </form>
 [% END %]
 
 [% IF !held_object || held_object.id != object.id %]
 [%### "Pick up" the current object, storing it in the session's 'held_object'
       space. %]
-<form method="post" action="[% c.uri_for_action( c.controller('Object').action_for('pick_up'), [ object.number ] ) %]">
-<input type="submit" name="Take" value="Move [% object.title %] to a new parent." />
+<form method="post" class="form-stacked" action="[% c.uri_for_action( c.controller('Object').action_for('pick_up'), [ object.number ] ) %]">
+<input type="submit" name="Take" class="btn clearfix" value="Move to a new parent." />
 </form>
 [% END %]
 
-<form method="post" action="[% c.uri_for_action( c.controller('Object').action_for('create') ) %]">
+ 
+<form method="post" class="form-stacked" action="[% c.uri_for_action( c.controller('Object').action_for('create') ) %]">
 <p>Create a new
-<select id="child_type" name="type">
+<select id="child_type" name="type" class="clearfix">
 <option value="collection">collection</option>
 <option value="series">series</option>
 <option value="item">item</option>
 </select>
-as a child of this object. <input type="submit" name="go" value="Go" /></p>
+as a child of this object. <input type="submit" class="btn clearfix" name="go" value="Go" /></p>
 <input type="hidden" name="parent_id" value="[% object.id %]" />
 </form>
 
-<h3>Sets</h3>
-[% IF object.scalar.sets.count %]
-<p>This object belongs to the following sets:</p>
-<ul>
-  [% FOREACH set = object.sets %]
-  <li><a href="[% c.uri_for( c.controller('Set').action_for('detail'), [set.id] ) %]">[% set.name %]</a></li>
-  [% END %]
-</ul>
-[% ELSE %]
-<p>This object does not belong to any of your sets.</p>
-[% END %]
-
-<form action="[% c.uri_for_action( c.controller('Object').action_for('add_to_set'), [ object.number ] ) %]">
-<p>
-Add object to:
-<select name="set_id">
-[% FOREACH set = c.user.sets_not_containing( object ) %]
-<option value="[% set.id %]">[% set.name %]</option>
-[% END %]
-<option value="NEW">New set...</option> 
-</select>
-<input type="submit" name="Submit" value="Add" />
-</form>
-
-<h3>Export</h3>
-
-<form action="[% c.uri_for_action( c.controller('Object').action_for('export'), [ object.number ] ) %]">
-Export
-<select name="descendants">
-<option value="0">this object</option>
-<option value="1">this object and all its descendants</option>
-</select>
-in
-<select name="template">
-[% FOREACH template_file = template_files %]
-  <option value="[% template_file %]">[% template_file %]</option>
-[% END %]
-</select>
-format.
-<input type="submit" value="Go" />
-</form>
+</div>
+</div>
+</div>
+</div>

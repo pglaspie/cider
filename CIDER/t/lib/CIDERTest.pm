@@ -1,8 +1,9 @@
 package CIDERTest;
 use strict;
 use warnings;
+use Carp qw( cluck );
 
-$SIG{ __WARN__ } = sub { require Carp; Carp::confess };
+$SIG{ __WARN__ } = sub { cluck shift };
 
 use base qw( Exporter );
 our @EXPORT    = qw( elt );
@@ -174,6 +175,15 @@ sub init_schema {
     );
 
     $schema->populate(
+        'ItemRestrictions',
+        [
+            [qw/id name description/],
+            [1, 'none', 'No restrictions'],
+            [2, '20 years', 'Restricted 20 years'],
+        ]
+    );
+
+    $schema->populate(
         'StabilizationProcedure',
         [
             [qw/id code name/],
@@ -237,12 +247,15 @@ sub init_schema {
         ]
     );
 
+	# NOTES: Item 5 has no "volume", for the sake of field-based NULL searches.
+	# Item 4 has volume number 'null' in order to make sure that the system can tell
+	# that literal string apart from NULL. Edge-casey!
     $schema->populate(
         'Item',
         [
-            [qw/id description date_from date_to dc_type/],
-            [4, 'Test description.', '2000-01-01', '2008-01-01', 1],
-            [5, 'Test description.', '2002-01-01', '2010-01-01', 1],
+            [qw/id description date_from date_to dc_type accession_number volume/],
+            [4, 'Test description.', '2000-01-01', '2008-01-01', 1, '2011.004', 'null',],
+            [5, 'Test description.', '2002-01-01', '2010-01-01', 1, '2011.005', undef],
         ]
     );
 
@@ -352,6 +365,23 @@ use XML::LibXML;
 sub elt {
     return XML::LibXML->new->parse_balanced_chunk( @_ )->firstChild;
 }
+
+sub login {
+    my $self = shift;
+    my ( $username ) = @_;
+
+    my $mech = Test::WWW::Mechanize::Catalyst->new;
+    $mech->get( '/auth/login' );
+    $mech->submit_form(
+	with_fields => {
+	    username => $username,
+	    password => 'password',
+	    login_form_submit => 'submit',
+	}
+    );
+    return $mech;
+}
+
 
 1;
 

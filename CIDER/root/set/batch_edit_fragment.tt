@@ -1,14 +1,14 @@
 [% IF we_just_did_batch_edit %]
-<div class="success">
+<div class="alert-message success">
 <p>
-You have successfully updated [% set.count %] [% set.type_plural %].
+You have successfully updated <strong>[% set.count %] [% set.type_plural %]</strong>
 </p>
 </div>
 [% END %]
 <form action="[% c.uri_for( c.controller('Set').action_for('batch_edit'), [set.id] ) %]">
 <p>
 Set every [% set.type %]'s
-<select name="field">
+<select class="clearfix" name="field">
 [% IF set.type == 'collection' %]
   [% INCLUDE set/collection_options.tt %]
 [% ELSIF set.type == 'series' %]
@@ -18,7 +18,7 @@ Set every [% set.type %]'s
 [% END %]
 </select>
 field to
-<input type="text" name="value" />.
-<input type="submit" value="Go" />
+<input class="clearfix" type="text" name="value" />
+<input type="submit" class="btn" value="Go" />
 </p>
 </form>

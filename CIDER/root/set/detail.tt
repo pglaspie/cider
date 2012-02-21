@@ -15,6 +15,7 @@
 <p>This set contains no objects.</p>
 [% END %]
 
+<div class="well">
 <h2>Batch-edit this set's objects</h2>
 [% IF !set.scalar.objects.count %]
 <p>This set doesn't contain any objects to edit, yet.</p>
@@ -25,11 +26,24 @@
 <hr />
 [% INCLUDE set/search_and_replace_fragment.tt %]
 [% END %]
+</div>
 
+<div class="well">
 <h2>Delete this set</h2>
+[% IF there_was_a_recursive_deletion_failure %]
+<div class="alert alert-error">
+<p>You must check the <em>I'm sure</em> checkbox to perform a recursive deletion.</p>
+</div>
+[% END %]
 <p>To permanently remove this set from your list, click the button below. (Deleting a set does not otherwise affect the objects it contains.)</p>
 <p>[% INCLUDE set/delete_set_button.tt %]</p>
 
+<p>To permanently delete this set <strong>and also delete all the objects it contains</strong>, active the checkbox and then click the button below. Please use caution -- this action is irreversible.</p>
+<p>[% INCLUDE set/delete_set_recursively_button.tt %]</p>
+
+</div>
+
+<div class="well">
 <h2>Export</h2>
 
 <form action="[% c.uri_for_action( c.controller('Set').action_for('export'), [set.id] ) %]">
@@ -45,5 +59,8 @@ in
 [% END %]
 </select>
 format.
-<input type="submit" value="Go" />
+<input class="btn" type="submit" value="Go" />
 </form>
+</div>
+
+</div>

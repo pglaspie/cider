@@ -1,21 +1,61 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
       <title>CIDER - [% page.title %]</title>
-      <link rel="stylesheet" href="[% c.uri_for('/static/css/style.css') %]" media="all">
-       <script type="text/javascript" src="[% c.uri_for('/static/js/jquery-1.6.2.min.js') %]"></script>
+       <link rel="stylesheet" href="[% c.uri_for('/static/bootstrap/css/bootstrap.min.css') %]" media="all">
+       <link rel="stylesheet" href="[% c.uri_for('/static/css/cider-custom.css') %]" media="all">
+
+       <script type="text/javascript" src="[% c.uri_for('/static/js/jquery-1.7.1.min.js') %]"></script>
        <script type="text/javascript" src="[% c.uri_for('/static/js/jquery-ui-1.8.16.custom.min.js') %]"></script>
+
        <script type="text/javascript">var base_uri = "[% c.uri_for('/') %]";</script>
+       <script type="text/javascript" src="[% c.uri_for('/static/bootstrap/js/bootstrap.min.js') %]"></script>
        <script type="text/javascript" src="[% c.uri_for('/static/js/cider.js') %]"></script>
+       <style type="text/css">
+       	  body {
+            padding-top: 60px;
+            padding-buttom: 40px;
+          }
+          
+          .sidebar-nav {
+            padding: 9px 0;
+       </style>
+         
      </head>
      <body>
-       <div id="banner">
-         <h1>CIDER (prototype draft, July 2011)</h1>
-       </div>
-      <div id="sidebar">
-        [% INCLUDE sidebar.tt %]
+
+     <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="[% c.uri_for('/') %]">CIDER</a>
+          <div class"nav-collapse">
+          <ul class="nav">
+            <li><a href="[% c.uri_for('/list') %]">Browse</a></li>
+            <li><a href="[% c.uri_for('/search') %]">Search</a></li>
+            <li><a href="https://wikis.uit.tufts.edu/confluence/display/DCAcollectionmanagementtoolreplacementproject/Home">DCA Documentation</a></li>
+          </ul>
+         </div>
+        </div>
       </div>
-      <div id="content">
-        [% content %]
-      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+
+         <div class="span2">
+            <div class="well sidebar-nav">
+	  [% INCLUDE sidebar.tt %]
+            </div>
+         </div>
+
+         <div class="span7">
+          [% content %]
+
+
+     </div>
+
+      <footer>
+        <p></p>
+      </footer>
     </body>
 </html>

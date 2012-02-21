@@ -22,7 +22,7 @@ __PACKAGE__->set_primary_key( 'id' );
 __PACKAGE__->has_many(
     collections =>
         'CIDER::Schema::Result::Collection',
-    'publication_status',
+    { 'foreign.publication_status' => 'self.id' },
     { cascade_delete => 0 },
 );
 

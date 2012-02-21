@@ -37,14 +37,19 @@ __PACKAGE__->add_columns(
     circa =>
         { data_type => 'boolean', default_value => 0 },
     date_from =>
-        { data_type => 'varchar', size => 10 },
+        { data_type => 'varchar', size => 10,
+          # date_from is temporarily not required, while importing legacy data.
+          is_nullable => 1,
+        },
     date_to =>
         { data_type => 'varchar', is_nullable => 1, size => 10 },
 );
 
 __PACKAGE__->add_columns(
     restrictions =>
-        { data_type => 'tinyint', is_foreign_key => 1, is_nullable => 1 },
+        { data_type => 'tinyint', is_foreign_key => 1,
+          default_value => 1,   # 1 = 'none'
+        },
 );
 __PACKAGE__->belongs_to(
     restrictions =>
@@ -217,6 +222,19 @@ sub classes {
         $self->browsing_objects,
     );
     return @classes;
+}
+
+=head2 locations
+
+A list of locations of the item's classes.  This list may include
+duplicates, if multiple classes have the same location.
+
+=cut
+
+sub locations {
+    my $self = shift;
+
+    return map { $_->location } grep { $_->can( 'location' ) } $self->classes;
 }
 
 =head2 insert

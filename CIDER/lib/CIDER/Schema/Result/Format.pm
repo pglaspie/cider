@@ -40,10 +40,22 @@ __PACKAGE__->has_many(
     'format',
 );
 
+__PACKAGE__->many_to_many(
+    container_items =>
+        'containers',
+    'item'
+);
+
 __PACKAGE__->has_many(
     bound_volumes =>
         'CIDER::Schema::Result::BoundVolume',
     'format',
+);
+
+__PACKAGE__->many_to_many(
+    bound_volume_items =>
+        'bound_volumes',
+    'item'
 );
 
 __PACKAGE__->has_many(
@@ -52,10 +64,22 @@ __PACKAGE__->has_many(
     'format',
 );
 
+__PACKAGE__->many_to_many(
+    three_dimensional_object_items =>
+        'three_dimensional_objects',
+    'item'
+);
+
 __PACKAGE__->has_many(
     audio_visual_media =>
         'CIDER::Schema::Result::AudioVisualMedia',
     'format',
+);
+
+__PACKAGE__->many_to_many(
+    audio_visual_media_items =>
+        'audio_visual_media',
+    'item'
 );
 
 __PACKAGE__->has_many(
@@ -64,10 +88,22 @@ __PACKAGE__->has_many(
     'format',
 );
 
+__PACKAGE__->many_to_many(
+    document_items =>
+        'documents',
+    'item'
+);
+
 __PACKAGE__->has_many(
     physical_images =>
         'CIDER::Schema::Result::PhysicalImage',
     'format',
+);
+
+__PACKAGE__->many_to_many(
+    physical_object_items =>
+        'physical_objects',
+    'item'
 );
 
 __PACKAGE__->has_many(
@@ -77,11 +113,31 @@ __PACKAGE__->has_many(
     { 'foreign.format' => 'self.id' },
 );
 
+__PACKAGE__->many_to_many(
+    digital_object_items =>
+        'digital_objects',
+    'item'
+);
+
 __PACKAGE__->has_many(
     browsing_objects =>
         'CIDER::Schema::Result::BrowsingObject',
     'format',
 );
+
+__PACKAGE__->many_to_many(
+    browsing_object_items =>
+        'browsing_objects',
+    'item'
+);
+
+sub items {
+    my $self = shift;
+
+    my $class = $self->class;
+    my $rel = "${class}_items";
+    return $self->$rel;
+}
 
 __PACKAGE__->add_columns(
     name =>

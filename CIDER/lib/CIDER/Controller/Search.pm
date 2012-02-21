@@ -35,7 +35,7 @@ sub search :Path :Args(0) :FormConfig {
 
         my $hits = $c->model( 'Search' )->search(
             query => $query,
-            num_wanted => 20, # TO DO: parameterize this?
+#            num_wanted => 20, # TO DO: parameterize this?
         );
 
         my @objects;
