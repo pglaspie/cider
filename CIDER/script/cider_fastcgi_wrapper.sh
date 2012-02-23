@@ -8,8 +8,8 @@ export LD_LIBRARY_PATH=/tdr/bin/lib:/usr/local/lib:/usr/local/lib/mysql
 export LIBRARY_PATH=/tdr/bin/lib:/usr/local/lib
 export PERL5LIB=/tdr/bin/lib/perl5/5.10.1:/tdr/bin/lib/perl5/site_perl/5.10.1
 export PATH=/tdr/bin/bin:/usr/local/sbin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/ucb:/usr/ccs/bin:/usr/proc/bin:/usr/openwin/bin
-cd /tdr/bin/cider-dev
+cd /tdr/bin/cider-prod
 source ./env.sh
 
 # Here's the command that actually launches the FastCGI server.
-/tdr/bin/cider-dev/CIDER/script/cider_fastcgi.pl -processes 3
+/tdr/bin/cider-prod/CIDER/script/cider_fastcgi.pl -processes 3
