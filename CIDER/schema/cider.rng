@@ -979,7 +979,7 @@
     <ref name="line"/>
   </define>
   <define name="geographicTerm">
-    <element name="term">
+    <element name="name">
       <ref name="line"/>
     </element>
     <optional>
@@ -999,7 +999,7 @@
     </optional>
   </define>
   <define name="topicTerm">
-    <element name="term">
+    <element name="name">
       <ref name="line"/>
     </element>
     <optional>

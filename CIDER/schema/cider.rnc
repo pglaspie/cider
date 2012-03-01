@@ -242,9 +242,9 @@ staff = element firstName { line }, element lastName { line }
 fileExtension = line
 format = line
 function = line
-geographicTerm = element term { line }, element note { line }?
+geographicTerm = element name { line }, element note { line }?
 name = element name { line }, element note { line }?
-topicTerm = element term { line }, element note { line }?
+topicTerm = element name { line }, element note { line }?
 
 
 # Controlled Vocabularies
