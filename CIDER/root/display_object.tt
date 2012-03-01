@@ -7,11 +7,28 @@ USE scalar;
 object_id = object.id;
 %]
 
+[% # Classes hash: variable_name => display_name 
+   # For display the item's class at the top of the detail page
+%]
+[% classes = { 
+   	   groups = 'group' 
+	   file_folders = 'folder'
+	   containers = 'container'
+	   bound_volumes = 'bound volume'
+	   three_dimensional_objects = '3D object'
+	   audio_visual_media = 'a/v media'
+	   documents = 'document'
+	   physical_images = 'physical image'
+	   digital_objects = 'digital object'
+	   browsing_objects = 'browsing object'
+	   }
+-%]
+
 [%# Visually indent this object to the appropriate level. %]
 [%# XXX Do a FOR loop here, from 0..$level. Dunno syntax. %]
 
-<p>
 
+<p>
 
 [% IF object.number_of_children > 0 %]
     [% INCLUDE collapse_button.tt %] [% INCLUDE expand_button.tt %]
@@ -20,9 +37,19 @@ object_id = object.id;
 [%# Display the object's full title, hyperlinked to its CIDER detail page. %]
 <a href="[% c.uri_for( c.controller('Object').action_for('detail'), [ object.number ] ) %]">[% object.full_title %]</a>
 
+[% IF object.type == 'item' -%]
+[% FOR class IN classes.keys -%]
+[% IF object.$class -%]
+<span class="label label-info pull-right" style="margin-left:3px;">[% classes.$class %]</span>
+[% END -%]
+[% END -%]
+[% ELSE -%]
 <span class="label pull-right">[% object.type %]</span>
-<hr class="hr-thin" />
+[% END -%]
+
+
 </p>
+<hr class="hr-thin" />
 
 
 
