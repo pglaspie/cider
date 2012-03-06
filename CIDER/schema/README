@@ -1,0 +1,9 @@
+To translate the compact-syntax schema to the XML syntax, use the
+following command:
+
+  trang cider.rnc cider.rng
+
+You can download trang from the jing-trang project site:
+
+  http://code.google.com/p/jing-trang/
+

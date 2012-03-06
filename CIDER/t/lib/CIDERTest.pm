@@ -366,23 +366,6 @@ sub elt {
     return XML::LibXML->new->parse_balanced_chunk( @_ )->firstChild;
 }
 
-sub login {
-    my $self = shift;
-    my ( $username ) = @_;
-
-    my $mech = Test::WWW::Mechanize::Catalyst->new;
-    $mech->get( '/auth/login' );
-    $mech->submit_form(
-	with_fields => {
-	    username => $username,
-	    password => 'password',
-	    login_form_submit => 'submit',
-	}
-    );
-    return $mech;
-}
-
-
 1;
 
 __END__

@@ -266,7 +266,9 @@ elements:
         attributes:
           order_by: id
 
-# Accession Number(s) (derived)
+    - type: Label
+      label: Accession Number(s)
+      name: accession_numbers
       attributes:
          class: clearfix
 

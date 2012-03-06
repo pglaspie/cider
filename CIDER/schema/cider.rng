@@ -240,19 +240,21 @@
           </optional>
         </element>
       </optional>
-      <choice>
+      <optional>
         <!-- Default restrictions is "none". -->
         <element name="restrictions">
-          <ref name="restrictions"/>
+          <optional>
+            <ref name="restrictions"/>
+          </optional>
         </element>
-        <ref name="required"/>
-      </choice>
-      <choice>
+      </optional>
+      <optional>
         <element name="accessionNumber">
-          <ref name="accessionNumber"/>
+          <optional>
+            <ref name="accessionNumber"/>
+          </optional>
         </element>
-        <ref name="required"/>
-      </choice>
+      </optional>
       <optional>
         <!-- Default dcType is "Text". -->
         <element name="dcType">
@@ -977,7 +979,7 @@
     <ref name="line"/>
   </define>
   <define name="geographicTerm">
-    <element name="term">
+    <element name="name">
       <ref name="line"/>
     </element>
     <optional>
@@ -997,7 +999,7 @@
     </optional>
   </define>
   <define name="topicTerm">
-    <element name="term">
+    <element name="name">
       <ref name="line"/>
     </element>
     <optional>

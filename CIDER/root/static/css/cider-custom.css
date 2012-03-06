@@ -1,0 +1,55 @@
+/* Bootstrap customizations */
+
+div.form_error_message {
+    background: pink;
+    padding: 5px;
+    margin: 5px 5px 5px 0;
+}
+
+.required_message {
+    font-size: small;
+}
+
+[role=button] {
+    cursor: pointer;
+}
+
+/* 
+Add '*' after the label for required fields. This is an ugly way to 
+do this but it will have to work for now.
+*/
+.constraint_required label:after {
+    content: '*';
+}
+
+input[type="checkbox"] {
+    margin-bottom: 10px;
+}
+
+.checkbox-label {
+    float:left;
+    margin-right: 10px;
+}
+
+label {
+    font-weight: bold;
+}
+
+.error_message {
+    color: red;
+    font-style: italic;
+}
+
+.hr-thin {
+    margin:10px;
+    clear: right;
+}
+
+.collapse-icon {
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+#display-classes {
+    margin-bottom: 20px;
+}
