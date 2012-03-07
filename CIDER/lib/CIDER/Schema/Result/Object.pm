@@ -96,7 +96,12 @@ The type identifier for this Object, i.e. either 'collection',
 sub type {
     my $self = shift;
 
-    return $self->type_object->type;
+    if ( $self->type_object ) {
+        return $self->type_object->type;
+    }
+    else {
+        return undef;
+    }
 }
 
 __PACKAGE__->has_many(

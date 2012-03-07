@@ -35,7 +35,7 @@ sub search :Path :Args(0) :FormConfig {
 
         my $hits = $c->model( 'Search' )->search(
             query => $query,
-#            num_wanted => 20, # TO DO: parameterize this?
+            num_wanted => 1000, # TO DO: parameterize this?
         );
 
         my @objects;
@@ -127,7 +127,10 @@ C<$APP_HOME/scheduler.yml>.
 sub make_index :Private {
     my ( $self, $c ) = @_;
 
+    $c->log->debug("***In Search. About to invoke make_index on the indexer.");
     $c->model( 'CIDERDB' )->schema->indexer->make_index;
+
+    $c->log->debug("***Done.");
 }
 
 =head1 AUTHOR
