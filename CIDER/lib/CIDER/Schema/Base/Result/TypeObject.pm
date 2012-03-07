@@ -57,9 +57,10 @@ sub full_title {
     my $self = shift;
 
     my $number_title = join " ", $self->number, $self->title;
-    if ( my $dates = $self->dates ) {
-        return "$number_title, $dates";
-    }
+# XXX Commenting this out until derived fields are cached properly.
+#    if ( my $dates = $self->dates ) {
+#        return "$number_title, $dates";
+#    }
     return $number_title;
 }
 
