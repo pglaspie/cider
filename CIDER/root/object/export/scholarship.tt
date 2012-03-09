@@ -1,0 +1,134 @@
+[% c.res.content_type = 'application/xml' -%]
+[% USE date(format = '%Y-%m-%d') -%]
+<include>
+[% FOR object IN objects -%]
+  <input OBJID="tufts:[% object.number %]" LABEL="[% object.title %]" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.fedora.info/definitions/">
+    <metadata>
+       <metadata ID="DC">
+          <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/">
+	    <dc:title>[% object.title %]</dc:title>
+
+	    [% FOR creator IN object.item_creators -%]
+ 	    <dc:creator>[% creator.name %]</dc:creator>
+	    [% END -%]
+	    	    
+	    [% FOR personal_name IN object.item_personal_names -%]
+	    <dc:subject>[% personal_name.name %]</dc:subject>
+	    [% END -%]
+
+	    [% FOR corporate_name IN object.item_corporate_names -%]
+	    <dc:subject>[% corporate_name.name %]</dc:subject>
+	    [% END -%]
+
+	    [% FOR geographic_term IN object.item_geographic_terms -%]
+	    <dc:subject>[% geographic_term.term %]</dc:subject>
+	    [% END -%]
+
+	    [% FOR topic_term IN object.item_topic_terms -%]
+	    <dc:subject>[% topic_term.term %]</dc:subject>
+	    [% END -%]
+	    
+	    [% IF object.abstract -%]
+	    <dc:description>[% object.abstract %]</dc:description>
+	    [% END -%]
+	    <dc:identifier>tufts:[% object.number %]</dc:identifier>
+	    <dc:publisher>Digital Collections and Archives, Tufts University</dc:publisher>
+	    <dc:date>[% object.audit_trail.date_created %]</dc:date>
+	    [% IF object.date_from %]
+	    <dc:date>[% object.date_from %]</dc:date>
+	    [% END -%]
+	    <dc:type>[% object.dc_type %]</dc:type>
+	    [% FOR digital_object IN object.digital_objects -%]
+	    [% IF digital_object.format -%]
+	    <dc:format>[% digital_object.format %]</dc:format>
+	    [% END -%]
+	    [% END -%]
+	    [% matches = object.number.match('(\w{5})') %]
+	    [% coll_no = matches.0 %]
+	    <dc:source>[% coll_no %]</dc:source>
+	    <dc:rights>http://dca.tufts.edu/ua/access/rights.html<!-- CHANGE RIGHTS URL --></dc:rights>
+	</oai_dc:dc>
+      </metadata>
+      <metadata ID="DCA-META" LABEL="DCA Descriptive Metadata">
+        <dca_dc:dc xmlns:dca_dc="http://nils.lib.tufts.edu/dca_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcatech="http://nils.lib.tufts.edu/dcatech/" xmlns:dcadesc="http://nils.lib.tufts.edu/dcadesc/">
+	    <dc:title>[% object.title %]</dc:title>
+
+	    [% FOR creator IN object.item_creators -%]
+ 	    <dc:creator>[% creator.name %]</dc:creator>
+	    [% END -%]
+	    	    
+	    [% IF object.abstract -%]
+	    <dc:description>[% object.abstract %]</dc:description>
+	    [% END -%]
+
+	    [% matches = object.number.match('(\w{5})') %]
+	    <dc:source>[% matches.0 %]</dc:source>
+
+	    [% IF object.date_from %]
+	    <dc:date.created>[% object.date_from %]</dc:date.created>
+	    [% END -%]
+
+	    <dc:date.available>[% object.audit_trail.date_created %]</dc:date.available>
+	    <dc:date.issued>[% date.format %]</dc:date.issued>
+	    
+	    [% IF object.citation -%]
+	    <dc:bibliographicCitation>[% object.citation %]</dc:bibliographicCitation>
+	    [% END -%]
+
+	    <dc:publisher>Digital Collections and Archives, Tufts University</dc:publisher>	     
+	    <dc:rights>http://dca.tufts.edu/ua/access/rights.html</dc:rights>
+	    [% FOR digital_object IN object.digital_objects -%]
+	    [% IF digital_object.permanent_url -%]
+	    <dc:identifier>[% object.permanent_url %]</dc:identifier>
+	    [% ELSE -%]
+	    <dc:identifier>PUTHANDLEHERE</dc:identifier>
+	    [% END -%]
+	    [% END -%]
+	    <dc:type>[% object.dc_type %]</dc:type>	       
+
+	    [% FOR digital_object IN object.digital_objects -%]
+	    [% IF digital_object.format -%]
+	    <dc:format>[% digital_object.format %]</dc:format>
+	    [% END -%]
+	    [% END -%]
+
+
+	    [% FOR personal_name IN object.item_personal_names -%]
+	    <dcadesc:persname>[% personal_name.name %]</dcadesc:persname>
+	    [% END -%]
+
+	    [% FOR corporate_name IN object.item_corporate_names -%]
+	    <dcadesc:corpname>[% corporate_name.name %]</dcadesc:corpname>
+	    [% END -%]
+
+	    [% FOR geographic_term IN object.item_geographic_terms -%]
+	    <dcadesc:geogname>[% geographic_term.term %]</dcadesc:geogname>
+	    [% END -%]
+
+	    [% FOR topic_term IN object.item_topic_terms -%]
+	    <dcadesc:subject>[% topic_term.term %]</dcadesc:subject>
+	    [% END -%]
+	  </dca_dc:dc>	    
+	</metadata>
+    </metadata>
+    <datastreams>
+      <datastream ID="Archival.pdf" xlink:href="http://bucket01.lib.tufts.edu/data05/tufts/central/dca/[% coll_no %]/archival_tif/[% object.number %].archival.pdf" xlink:title="[% object.title %]"/>
+      <datastream ID="RELS-EXT" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+        <xmlContent>
+	  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rel="info:fedora/fedora-system:def/relations-external#">
+	    <rdf:Description rdf:about="info:fedora/tufts:[% object.number %]">
+	      <fedora-model:hasModel rdf:resource="info:fedora/cm:Image.4DS" xmlns:fedora-model="info:fedora/fedora-system:def/model#"/>
+	      <itemID xmlns="http://www.openarchives.org/OAI/2.0/">oai:tufts:[% object.number %]</itemID>
+	      [% FOR digital_object IN object.digital_objects -%]
+	      [% FOR relationship IN digital_object.digital_object_relationships -%]
+	      <[% relationship.predicate %] rdf:resource="info:fedora/[% relationship.pid %]" />
+	      [% END -%]
+	      [% END -%]
+            </rdf:Description>
+	 </rdf:RDF>
+       </xmlContent>
+     </datastream>
+   </datastreams>
+  </input>
+[% END -%]
+</include>
