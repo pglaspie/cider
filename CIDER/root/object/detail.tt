@@ -122,16 +122,20 @@ format.
 <h3 data-toggle="collapse" data-target="#children"><a href="#">Children</a><i class="icon-chevron-right collapse-icon"></i></h3>
 <div id="children" class="collapsable">
 
-[% IF object.children %]
+<!--
+[% # Temporarily commented out for permormance reasons %]
+[%# IF object.children %] 
   <p>This object contains these objects as children:</p>
   <ul>
-  [% FOREACH child = object.children %]
-    <li>[% INCLUDE display_object.tt object = child %]</li>
-  [% END %]
+  [% # FOREACH child = object.children %]
+    <li>[% # INCLUDE display_object.tt object = child %]</li>
+  [% # END %]
   </ul>
-[% ELSE %]
+[% # ELSE %]
   <p>This object contains no child objects.</p>
-[% END %]
+[% # END %] 
+
+-->
 
 [%### Stuff to handle object-moving. %]
 [% IF held_object && held_object.id != object.id && !object.has_ancestor( held_object ) %]
