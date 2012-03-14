@@ -6,7 +6,6 @@
 
 [% FOREACH object = objects %]
 [% INCLUDE display_object.tt %]
-<hr />
 [% END %]
 
 <div class="well">
