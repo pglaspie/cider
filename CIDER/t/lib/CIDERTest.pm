@@ -218,12 +218,14 @@ sub init_schema {
     $schema->populate(
         'Object',
         [
-            [qw/id parent number title audit_trail/],
-            [1, undef, 'n1', 'Test Collection with kids', 1],
+            [qw/id parent number title audit_trail date_from date_to accession_numbers/],
+            [1, undef, 'n1', 'Test Collection with kids', 1, '2000-01-01', '2010-01-01',
+                '2011.004; 2011.005', ],
             [2, undef, 'n2', 'Test Collection without kids', 2],
-            [3, 1, 'n3', 'Test Series 1', 3],
-            [4, 3, 'n4', 'Test Item 1', 4],
-            [5, 3, 'n5', 'Test Item 2', 5],
+            [3, 1, 'n3', 'Test Series 1', 3, '2000-01-01', '2010-01-01',
+                 '2011.004; 2011.005', ],
+            [4, 3, 'n4', 'Test Item 1', 4, '2000-01-01', '2008-01-01', '2011.004',],
+            [5, 3, 'n5', 'Test Item 2', 5, '2002-01-01', '2010-01-01', '2011.005',],
         ]
     );
 

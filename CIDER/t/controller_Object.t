@@ -170,7 +170,7 @@ is( $mech->status, 404, 'Invalid object number gives 404 page.' );
 $mech->get( '/object/n1' );
 $mech->text_contains( '2000-01-01To2010-01-01',
                       'Derived date range is correct.' );
-$mech->text_contains( '2011.004;2011.005',
+$mech->text_contains( '2011.004; 2011.005',
                       'Derived accession numbers are displayed.' );
 $mech->text_contains( 'Restrictionsnone',
                       'Derived restrictions is some.' );
@@ -257,7 +257,7 @@ $mech->submit_form_ok( { with_fields => {
     submit => 1,
 } }, 'Submitted the clone form' );
 
-$mech->content_contains( 'Number is already in use', 
+$mech->content_contains( 'Number is already in use',
                          'Form rejected for the right reason',
                         );
 

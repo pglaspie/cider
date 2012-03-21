@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
-use Class::Method::Modifiers qw(around);
+use Class::Method::Modifiers qw( around );
+use List::Util qw( minstr maxstr );
 use Carp qw( croak );
 
 =head1 NAME
@@ -13,7 +14,7 @@ CIDER::Schema::Result::Object
 
 =cut
 
-__PACKAGE__->load_components( 'UpdateFromXML' );
+__PACKAGE__->load_components( 'UpdateFromXML', );
 
 __PACKAGE__->table( 'object' );
 
@@ -26,7 +27,24 @@ __PACKAGE__->set_primary_key( 'id' );
 __PACKAGE__->add_columns(
     parent =>
         { data_type => 'int', is_foreign_key => 1, is_nullable => 1,
-          accessor => '_parent'},
+          accessor => '_parent',
+        },
+    date_from =>
+        { data_type => 'varchar', size => 10,
+          is_nullable => 1,
+        },
+    date_to =>
+        { data_type => 'varchar', size => 10,
+          is_nullable => 1,
+        },
+    accession_numbers =>
+        { data_type => 'text',
+          is_nullable => 1,
+        },
+    restriction_summary =>
+        { data_type => 'varchar', size => 4,
+          is_nullable => 1,
+        }
 );
 
 __PACKAGE__->belongs_to(
@@ -109,6 +127,11 @@ __PACKAGE__->has_many(
         'CIDER::Schema::Result::ObjectSetObject',
 );
 
+__PACKAGE__->has_many(
+    object_locations =>
+        'CIDER::Schema::Result::ObjectLocation',
+);
+
 __PACKAGE__->many_to_many(
     sets =>
         'object_set_objects',
@@ -187,6 +210,7 @@ sub item_descendants {
 
 # Override the DBIC delete() method to work recursively on our related
 # objects, rather than relying on the database to do cascading delete.
+# Furthermore, call update_parent() to recalculate derived fields.
 sub delete {
     my $self = shift;
 
@@ -194,13 +218,147 @@ sub delete {
 
     $_->delete for ( $self->children,
                      $self->object_set_objects,
+                     $self->object_locations,
                    );
 
     $self->next::method( @_ );
 
     $self->result_source->schema->indexer->remove( $self );
 
+    # Recursively recalculate ancestors' derived columns.
+    $self->update_parent;
+
     return $self;
+}
+
+# update: After performing the DB update, call update_parent(). This will update the
+#         parent object's derived fields.
+sub update {
+    my $self = shift;
+
+    my %dirty_columns = $self->get_dirty_columns;
+
+    $self->next::method( @_ );
+
+    # Recursively recalculate ancestors' derived columns.
+    if ( %dirty_columns ) {
+        $self->update_parent;
+    }
+
+    return $self;
+}
+
+# insert: After performing the DB update, call update_parent(). This will update the
+#         parent object's derived fields.
+sub insert {
+    my $self = shift;
+
+    $self->next::method( @_ );
+
+    # Recursively recalculate ancestors' derived columns.
+    $self->update_parent;
+
+    return $self;
+}
+
+# update_parent: Set the value of various derived fields on this object's parent object
+#                (if it has one). Calls update() at the end, which in turn calls this
+#                method again, thus allowing for updates to bubble up the object's
+#                lineage.
+# XXX: These should ideally be performed by database triggers, not in Perl. Consider
+#      this a prototype behavior.
+sub update_parent {
+    my $self = shift;
+
+    my $parent = $self->parent;
+    return unless $parent;
+
+    my $dbh = $self->result_source->schema->storage->dbh;
+
+    my @siblings_date_from =
+        grep { defined }
+        @{ $dbh->selectcol_arrayref('select date_from from object where parent = '
+                                 . $parent->id ) };
+
+    my @siblings_date_to =
+        grep { defined }
+        @{ $dbh->selectcol_arrayref('select date_to from object where parent = '
+                                 . $parent->id ) };
+
+    my @siblings_accession_numbers =
+        grep { defined }
+        @{ $dbh->selectcol_arrayref('select distinct accession_numbers from object where '
+                                 . 'parent = '
+                                 . $parent->id ) };
+
+    my @siblings_restriction_summary =
+        @{ $dbh->selectcol_arrayref('select restriction_summary from object where '
+                                 . 'parent = '
+                                 . $parent->id ) };
+
+    # Set the parent's date_from to the earliest date_from among its children.
+    my $earliest_date = minstr( @siblings_date_from );
+    if ( $earliest_date ) {
+        if ( not( $parent->date_from ) || ( $parent->date_from gt $earliest_date ) ) {
+            $parent->date_from( $earliest_date );
+        }
+    }
+    else {
+        if ( defined $parent->date_from ) {
+            $parent->date_from( undef );
+        }
+    }
+
+    # Set the parent's date_to to the latest date_to among its children.
+    my $latest_date = maxstr( @siblings_date_to );
+    if ( $latest_date ) {
+        if ( not($parent->date_to) || ( $parent->date_to lt $latest_date ) ) {
+            $parent->date_to( $latest_date );
+        }
+    }
+    else {
+        if ( defined $parent->date_to ) {
+           $parent->date_to( undef );
+        }
+    }
+
+    # Set the parent's restrictions.
+    my $parent_restriction_summary;
+    my @none_restrictions =
+        grep { not(defined) || $_ eq 'none' } @siblings_restriction_summary;
+    my @all_restrictions =
+        grep { defined && $_ eq 'all' } @siblings_restriction_summary;
+
+    if ( @none_restrictions == @siblings_restriction_summary ) {
+        $parent_restriction_summary = 'none';
+    }
+    elsif ( @all_restrictions == @siblings_restriction_summary ) {
+        $parent_restriction_summary = 'all';
+    }
+    else {
+        $parent_restriction_summary = 'some';
+    }
+
+    if ( not( $parent->restriction_summary)
+         || ( $parent->restriction_summary ne $parent_restriction_summary ) ) {
+         $parent->restriction_summary( $parent_restriction_summary );
+    }
+
+    # Set the parent's accession-number list.
+    my $accession_numbers = ( join '; ', @siblings_accession_numbers );
+    if ( $accession_numbers
+         && ( not( $parent->accession_numbers )
+              || $parent->accession_numbers ne $accession_numbers
+            )
+        ) {
+        $parent->accession_numbers( $accession_numbers );
+    }
+
+    # Lock it in. (And, in so doing, bubble up to next ancestor, if there is one.)
+    if ( $parent->get_dirty_columns ) {
+        $parent->update;
+
+    }
 }
 
 sub export {
@@ -297,5 +455,7 @@ sub update_from_xml {
 
     return $self;
 }
+
+
 
 1;

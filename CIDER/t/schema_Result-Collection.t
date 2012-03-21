@@ -22,6 +22,8 @@ use lib (
 
 use CIDERTest;
 my $schema = CIDERTest->init_schema;
+
+
 $schema->user( $schema->resultset( 'User' )->find( 1 ) );
 
 my $collection = $schema->resultset( 'Collection' )->find( 1 );
@@ -91,17 +93,21 @@ is( $collection->extent->count( 'Bound volume' ), 1,
 is( $collection->extent->count( 'Digital objects' ), 2,
     'Derived digital objects count is correct.' );
 
-is( $collection->accession_numbers, '2011.004;2011.005',
+is( $collection->accession_numbers, '2011.004; 2011.005',
     'Accession numbers are derived.' );
 
 is( $collection->restrictions, 'none',
     'Collection has no restrictions by default.' );
+
 $items[0]->update_from_xml(
     elt '<item><restrictions>20 years</restrictions></item>' );
+$collection = $schema->resultset( 'Collection' )->find( 1 );
 is( $collection->restrictions, 'some',
     'Some items in the collection have restrictions.' );
+
 $items[1]->update_from_xml(
     elt '<item><restrictions>20 years</restrictions></item>' );
+$collection = $schema->resultset( 'Collection' )->find( 1 );
 is( $collection->restrictions, 'all',
     'All items in the collection have restrictions.' );
 

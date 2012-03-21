@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Fri Dec  9 15:46:01 2011
+-- Further hand-edited by jmac
 -- 
 SET foreign_key_checks=0;
 
@@ -283,6 +283,10 @@ DROP TABLE IF EXISTS `object`;
 CREATE TABLE `object` (
   `id` integer NOT NULL auto_increment,
   `parent` integer,
+  `date_from` varchar(10),
+  `date_to` varchar(10),
+  `accession_numbers` text,
+  `restriction_summary` varchar(4),
   `number` varchar(255) NOT NULL,
   `title` text NOT NULL,
   `audit_trail` integer NOT NULL,
@@ -455,6 +459,23 @@ CREATE TABLE `item` (
   CONSTRAINT `item_fk_dc_type` FOREIGN KEY (`dc_type`) REFERENCES `dc_type` (`id`),
   CONSTRAINT `item_fk_id` FOREIGN KEY (`id`) REFERENCES `object` (`id`),
   CONSTRAINT `item_fk_restrictions` FOREIGN KEY (`restrictions`) REFERENCES `item_restrictions` (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `object_location`;
+
+--
+-- Table: `object_location`
+--
+CREATE TABLE `object_location` (
+  `object` integer NOT NULL DEFAULT 0,
+  `location` integer NOT NULL DEFAULT 0,
+  `referent_object` integer NOT NULL DEFAULT 0,
+  `id` integer NOT NULL auto_increment,
+  INDEX `object_location_idx_location` (`location`),
+  INDEX `object_location_idx_object` (`object`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `object_location_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`),
+  CONSTRAINT `object_location_fk_object` FOREIGN KEY (`object`) REFERENCES `object` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `record_context`;

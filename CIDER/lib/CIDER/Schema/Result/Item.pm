@@ -38,7 +38,6 @@ __PACKAGE__->add_columns(
         { data_type => 'boolean', default_value => 0 },
     date_from =>
         { data_type => 'varchar', size => 10,
-          # date_from is temporarily not required, while importing legacy data.
           is_nullable => 1,
         },
     date_to =>
@@ -47,7 +46,7 @@ __PACKAGE__->add_columns(
 
 __PACKAGE__->add_columns(
     restrictions =>
-        { data_type => 'tinyint', is_foreign_key => 1,
+        { data_type => 'tinyint', is_foreign_key => 1, is_nullable => 1,
           default_value => 1,   # 1 = 'none'
         },
 );
@@ -248,8 +247,35 @@ sub insert {
 
     $self->dc_type( undef ) unless defined $self->dc_type;
 
+    $self->define_restriction_summary;
+
     return $self->next::method( @_ );
 }
+
+sub update {
+    my $self = shift;
+
+    $self->define_restriction_summary;
+
+    return $self->next::method( @_ );
+}
+
+sub define_restriction_summary {
+    my $self = shift;
+
+    if ( $self->restrictions ) {
+        if ( $self->restrictions->name eq 'none' ) {
+            $self->restriction_summary( 'none' );
+        }
+        else {
+            $self->restriction_summary( 'all' );
+        }
+    }
+    else {
+#        $self->restriction_summary( 'none' );
+    }
+}
+
 
 =head2 store_column( $column, $value )
 
@@ -402,6 +428,11 @@ sub update_terms_from_xml_hashref {
             $self->create_related( $relname, { $proxy => $term } );
         }
     }
+}
+
+sub accession_numbers {
+    my $self = shift;
+    return $self->accession_number( @_ );
 }
 
 1;

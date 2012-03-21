@@ -39,6 +39,8 @@
 </div>
 [% END -%]
 
+
+
 <div class="required_message">
      <p>Fields marked with a '*' are required</p>
 </div>
@@ -72,6 +74,7 @@
   <div class="well">
     <h3>Utilities</h3>
     <hr />
+
     <h3 data-toggle="collapse" data-target="#sets"><a href="#">Sets</a><i class="icon-chevron-right collapse-icon"></i></h3>
     <div id="sets" class="collapsable">
 
@@ -122,20 +125,16 @@ format.
 <h3 data-toggle="collapse" data-target="#children"><a href="#">Children</a><i class="icon-chevron-right collapse-icon"></i></h3>
 <div id="children" class="collapsable">
 
-<!--
-[% # Temporarily commented out for permormance reasons %]
-[%# IF object.children %] 
+[% IF object.children %] 
   <p>This object contains these objects as children:</p>
   <ul>
-  [% # FOREACH child = object.children %]
-    <li>[% # INCLUDE display_object.tt object = child %]</li>
-  [% # END %]
+  [% FOREACH child = object.children %]
+    <li>[% INCLUDE display_object.tt object = child %]</li>
+  [% END %]
   </ul>
-[% # ELSE %]
+[% ELSE %]
   <p>This object contains no child objects.</p>
-[% # END %] 
-
--->
+[% END %] 
 
 [%### Stuff to handle object-moving. %]
 [% IF held_object && held_object.id != object.id && !object.has_ancestor( held_object ) %]
@@ -167,6 +166,19 @@ as a child of this object. <input type="submit" class="btn clearfix" name="go" v
 </form>
 
 </div>
+    <h3 data-toggle="collapse" data-target="#history"><a href="#">History</a><i class="icon-chevron-right collapse-icon"></i></h3>
+    <div id="history" class="collapsable">
+[% FOR log IN object.audit_trail.logs -%]
+[% IF log.action == 'create' -%]
+<p><strong>Created</strong><br />[% log.staff %]<br />
+[% log.timestamp %]</p>
+[% ELSIF log.action == 'update' -%]
+<p><strong>Updated</strong><br />[% log.staff %]<br />
+[% log.timestamp %]</p>
+[% END -%]
+[% END -%]       
+</div>
+
 </div>
 </div>
 </div>

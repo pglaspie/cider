@@ -20,13 +20,13 @@ Series, and Item.
 =cut
 
 
-my @proxy_fields = qw( parent number title
-                       objects sets audit_trail
+my @proxy_fields = qw( parent number title date_from date_to restriction_summary
+                       objects sets audit_trail accession_numbers
                      );
 
 my @proxy_methods = qw( children number_of_children
                         ancestors has_ancestor descendants item_descendants
-                        export
+                        export update_parent
                       );
 
 sub setup_object {
@@ -57,10 +57,9 @@ sub full_title {
     my $self = shift;
 
     my $number_title = join " ", $self->number, $self->title;
-# XXX Commenting this out until derived fields are cached properly.
-#    if ( my $dates = $self->dates ) {
-#        return "$number_title, $dates";
-#    }
+    if ( my $dates = $self->dates ) {
+        return "$number_title, $dates";
+    }
     return $number_title;
 }
 
