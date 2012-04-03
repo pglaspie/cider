@@ -44,13 +44,13 @@
 
 [% INCLUDE display_object.tt %]
 
-</div>
 
 [% END %]
 
 [% ELSE %]
 
 [% END %]
+</div>
 
 
    <h3 data-toggle="collapse" data-target="#export"><a href="#">Export</a><i class="icon-chevron-right"></i></h3>

@@ -11,6 +11,8 @@ default_args:
     elements:
         Textarea:
             rows: 8
+            attributes:
+              class: span7
 
 elements:
     - type: Hidden
@@ -20,7 +22,7 @@ elements:
       label: Collection Number
       name: number
       attributes:
-        class: clearfix
+        class: span2
       id: number
       constraints:
         - type: Required
@@ -29,12 +31,11 @@ elements:
           id_field: id
           message: Number is already in use
 
-    - type: Text
+    - type: Textarea
       label: Collection Title
       name: title
       id: title
-      attributes:
-         class: "span7 clearfix"
+      rows: 2
       constraint: Required
 
     - type: Fieldset
@@ -54,6 +55,8 @@ elements:
             label: From
             name: bulk_date_from
             id: bulk_date_from
+            attributes:
+               class: span2
             constraint: &Date
               type: Callback
               callback: 'CIDER::Logic::Utils::iso_8601_date'
@@ -63,6 +66,8 @@ elements:
             label: To
             name: bulk_date_to
             id: bulk_date_to
+            attributes:
+               class: span2
             constraint: *Date
 
     - type: Label
@@ -149,7 +154,7 @@ elements:
       label: Documentation
       name: documentation
       attributes:
-         class: "span7 clearfix"
+         class: "span7"
       id: documentation
       empty_first: 1
       constraint: Required
@@ -185,9 +190,8 @@ elements:
               elements:
                 - type: Hidden
                   name: id
-                - type: Text
-                  attributes:
-                     class: "span7 clearfix"
+                - type: Textarea
+                  rows: 2
                   name: material
                   model_config:
                     delete_if_empty: 1
@@ -256,7 +260,7 @@ elements:
       label: Processing Status
       name: processing_status
       attributes:
-         class: "clearfix"
+         class: "span7"
       id: processing_status
       constraint: Required
       empty_first: 1
@@ -294,7 +298,7 @@ elements:
     - type: Select
       name: publication_status
       attributes:
-         class: "small clearfix"
+         class: "span2"
       label: Publication Status
       model_config:
         resultset: PublicationStatus

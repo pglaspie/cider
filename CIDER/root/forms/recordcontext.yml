@@ -20,7 +20,7 @@ elements:
 
   - name: record_id
     attributes:
-       class: clearfix
+       class: span2
     label: Record ID
     constraints:
       - type: Required
@@ -32,7 +32,7 @@ elements:
   - type: Select
     name: publication_status
     attributes:
-       class: "small clearfix"
+       class: "span2"
     label: Publication Status
     model_config:
       resultset: PublicationStatus
@@ -53,7 +53,7 @@ elements:
   - type: Select
     name: rc_type
     attributes:
-       class: "medium clearfix"
+       class: "span3"
     label: Record Context Type
     model_config:
       resultset: RecordContextType
@@ -72,8 +72,6 @@ elements:
         elements:
           - type: Repeatable
             nested_name: alt_names
-            attributes:
-                class: "span7 clearfix"
             counter_name: alt_name_count
             model_config:
               empty_rows: 1
@@ -82,6 +80,8 @@ elements:
               - type: Hidden
                 name: id
               - name: name
+                attributes:
+                   class: span7
                 model_config:
                   delete_if_empty: 1
 
@@ -91,7 +91,7 @@ elements:
       - label: From
         name: date_from
         attributes:
-           class: clearfix
+           class: span2
         constraints:
           - type: Required
           - &Date
@@ -102,7 +102,7 @@ elements:
       - label: To
         name: date_to
         attributes:
-           class: clearfix
+           class: span2
         constraint: *Date
 
       - type: Checkbox
@@ -141,8 +141,6 @@ elements:
         id: sources
         elements:
           - type: Repeatable
-            attributes:
-               class: "span7 clearfix"
             nested_name: sources
             counter_name: source_count
             model_config:
@@ -151,7 +149,9 @@ elements:
             elements:
               - type: Hidden
                 name: id
-              - name: source
+              - type: Textarea
+                name: source
+                rows: 2
                 constraint:
                    type: Repeatable::Any
                    message: At least one source is required
@@ -209,7 +209,7 @@ elements:
               - label: From
                 name: date_from
                 attributes:
-                   class: clearfix
+                   class: span2
                 constraints:
                   - *Date
                 model_config:
@@ -218,7 +218,7 @@ elements:
               - label: To
                 name: date_to
                 attributes:
-                   class: clearfix
+                   class: span2
                 constraint: *Date
 
   - type: Fieldset
@@ -254,7 +254,7 @@ elements:
             label: Related Entity
             name: related_entity
             attributes:
-               class: clearfix      
+               class: span7      
             empty_first: 1
             constraint:
               - type: DependOn
@@ -272,13 +272,13 @@ elements:
               - label: From
                 name: date_from
                 attributes:
-                   class: clearfix
+                   class: span2
                 constraint: *Date
 
               - label: To
                 name: date_to
                 attributes:
-                   class: clearfix
+                   class: span2
                 constraint: *Date
 
 # TO DO: Audit Trail

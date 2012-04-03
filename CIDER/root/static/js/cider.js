@@ -13,9 +13,10 @@ $(function() {
 
     // Make the alert messages closable 
     $('.alert-message').alert();
-
-
+    
 });
+
+
 $(function() {
     
     //collapsable TODO integrate this with class collapsing functionality
@@ -96,7 +97,7 @@ $(function() {
 	var counter = inputs.length;
 	var elements = inputs.parent();
 
-	var add_button = '<a style="margin-bottom:10px;" class="btn btn-small" href="#" id="' + element_name + '_add_button"><i class="icon-plus"></i></a>';
+	var add_button = '<span style="margin-bottom:10px;" class="btn btn-small" id="' + element_name + '_add_button"><i class="icon-plus"></i></span >';
 	fieldset.children('div').prepend(add_button);
 
 

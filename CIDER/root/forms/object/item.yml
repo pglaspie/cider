@@ -32,12 +32,12 @@ elements:
         - type: DBIC::Unique
           resultset: Object
           id_field: id
-          message: Number is already in use
-
-    - label: Item Title
+          message: Number is already in us
+ 
+    - type: Textarea
+      label: Item Title
       name: title
-      attributes:
-         class: "span7 clearfix"
+      rows: 2
       constraints:
         - type: Required
 
@@ -62,7 +62,7 @@ elements:
                   name: id
                 - type: Select
                   attributes:
-                     class: clearfix
+                     class: span5
                   name: name
                   empty_first: 1
                   model_config:
@@ -78,6 +78,8 @@ elements:
 
           - label: From
             name: date_from
+            attributes:
+              class: span2
             constraints:
             # Date is temporarily not required, while importing legacy data.
               - &Date
@@ -87,13 +89,15 @@ elements:
 
           - label: To
             name: date_to
+            attributes:
+              class: span2
             constraint: *Date
 
     - type: Select
       label: Restrictions
       name: restrictions
       attributes:
-         class: clearfix
+         class: span5
       model_config:
         resultset: ItemRestrictions
         label_column: description
@@ -194,7 +198,7 @@ elements:
                 - type: Select
                   name: term
                   attributes:
-                    class: "xlarge clearfix"
+                    class: "span7"
                   empty_first: 1
                   model_config:
                      resultset: TopicTerm
@@ -221,7 +225,7 @@ elements:
                 - type: Select
                   name: term
                   attributes:
-                    class: "xlarge clearfix"
+                    class: "span7"
                   empty_first: 1
                   model_config:
                     resultset: GeographicTerm

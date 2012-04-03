@@ -21,7 +21,7 @@ elements:
       label: Series Number
       name: number
       attributes:
-         class: clearfix
+         class: span2
       id: number
       constraints:
         - type: Required
@@ -30,11 +30,10 @@ elements:
           id_field: id
           message: Number is already in use
 
-    - type: Text
+    - type: Textarea
       label: Series Title
       name: title
-      attributes:
-         class: "span7 clearfix"
+      rows: 2
       id: title
       constraints:
         - type: Required
@@ -49,6 +48,7 @@ elements:
             label: To
             name: date_to
 
+
     - type: Fieldset
       legend: Bulk Date
       elements:            
@@ -56,7 +56,7 @@ elements:
             label: From
             name: bulk_date_from
             attributes:
-               class: clearfix
+               class: span2
             id: bulk_date_from
             constraint: &Date
               type: Callback
@@ -67,7 +67,7 @@ elements:
             label: To
             name: bulk_date_to
             attributes:
-               class: clearfix
+               class: span2
             id: bulk_date_to
             constraint: *Date
 
