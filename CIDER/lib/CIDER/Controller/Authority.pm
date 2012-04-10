@@ -250,7 +250,9 @@ sub browse :Chained( 'authority' ) :PathPart('') :Args(0) :FormMethod( 'form' )
     # Add contraint classes to required form fields
     $form->auto_constraint_class('constraint_%t');
 
-    $form->get_field( 'submit' )->value( 'Add a new ' . $c->stash->{ name } );
+    my $submit = $form->get_field( 'submit' );
+    $submit->value( 'Add a new ' . $c->stash->{ name } );
+    $submit->add_attributes({ class => 'btn btn-primary' });
 }
 
 =head2 browse_FORM_VALID
@@ -305,7 +307,9 @@ sub edit :Chained( 'get' ) :Args(0) :FormMethod( 'form' ) {
     # Add contraint classes to required form fields
     $form->auto_constraint_class('constraint_%t');
 
-    $form->get_field( 'submit' )->value( 'Update ' . $c->stash->{ name } );
+    my $submit = $form->get_field( 'submit' );
+    $submit->value( 'Update ' . $c->stash->{ name } );
+    $submit->add_attributes({ class => 'btn btn-primary' });
 }
 
 =head2 edit_FORM_NOT_SUBMITTED

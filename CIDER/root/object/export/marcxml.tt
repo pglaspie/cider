@@ -1,0 +1,42 @@
+[% c.res.content_type = 'application/xml' -%]
+<collection xmlns="http://www.loc.gov/MARC21/slim">
+[% FOR object IN objects -%]
+  <record>
+    <controlfield tag="008">040320u9999    xx            000 0 eng d</controlfield>
+    <datafield tag="040" ind1=" " ind2=" ">
+      <subfield code="a">TFW</subfield>
+      <subfield code="e">DACS</subfield>
+      <subfield code="c">TFW</subfield>
+    </datafield>
+[% FOR rcrs IN object.collection_primary_record_contexts -%]
+[% FOR rcr IN rcrs.record_context -%]
+[% IF rcr.rc_type == 'person' || rcr.rc_type == 'family' -%]
+    <datafield tag="100" ind1="1" ind2=" ">
+      <subfield code="a">[% rcr.name_entry %]</subfield>
+    </datafield>
+[% ELSE -%]
+    <datafield tag="110" ind1="2" ind2=" ">
+      <subfield code="a">[% rcr.name_entry %]</subfield>
+    </datafield>
+[% END -%]
+[% END -%]
+[% END -%]
+    <datafield tag="245" ind1="1" ind2="0">
+      <subfield code="a">[% object.title %]</subfield>
+    </datafield>
+    <datafield tag="506" ind1=" " ind2=" ">
+      <subfield code="a">Some records may be restricted. See the DCA's General Policy on Access for more information about access to records, especially official University records.</subfield>
+    </datafield>
+    <datafield tag="520" ind1=" " ind2=" ">
+      <subfield code="a">[% object.scope %]</subfield>
+    </datafield>
+[% FOR rcrs IN object.collection_primary_record_contexts -%]
+[% FOR rcr IN rcrs.record_context -%]
+    <datafield tag="545" ind1=" " ind2=" ">
+      <subfield code="a">[% rcr.history %]</subfield>
+    </datafield>
+[% END -%]
+[% END -%]
+  </record>
+[% END -%]
+</collection>

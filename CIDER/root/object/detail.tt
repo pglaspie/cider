@@ -166,8 +166,8 @@ as a child of this object. <input type="submit" class="btn clearfix" name="go" v
 </form>
 
 </div>
-    <h3 data-toggle="collapse" data-target="#history"><a href="#">History</a><i class="icon-chevron-right collapse-icon"></i></h3>
-    <div id="history" class="collapsable">
+<h3 data-toggle="collapse" data-target="#changelog"><a href="#">History</a><i class="icon-chevron-right collapse-icon"></i></h3>
+<div id="changelog" class="collapsable">
 [% FOR log IN object.audit_trail.logs -%]
 [% IF log.action == 'create' -%]
 <p><strong>Created</strong><br />[% log.staff %]<br />
