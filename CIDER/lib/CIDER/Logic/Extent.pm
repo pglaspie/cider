@@ -36,7 +36,7 @@ use overload '""' => sub {
     my @strs = ();
 
     my $volume = $self->volume;
-    push @strs, "$volume cubic feet" if $volume;
+    push @strs, "$volume cubic ft." if $volume;
 
     for my $type ( @{ $self->types } ) {
         if ( my $count = $self->count( $type ) ) {
@@ -52,10 +52,6 @@ use overload '""' => sub {
         }
     }
 
-    if ( @strs > 1 ) {
-        my $last = pop @strs;
-        push @strs, "and $last";
-    }
 
     return join ', ', @strs;
 },

@@ -759,7 +759,7 @@ CREATE TABLE `document` (
   INDEX `document_idx_item` (`item`),
   INDEX `document_idx_location` (`location`),
   PRIMARY KEY (`id`),
-  CONSTRAINT `document_fk_format` FOREIGN KEY (`format`) REFERENCES `document` (`id`),
+  CONSTRAINT `document_fk_format` FOREIGN KEY (`format`) REFERENCES `format` (`id`),
   CONSTRAINT `document_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `document_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`)
 ) ENGINE=InnoDB;
