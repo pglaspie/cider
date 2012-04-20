@@ -1,0 +1,268 @@
+[% c.res.content_type = 'application/xml' -%]
+<?xml version="1.0" ?>
+
+[% USE date(format = '%Y') -%]
+[% USE HTML -%]
+
+[%# MACROS -%]
+
+[%# Preserves <p>s if present in original content -%]
+[% MACRO check_for_p(content)
+      IF content.match('<p>');
+         content;
+      ELSE;
+         "<p>$content</p>";
+      END;
+-%]
+
+[%# Handles dates that are single or ranges and adds bulk dates if present -%] 
+[% MACRO generate_unitdate(object)
+      BLOCK;
+        "<unitdate type=\"inclusive\">" _ object.date_from;
+        IF object.date_to;
+	  "-" _ object.date_to _ "</unitdate>";
+	ELSE;
+	  "</unitdate>"; 
+	END;
+        IF object.bulk_date_from;
+          "<unitdate type=\"bulk\">" _ object.bulk_date_from _ "-" _ object.bulk_date_to _ "</unitdate>";
+        END;
+      END;
+-%]
+
+[%# Generates all the elements for a series or subseries. The <c0X> wrapper is generated in the body of the code -%]
+[% MACRO generate_series(series)
+      BLOCK;
+        "<did>";
+	  "<unittitle>" _ HTML.escape(series.title) _ "</unittitle>";
+	  generate_unitdate(series);
+        IF series.extent;
+	  "<physdesc>$series.extent</physdesc>";
+	END;
+        "</did>";
+	IF series.arrangement;
+	"<arrangement>";
+	  check_for_p(series.arrangement);
+	"</arrangement>";
+	END;
+	IF series.scope;
+	"<scopecontent>";
+	  check_for_p(series.arrangement);
+        "</scopecontent>";
+        END;
+      END;
+-%]	  	  
+
+[%# Generates all the elements for a file or item. The <c0X> wrapper is generated in the body of the code -%]
+[% MACRO generate_item(object, type)
+      BLOCK;
+        "<did>";
+           "<unittitle>" _ HTML.escape(object.title) _ "</unittitle>";
+	   generate_unitdate(object);
+	   IF object.creators; 
+	     "<origination>";
+             FOR creator IN object.creators;
+	       "<persname>$creator</persname>";
+             END;
+     	     "</origination>";
+           END;
+	   "<physdesc>$type</physdesc>";
+	   FOR class IN object.classes;
+	     UNLESS class.result_class.match('DigitalObject');
+	       "<physloc type=\"location\">$class.location</physloc>";
+             END;
+           END;
+	 "</did>";
+         IF object.digital_objects;
+	   FOR digital_object IN object.digital_objects;
+	     "<daogrp>";
+	       "<daodesc><p>" _ HTML.escape(object.title) _ "</p></daodesc>";
+	       "<daoloc href=\"catalog/$digital_object.pid\" linktype=\"locator\" label=\"page\" />";
+	     IF object.dc_type == 'Image';
+	       "<daoloc href=\"catalog/" _ digital_object.pid _ ".thumb.jpg\" linktype=\"locator\" label=\"thumbnail\" />";
+	     END;
+            "</daogrp>";
+           END; 
+	END;
+      END;
+-%]
+[%# Begin main EAD body -%]	   
+<ead xmlns="http://dca.tufts.edu/schema/ead" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://dca.lib.tufts.edu/schema/ead http://dca.lib.tufts.edu/schema/ead/ead.xsd">
+  <eadheader langencoding="en">
+[% FOR collection IN objects -%]
+    [% daterange = collection.date_from _ '-' _ collection.date_to -%] 
+    [% fulltitle = collection.title _ ', ' _ daterange -%]
+    <eadid>UA069.001.DO.[% collection.number %]</eadid>
+    <filedesc>
+      <titlestmt>
+        <titleproper>[% fulltitle %]</titleproper>
+      </titlestmt>
+      <publicationstmt>
+        <publisher>Digital Collection and Archives, Tufts University</publisher>
+        <address>
+          <addressLine>Medford, MA 02155</addressLine>
+        </address>
+        <date>[% date.format %]</date>
+      </publicationstmt>
+    </filedesc>
+  </eadheader>
+
+  <frontmatter>
+    <titlepage>
+      <titleproper>[% fulltitle %]</titleproper>
+      <publisher>Digital Collection and Archives, Tufts University</publisher>
+      <address>	 
+        <addressLine>Medford, MA 02155</addressLine>
+      </address>
+      <date>[% date.format %]</date>
+    </titlepage>
+  </frontmatter>
+
+  <archdesc level="collection">
+
+    <did>
+      <repository>
+        <corpname>Digital Collections and Archives, Tufts University</corpname>
+        <address>
+          <addressLine>Medford, MA 02155</addressLine>
+        </address>
+      </repository>
+      <origination>
+      [%# Grab the origination from the primary record context -%]
+      [% FOR rcrs IN collection.collection_primary_record_contexts -%]
+        [% FOR rcr IN rcrs.record_context -%]
+	  [% IF rcr.rc_type == 'person' -%]
+        <persname id="[% rcr.record_id %]">[% rcr.name_entry %]</persname>
+          [% ELSIF rcr.rc_type == 'corporateBody' -%]
+        <corpname id="[% rcr.record_id %]">[% rcr.name_entry %]</corpname>
+          [% ELSIF rcr.rc_type == 'family' -%]
+        <famname id="[% rcr.record_id %]">[% rcr.name_entry %]</famname>
+          [% END -%]
+        [% END -%]
+      [% END -%]
+     </origination>
+     <unittitle>[% collection.title %]</unittitle>
+     [% generate_unitdate(collection) %] 
+     <physdesc>[% collection.extent %]</physdesc>
+     <abstract> 
+     [%# The abstract comes from the primary record context -%]
+     [% FOR rcrs IN collection.collection_primary_record_contexts -%]
+        [% FOR rcr IN rcrs.record_context -%]
+          [% rcr.abstract %]
+        [% END -%]
+     [% END -%]
+     </abstract>
+   </did>
+
+   <bioghist>
+   [%# The bioghist comes from the primary record context -%]
+   [% FOR rcrs IN collection.collection_primary_record_contexts -%]
+      [% FOR rcr IN rcrs.record_context -%]
+        [% check_for_p(rcr.history) %]
+      [% END -%]
+   [% END -%]
+   </bioghist>
+
+   <scopecontent>
+     [% check_for_p(collection.scope) %]  
+   </scopecontent>
+
+   <descgrp type="access_control">
+     <accessrestrict>
+     [% IF collection.restrictions == 'none' -%]
+       <p>This collection is open for research.</p>
+     [% ELSIF collection.restrictions == 'some' -%]
+       <p>Some of the records in this collection are restrictred. See the DCA's General Policy on Access for more information about access to records.</p>
+     [% ELSE -%]
+       <p>Access to this collection is restricted. See the DCA's General Policy on Access for more information about access to records.</p>
+     [% END -%]
+     </accessrestrict>
+     <userestrict>
+       <p>Some material may be copyrighted or restricted. It is the patron's obligation to determine and satisfy copyright or other case restrictions when publishing or otherwise distributing materials found in the collections. Please see the DCA's policy on Copyright and Fair Use for more information.</p>
+     </userestrict>
+  </descgrp>
+
+  <controlaccess>
+    [% IF collection.collection_secondary_record_contexts -%]
+     [% FOR rcrs IN collection.collection_secondary_record_contexts -%]
+        [% FOR rcr IN rcrs.record_context -%]
+          [% IF rcr.rc_type == 'person' -%]
+     <persname id="[% rcr.record_id %]">[% rcr.name_entry %]</persname>
+          [% ELSIF rcr.rc_type == 'corpname' -%]
+     <corpname id="[% rcr.record_id %]">[% rcr.name_entry %]</corpname>
+          [% ELSE -%]
+     <famname id="[% rcr.record_id %]">[% rcr.name_entry %]</famname>
+          [% END -%]
+        [% END -%]
+     [% END -%]
+     [% END -%]
+     [% FOR subject IN collection.subjects -%]
+     <subject>[% subject %]</subject>
+     [% END -%]
+   </controlaccess>
+   
+   [% IF collection.history -%]
+   <acqinfo>
+     [% check_for_p(collection.history) %]
+   </acqinfo>
+   [% END -%]
+
+   [% IF collection.processing_notes -%]
+   <processinfo>   
+     [% check_for_p(collection.processing_notes) %]
+   </processinfo>
+   [% END -%]   
+
+   <dsc type="combined">
+     
+   [% IF collection.number_of_children > 0 -%]
+     [% FOR series IN collection.children -%]
+       [% IF series.type == 'series' -%]
+     <c01 level="series" id="[% series.number %]">
+         [% generate_series(series) %]       
+       [% IF series.number_of_children > 0 -%]
+          [% FOR child IN series.children -%]
+            [% IF child.type == 'series' -%]
+              <c02 level="subseries" id="[% child.number %]">
+                [% generate_series(child) %] 
+		[% IF child.number_of_children > 0 -%]
+		  [% FOR item IN child.children -%]
+		  [% IF item.file_folders; type = "file"; ELSE; type = "item"; END; -%]
+		<c03 level="[% type %]" id="[% item.number %]">
+		  [% generate_item(item, type) %]
+	        </c03>
+                  [% END -%]
+                [% END -%]
+              </c02>
+
+           [% ELSIF child.type == 'item' -%]
+	     [% IF child.file_folders; type = "file"; ELSE; type = "item"; END; -%]
+	      <c02 level="[% type %]" id="[% child.number %]">
+	        [% generate_item(child) %]
+             [% IF child.number_of_children > 0 -%]
+	       [% FOR subitem IN child.children -%]
+		  <c03 level="item" id="[% subitem.number %]">
+		    [% generate_item(subitem) %]
+                  </c03>
+               [% END -%]
+             [% END -%]
+             </c02>
+           [% END -%]
+         [% END -%]
+        [% END -%]
+       </c01>
+       [% END -%]
+
+    [% END -%] [%# for each top-level child %]
+  [% END -%] [%# if collection has children %]
+
+    </dsc>
+
+  </archdesc>
+      
+
+[% END -%]
+</ead>  
+
+ 
+    
