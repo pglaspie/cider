@@ -1,0 +1,191 @@
+[% c.res.content_type = 'application/xml' -%]
+[% USE Dumper -%]
+<?xml version="1.0" ?>
+
+[% predicates = {
+     associative => ['isAssociatedWith'],
+     hierarchical => ['hasMember', 'isMemberOf', 'hasPart', 'isPartOf', 'hasReport', 'reportsTo'],
+     family => ['isChildOf', 'isParentOf', 'isCousinOf', 'isGrandchildOf', 'isGrandparentOf', 'isSiblingOf', 'isSpouseOf'],
+     temporal => ['isFollowedBy', 'isPrecededBy'] 
+}
+-%]
+
+<export>
+[% FOR rc IN rcs -%] 
+<eac-cpf xmlns="urn:isbn:1-931666-33-4"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xmlns:xlink="http://www.w3.org/1999/xlink"
+	 xsi:schemaLocation="urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd">
+  <control>
+    <recordId>[% rc.record_id %]</recordId>
+    [% UNLESS rc.maintenance_status == 're-export' -%]
+    <maintenanceStatus>new</maintenanceStatus>
+    [% ELSE -%]
+    <maintenanceStatus>revised</maintenanceStatus>
+    [% END -%]
+    <maintenanceAgency>
+      <agencyCode>MMeT-C</agencyCode>
+      <agencyName>Tufts University Digital Collections and Archives</agencyName>
+    </maintenanceAgency>
+    <languageDeclaration>
+      <language languageCode="eng">English</language>
+      <script scriptCode="Latn">Latin</script>
+    </languageDeclaration>
+    <conventionDeclaration>
+      <abbreviation>DACS</abbreviation>
+      <citation>Describing Archives: a Content Standard, Society of American Archivists. 2004</citation>
+      <descriptiveNote><p>Locally using rules from chapter 10 and 11.</p></descriptiveNote>
+    </conventionDeclaration>
+    <conventionDeclaration>
+      <abbreviation>AACR2R</abbreviation>
+      <citation>Anglo-American Cataloging Rules, Revised.</citation>
+      <descriptiveNote><p>Locally used for their definition of a corporate body.</p></descriptiveNote>
+    </conventionDeclaration>
+    <maintenanceHistory>
+    [% FOR log IN rc.audit_trail.logs -%]
+      [% UNLESS log.action == 'export' -%]
+      <maintenanceEvent>
+        [% IF log.action == 'create' -%]
+	<eventType>created</eventType>
+	[% ELSIF log.action == 'update' -%]
+	<eventType>revised</eventType>
+	[% END -%]
+	<eventDateTime standardDateTime="[% log.timestamp.strftime('%Y-%m-%d') %]">[% log.timestamp.strftime('%Y-%m-%d') %]</eventDateTime>
+	<agentType>human</agentType>
+	<agent>[% log.staff %]</agent>
+      </maintenanceEvent>
+      [% END -%]
+    [% END -%]
+    </maintenanceHistory>
+    <sources>
+    [% FOR source IN rc.sources -%]
+    [%# Something more sophisticated is probably needed for online sources. That will come later -%]
+      <source>
+        <sourceEntry>[% source %]</sourceEntry>
+      </source>
+    [% END -%]
+    </sources>
+  </control>
+  
+  <cpfDescription>
+
+    <identity>
+      <entityType>[% rc.rc_type %]</entityType>
+      <nameEntry>
+        <part>[% rc.name_entry %]</part>
+	<authorizedForm>local</authorizedForm>
+      </nameEntry>
+      [% FOR alt_name IN rc.alt_names -%]
+      <nameEntry>
+        <part>[% alt_name %]</part>
+      </nameEntry>
+      [% END -%]
+    </identity>
+    
+    <description>
+
+      <existDates>
+        <dateRange>
+	  <fromDate>[% rc.date_from %]</fromDate>
+	  [% IF rc.ongoing -%]
+	  <toDate>present</toDate>
+	  [% ELSE -%]
+	  <toDate>[% rc.date_to %]</toDate>
+	  [% END -%]
+        </dateRange>
+      </existDates>
+
+      [% IF rc.functions -%]
+      <functions>
+        [% FOR function IN functions -%]
+	<function>
+	  <term>[% function %]</term>
+	</function>
+	[% END -%]
+      </functions>
+      [% END -%]
+      
+      <biogHist>
+        <abstract>[% rc.abstract %]</abstract>
+      [% IF rc.history.match('<p>') -%]
+      [% rc.history %]
+      [% ELSE -%]
+	<p>[% rc.history %]</p>
+      [% END -%]
+      </biogHist>
+      [% IF rc.structure_notes -%] 
+      <structureOrGenealogy>[% rc.structure_notes %]</structureOrGenealogy> 	    
+      [% END -%]
+
+      [% IF rc.occupations -%]
+      <occupations>
+        [% FOR occupation IN rc.occupations -%]
+	<occupation>
+	  [% FOR title IN occupation.titles -%]
+	  <term>[% title %]</term>
+	  [% END -%]
+	  <dateRange>
+	    <dateFrom>[% occupation.date_from %]</dateFrom>
+	    [% IF occupation.date_to; date = occupation.date_to; ELSE; date = 'present'; END; -%]
+	    <dateTo>[% date %]</dateTo>
+	  </dateRange>
+	</occupation>
+	[% END -%]
+      </occupations>
+      [% END -%] 
+    </description>	  
+      
+    <relations>
+      [% IF rc.record_context_relationships -%]
+        [% FOR rel IN rc.record_context_relationships -%]
+	  [%# Inelegant but this loops through high-level type in the  predicate hash at the top of the file, -%]
+	  [%# and determines what category each relationship predicate is part of -%]
+	  [% term_type = '' -%]
+	  [% FOR term IN predicates.hierarchical -%]
+	    [% IF term == rel.type; term_type = 'hierarchical'; END; -%]
+	  [% END -%]
+	  [% FOR term IN predicates.associative -%]
+	    [% IF term == rel.type; term_type = 'associative'; END; -%]
+	  [% END -%]
+	  [% FOR term IN predicates.family -%]
+	    [% IF term == rel.type; term_type = 'family'; END; -%]
+          [% END -%]
+	  [% FOR term IN predicates.temporal -%]
+	    [% IF term == rel.type; term_type = 'temporal'; END; -%]
+	  [% END -%]
+	  [% FOR rel_rc IN rel.related_entity -%]
+	  <cpfRelation cpfRelationType="[% term_type %]" xlink:type="simple" xlink:role="http://dca.lib.tufts.edu/ontology/rcr#[% rel_rc.rc_type %]" xlink:arcrole="http://dca.lib.tufts.edu/ontology/rcr#[% rel.type %]">
+	    <relationEntry xml:id="[% rel_rc.record_id %]">[% rel_rc.name_entry %]</relationEntry>
+	    <dateRange>
+	      <fromDate standardDate="[% rel.date_from %]">[% rel.date_from %]</fromDate>
+	      [% IF rel.date_to -%]
+	      <toDate standardDate="[% rel.date_to %]">[% rel.date_to %]</toDate>
+	      [% ELSE -%]
+	      <toDate>present</toDate>
+	      [% END -%]
+            </dateRange>
+	  [% END -%]  
+	 </cpfRelation>
+	[% END -%]
+      [% END -%]   
+      
+      [% FOR rel_coll IN rc.collections -%]
+        <resourceRelation resourceRelationType="creatorOf" xml:id="[% rel_coll.number %]">
+	  <relationEntry>[% rel_coll.title %]</relationEntry>
+	  <objectXMLWrap>
+	    <ead xmlns="urn:isbn:1-93166-22-9">
+	      <archdesc level="collection">
+	        <did>
+		  <unittitle>[% rel_coll.title %]</unittitle>
+		  <unitid>[% rel_coll.number %]</unitid>
+		</did>
+              </archdesc>
+	    </ead>
+          </objectXMLWrap>
+        </resourceRelation>
+       [% END -%]
+      </relations>
+  </cpfDescription>
+</eac-cpf>
+[% END -%]
+</export>

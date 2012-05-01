@@ -1,6 +1,8 @@
 [% page.title = 'Create location ' _ barcode %]
 
+<div class="page-header">
 <h2>[% page.title %]</h2>
+</div>
 
 <div class="required_message">
      <p>Fields marked with a '*' are required</p>

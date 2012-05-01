@@ -1,12 +1,16 @@
 [% page.title = 'Search results' %]
 
+<div class="page-header">
 <h2>[% page.title %]</h2>
+</div>
 
 <p>Your search query "[% query %]" returned [% objects.size %] objects.</p>
+
 
 [% FOREACH object = objects %]
 [% INCLUDE display_object.tt %]
 [% END %]
+
 
 <div class="well">
 <h3>Create a set</h3>

@@ -2,7 +2,9 @@
 
 [% page.title = set.name %]
 
+<div class="page-header">
 <h2>[% page.title %]</h2>
+</div>
 
 [% IF set.scalar.objects.count %]
 <p>This set contains the following objects:</p>

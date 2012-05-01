@@ -43,6 +43,7 @@ requires 'String::CamelCase';
 requires 'DateTime::Format::ISO8601';
 requires 'DBD::MySQL';
 requires 'Readonly' => '1.03';
+requires 'JSON::XS' => '2.32';
 test_requires 'Test::More' => '0.88';
 test_requires 'Test::Exception';
 catalyst;

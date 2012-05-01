@@ -141,4 +141,10 @@ sub update_format_from_xml_hashref {
     }
 }
 
+sub name_and_note {
+    my $self = shift;
+
+    return $self->location->barcode;
+}
+
 1;

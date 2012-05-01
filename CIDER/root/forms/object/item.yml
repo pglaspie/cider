@@ -60,14 +60,16 @@ elements:
               elements:
                 - type: Hidden
                   name: id
-                - type: Select
-                  attributes:
-                     class: span5
+                  auto_id: "%n"
+                - type: Hidden
                   name: name
-                  empty_first: 1
+                  auto_id: "%n"
                   model_config:
-                    resultset: AuthorityName
                     delete_if_empty: 1
+                - type: Text
+                  name: name_and_note
+                  attributes:
+                    class: "authority_name span7"
 
     - type: Fieldset
       legend: Date
@@ -139,14 +141,15 @@ elements:
               elements:
                 - type: Hidden
                   name: id
-                - type: Select
+                - type: Hidden
                   name: name
-                  attributes:
-                    class: "span7 clearfix"
-                  empty_first: 1
+                  auto_id: "%n"
                   model_config:
-                    resultset: AuthorityName
                     delete_if_empty: 1
+                - type: Text
+                  name: name_and_note
+                  attributes:
+                    class: "authority_name span7"
 
     - type: Hidden
       name: corporate_name_count
@@ -167,14 +170,15 @@ elements:
               elements:
                 - type: Hidden
                   name: id
-                - type: Select
+                - type: Hidden
                   name: name
-                  attributes:
-                     class: "span7 clearfix"
-                  empty_first: 1
+                  auto_id: "%n"
                   model_config:
-                    resultset: AuthorityName
                     delete_if_empty: 1
+                - type: Text
+                  name: name_and_note
+                  attributes:
+                    class: "authority_name span7"
 
     - type: Hidden
       name: topic_term_count
@@ -195,14 +199,15 @@ elements:
               elements:
                 - type: Hidden
                   name: id
-                - type: Select
+                - type: Hidden
                   name: term
-                  attributes:
-                    class: "span7"
-                  empty_first: 1
+                  auto_id: "%n"
                   model_config:
-                     resultset: TopicTerm
-                     delete_if_empty: 1
+                    delete_if_empty: 1
+                - type: Text
+                  name: name_and_note
+                  attributes:
+                    class: "topic_term span7"
 
     - type: Hidden
       name: geographic_term_count
@@ -219,17 +224,20 @@ elements:
               counter_name: geographic_term_count
               model_config:
                 empty_rows: 1
+                new_rows_max: 100
               elements:
                 - type: Hidden
                   name: id
-                - type: Select
+                - type: Hidden
                   name: term
-                  attributes:
-                    class: "span7"
-                  empty_first: 1
+                  auto_id: "%n"
                   model_config:
-                    resultset: GeographicTerm
                     delete_if_empty: 1
+                - type: Text
+                  name: name_and_note
+                  attributes:
+                    class: "geographic_term span7"
+
 
     - type: Textarea
       label: Description
@@ -322,15 +330,16 @@ elements:
               elements:
                 - type: Hidden
                   name: id
-                - type: Select
-                  attributes:
-                    class: clearfix
+                - type: Hidden
                   name: location
-                  label: Location
-                  empty_first: 1
+                  auto_id: "%n"
                   model_config:
-                    resultset: Location
-                    delete_if_empty: 1 
+                    delete_if_empty: 1
+                - type: Text
+                  name: name_and_note
+                  label: Location
+                  attributes:
+                    class: "location span7"
                 - type: Label
                   name: format
                   attributes:
@@ -363,15 +372,16 @@ elements:
               elements:
                  - type: Hidden
                    name: id
-                 - type: Select
-                   attributes:
-                      class: clearfix
+                 - type: Hidden
                    name: location
-                   label: Location
-                   empty_first: 1
+                   auto_id: "%n"
                    model_config:
-                     resultset: Location
-                     delete_if_empty: 1 
+                     delete_if_empty: 1
+                 - type: Text
+                   name: name_and_note
+                   label: Location
+                   attributes:
+                     class: "location span7"
                  - type: Select
                    name: format
                    attributes:
@@ -409,15 +419,16 @@ elements:
               elements:
                 - type: Hidden
                   name: id
-                - type: Select
+                - type: Hidden
                   name: location
-                  attributes:
-                    class: clearfix
-                  label: Location
-                  empty_first: 1
+                  auto_id: "%n"
                   model_config:
-                    resultset: Location
-                    delete_if_empty: 1 
+                    delete_if_empty: 1
+                - type: Text
+                  name: name_and_note
+                  label: Location
+                  attributes:
+                    class: "location span7"
                 - type: Select
                   name: format
                   attributes:
@@ -458,15 +469,16 @@ elements:
               elements:
                 - type: Hidden
                   name: id
-                - type: Select
+                - type: Hidden
                   name: location
-                  attributes:
-                     class: clearfix
-                  label: Location
-                  empty_first: 1
+                  auto_id: "%n"
                   model_config:
-                    resultset: Location
-                    delete_if_empty: 1 
+                    delete_if_empty: 1
+                - type: Text
+                  name: name_and_note
+                  label: Location
+                  attributes:
+                    class: "location span7"
                 - type: Select
                   name: format
                   attributes:
@@ -507,15 +519,16 @@ elements:
               elements:
                 - type: Hidden
                   name: id
-                - type: Select
+                - type: Hidden
                   name: location
-                  attributes:
-                     class: clearfix
-                  label: Location
-                  empty_first: 1
+                  auto_id: "%n"
                   model_config:
-                    resultset: Location
-                    delete_if_empty: 1 
+                    delete_if_empty: 1
+                - type: Text
+                  name: name_and_note
+                  label: Location
+                  attributes:
+                    class: "location span7"
                 - type: Select
                   name: format
                   attributes:
@@ -556,15 +569,16 @@ elements:
               elements:
                 - type: Hidden
                   name: id
-                - type: Select
+                - type: Hidden
                   name: location
-                  attributes:
-                     class: clearfix
-                  label: Location
-                  empty_first: 1
+                  auto_id: "%n"
                   model_config:
-                    resultset: Location
-                    delete_if_empty: 1 
+                    delete_if_empty: 1
+                - type: Text
+                  name: name_and_note
+                  label: Location
+                  attributes:
+                    class: "location span7"
                 - type: Select
                   name: format
                   attributes:
@@ -604,15 +618,16 @@ elements:
               elements:
                 - type: Hidden
                   name: id
-                - type: Select
+                - type: Hidden
                   name: location
-                  attributes:
-                     class: clearfix
-                  label: Location
-                  empty_first: 1
+                  auto_id: "%n"
                   model_config:
-                    resultset: Location
-                    delete_if_empty: 1 
+                    delete_if_empty: 1
+                - type: Text
+                  name: name_and_note
+                  label: Location
+                  attributes:
+                    class: "location span7"
                 - type: Select
                   name: format
                   attributes:
@@ -652,17 +667,18 @@ elements:
               elements:
                 - type: Hidden
                   name: id
+                - type: Hidden
+                  name: location
+                  auto_id: "%n"
+                  model_config:
+                    delete_if_empty: 1
+                - type: Text
+                  name: name_and_note
+                  label: Location
+                  attributes:
+                    class: "location span7"
                 - type: Fieldset
                   elements:
-                    - type: Select
-                      name: location
-                      attributes:
-                         class: clearfix
-                      label: Location
-                      empty_first: 1
-                      model_config:
-                        resultset: Location
-                        delete_if_empty: 1 
                     - type: Select
                       name: format
                       attributes:

@@ -37,4 +37,10 @@ __PACKAGE__->belongs_to(
         'CIDER::Schema::Result::TopicTerm',
 );
 
+sub name_and_note {
+    my $self = shift;
+
+    return $self->term->name_and_note;
+}
+
 1;

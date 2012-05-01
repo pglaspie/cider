@@ -1,6 +1,8 @@
 [% page.title = 'Browse objects' %]
 
+<div class="page-header">
 <h2>[% page.title %]</h2>
+</div>
 
 <form method="post" action="[% c.uri_for_action( c.controller('Object').action_for('create') ) %]">
 <p>Create a new, top-level

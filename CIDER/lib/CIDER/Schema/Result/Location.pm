@@ -77,4 +77,9 @@ sub update_from_xml {
     return $self;
 }
 
+sub name_and_note {
+    my $self = shift;
+    return $self->barcode;
+}
+
 1;

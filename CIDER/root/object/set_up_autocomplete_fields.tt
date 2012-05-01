@@ -1,0 +1,4 @@
+<script>
+// This is defined in cider.js.
+set_all_autocomplete_handlers( '[% c.uri_for( '/' ) %]' );
+</script>

@@ -43,4 +43,10 @@ __PACKAGE__->belongs_to(
         'CIDER::Schema::Result::AuthorityName',
 );
 
+sub name_and_note {
+    my $self = shift;
+
+    return $self->name->name_and_note;
+}
+
 1;

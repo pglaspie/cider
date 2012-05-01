@@ -1,6 +1,8 @@
 [% page.title = 'Location ' _ location.barcode %]
 
+<div class="page-header">
 <h2>[% page.title %]</h2>
+</div>
 
 <div class="required_message">
      <p>Fields marked with a '*' are required</p>
@@ -30,6 +32,8 @@ c.uri_for( c.controller('Object').action_for('detail'), [ item.number ] )
 <p>You have successfully updated this location.</p>
 </div>
 [% END %]
+
+<p><a href="[% c.uri_for('/labels/') _ location.barcode %]">Print label</a></p> 
 
 [% form %]
 

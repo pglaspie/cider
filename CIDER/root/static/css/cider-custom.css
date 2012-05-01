@@ -53,3 +53,32 @@ label {
 #display-classes {
     margin-bottom: 20px;
 }
+
+/* Autocomplete custom styles */
+
+.ui-autocomplete {
+    background-color: white;
+    border: 1px solid #CCC;
+    box-shadow: 0 5px 10px #CCC;
+}
+
+.ui-menu-item {
+    list-style-type: none;
+}
+
+.ui-menu-item a {
+    display: block;
+    padding: 3px 15px;
+    clear: both;
+    font-weight: normal;
+    line-height: 18px;
+    color: #333333;
+    white-space: nowrap;
+}
+
+.ui-menu-item a:hover {
+    color: #ffffff;
+    text-decoration: none;
+    background-color: #0088cc;
+    cursor: pointer;
+}

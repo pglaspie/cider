@@ -1,8 +1,10 @@
 [% page.title = 'Browse record contexts' %]
 
+<div class="page-header">
 <h2>[% page.title %]</h2>
+</div>
 
-<p><a href="[% c.uri_for( c.controller( 'RecordContext' ).action_for( 'create' ) ) %]">Create a new record context</a></p>
+<p><a href="[% c.uri_for( c.controller( 'RecordContext' ).action_for( 'create' ) ) %]" class="btn btn-primary">Create a new record context</a></p>
 
 [% FOR rc IN rcs %]
 <p><a href="[% c.uri_for( c.controller( 'RecordContext' ).action_for( 'detail' ), [ rc.record_id] ) %]">[% rc.record_id %] [% rc.name_entry %]</a></p>

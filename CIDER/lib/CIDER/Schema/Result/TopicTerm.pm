@@ -53,4 +53,19 @@ sub update {
     return $self;
 }
 
+# name_and_note: Convenience method that returns a string in this format:
+#                 $name ($note)
+#                 ...unless this name has no note, in which case, just the name.
+sub name_and_note {
+    my $self = shift;
+
+    if ($self->note) {
+        return sprintf "%s (%s)", $self->name, $self->note;
+    }
+    else {
+        return $self->name;
+    }
+}
+
+
 1;

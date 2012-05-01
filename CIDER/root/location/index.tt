@@ -1,8 +1,11 @@
 [% page.title = 'Browse locations' %]
 
+<div class="page-header">
 <h2>[% page.title %]</h2>
+</div>
 
-<p><a href="[% c.uri_for( c.controller( 'Location' ).action_for( 'create' ) ) %]">Create a new location</a></p>
+<p><a href="[% c.uri_for( c.controller( 'Location' ).action_for( 'create' ) ) %]" class="btn btn-primary">Create a new location</a></p>
+
 
 [% FOR loc IN locs %]
 <p><a href="[% c.uri_for( c.controller( 'Location' ).action_for( 'detail' ), [ loc.barcode] ) %]">[% loc.barcode %] [% loc.titles.first %]</a></p>

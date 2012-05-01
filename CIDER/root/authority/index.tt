@@ -1,6 +1,8 @@
 [% page.title = 'Authority Lists' %]
 
+<div class="page-header">
 <h2>[% page.title %]</h2>
+</div>
 
 [% FOR pair IN lists %]
 [% id = pair.key %]

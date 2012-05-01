@@ -1,6 +1,8 @@
 [% page.title = name %]
 
+<div class="page-header">
 <h2>[% page.title %]</h2>
+</div>
 
 [% IF added %]
 <div class="alert alert-success">

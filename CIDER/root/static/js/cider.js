@@ -13,7 +13,6 @@ $(function() {
 
     // Make the alert messages closable 
     $('.alert-message').alert();
-    
 });
 
 
@@ -75,7 +74,7 @@ $(function() {
 	    if ($('input[name="' + class_name + '_1.pid"]').val() == '') {
 		$(form_class).hide();
 	    }
-	} else if ($('select[name="' + class_name + '_1.location"]').val() == '') {
+	} else if ($('input[name="' + class_name + '_1.location"]').val() == '') {
 	    $(form_class).hide();
 	} else { 
 	    $(form_class).show();
@@ -90,40 +89,52 @@ $(function() {
 
     // Iterate through repeatable field sets, grab relevant nodes, and create add and remove buttons.
     $.each(repeatable_fieldsets, function() {
-	var fieldset = $(this);
-	var input_count = fieldset.prev();
-	var element_name = fieldset.children('div').attr('id');
-	var inputs = fieldset.children('div').children('div').children('input');
-	var counter = inputs.length;
-	var elements = inputs.parent();
+    	var fieldset = $(this);
+    	
+    	// XXX These element-finding routines would probably be better served by
+    	//     using absolute selectors (e.g. ID attributes) vs. relative locations.
+    	var input_count = fieldset.parent().prev();
+    	var element_name = fieldset.children('div').attr('id');
+    	var inputs = fieldset.children('div').children('div').children('input');
+    	var counter = inputs.length;
+    	var elements = inputs.parent();
 
-	var add_button = '<span style="margin-bottom:10px;" class="btn btn-small" id="' + element_name + '_add_button"><i class="icon-plus"></i></span >';
-	fieldset.children('div').prepend(add_button);
+    	var add_button = '<span style="margin-bottom:10px;" class="btn btn-small" id="' + element_name + '_add_button"><i class="icon-plus"></i></span >';
+    	fieldset.children('div').prepend(add_button);
 
 
-	// When add button is pressed, add a new field block.
-	$('#' + element_name + '_add_button').live('click keypress', function(e) {
-	    counter++;
-	    input_count.attr('value', counter);
+    	// When add button is pressed, add a new field block.
+    	$('#' + element_name + '_add_button').live('click keypress', function(e) {
+    	    counter++;
+    	    input_count.attr('value', counter);
+            console.log( "Value of input counter: " + input_count.attr('value'));
 
-	    var new_element = elements.last().clone();
+    	    var new_element = elements.last().clone();
 
-	    var names = new_element.find('*[name^="' + element_name + '"]');
+    	    var names = new_element.find('*[name^="' + element_name + '"]');
 
-	    $.each(names, function() {
-		var name = $(this).attr('name');
-		$(this).attr('name', name.replace(/\d+/, counter));
+    	    $.each(names, function() {
+          		var name = $(this).attr('name');
+    	    	$(this).attr('name', name.replace(/\d+/, counter));
+    		
+    	    	// Let its ID attribute (if it has one) match its name attribute.
+    	    	if ( $(this).attr('id') ) {
+    		        $(this).attr('id', $(this).attr('name') );
+    	    	}
 	    });
 
             var id = new_element.find('*[name$=".id"]');
             id.val('');
 	    
+	    
 	    // Clear old value from cloned element
 	    new_element.find('input[type="text"]').val('');
-
+	    
 	    fieldset.children('div').append(new_element);
 
-	});
+            set_all_autocomplete_handlers(base_uri);
+
+    	});
 
     });
 });
@@ -137,3 +148,65 @@ $( function() {
     } );
 } );
 
+/* Autocomplete-helper functions */
+
+// set_autocomplete_handler: Given a CSS selector, turn all matching input fields into
+//                           jQuery autocomplete fields that know how to talk to 
+//                           CIDER's back end.
+var set_autocomplete_handler = function( uri_base, selector, action, field_name ) {
+    $( selector ).each( function(index) {
+        $(this).autocomplete( {
+
+           source: uri_base + "autocomplete/" + action,
+           minLength: 2,
+           select: function( event, ui ) {
+              set_autocomplete_fields( event, ui, $(this), field_name );    
+           },
+           focus: function( event, ui ) {
+              set_autocomplete_fields( event, ui, $(this), field_name );
+          }
+        } );
+
+    // Immediately upon any value change, check whether the field has been cleared.
+    // If so, also clear the appropriate hidden fields. This will delete the proper
+    // DB associations when the form is submitted.
+     $(this).bind("propertychange keyup input cut paste", function( event ) {
+         if ( $(this).val() == '' ) {
+             clear_autocomplete_fields( event, $(this), field_name );
+         }    
+    
+      } );
+    
+    });
+}
+
+// set_all_autocomplete_handlers: Call set_autocomplete_handler on all the input
+//                                fields we care about.
+var set_all_autocomplete_handlers = function( uri_base ) {
+    set_autocomplete_handler( uri_base, '.location', 'location', 'location' );
+    set_autocomplete_handler( uri_base, '.geographic_term', 'geographic_term', 'term' );
+    set_autocomplete_handler( uri_base, '.topic_term', 'topic_term', 'term' );
+    set_autocomplete_handler( uri_base, '.authority_name', 'authority_name', 'name' );
+}
+
+// set_autocomplete_fields: Wire up the given text input to respond properly to
+//                          jQuery autocomplete events.
+var set_autocomplete_fields = function( event, ui, object, field_name ) {
+    event.preventDefault();
+    var textfield_name = object.attr('name');
+    var name_field_id = textfield_name.substr( 0, textfield_name.length - 13 ) + field_name;
+    var name_field = document.getElementById( name_field_id );
+    name_field.value = ui.item.value;
+    object.val( ui.item.label );
+}
+
+
+// clear_autocomplete_fields: Clear all hidden fields related to the given text input,
+//                            such that the object'll be deleted on form submission.
+var clear_autocomplete_fields = function( event, object, field_name ) {
+    var textfield_name = object.attr('name');
+    var name_field_id = textfield_name.substr( 0, textfield_name.length - 13 ) + field_name;
+    var name_field = document.getElementById( name_field_id );
+    name_field.value = '';
+    console.log( name_field.value );
+}    

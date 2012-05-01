@@ -1,6 +1,8 @@
 [% page.title = "Log in" %]
 
+<div class="page-header">
 <h2>Log in</h2>
+</div>
 
 [% form %]
 
