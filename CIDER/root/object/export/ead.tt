@@ -46,7 +46,7 @@
 	"</arrangement>";
 	END;
 	IF series.scope;
-	"<scopecontent>";
+	"<scopecontent><head>Collection Scope and Content</head>";
 	  check_for_p(series.arrangement);
         "</scopecontent>";
         END;
@@ -60,16 +60,16 @@
            "<unittitle>" _ HTML.escape(object.title) _ "</unittitle>";
 	   generate_unitdate(object);
 	   IF object.creators; 
-	     "<origination>";
+	     "<origination label='Creator:'>";
              FOR creator IN object.creators;
 	       "<persname>$creator</persname>";
              END;
      	     "</origination>";
            END;
-	   "<physdesc>$type</physdesc>";
+	   "<physdesc label='Type:'>$type</physdesc>";
 	   FOR class IN object.classes;
 	     UNLESS class.result_class.match('DigitalObject');
-	       "<physloc type=\"location\">$class.location</physloc>";
+	       "<physloc type=\"location\" label='Location:'>$class.location</physloc>";
              END;
            END;
 	 "</did>";
@@ -155,6 +155,7 @@
    </did>
 
    <bioghist>
+     <head>Historical or Biographical Note</head>
    [%# The bioghist comes from the primary record context -%]
    [% FOR rcrs IN collection.collection_primary_record_contexts -%]
       [% FOR rcr IN rcrs.record_context -%]
@@ -164,6 +165,7 @@
    </bioghist>
 
    <scopecontent>
+     <head>Collection Scope and Content</head>
      [% check_for_p(collection.scope) %]  
    </scopecontent>
 
@@ -238,7 +240,7 @@
            [% ELSIF child.type == 'item' -%]
 	     [% IF child.file_folders; type = "file"; ELSE; type = "item"; END; -%]
 	      <c02 level="[% type %]" id="[% child.number %]">
-	        [% generate_item(child) %]
+	        [% generate_item(child, type) %]
              [% IF child.number_of_children > 0 -%]
 	       [% FOR subitem IN child.children -%]
 		  <c03 level="item" id="[% subitem.number %]">
