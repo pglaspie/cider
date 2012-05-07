@@ -2,12 +2,11 @@
 <html lang="en">
     <head>
       <title>CIDER - [% page.title %]</title>
-       <link rel="stylesheet" href="[% c.uri_for('/static/bootstrap/css/bootstrap.min.css') %]" media="all">
+       <link rel="stylesheet" href="[% c.uri_for('/static/bootstrap/css/bootstrap.css') %]" media="all">
        <link rel="stylesheet" href="[% c.uri_for('/static/css/cider-custom.css') %]" media="all">
-
+       <link rel="stylesheet" href="[% c.uri_for('/static/css/font-awesome.css') %]" media="all">
        <script type="text/javascript" src="[% c.uri_for('/static/js/jquery-1.7.1.min.js') %]"></script>
        <script type="text/javascript" src="[% c.uri_for('/static/js/jquery-ui-1.8.16.custom.min.js') %]"></script>
-
        <script type="text/javascript">var base_uri = "[% c.uri_for('/') %]";</script>
        <script type="text/javascript" src="[% c.uri_for('/static/bootstrap/js/bootstrap.min.js') %]"></script>
        <script type="text/javascript" src="[% c.uri_for('/static/js/cider.js') %]"></script>
@@ -32,7 +31,7 @@
           <ul class="nav">
             <li><a href="[% c.uri_for('/list') %]">Browse</a></li>
             <li><a href="[% c.uri_for('/search') %]">Search</a></li>
-            <li><a href="https://wikis.uit.tufts.edu/confluence/display/DCAcollectionmanagementtoolreplacementproject/Home">DCA Documentation</a></li>
+            <li><a href="https://wikis.uit.tufts.edu/confluence/display/DCAPoliciesandProcedures/CIDER">DCA Documentation</a></li>
           </ul>
          </div>
         </div>
@@ -48,7 +47,7 @@
             </div>
          </div>
 
-         <div class="span7">
+         <div id="content" class="span7">
           [% content %]
 
 

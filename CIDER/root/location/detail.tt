@@ -33,8 +33,6 @@ c.uri_for( c.controller('Object').action_for('detail'), [ item.number ] )
 </div>
 [% END %]
 
-<p><a href="[% c.uri_for('/labels/') _ location.barcode %]">Print label</a></p> 
-
 [% form %]
 
 <form id="delete_form" action="[% c.uri_for_action( c.controller( 'Location' ).action_for('delete'), [ location.barcode ]) %]"><input type="submit" class="btn btn-danger" style="margin-left:20px;" name="delete" value="Delete" /></form>
