@@ -1,4 +1,10 @@
 [% c.res.content_type = 'application/xml' -%]
+<?xml version="1.0" ?>
+
+[% MACRO remove_html(content) BLOCK -%] 
+[% content.remove('</?p>') -%]
+[% END -%]
+   
 <collection xmlns="http://www.loc.gov/MARC21/slim">
 [% FOR object IN objects -%]
   <record>
@@ -29,12 +35,12 @@
       <subfield code="a">Some records may be restricted. See the DCA's General Policy on Access for more information about access to records, especially official University records.</subfield>
     </datafield>
     <datafield tag="520" ind1=" " ind2=" ">
-      <subfield code="a">[% object.scope %]</subfield>
+      <subfield code="a">[% remove_html(object.scope) %]</subfield>
     </datafield>
 [% FOR rcrs IN object.collection_primary_record_contexts -%]
 [% FOR rcr IN rcrs.record_context -%]
     <datafield tag="545" ind1=" " ind2=" ">
-      <subfield code="a">[% rcr.history %]</subfield>
+      <subfield code="a">[% remove_html(rcr.history) %]</subfield>
     </datafield>
 [% END -%]
 [% END -%]
