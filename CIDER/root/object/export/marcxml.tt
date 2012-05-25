@@ -2,6 +2,7 @@
 <collection xmlns="http://www.loc.gov/MARC21/slim">
 [% FOR object IN objects -%]
   <record>
+    <leader>99999ntc         ia </leader>
     <controlfield tag="008">040320u9999    xx            000 0 eng d</controlfield>
     <datafield tag="040" ind1=" " ind2=" ">
       <subfield code="a">TFW</subfield>

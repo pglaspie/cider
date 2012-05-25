@@ -77,9 +77,9 @@
 	   FOR digital_object IN object.digital_objects;
 	     "<daogrp>";
 	       "<daodesc><p>" _ HTML.escape(object.title) _ "</p></daodesc>";
-	       "<daoloc href=\"catalog/$digital_object.pid\" linktype=\"locator\" label=\"page\" />";
+	       "<daoloc href=\"$digital_object.pid\" linktype=\"locator\" label=\"page\" />";
 	     IF object.dc_type == 'Image';
-	       "<daoloc href=\"catalog/" _ digital_object.pid _ ".thumb.jpg\" linktype=\"locator\" label=\"thumbnail\" />";
+	       "<daoloc href=\"$digital_object.pid\" linktype=\"locator\" label=\"thumbnail\" />";
 	     END;
             "</daogrp>";
            END; 

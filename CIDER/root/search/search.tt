@@ -2,8 +2,34 @@
 
 <div class="page-header">
 <h2>[% page.title %]</h2>
+
 </div>
 
 [% form %]
 
+
+
+<a data-toggle="modal" href="#searchtips">Search help</a>
+
+<div class="modal fade" id="searchtips">
+  <div class="modal-header">
+    <button class="close" data-dismiss="modal">x</button>
+    <h3>Search help</h3>
+  </div>
+  <div class="modal-body">
+    <p>Use the drop down menu to select a specific field to search in. Select 'any field' to perform a keyword search in all CIDER fields.</p>
+    <h4>Advanced searching</h4>
+    <p>To perform an advanced search, select 'any field' and use the following syntax in the search box:</p>
+    <p>Target a specific field by entering the field name, followed by a colon, then the search term.</p>
+    <pre>number:UP029</pre>
+    <p>Multiple search terms can be strung together logically using the boolean operators AND, OR, and NOT:</p>
+    <pre>number:UP029 AND volume:60</pre>
+    <p>This search will return all issues of Tufts Daily in volume 60.</p>
+    <p>It is also possible to search if a field is empty using the following syntax:</p>
+    <pre>description:NULL</pre>
+  </div>
+</div>  
+
+
 </div>
+
