@@ -2,6 +2,12 @@ package CIDER::Controller::Search;
 use Moose;
 use namespace::autoclean;
 
+use Readonly;
+
+# We use $BIGNUM to store a ceiling of desired search results when not using a pager.
+# Ideally, this should come from the searcher object's doc_max() method.
+Readonly my $BIGNUM => 1000;
+
 BEGIN {extends 'Catalyst::Controller::HTML::FormFu'; }
 
 =head1 NAME
@@ -35,7 +41,7 @@ sub search :Path :Args(0) :FormConfig {
 
         my $hits = $c->model( 'Search' )->search(
             query => $query,
-            num_wanted => 1000, # TO DO: parameterize this?
+            num_wanted => $BIGNUM,
         );
 
         my @objects;
@@ -102,8 +108,11 @@ sub create_set :Path('create_set') :Args(0) :FormConfig('set/create') {
         return;
     }
 
+    # Modify the query to have $BIGNUM hits per page, because we want to pour
+    # all the hits into the set.
     my $hits = $c->model( 'Search' )->search(
-        query => $query,
+        query      => $query,
+        num_wanted => $BIGNUM,
     );
 
     while ( my $hit = $hits->next ) {

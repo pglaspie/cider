@@ -1,4 +1,4 @@
-[% page.title = 'Your sets' %]
+[% page.title = 'Sets' %]
 
 <div class="page-header">
 <h2>[% page.title %]</h2>

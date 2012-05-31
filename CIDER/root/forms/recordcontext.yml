@@ -135,7 +135,7 @@ elements:
   - type: Fieldset
     attributes:
         class: repeatable
-    legend: Sources
+    legend: "Sources *"
     elements:
       - type: Block
         id: sources
