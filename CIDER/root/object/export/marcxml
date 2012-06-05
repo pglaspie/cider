@@ -1,8 +1,10 @@
 [% c.res.content_type = 'application/xml' -%]
 <?xml version="1.0" ?>
 
+[% USE HTML -%]
+
 [% MACRO remove_html(content) BLOCK -%] 
-[% content.remove('</?p>') -%]
+[% HTML.escape(content.remove('</?p>')) -%]
 [% END -%]
    
 <collection xmlns="http://www.loc.gov/MARC21/slim">

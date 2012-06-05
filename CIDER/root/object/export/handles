@@ -1,0 +1,17 @@
+[% c.res.content_type = 'application/xml' -%]
+<?xml version="1.0" ?>
+<import>
+[% FOR object IN objects -%]
+  <update>
+    <item number="[% object.number %]" parent="[% object.parent.number %]">
+      <classes>
+        <digitalObject>
+	  <location>data05</location>
+	  <pid>tufts:[% object.number %]</pid>
+	  <permanentURL>PUTHANDLEHERE</permanentURL>
+	</digitalObject>
+      </classes>
+    </item>
+  </update>
+[% END -%]
+</import>
