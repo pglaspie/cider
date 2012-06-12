@@ -6,7 +6,7 @@
    # For display the item's class at the top of the detail page
 %]
 [% classes = { 
-   	   groups = 'group' 
+   	   is_group = 'group' 
 	   file_folders = 'folder'
 	   containers = 'container'
 	   bound_volumes = 'bound volume'

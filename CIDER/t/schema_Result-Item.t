@@ -40,6 +40,7 @@ $rs->create_from_xml( elt <<END
 </item>
 END
 );
+
 $rs->create_from_xml( elt <<END
 <item number='x2' parent='n4'>
   <title>New sub-item</title>
@@ -47,6 +48,26 @@ $rs->create_from_xml( elt <<END
 </item>
 END
 );
+
+$rs->create_from_xml( elt <<END
+<item number="grouptest">
+  <title>Group import test</title>
+  <restrictions>none</restrictions>
+  <classes>
+    <group/>
+  </classes>
+</item>
+END
+);
+
+$rs->create_from_xml( elt <<END
+<item number="notgrouptest">
+  <title>Not-group import test</title>
+  <restrictions>none</restrictions>
+</item>
+END
+);
+
 
 my $item = $rs->find( 4 );
 is( $item->number_of_children, 2,
@@ -159,10 +180,10 @@ is( $co->note, undef,
     'Corporate name has no note.' );
 is( $item->topic_terms, 2,
     'Item has two topic terms.' );
-is( $item->classes, 8,
-    'Item has eight classes.' );
-is( $item->groups, 1,
-    'Item has one group.' );
+is( $item->classes, 7,
+    'Item has seven classes.' );
+is( $item->is_group, 1,
+    'Item is a group.' );
 is( $item->file_folders->first->location->unit_type, 'Digital objects',
     'File folder location has digital objects unit type.' );
 is( $item->file_folders->first->format, 'File (document grouping)',
@@ -255,6 +276,20 @@ is( $item->dc_type, 'Image',
 $item->update_from_xml( elt '<item><dcType/></item>' );
 is( $item->dc_type, 'Text',
     'DC type set to default.' );
+
+my $group_item = $rs->find( 8 );
+
+is( $group_item->classes, 0,
+    'Item has no classes specified.' );
+is( $group_item->is_group, 1,
+    'Item is a group.' );
+
+my $not_group_item = $rs->find( 9 );
+
+is( $not_group_item->classes, 0,
+    'Item has no classes specified.' );
+is( $not_group_item->is_group, 0,
+    'Item is not a group.' );
 
 throws_ok {
     $item->update_from_xml( elt <<END

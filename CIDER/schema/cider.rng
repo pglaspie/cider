@@ -334,14 +334,15 @@
           </optional>
         </element>
       </optional>
+      <optional>
       <choice>
         <element name="classes">
           <oneOrMore>
             <ref name="class"/>
           </oneOrMore>
         </element>
-        <ref name="required"/>
       </choice>
+      </optional>
       <optional>
         <ref name="auditTrail"/>
       </optional>

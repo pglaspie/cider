@@ -442,6 +442,7 @@ DROP TABLE IF EXISTS `item`;
 CREATE TABLE `item` (
   `id` integer NOT NULL,
   `circa` enum('0','1') NOT NULL DEFAULT '0',
+  `is_group` enum('0','1') NOT NULL DEFAULT '0',
   `date_from` text,
   `date_to` text,
   `restrictions` tinyint NOT NULL DEFAULT 1,
@@ -541,19 +542,6 @@ CREATE TABLE `collection` (
   CONSTRAINT `collection_fk_id` FOREIGN KEY (`id`) REFERENCES `object` (`id`),
   CONSTRAINT `collection_fk_processing_status` FOREIGN KEY (`processing_status`) REFERENCES `processing_status` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `collection_fk_publication_status` FOREIGN KEY (`publication_status`) REFERENCES `publication_status` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS `item_group`;
-
---
--- Table: `item_group`
---
-CREATE TABLE `item_group` (
-  `id` integer NOT NULL auto_increment,
-  `item` integer NOT NULL,
-  INDEX `item_group_idx_item` (`item`),
-  PRIMARY KEY (`id`),
-  CONSTRAINT `item_group_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `record_context_alternate_name`;

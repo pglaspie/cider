@@ -36,6 +36,8 @@ __PACKAGE__->many_to_many(
 __PACKAGE__->add_columns(
     circa =>
         { data_type => 'boolean', default_value => 0 },
+    is_group =>
+        { data_type => 'boolean', default_value => 0 },
     date_from =>
         { data_type => 'varchar', size => 10,
           is_nullable => 1,
@@ -127,11 +129,6 @@ __PACKAGE__->add_columns(
 );
 
 __PACKAGE__->has_many(
-    groups =>
-        'CIDER::Schema::Result::Group',
-);
-
-__PACKAGE__->has_many(
     file_folders =>
         'CIDER::Schema::Result::FileFolder',
 );
@@ -209,7 +206,7 @@ sub classes {
     my $self = shift;
 
     my @classes = (
-        $self->groups,
+#        $self->groups,
         $self->file_folders,
         $self->containers,
         $self->bound_volumes,
@@ -379,15 +376,22 @@ sub update_from_xml {
 
     if ( exists $hr->{ classes } ) {
         $_->delete for $self->classes;
+        $self->is_group( 0 );
         my $schema = $self->result_source->schema;
         for my $class_elt ( @{ $hr->{ classes } } ) {
-            my $rel = decamelize( $class_elt->tagName );
-            $rel = "${rel}s" unless $rel eq 'audio_visual_media';
-            my $class = $self->new_related( $rel, { } );
-            $class->update_from_xml( $class_elt );
+            if ( $class_elt->tagName eq 'group' ) {
+                $self->is_group( 1 );
+            }
+            else {
+                my $rel = decamelize( $class_elt->tagName );
+                $rel = "${rel}s" unless $rel eq 'audio_visual_media';
+                my $class = $self->new_related( $rel, { } );
+                $class->update_from_xml( $class_elt );
+            }
         }
     }
 
+    $self->update;
     $self->update_audit_trail_from_xml_hashref( $hr );
 
     return $self;

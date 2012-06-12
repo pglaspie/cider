@@ -293,19 +293,9 @@ elements:
     - type: Fieldset
       legend: Groups
       elements:
-        - type: Hidden
-          name: group_count
-        - type: Repeatable
-          nested_name: groups
-          counter_name: group_count
-          # TO DO: there's no editable elements in a Group, so there's
-          # no way to add one with empty_rows.
-          elements:
-            - type: Hidden
-              name: id
-            - type: Label
-              name: volume
-              label: Volume
+        - type: Checkbox
+          label: This is a group
+          name: is_group
 
     - type: Fieldset
       elements:

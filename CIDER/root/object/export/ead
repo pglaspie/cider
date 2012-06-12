@@ -190,7 +190,7 @@
         [% FOR rcr IN rcrs.record_context -%]
           [% IF rcr.rc_type == 'person' -%]
      <persname id="[% rcr.record_id %]">[% rcr.name_entry %]</persname>
-          [% ELSIF rcr.rc_type == 'corpname' -%]
+          [% ELSIF rcr.rc_type == 'corporateBody' -%]
      <corpname id="[% rcr.record_id %]">[% rcr.name_entry %]</corpname>
           [% ELSE -%]
      <famname id="[% rcr.record_id %]">[% rcr.name_entry %]</famname>

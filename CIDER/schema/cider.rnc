@@ -65,7 +65,7 @@ item = element item {
   element issue { line? }?,
   element abstract { multiline? }?,
   element citation { multiline? }?,
-  ( element classes { class+ } | required ),
+  element classes { class+ }?,
   auditTrail?
 }
 
