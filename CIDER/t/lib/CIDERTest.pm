@@ -357,6 +357,23 @@ sub init_schema {
         ]
     );
 
+    $schema->populate(
+        'Format',
+        [
+         [qw/id class name/],
+         [1, 'digital_object', 'image/tiff'],
+        ]
+    );
+
+    $schema->populate(
+        'DigitalObject',
+        [
+         [qw/id item location format permanent_url pid/],
+         [1, 4, 1, 1, 'http://example.com/nowhere', 'test'],
+        ]
+    );
+
+
     $schema->indexer->make_index;       # This clobbers any existing index.
 
     return $schema;

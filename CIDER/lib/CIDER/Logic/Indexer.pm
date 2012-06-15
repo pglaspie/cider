@@ -10,6 +10,8 @@ use Carp;
 
 use Lucy;
 
+use String::CamelCase qw(decamelize);
+
 # Constants
 use Readonly;
 # $EMPTY_FIELD_VALUE is the indexed value for object fields with empty values.
@@ -116,12 +118,23 @@ my @item_multitext_fields
             geographic_terms
     );
 
+my @item_class_fields
+    = qw(
+            location_title
+            browsing_object_pid
+            browsing_object_thumbnail_pid
+            barcode
+            rights
+            format
+        );
+
 for my $field ( @object_text_fields,
                 @collection_text_fields,
                 @series_text_fields,
                 @item_text_fields,
                 @collection_multitext_fields,
                 @item_multitext_fields,
+                @item_class_fields,
               ) {
     $index_schema->spec_field( name => $field, type => $text_type );
 }
@@ -383,9 +396,179 @@ sub _add_to_indexer {
         for my $field ( @item_multitext_fields ) {
             $doc->{ $field } = join "\n", $type_obj->$field;
         }
+
+        my $item = $object->result_source->schema
+                   ->resultset( 'Item' )
+                   ->find( $object->id );
+
+        # Now we index fields specific to item subclass objects, of which this item
+        # might contain any number.
+        # We call the classes() method to get all these objects, then iterate over
+        # them, calling a different indexing subroutine depending upon the flavor
+        # of subclass.
+        my @classed_objects = $item->classes;
+        for my $classed_object ( @classed_objects ) {
+            my $perl_class = ref $classed_object;
+            my ($class_suffix) = $perl_class =~ /^.*::(.*?)$/;
+            $class_suffix = decamelize( $class_suffix );
+            my $method = '_index_' . $class_suffix;
+
+            my $index_ref = eval "$method( \$classed_object )";
+            if ( $@ ) {
+                die $@;
+            }
+            for my $field ( keys ( %{ $index_ref } ) ) {
+                my $value = $index_ref->{ $field } || $EMPTY_FIELD_VALUE;
+                if ( exists $doc->{ $field } ) {
+                    $doc->{ $field } .= "\n$value";
+                }
+                else {
+                    $doc->{ $field } = $value;
+                }
+            }
+        }
     }
 
     $indexer->add_doc( $doc );
+}
+
+# Called by _add_to_indexer, when indexing an item of this subclass.
+sub _index_digital_object {
+    my ( $item ) = @_;
+
+    my $index_ref = {
+        permanent_url => $item->permanent_url,
+    };
+
+    _add_location_to_index_ref( $item, $index_ref );
+
+    if ( $item->format ) {
+        $index_ref->{ format } = $item->format;
+    }
+
+    return $index_ref;
+}
+
+# Called by _add_to_indexer, when indexing an item of this subclass.
+sub _index_audio_visual_media {
+    my ( $item ) = @_;
+
+    my $index_ref = {
+
+    };
+
+    _add_location_to_index_ref( $item, $index_ref );
+
+    return $index_ref;
+}
+
+# Called by _add_to_indexer, when indexing an item of this subclass.
+sub _index_bound_volume {
+    my ( $item ) = @_;
+
+    my $index_ref = {
+
+    };
+
+    _add_location_to_index_ref( $item, $index_ref );
+
+    return $index_ref;
+}
+
+# Called by _add_to_indexer, when indexing an item of this subclass.
+sub _index_browsing_object {
+    my ( $item ) = @_;
+
+    my $index_ref = {
+        browsing_object_pid           => $item->pid,
+        browsing_object_thumbnail_pid => $item->thumbnail_pid,
+    };
+
+    # (Browsing objects have no location info...)
+
+    return $index_ref;
+}
+
+# Called by _add_to_indexer, when indexing an item of this subclass.
+sub _index_container {
+    my ( $item ) = @_;
+
+    my $index_ref = {
+
+    };
+
+    _add_location_to_index_ref( $item, $index_ref );
+
+    return $index_ref;
+}
+
+# Called by _add_to_indexer, when indexing an item of this subclass.
+sub _index_document {
+    my ( $item ) = @_;
+
+    my $index_ref = {
+
+    };
+
+    _add_location_to_index_ref( $item, $index_ref );
+
+    return $index_ref;
+}
+
+# Called by _add_to_indexer, when indexing an item of this subclass.
+sub _index_file_folder {
+    my ( $item ) = @_;
+
+    my $index_ref = {
+
+    };
+
+    _add_location_to_index_ref( $item, $index_ref );
+
+    return $index_ref;
+}
+
+# Called by _add_to_indexer, when indexing an item of this subclass.
+sub _index_physical_image {
+    my ( $item ) = @_;
+
+    my $index_ref = {
+
+    };
+
+    _add_location_to_index_ref( $item, $index_ref );
+
+    return $index_ref;
+}
+
+# Called by _add_to_indexer, when indexing an item of this subclass.
+sub _index_three_dimensional_object {
+    my ( $item ) = @_;
+
+    my $index_ref = {
+
+    };
+
+    _add_location_to_index_ref( $item, $index_ref );
+
+    return $index_ref;
+}
+
+# Called by various of the item-subclass-indexing subroutines defined above.
+sub _add_location_to_index_ref {
+    my ( $item, $index_ref ) = @_;
+
+    $index_ref->{ barcode } = $item->location->barcode;
+
+    for my $title_object ( $item->location->titles ) {
+        $index_ref->{ location_title } ||= '';
+        if ( length $title_object->title ) {
+            $index_ref->{ location_title } .= $title_object->title;
+        }
+        else {
+            $index_ref->{ location_title } .= $EMPTY_FIELD_VALUE;
+        }
+    }
 }
 
 sub _remove_rs_from_indexer {

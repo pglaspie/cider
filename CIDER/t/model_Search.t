@@ -143,4 +143,12 @@ $material->delete;
 $hits = $model->search( query => 'Booklet' );
 is( $hits->total_hits, 0, 'Deleted material was deleted from the index.' );
 
+# Now let's search for an item-class-specific values like barcodes.
+$hits = $model->search( query => '8001' );
+is( $hits->total_hits, 1, 'Found the one item with location barcode 8001.' );
+$hits = $model->search( query => 'http://example.com/nowhere' );
+is( $hits->total_hits, 1, 'Found the one item with the test permanent URL.' );
+$hits = $model->search( query => 'image/tiff' );
+is( $hits->total_hits, 1, 'Found the one item with format image/tiff.' );
+
 done_testing();
