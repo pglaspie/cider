@@ -6,7 +6,9 @@ use DBI;
 
 use 5.10.0;
 
-my @db_creds = ('dbi:mysql:cider', 'cider', 'totallyFakePassword');
+# Might need to be populated before running; don't commit with real
+# credentials
+my @db_creds = ('', '', '');
 
 my $schema = CIDER::Schema->connect( @db_creds );
 my $raw_dbh = DBI->connect( @db_creds );
