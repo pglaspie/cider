@@ -1,16 +1,40 @@
-Run script/cider_server.pl to test the application.
+CIDER
 
+    Welcome to CIDER!
 
-To make changes to the database schema:
+TESTING
 
-1. Make changes to the appropriate column definitions in the Perl DBIC
-class file(s) in lib/CIDER/Schema/Result/.
+    Run script/cider_server.pl to test the application.
 
-2. Run "script/cider_ddl.pl" to generate a new version of cider.sql.
+DATABASE
 
-3. Run "svn diff cider.sql --diff-cmd script/cider_sqlt_diff.pl" to
-generate a sequence of SQL commands reflecting the changes.
+    To make changes to the database schema:
+    
+    1. Make changes to the appropriate column definitions in the Perl DBIC
+    class file(s) in lib/CIDER/Schema/Result/.
+    
+    2. Run "script/cider_ddl.pl" to generate a new version of cider.sql.
+    
+    3. Run "svn diff cider.sql --diff-cmd script/cider_sqlt_diff.pl" to
+    generate a sequence of SQL commands reflecting the changes.
+    
+    4. Update your MySQL database by entering the above commands at the
+    mysql command prompt.
 
-4. Update your MySQL database by entering the above commands at the
-mysql command prompt.
+LICENSE
 
+    Copyright 2012 Tufts University
+    
+    CIDER is free software: you can redistribute it and/or modify it
+    under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of
+    the License, or (at your option) any later version.
+    
+    CIDER is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Affero General Public License for more details.
+    
+    You should have received a copy of the GNU Affero General Public
+    License along with CIDER.  If not, see
+    <http://www.gnu.org/licenses/>.
