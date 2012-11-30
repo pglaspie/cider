@@ -133,6 +133,7 @@ $item->update_from_xml( elt <<END
       </stabilization>
       <applications>
         <mediaImage>GIMP</mediaImage>
+        <virusCheck>CyberBiotics</virusCheck>
         <other>
           <application>App1</application>
           <application>App2</application>

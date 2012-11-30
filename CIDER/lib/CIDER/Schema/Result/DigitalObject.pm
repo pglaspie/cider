@@ -5,6 +5,8 @@ use warnings;
 
 use base 'CIDER::Schema::Base::Result::ItemClass';
 
+use String::CamelCase qw( decamelize );
+
 =head1 NAME
 
 CIDER::Schema::Result::DigitalObject
@@ -256,8 +258,9 @@ sub update_application_from_xml_hashref {
 
     if ( exists( $hr->{ $tag } ) ) {
         my $rs = $self->result_source->related_source( $colname )->resultset;
+	my $function = decamelize( $tag );
         my $obj = $rs->find_or_create( { name => $hr->{ $tag },
-                                         function => $tag } );
+                                         function => $function } );
         $self->set_inflated_column( $colname => $obj );
     }
 }
