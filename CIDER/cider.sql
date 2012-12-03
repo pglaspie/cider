@@ -945,7 +945,7 @@ CREATE TABLE `digital_object` (
   PRIMARY KEY (`id`),
   CONSTRAINT `digital_object_fk_checksum_app` FOREIGN KEY (`checksum_app`) REFERENCES `application` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `digital_object_fk_file_extension` FOREIGN KEY (`file_extension`) REFERENCES `file_extension` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `digital_object_fk_format` FOREIGN KEY (`format`) REFERENCES `digital_object` (`id`),
+  CONSTRAINT `digital_object_fk_format` FOREIGN KEY (`format`) REFERENCES `format` (`id`),
   CONSTRAINT `digital_object_fk_item` FOREIGN KEY (`item`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `digital_object_fk_location` FOREIGN KEY (`location`) REFERENCES `location` (`id`),
   CONSTRAINT `digital_object_fk_media_app` FOREIGN KEY (`media_app`) REFERENCES `application` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
