@@ -169,9 +169,11 @@
                     <checksum>[% obj.applicationChecksum %]</checksum>
                     <mediaImage>[% obj.applicationMediaImage %]</mediaImage>
                     <virusCheck>[% obj.applicationVirusCheck %]</virusCheck>
+                    <other>
                     [% FOREACH app IN obj.applicationOther %]
                     <application>[% app %]</application>
                     [% END %]
+                    </other>
                 </applications>
                 [% END %]
         
