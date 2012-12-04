@@ -80,7 +80,7 @@
         [% END %]
         
         [% IF obj.description != "" %]
-            <description>[% obj.description %]</description>
+            <description>[% obj.description | html %]</description>
         [% END %]
         
         [% IF obj.abstract != "" %]
