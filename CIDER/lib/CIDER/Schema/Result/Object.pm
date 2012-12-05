@@ -299,7 +299,7 @@ sub update_parent {
     # Set the parent's date_from to the earliest date_from among its children.
     my $earliest_date = minstr( @siblings_date_from );
     if ( $earliest_date ) {
-        if ( not( $parent->date_from ) || ( $parent->date_from gt $earliest_date ) ) {
+        if ( not( $parent->date_from ) || ( $parent->date_from ne $earliest_date ) ) {
             $parent->date_from( $earliest_date );
         }
     }
@@ -312,7 +312,7 @@ sub update_parent {
     # Set the parent's date_to to the latest date_to among its children.
     my $latest_date = maxstr( @siblings_date_to );
     if ( $latest_date ) {
-        if ( not($parent->date_to) || ( $parent->date_to lt $latest_date ) ) {
+        if ( not($parent->date_to) || ( $parent->date_to ne $latest_date ) ) {
             $parent->date_to( $latest_date );
         }
     }

@@ -38,12 +38,6 @@ __PACKAGE__->add_columns(
         { data_type => 'boolean', default_value => 0 },
     is_group =>
         { data_type => 'boolean', default_value => 0 },
-    date_from =>
-        { data_type => 'varchar', size => 10,
-          is_nullable => 1,
-        },
-    date_to =>
-        { data_type => 'varchar', is_nullable => 1, size => 10 },
 );
 
 __PACKAGE__->add_columns(

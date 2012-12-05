@@ -160,4 +160,45 @@ $series_2->delete;
 is( $schema->resultset( 'AuditTrail' )->find( $trail->id ), undef,
     'Audit trail was deleted.' );
 
+##################
+# Testing derived-field updates
+##################
+
+# Reset the database.
+$schema = CIDERTest->init_schema;
+$schema->user( $schema->resultset( 'User' )->find( 1 ) );
+
+my $series = $schema->resultset( 'Series' )->find( 3 );
+is( $series->date_from, '2000-01-01', "Parent object has expected date-from." );
+is( $series->date_to, '2010-01-01', "Parent object has expected date-to." );
+
+my $older_item = $schema->resultset( 'Item' )->find( 4 );
+my $newer_item = $schema->resultset( 'Item' )->find( 5 );
+
+$older_item->date_from( '1999-01-01' );
+$older_item->update;
+$series->discard_changes;
+is ( $series->date_from, '1999-01-01', 'Parent object lowered its date-from floor.');
+
+$newer_item->date_to( '2012-01-01' );
+$newer_item->update;
+$series->discard_changes;
+is ( $series->date_to, '2012-01-01', 'Parent object raised its date-to ceiling.');
+
+$older_item->date_from( '2001-01-01' );
+$older_item->update;
+$series->discard_changes;
+is ( $series->date_from, '2001-01-01', 'Parent object raised its date-from floor.');
+
+$newer_item->date_to( '2011-01-01' );
+$newer_item->update;
+$series->discard_changes;
+is ( $series->date_to, '2011-01-01', 'Parent object lowered its date-to ceiling.');
+
+$newer_item->delete;
+$older_item->delete;
+$series->discard_changes;
+is ( $series->date_from, undef, 'Childless parent object removed its date_from.');
+is ( $series->date_to, undef, 'Childless parent object removed its date_to.');
+
 done_testing;

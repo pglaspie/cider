@@ -443,8 +443,6 @@ CREATE TABLE `item` (
   `id` integer NOT NULL,
   `circa` enum('0','1') NOT NULL DEFAULT '0',
   `is_group` enum('0','1') NOT NULL DEFAULT '0',
-  `date_from` text,
-  `date_to` text,
   `restrictions` tinyint NOT NULL DEFAULT 1,
   `accession_number` text,
   `dc_type` tinyint NOT NULL,
