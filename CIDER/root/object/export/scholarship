@@ -2,6 +2,7 @@
 [% USE date(format = '%Y-%m-%d') -%]
 [% FOR object IN objects -%]
   <input OBJID="tufts:[% object.number %]" LABEL="[% object.title %]" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.fedora.info/definitions/">
+     <metadata>
        <metadata ID="DC">
           <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/">
 	    <dc:title>[% object.title %]</dc:title>
@@ -115,6 +116,7 @@
 	    [% END -%]
 	  </dca_dc:dc>	    
 	</metadata>
+     </metadata>
     <datastreams>
       <datastream ID="Archival.pdf" xlink:href="http://bucket01.lib.tufts.edu/data05/tufts/central/dca/[% coll_no %]/archival_pdf/[% object.number %].archival.pdf" xlink:title="[% object.title %]"/>
       <datastream ID="RELS-EXT" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
