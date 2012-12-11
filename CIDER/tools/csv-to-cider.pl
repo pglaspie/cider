@@ -15,8 +15,8 @@ use Template;
 ######
 # Set the program variables
 ######
-my $program_name = basename $0;
-my $LOGFILE = "$program_name.log";
+my ($program_name, $dirname) = fileparse($0);
+my $LOGFILE = "me)$program_name.log";
 my $includesdir = "includes";
 
 ######
@@ -42,7 +42,7 @@ $logger->info("\n\n===\nRunning $0 at ", scalar(localtime(time)), "\n===");
 # Set up the template toolkit objects and configuration
 ######
 my $config = {
-    INCLUDE_PATH => '/tdr/bin/scripts',
+    INCLUDE_PATH => $dirname,
     POST_CHOMP => 1,
 };
 my $input = 'cider-include.tt';
@@ -69,7 +69,7 @@ open my $out_fh, ">", $output
   or $logger->logdie("Can't open output file for writing: $!\n");
 
 # add the header information
-print $out_fh qq{<?xml-model href="file:/C:/Documents%20and%20Settings/efauld01/My%20Documents/cider-migration/schema/cider-import.rnc" type="application/relax-ng-compact-syntax"?>};
+print $out_fh qq{<?xml-model href="http://dca.lib.tufts.edu/schema/cider/cider-import.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>};
 print $out_fh "\n<import>\n";
 
 # Set the names of the keys in the hash we are going to use to something
@@ -80,6 +80,7 @@ $csv->column_names( $csv->getline ( $csv_fh ) );
 until ( eof( $csv_fh ) ) {
     # Read each line of the CSV file and verify necessary values
     my $row_ref = $csv->getline_hr( $csv_fh );
+    $row_ref =~ s/&(\s)/&amp;$1/g;
 
     if ( $row_ref ) {
         # set the name for the include file
@@ -105,6 +106,15 @@ until ( eof( $csv_fh ) ) {
 
         my @applicationOther = split(/\|/, $row_ref->{'applicationOther'});
         $row_ref->{'applicationOther'} = \@applicationOther;
+               
+        my ($first, $last);
+        ($first = $row_ref->{'stabilizationBy'}) =~ s/[^,]*, (.*)/$1/;
+        ($last = $row_ref->{'stabilizationBy'}) =~ s/([^,]*), .*/$1/;
+        my @stabilizationBy = (
+            $first, 
+            $last,
+        );
+        $row_ref->{'stabilizationBy'} = \@stabilizationBy;
 
         # Pass the row of the csv file to template toolkit to create a single include file
         my $vars = { obj => $row_ref };
