@@ -8,11 +8,7 @@
 
 [%# Preserves <p>s if present in original content -%]
 [% MACRO check_for_p(content)
-      IF content.match('<p>');
-         content;
-      ELSE;
-         "<p>$content</p>";
-      END;
+      content | html | html_para;
 -%]
 
 [%# Handles dates that are single or ranges and adds bulk dates if present -%] 
@@ -45,9 +41,9 @@
 	  check_for_p(series.arrangement);
 	"</arrangement>";
 	END;
-	IF series.scope;
+	IF series.description;
 	"<scopecontent><head>Collection Scope and Content</head>";
-	  check_for_p(series.arrangement);
+	  check_for_p(series.description);
         "</scopecontent>";
         END;
       END;
@@ -77,9 +73,13 @@
 	   FOR digital_object IN object.digital_objects;
 	     "<daogrp>";
 	       "<daodesc><p>" _ HTML.escape(object.title) _ "</p></daodesc>";
+	     IF digital_object.location == 'darkarchive';
+	       "<daoloc href=\"$digital_object.pid\" audience=\"internal\" linktype=\"locator\" label=\"page\" />";
+             ELSE;
 	       "<daoloc href=\"$digital_object.pid\" linktype=\"locator\" label=\"page\" />";
-	     IF object.dc_type == 'Image';
-	       "<daoloc href=\"$digital_object.pid\" linktype=\"locator\" label=\"thumbnail\" />";
+	       IF object.dc_type == 'Image';
+	         "<daoloc href=\"$digital_object.pid\" linktype=\"locator\" label=\"thumbnail\" />";
+	       END;
 	     END;
             "</daogrp>";
            END; 

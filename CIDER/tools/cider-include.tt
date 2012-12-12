@@ -3,7 +3,7 @@
 
         <title>[% obj.title | html %]</title>
 
-        [% IF obj.creators.length %]
+        [% IF obj.creators.size != 0 %]
         <creators>
             [% FOREACH creator IN obj.creators %]
             <creator>
@@ -39,7 +39,7 @@
         <dcType>[% obj.dcType %]</dcType>
         [% END %]
         
-        [% IF obj.personalNames.length %]
+        [% IF obj.personalNames.size != 0 %]
         <personalNames>
             [% FOREACH name IN obj.personalNames %]
             <personalName>
@@ -49,7 +49,7 @@
         </personalNames>
         [% END %]
         
-        [% IF obj.corporateNames.length %]
+        [% IF obj.corporateNames.size != 0 %]
         <corporateNames>
             [% FOREACH name IN obj.corporateNames %]
             <corporateName>
@@ -59,7 +59,7 @@
         </corporateNames>
         [% END %]
         
-        [% IF obj.topicTerms.length %]
+        [% IF obj.topicTerms.size != 0 %]
         <topicTerms>
             [% FOREACH name IN obj.topicTerms %]
             <topicTerm>
@@ -69,7 +69,7 @@
         </topicTerms>
         [% END %]
         
-        [% IF obj.geographicTerms.length %]
+        [% IF obj.geographicTerms.size != 0 %]
         <geographicTerms>
             [% FOREACH name IN obj.geographicTerms %]
             <geographicTerm>
@@ -80,15 +80,7 @@
         [% END %]
         
         [% IF obj.description != "" %]
-            <description>[% obj.description %]</description>
-        [% END %]
-        
-        [% IF obj.abstract != "" %]
-            <abstract>[% obj.abstract %]</abstract>
-        [% END %]
-
-        [% IF  obj.citation != "" %]
-            <citation>[% obj.citation %]</citation>
+            <description>[% obj.description | html %]</description>
         [% END %]
 
         [% IF  obj.volume != "" %]
@@ -97,6 +89,14 @@
 
         [% IF  obj.issue != "" %]
             <issue>[% obj.issue %]</issue>
+        [% END %]
+        
+        [% IF obj.abstract != "" %]
+            <abstract>[% obj.abstract %]</abstract>
+        [% END %]
+
+        [% IF  obj.citation != "" %]
+            <citation>[% obj.citation %]</citation>
         [% END %]
 
         <classes>
@@ -130,8 +130,16 @@
                 <rights>[% obj.rights %]</rights>
                 [% END %]
         
-                [% IF obj.relationshipsPred != ""  %]
-                <relationships predicate="[% obj.relationshipsPred %]">[% obj.relationshipsPID %]</relationships>
+                [% IF obj.relationshipsPred != "" OR obj.class == "digitalObject" %]
+                <relationships>
+                    [% IF obj.relationshipsPred != ""  %]
+                    <relationship predicate="[% obj.relationshipsPred %]"><pid>[% obj.relationshipsPID %]</pid></relationship>
+                    [% END %]
+                    [% IF obj.class == "digitalObject" AND obj.collection != ""  %]
+                    <relationship predicate="rel:isMemberOf"><pid>tufts:UA069.001.DO.[% obj.collection %]</pid></relationship>
+                    <relationship predicate="rel:hasDescription"><pid>tufts:UA069.001.DO.[% obj.collection %]</pid></relationship>
+                    [% END %]
+                </relationships>
                 [% END %]
         
                 [% IF obj.checksum != ""  %]
@@ -150,30 +158,36 @@
                 <tableOfContents>[% obj.tableOfContents %]</tableOfContents>
                 [% END %]
         
-                [% IF obj.stabilizationBy != ""  %]
+                [% IF obj.stabilizationBy.0 != ""  %]
                 <stabilization>
-                    <by>[% obj.stabilizationBy %]</by>
-                    <procedure>[% obj.stabilizationBy %]</procedure>
-                    <date>
-                        <from>[% obj.datefrom %]</from>
-                        [% IF obj.dateto != "" %]
-                        <to>[% obj.dateto %]</to>
-                        [% END %]
-                    </date>
-                    <notes>[% obj.stabilizationBy %]</notes>
+                    <by>
+                    <firstName>[% obj.stabilizationBy.0 %]</firstName>
+                    <lastName>[% obj.stabilizationBy.1%]</lastName>
+                    </by>
+                    <date>[% obj.stabilizationDate %]</date>
+                    <procedure>[% obj.stabilizationProcedure %]</procedure>
+                    <notes>[% obj.stabilizationNotes %]</notes>
                 </stabilization>
                 [% END %]
         
-                [% IF obj.applicationVirusCheck != "" OR obj.applicationChecksum != "" OR obj.applicationMediaImage != "" OR obj.applicationOther.length %]
+                [% IF obj.applicationVirusCheck != "" OR obj.applicationChecksum != "" OR obj.applicationMediaImage != "" OR obj.applicationOther.size != 0 %]
                 <applications>
-                    <checksum>[% obj.applicationChecksum %]</checksum>
-                    <mediaImage>[% obj.applicationMediaImage %]</mediaImage>
-                    <virusCheck>[% obj.applicationVirusCheck %]</virusCheck>
-                    <other>
-                    [% FOREACH app IN obj.applicationOther %]
-                    <application>[% app %]</application>
+                    [% IF obj.applicationChecksum != ""  %]
+                        <checksum>[% obj.applicationChecksum %]</checksum>
                     [% END %]
-                    </other>
+                    [% IF obj.applicationMediaImage != ""  %]
+                        <mediaImage>[% obj.applicationMediaImage %]</mediaImage>
+                    [% END %]
+                    [% IF obj.applicationVirusCheck != ""  %]
+                        <virusCheck>[% obj.applicationVirusCheck %]</virusCheck>
+                    [% END %]
+                    [% IF obj.applicationOther.size != 0 %]
+                        <other>
+                        [% FOREACH app IN obj.applicationOther %]
+                        <application>[% app %]</application>
+                        [% END %]
+                        </other>
+                    [% END %]
                 </applications>
                 [% END %]
         
