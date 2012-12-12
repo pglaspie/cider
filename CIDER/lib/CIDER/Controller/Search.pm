@@ -70,8 +70,8 @@ sub search :Path :Args(0) :FormConfig {
             $c->uri_for( '/search/create_set' )
         );
 
-        # Stick the last query in the flash, for the create-set action's use.
-        $c->flash->{ last_search_query } = $query;
+        # Stick the last query in the session, for the create-set action's use.
+        $c->session->{ last_search_query } = $query;
     }
 }
 
@@ -100,7 +100,7 @@ sub create_set :Path('create_set') :Args(0) :FormConfig('set/create') {
     } );
 
     # Populate the new set with the results of the last query.
-    my $query = $c->flash->{ last_search_query };
+    my $query = $c->session->{ last_search_query };
     unless ( $query ) {
         $c->log->error('Went to create_set without a last_search_query '
                        . ' defined. Redirecting to the search page.');
@@ -115,8 +115,13 @@ sub create_set :Path('create_set') :Args(0) :FormConfig('set/create') {
         num_wanted => $BIGNUM,
     );
 
+    my %i_saw_hit;
     while ( my $hit = $hits->next ) {
-        my $object = $c->model( 'CIDERDB::Object' )->find( $hit->{id} );
+        if ( $i_saw_hit{ $hit->{ id } } ) {
+            next;
+        }
+        $i_saw_hit{ $hit->{ id } } = 1;
+        my $object = $c->model( 'CIDERDB::Object' )->find( $hit->{ id } );
         $set->add( $object->type_object );
     }
 

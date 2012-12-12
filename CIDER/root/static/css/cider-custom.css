@@ -40,6 +40,11 @@ label {
     font-style: italic;
 }
 
+.success_message {
+    color: green;
+    font-style: italic;
+}
+
 .hr-thin {
     margin:10px;
     clear: right;

@@ -4,6 +4,14 @@
 <h2>[% page.title %]</h2>
 </div>
 
+[% IF set_created_from_search %]
+<div class="success_message">
+<p>
+Set <em>[% set_created_from_search %]</em> created from search results.
+</p>
+</div>
+[% END %]
+
 [% sets = c.user.sets %]
 
 [% IF sets %]
