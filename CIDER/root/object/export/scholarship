@@ -27,7 +27,19 @@
 	    <dc:subject>[% topic_term.term %]</dc:subject>
 	    [% END -%]
 	    
-	    [% IF object.abstract -%]
+	    [% IF object.abstract AND object.volume AND object.issue %]
+	    <dc:description>Volume [% object.volume %], Issue [% object.issue %]
+            
+            [% object.abstract %]</dc:description>
+	    [% ELSIF object.abstract AND object.volume %]
+	    <dc:description>Volume [% object.volume %]
+            
+            [% object.abstract %]</dc:description>
+	    [% ELSIF object.abstract AND object.issue %]
+	    <dc:description>Issue [% object.issue %]
+            
+            [% object.abstract %]</dc:description>
+	    [% ELSIF object.abstract -%]
 	    <dc:description>[% object.abstract %]</dc:description>
 	    [% END -%]
 	    <dc:identifier>tufts:[% object.number %]</dc:identifier>
