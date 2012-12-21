@@ -1,7 +1,7 @@
 [% c.res.content_type = 'application/xml' -%]
 [% USE date(format = '%Y-%m-%d') -%]
 [% FOR object IN objects -%]
-  <input OBJID="tufts:[% object.number %]" LABEL="[% object.title %]" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.fedora.info/definitions/">
+  <input OBJID="tufts:[% object.number %]" LABEL="[% object.title.replace('"', '&quot;') %]" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.fedora.info/definitions/">
      <metadata>
        <metadata ID="DC">
           <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/">
@@ -11,49 +11,19 @@
  	    <dc:creator>[% creator.name %]</dc:creator>
 	    [% END -%]
 	    	    
-	    [% FOR personal_name IN object.item_personal_names -%]
-	    <dc:subject>[% personal_name.name %]</dc:subject>
-	    [% END -%]
-
-	    [% FOR corporate_name IN object.item_corporate_names -%]
-	    <dc:subject>[% corporate_name.name %]</dc:subject>
-	    [% END -%]
-
-	    [% FOR geographic_term IN object.item_geographic_terms -%]
-	    <dc:subject>[% geographic_term.term %]</dc:subject>
-	    [% END -%]
-
-	    [% FOR topic_term IN object.item_topic_terms -%]
-	    <dc:subject>[% topic_term.term %]</dc:subject>
-	    [% END -%]
-	    
-	    [% IF object.abstract AND object.volume AND object.issue %]
-	    <dc:description>Volume [% object.volume %], Issue [% object.issue %]
-            
-            [% object.abstract %]</dc:description>
-	    [% ELSIF object.abstract AND object.volume %]
-	    <dc:description>Volume [% object.volume %]
-            
-            [% object.abstract %]</dc:description>
-	    [% ELSIF object.abstract AND object.issue %]
-	    <dc:description>Issue [% object.issue %]
-            
-            [% object.abstract %]</dc:description>
-	    [% ELSIF object.abstract -%]
-	    <dc:description>[% object.abstract %]</dc:description>
-	    [% END -%]
 	    <dc:identifier>tufts:[% object.number %]</dc:identifier>
-	    <dc:publisher>Digital Collections and Archives, Tufts University</dc:publisher>
 	    <dc:date>[% object.audit_trail.date_created %]</dc:date>
 	    [% IF object.date_from %]
 	    <dc:date>[% object.date_from %]</dc:date>
 	    [% END -%]
 	    <dc:type>[% object.dc_type %]</dc:type>
+
 	    [% FOR digital_object IN object.digital_objects -%]
 	    [% IF digital_object.format -%]
 	    <dc:format>[% digital_object.format %]</dc:format>
 	    [% END -%]
 	    [% END -%]
+
 	    [% matches = object.number.match('(\w{5})') %]
 	    [% coll_no = matches.0 %]
 	    <dc:source>[% coll_no %]</dc:source>
@@ -68,8 +38,11 @@
  	    <dc:creator>[% creator.name %]</dc:creator>
 	    [% END -%]
 	    	    
-	    [% IF object.abstract -%]
-	    <dc:description>[% object.abstract %]</dc:description>
+	    [% IF object.abstract OR object.volume OR object.issue OR object.description %]
+	    <dc:description>[% IF object.volume %]Volume [% object.volume %][% END %][% IF object.volume AND object.issue %], [% END %][% IF object.issue %]Issue [% object.issue %][% END %][% IF object.volume AND object.issue %].[% END %]
+            [% IF object.description %][% object.description %][% END %]
+            [% IF object.abstract %][% object.abstract %][% END %]
+	    </dc:description>
 	    [% END -%]
 
 	    [% matches = object.number.match('(\w{5})') %]
@@ -84,14 +57,7 @@
 	    
 	    [% IF object.citation -%]
 	    <dc:bibliographicCitation>[% object.citation %]</dc:bibliographicCitation>
-	    [% ELSE -%]
-	    <dc:bibliographicCitation>
-	    [% FOR creator in object.item_creators -%]
-	    [% creator.name %]
 	    [% END -%]
-	    [% object.title %], [% object.date_from %]  
-	    [% END -%]
-            </dc:bibliographicCitation>
 
 	    <dc:publisher>Digital Collections and Archives, Tufts University</dc:publisher>	     
 	    <dc:rights>http://dca.tufts.edu/ua/access/rights.html</dc:rights>
@@ -106,7 +72,7 @@
 
 	    [% FOR digital_object IN object.digital_objects -%]
 	    [% IF digital_object.format -%]
-	    <dc:format>[% digital_object.format %]</dc:format>
+	    <dc:format>[% digital_object.format.name.remove(' --.*') %]</dc:format>
 	    [% END -%]
 	    [% END -%]
 
@@ -130,7 +96,7 @@
 	</metadata>
      </metadata>
     <datastreams>
-      <datastream ID="Archival.pdf" xlink:href="http://bucket01.lib.tufts.edu/data05/tufts/central/dca/[% coll_no %]/archival_pdf/[% object.number %].archival.pdf" xlink:title="[% object.title %]"/>
+      <datastream ID="Archival.pdf" xlink:href="http://bucket01.lib.tufts.edu/data05/tufts/central/dca/[% coll_no %]/archival_pdf/[% object.number %].archival.pdf" xlink:title="[% object.title.replace('"', '&quot;') %]"/>
       <datastream ID="RELS-EXT" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
         <xmlContent>
 	  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rel="info:fedora/fedora-system:def/relations-external#">
