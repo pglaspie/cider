@@ -67,7 +67,7 @@
 
 	    [% FOR digital_object IN object.digital_objects -%]
 	    [% IF digital_object.format -%]
-	    <dc:format>[% digital_object.format.remove(' --.*')  %]</dc:format>
+	    <dc:format>[% digital_object.format.name.remove(' --.*')  %]</dc:format>
 	    [% END -%]
 	    [% END -%]
 
