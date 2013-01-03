@@ -38,8 +38,8 @@
  	    <dc:creator>[% creator.name %]</dc:creator>
 	    [% END -%]
 	    	    
-	    [% IF object.abstract OR object.volume OR object.issue OR object.description %]
-	    <dc:description>[% IF object.volume %]Volume [% object.volume %][% END %][% IF object.volume AND object.issue %], [% END %][% IF object.issue %]Issue [% object.issue %][% END %][% IF object.volume AND object.issue %].[% END %]
+	    [% IF object.abstract OR object.volume OR object.issue OR object.description OR object.circa %]
+	    <dc:description>[% IF object.volume %]Volume [% object.volume %][% END %][% IF object.volume AND object.issue %], [% END %][% IF object.issue %]Issue [% object.issue %][% END %][% IF object.volume AND object.issue %]. [% END %][% IF object.circa %]This date is approximate. [% END %]
             [% IF object.description %][% object.description %][% END %]
             [% IF object.abstract %][% object.abstract %][% END %]
 	    </dc:description>

@@ -35,8 +35,9 @@
  	    <dc:creator>[% creator.name %]</dc:creator>
 	    [% END -%]
 	    	    
-	    [% IF object.description -%]
-	    <dc:description>[% object.description %]</dc:description>
+		[% IF object.circa OR object.description %]
+	    <dc:description>[% IF object.circa %]This date is approximate. [% END %][% IF object.description %][% object.description %][% END %]
+	    </dc:description>
 	    [% END -%]
 
 	    [% matches = object.number.match('(\w{5})') %]
