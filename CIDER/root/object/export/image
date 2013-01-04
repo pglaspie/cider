@@ -35,8 +35,8 @@
  	    <dc:creator>[% creator.name %]</dc:creator>
 	    [% END -%]
 	    	    
-		[% IF object.circa OR object.description %]
-	    <dc:description>[% IF object.circa %]This date is approximate. [% END %][% IF object.description %][% object.description %][% END %]
+		[% IF object.circa OR object.description OR object.dimensions %]
+	    <dc:description>[% IF object.circa %]This date is approximate. [% END %][%IF object.dimensions %][% object.dimensions %]. [% END %][% IF object.description %][% object.description %][% END %]
 	    </dc:description>
 	    [% END -%]
 
