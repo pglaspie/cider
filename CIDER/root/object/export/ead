@@ -142,6 +142,7 @@
       [% END -%]
      </origination>
      <unittitle>[% collection.title %]</unittitle>
+	 <unitid>[% collection.number %]</unitid>
      [% generate_unitdate(collection) %] 
      <physdesc>[% collection.extent %]</physdesc>
      <abstract> 
