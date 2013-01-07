@@ -39,10 +39,10 @@
 	    [% USE physImgSpec=String('') %]
         [% FOR physical_image IN object.physical_images %]
         [% IF physical_image.dimensions %]
-	    [% CALL physImgSpec.append([% physical_image.dimensions %]).append(', ') %]
+	    [% CALL physImgSpec.append(physical_image.dimensions,', ') %]
 	    [% END %]
 	    [% IF physical_image.format %]
-	    [% CALL physImgSpec.append([% physical_image.format %]) %]
+	    [% CALL physImgSpec.append(physical_image.format) %]
 	    [% END %]
 	    [% END %]
 	    	    
