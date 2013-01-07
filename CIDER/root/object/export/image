@@ -34,9 +34,20 @@
 	    [% FOR creator IN object.item_creators -%]
  	    <dc:creator>[% creator.name %]</dc:creator>
 	    [% END -%]
+	    
+	      	    
+	    [% USE physImgSpec=String('') %]
+        [% FOR physical_image IN object.physical_images %]
+        [% IF physical_image.dimensions %]
+	    [% physImgSpec.append('[% physical_image.dimensions %], ') %]
+	    [% END %]
+	    [% IF physical_image.format %]
+	    [% physImgSpec.append('[% physical_image.format %]') %]
+	    [% END %]
+	    [% END %]
 	    	    
-		[% IF object.circa OR object.description OR object.dimensions %]
-	    <dc:description>[% IF object.circa %]This date is approximate. [% END %][%IF object.dimensions %][% object.dimensions %]. [% END %][% IF object.description %][% object.description %][% END %]
+		[% IF object.circa OR object.description OR physImgSpec.length=0 %]
+	    <dc:description>[% IF object.circa %]This date is approximate. [% END %][%IF physImgSpec.length %][% physImgSpec %]. [% END %][% IF object.description %][% object.description %][% END %]
 	    </dc:description>
 	    [% END -%]
 
