@@ -288,6 +288,7 @@ CREATE TABLE `object` (
   `accession_numbers` text,
   `restriction_summary` varchar(4),
   `number` varchar(255) NOT NULL,
+  `parent_path` varchar(255),
   `title` text NOT NULL,
   `audit_trail` integer NOT NULL,
   INDEX `object_idx_audit_trail` (`audit_trail`),
