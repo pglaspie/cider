@@ -1,16 +1,19 @@
-<button id="delete" class="btn btn-danger" style="margin-left:20px" onClick="toggle_deletion_confirmation_visibility()" >Delete</button>
-
 <div id="confirm-deletion" style="display: none; clear: both;">
 <p>
 This action will <strong>permanently and irrevocably</strong> delete this object
 [% IF number_of_descendants %]
-<em>and</em> its [% number_of_descendants %] descendant objects
+[%     object_word = 'objects';
+       IF number_of_descendants == 1;
+           object_word = 'object';
+       END;
+%]
+<em>and</em> its [% number_of_descendants %] descendant [% object_word %]
 [% END %]
 from the database. Please confirm that you want to do this.
 </p>
 <p>
-<form action="[% c.uri_for_action( c.controller('Object').action_for('delete'), [ object.number ]) %]"><input type="submit" name="delete" class="btn btn-danger" value="Yes, delete this object" style="float:left;margin-left:20px;"/></form>
-<button class="btn" onClick="toggle_deletion_confirmation_visibility()">No, do not delete this object</button>
+<form action="[% c.uri_for_action( c.controller('Object').action_for('delete'), [ object.number ]) %]"><input type="submit" name="delete" class="btn btn-danger" value="Yes, delete this object[% IF number_of_descendants %], and delete its [% number_of_descendants %] descendant [% object_word %] too[% END %]" style="float:left;margin-left:20px;"/></form>
+<button class="btn" onClick="toggle_deletion_confirmation_visibility()" style="margin-left:20px">No, never mind, do not delete anything</button>
 </p>
 </div> <!-- confirm-deletion -->
 

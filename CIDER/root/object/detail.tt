@@ -63,10 +63,11 @@
 
 [% form %]
 
+<button id="delete" class="btn btn-danger" style="margin-left:15px; vertical-align:top;" onClick="toggle_deletion_confirmation_visibility()" >Delete</button>
 
-<span class="control_button" style="margin:0;">[% INCLUDE object/delete_object_button.tt %]</span>
-<form action="[% c.uri_for_action( c.controller('Object').action_for('clone'), [ object.number ] ) %]">
-<input type="submit" class="btn" name="clone_button" style="margin-left:20px;" value="Copy" />
+<form action="[% c.uri_for_action( c.controller('Object').action_for('clone'), [ object.number ] ) %]" style="display:inline;">
+<input type="submit" class="btn" name="clone_button" style="margin-left:10px;" value="Copy" />
+[% INCLUDE object/delete_object_button.tt %]
 </form>
 </div>
 

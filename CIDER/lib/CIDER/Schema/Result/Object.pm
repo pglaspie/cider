@@ -104,12 +104,12 @@ sub materialized_path_columns {
           parent_column                => 'parent',
           parent_fk_column             => 'id',
           materialized_path_column     => 'parent_path',
-          include_self_in_path         => 1,
+          include_self_in_path         => 0,
           include_self_in_reverse_path => 1,
           parent_relationship          => 'parent',
           children_relationship        => 'objects',
-          full_path                    => 'ancestors',
-          reverse_full_path            => 'descendants',
+          full_path                    => 'raw_ancestors',
+          reverse_full_path            => 'raw_descendants',
        },
     }
  }
@@ -184,14 +184,12 @@ sub number_of_children {
     return $self->objects->count;
 }
 
-#sub ancestors {
-#    my $self = shift;
-#
-#    if ( my $parent = $self->parent ) {
-#        return $parent->ancestors, $parent->type_object;
-#    }
-#    return ();
-#}
+sub ancestors {
+    my $self = shift;
+
+    my $raw_ancestors = $self->raw_ancestors;
+    return map { $_->type_object } $raw_ancestors->all;
+}
 
 # has_ancestor: Returns 1 if the given object is an ancestor of this object.
 sub has_ancestor {
@@ -213,9 +211,9 @@ Returns a list of all descendants, including self.
 
 =cut
 
-sub raw_descendants {
+sub descendants {
     my $self = shift;
-    return $self->type_object, map { $_->object->raw_descendants } $self->children;
+    return map { $_->type_object } $self->raw_descendants->all;
 }
 
 =head2 item_descendants

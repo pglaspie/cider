@@ -92,6 +92,9 @@ sub detail :Chained('object') :PathPart('') :Args(0) :Form {
             $c->uri_for( $self->action_for( 'detail' ), [ $object->number ] )
         );
     }
+
+    # number_of_descendants is used by the deletion-confirmation dialog.
+    $c->stash->{ number_of_descendants } = $object->object->raw_descendants->count - 1;
 }
 
 sub add_to_set :Chained('object') :Args(0) {
@@ -330,13 +333,13 @@ sub clone :Chained( 'object') :Args( 0 ) :Form {
 
     if ( not $form->submitted ) {
         $form->model->default_values( $object );
-        
+
         # Rub out all 'id' sub elements (for repeating fields and such)
        	my $id_elements_ref = $form->get_all_elements( name => 'id' );
 		for my $id_element ( @{ $id_elements_ref } ) {
 			$id_element->value( '' );
 		}
-		
+
 		if ( $object->parent ) {
 			$form->default_values( { parent => $object->parent->id } );
 	    }
@@ -348,7 +351,7 @@ sub clone :Chained( 'object') :Args( 0 ) :Form {
     	$c->forward( $self->action_for( "create_$type" ) );
     }
 
-	$c->stash->{ form } = $form;	
+	$c->stash->{ form } = $form;
 	$c->stash->{ template } = 'object/clone.tt';
 }
 
