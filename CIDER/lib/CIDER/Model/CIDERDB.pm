@@ -8,6 +8,14 @@ __PACKAGE__->config(
     traits => [ qw( SchemaProxy ) ],
 );
 
+# This addition is necessary for the sake of Object's use of DBIC::MaterializedPath.
+# It calls MP config info stored in Schema::Result::Object; see that class for more info.
+package CIDER::Model::CIDERDB::Object;
+
+sub materialized_path_columns {
+    return CIDER::Schema::Result::Object->materialized_path_columns;
+}
+
 =head1 NAME
 
 CIDER::Model::CIDERDB - Catalyst DBIC Schema Model

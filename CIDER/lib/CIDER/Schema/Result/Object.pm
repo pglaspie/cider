@@ -14,9 +14,10 @@ CIDER::Schema::Result::Object
 
 =cut
 
-__PACKAGE__->load_components( 'UpdateFromXML', );
-
 __PACKAGE__->table( 'object' );
+
+ __PACKAGE__->load_components( 'MaterializedPath', 'UpdateFromXML', );
+# __PACKAGE__->load_components( 'UpdateFromXML', );
 
 __PACKAGE__->add_columns(
     id =>
@@ -44,7 +45,13 @@ __PACKAGE__->add_columns(
     restriction_summary =>
         { data_type => 'varchar', size => 4,
           is_nullable => 1,
-        }
+        },
+
+    parent_path => {
+       data_type => 'varchar',
+       size      => 255,
+       is_nullable => 1,
+    },
 );
 
 __PACKAGE__->belongs_to(
@@ -56,7 +63,7 @@ __PACKAGE__->has_many(
     objects =>
         'CIDER::Schema::Result::Object',
     'parent',
-    { cascade_update => 0, cascade_delete => 0 }
+    { cascade_update => 0, cascade_delete => 0, join_type => 'left', }
 );
 
 __PACKAGE__->add_columns(
@@ -90,6 +97,22 @@ __PACKAGE__->might_have(
     undef,
     { cascade_update => 0, cascade_delete => 0 }
 );
+
+sub materialized_path_columns {
+    return {
+       parent => {
+          parent_column                => 'parent',
+          parent_fk_column             => 'id',
+          materialized_path_column     => 'parent_path',
+          include_self_in_path         => 1,
+          include_self_in_reverse_path => 1,
+          parent_relationship          => 'parent',
+          children_relationship        => 'objects',
+          full_path                    => 'ancestors',
+          reverse_full_path            => 'descendants',
+       },
+    }
+ }
 
 =head2 type_object
 
@@ -161,14 +184,14 @@ sub number_of_children {
     return $self->objects->count;
 }
 
-sub ancestors {
-    my $self = shift;
-
-    if ( my $parent = $self->parent ) {
-        return $parent->ancestors, $parent->type_object;
-    }
-    return ();
-}
+#sub ancestors {
+#    my $self = shift;
+#
+#    if ( my $parent = $self->parent ) {
+#        return $parent->ancestors, $parent->type_object;
+#    }
+#    return ();
+#}
 
 # has_ancestor: Returns 1 if the given object is an ancestor of this object.
 sub has_ancestor {
@@ -190,10 +213,9 @@ Returns a list of all descendants, including self.
 
 =cut
 
-sub descendants {
+sub raw_descendants {
     my $self = shift;
-
-    return $self->type_object, map { $_->descendants } $self->children;
+    return $self->type_object, map { $_->object->raw_descendants } $self->children;
 }
 
 =head2 item_descendants

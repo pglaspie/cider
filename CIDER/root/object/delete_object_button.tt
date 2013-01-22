@@ -1,1 +1,27 @@
-<form action="[% c.uri_for_action( c.controller('Object').action_for('delete'), [ object.number ]) %]"><input type="submit" name="delete" class="btn btn-danger" value="Delete" style="float:left;margin-left:20px;"/></form>
+<button id="delete" class="btn btn-danger" style="margin-left:20px" onClick="toggle_deletion_confirmation_visibility()" >Delete</button>
+
+<div id="confirm-deletion" style="display: none; clear: both;">
+<p>
+This action will <strong>permanently and irrevocably</strong> delete this object
+[% IF number_of_descendants %]
+<em>and</em> its [% number_of_descendants %] descendant objects
+[% END %]
+from the database. Please confirm that you want to do this.
+</p>
+<p>
+<form action="[% c.uri_for_action( c.controller('Object').action_for('delete'), [ object.number ]) %]"><input type="submit" name="delete" class="btn btn-danger" value="Yes, delete this object" style="float:left;margin-left:20px;"/></form>
+<button class="btn" onClick="toggle_deletion_confirmation_visibility()">No, do not delete this object</button>
+</p>
+</div> <!-- confirm-deletion -->
+
+<script>
+function toggle_deletion_confirmation_visibility() {
+    var deletion_confirmation_div = $( '#confirm-deletion' );
+    if ( deletion_confirmation_div.css( 'display' ) == 'none' ) {
+        deletion_confirmation_div.slideDown();
+    }
+    else {
+        deletion_confirmation_div.hide();
+    }
+}
+</script>

@@ -36,6 +36,7 @@ requires 'HTML::FormFu::Model::DBIC' => '0.09002';
 requires 'namespace::autoclean' => '0.13';
 requires 'DBIx::Class' => '0.08195';
 requires 'DBIx::Class::TimeStamp';
+requires 'DBIx::Class::MaterializedPath' => '0.002000';
 requires 'Locale::Codes';
 requires 'Config::General';
 requires 'XML::LibXML';
