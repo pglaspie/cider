@@ -190,6 +190,10 @@ elements:
               elements:
                 - type: Hidden
                   name: id
+                - type: Button
+                  value: "-"
+                  attributes:
+                     class: "btn clear-button"
                 - type: Textarea
                   rows: 2
                   name: material
@@ -212,7 +216,7 @@ elements:
       elements:
         - type: Block
           id: languages
-          elements:
+          elements:        
             - type: Repeatable
               nested_name: languages
               counter_name: language_count
@@ -222,6 +226,10 @@ elements:
               elements:
                 - type: Hidden
                   name: id
+                - type: Button
+                  value: "-"
+                  attributes:
+                     class: "btn clear-button"
                 - type: Select
                   attributes:
                      class: "clearfix"
@@ -229,7 +237,6 @@ elements:
                   model_config:
                     delete_if_empty: 1
                     options_from_model: 0
-
     - type: Hidden
       name: subject_count
     - type: Fieldset
@@ -249,6 +256,10 @@ elements:
               elements:
                 - type: Hidden
                   name: id
+                - type: Button
+                  value: "-"
+                  attributes:
+                     class: "btn clear-button"
                 - type: Text
                   attributes:
                      class: "span7 clearfix"
@@ -326,6 +337,10 @@ elements:
                 - type: Hidden
                   name: id
 
+                - type: Button
+                  value: "-"
+                  attributes:
+                     class: "btn clear-button"
                 - type: Select
                   label: Predicate
                   name: predicate

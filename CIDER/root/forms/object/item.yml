@@ -66,6 +66,10 @@ elements:
                   auto_id: "%n"
                   model_config:
                     delete_if_empty: 1
+                - type: Button
+                  value: "-"
+                  attributes:
+                     class: "btn clear-button"
                 - type: Text
                   name: name_and_note
                   attributes:
@@ -146,6 +150,10 @@ elements:
                   auto_id: "%n"
                   model_config:
                     delete_if_empty: 1
+                - type: Button
+                  value: "-"
+                  attributes:
+                     class: "btn clear-button"
                 - type: Text
                   name: name_and_note
                   attributes:
@@ -175,6 +183,10 @@ elements:
                   auto_id: "%n"
                   model_config:
                     delete_if_empty: 1
+                - type: Button
+                  value: "-"
+                  attributes:
+                     class: "btn clear-button"
                 - type: Text
                   name: name_and_note
                   attributes:
@@ -204,6 +216,10 @@ elements:
                   auto_id: "%n"
                   model_config:
                     delete_if_empty: 1
+                - type: Button
+                  value: "-"
+                  attributes:
+                     class: "btn clear-button"
                 - type: Text
                   name: name_and_note
                   attributes:
@@ -233,6 +249,10 @@ elements:
                   auto_id: "%n"
                   model_config:
                     delete_if_empty: 1
+                - type: Button
+                  value: "-"
+                  attributes:
+                     class: "btn clear-button"
                 - type: Text
                   name: name_and_note
                   attributes:
