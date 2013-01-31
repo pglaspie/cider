@@ -192,6 +192,7 @@ elements:
                   name: id
                 - type: Button
                   value: "-"
+                  name: some_button
                   attributes:
                      class: "btn clear-button"
                 - type: Textarea
@@ -228,6 +229,7 @@ elements:
                   name: id
                 - type: Button
                   value: "-"
+                  name: some_button
                   attributes:
                      class: "btn clear-button"
                 - type: Select
@@ -258,6 +260,7 @@ elements:
                   name: id
                 - type: Button
                   value: "-"
+                  name: some_button
                   attributes:
                      class: "btn clear-button"
                 - type: Text
@@ -339,6 +342,7 @@ elements:
 
                 - type: Button
                   value: "-"
+                  name: some_button
                   attributes:
                      class: "btn clear-button"
                 - type: Select
