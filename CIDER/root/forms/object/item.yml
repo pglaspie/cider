@@ -68,6 +68,7 @@ elements:
                     delete_if_empty: 1
                 - type: Button
                   value: "-"
+                  name: some_button
                   attributes:
                      class: "btn clear-button"
                 - type: Text
@@ -152,6 +153,7 @@ elements:
                     delete_if_empty: 1
                 - type: Button
                   value: "-"
+                  name: some_button
                   attributes:
                      class: "btn clear-button"
                 - type: Text
@@ -185,6 +187,7 @@ elements:
                     delete_if_empty: 1
                 - type: Button
                   value: "-"
+                  name: some_button
                   attributes:
                      class: "btn clear-button"
                 - type: Text
@@ -218,6 +221,7 @@ elements:
                     delete_if_empty: 1
                 - type: Button
                   value: "-"
+                  name: some_button
                   attributes:
                      class: "btn clear-button"
                 - type: Text
@@ -251,6 +255,7 @@ elements:
                     delete_if_empty: 1
                 - type: Button
                   value: "-"
+                  name: some_button
                   attributes:
                      class: "btn clear-button"
                 - type: Text
