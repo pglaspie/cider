@@ -4,6 +4,8 @@ use warnings;
 
 use base 'DBIx::Class::ResultSet';
 
+use CIDER::Logic::Utils;
+
 use Carp qw/croak/;
 
 sub root_objects {
@@ -15,6 +17,24 @@ sub root_objects {
 
     if ( wantarray ) {
         return map { $_->type_object } $resultset->all;
+    }
+    else {
+        return $resultset;
+    }
+}
+
+# Returns a DBIC resultset with one row per root object, but every such object will be
+# enhanced with additional data suitable for rendering a detailed list without the need
+# to run any further DB queries. See root/display_object.tt for usage example.
+sub root_objects_sketch {
+    my $self = shift;
+    my $resultset = $self->search(
+        { 'me.parent' => undef },
+        $OBJECT_SKETCH_SEARCH_ATTRIBUTES,
+    );
+
+    if ( wantarray ) {
+        return $resultset->all;
     }
     else {
         return $resultset;

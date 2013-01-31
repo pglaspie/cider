@@ -26,8 +26,8 @@ sub index :Path :Args(0) {
 
     my @objects = $c->model( 'CIDERDB' )
                     ->resultset( 'Object' )
-                    ->root_objects;
-    
+                    ->root_objects_sketch;
+
     $c->stash->{ objects } = \@objects;
 
     if ( my $held_object_id = $c->session->{ held_object_id } ) {
@@ -49,11 +49,11 @@ sub children :Args(1) :Path('children') {
                    ->resultset( 'Object' )
                    ->find( $parent_id );
 
-    my @children = $parent->children;
+    my @children = $parent->children_sketch->all;
 
     # This is called as AJAX, so let's suppress the wrapper.
     $c->stash->{ current_view } = 'NoWrapperTT';
-        
+
     $c->stash->{ objects } = \@children;
     $c->stash->{ template } = 'child_list.tt';
 }

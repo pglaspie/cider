@@ -8,6 +8,8 @@ use Class::Method::Modifiers qw( around );
 use List::Util qw( minstr maxstr );
 use Carp qw( croak );
 
+use CIDER::Logic::Utils;
+
 =head1 NAME
 
 CIDER::Schema::Result::Object
@@ -17,7 +19,6 @@ CIDER::Schema::Result::Object
 __PACKAGE__->table( 'object' );
 
  __PACKAGE__->load_components( 'MaterializedPath', 'UpdateFromXML', );
-# __PACKAGE__->load_components( 'UpdateFromXML', );
 
 __PACKAGE__->add_columns(
     id =>
@@ -178,10 +179,29 @@ sub children {
         $self->objects->search( undef, { order_by => 'number' } );
 }
 
+=head2 number_of_children
+
+The number of child objects that this object contains. (Running this method is faster
+than running children() and then counting the results yourself.)
+
+=cut
+
 sub number_of_children {
     my $self = shift;
 
-    return $self->objects->count;
+    # If this object came as a result of children_sketch() or similar, than this object
+    # will have a special 'number_of_children' pseudo-column available, populated with
+    # the result of a COUNT(*) db query.
+    # Otherwise, we'll just run a fresh query to get the number of children.
+    my $number;
+    eval { $number = $self->get_column( 'number_of_children' ) };
+
+    if ( $@ ) {
+        return $self->objects->count;
+    }
+    else {
+        return $number;
+    }
 }
 
 sub ancestors {
@@ -476,7 +496,56 @@ sub update_from_xml {
     return $self;
 }
 
+=head2 full_title
 
+A concatenation of the object's number, title, and dates.
+
+=cut
+
+sub full_title {
+    my $self = shift;
+
+    my $number_title = join " ", $self->number, $self->title;
+    if ( my $dates = $self->dates ) {
+        return "$number_title, $dates";
+    }
+    return $number_title;
+}
+
+=head2 dates
+
+The date or dates of an object, as a single string.
+
+=cut
+
+sub dates {
+    my $self = shift;
+
+    if ( my $from = $self->date_from ) {
+        my $to = $self->date_to;
+        if ( $to && $to ne $from ) {
+            return "$from&ndash;$to";
+        }
+        else {
+            return $from;
+        }
+    }
+}
+
+# Returns a DBIC resultset with one row per child object, but every such object will be
+# enhanced with additional data suitable for rendering a detailed list without the need
+# to run any further DB queries. See root/display_object.tt for usage example.
+sub children_sketch {
+    my $self = shift;
+
+    my $class_rs = $self->objects->search(
+        undef,
+        $OBJECT_SKETCH_SEARCH_ATTRIBUTES,
+    );
+
+    return $class_rs;
+
+}
 
 =head1 LICENSE
 

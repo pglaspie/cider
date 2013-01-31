@@ -1,12 +1,5 @@
 [%#
 Template for displaying a single object in hierarchical list view.
-
-It depends on the object being loaded via a "sketch" method, which imbues it
-with additional useful pseudo-columns, eliminating the need for this template
-to make further DB queries.
-
-For a more basic display template that takes unadorned objects, 
-see display_basic_object.tt.
 %]
 
 [%
@@ -18,15 +11,17 @@ object_id = object.id;
    # For display the item's class at the top of the detail page
 %]
 [% classes = { 
-	   is_file_folders = 'folder'
-	   is_containers = 'container'
-	   is_bound_volumes = 'bound volume'
-	   is_three_dimensional_objects = '3D object'
-	   is_audio_visual_media = 'a/v media'
-	   is_documents = 'document'
-	   is_physical_images = 'physical image'
-	   is_digital_objects = 'digital object'
-	   is_browsing_objects = 'browsing object'
+   	   is_group = 'group' 
+	   file_folders = 'folder'
+	   containers = 'container'
+	   bound_volumes = 'bound volume'
+	   three_dimensional_objects = '3D object'
+	   audio_visual_media = 'a/v media'
+	   documents = 'document'
+	   physical_images = 'physical image'
+	   digital_objects = 'digital object'
+	   browsing_objects = 'browsing object'
+
 	   }
 -%]
 
@@ -45,11 +40,8 @@ object_id = object.id;
 
 <span class="class-labels pull-right">
 [% IF object.type == 'item' -%]
-[% IF object.is_group %]
-<span class="label label-info" style="margin-left:3px;">group</span>
-[% END %]
 [% FOR class IN classes.keys -%]
-[% IF object.get_column( class ) -%]
+[% IF object.$class -%]
 <span class="label label-info" style="margin-left:3px;">[% classes.$class %]</span>
 [% END -%]
 [% END -%]

@@ -26,7 +26,7 @@ my @proxy_fields = qw( parent number title date_from date_to restriction_summary
 
 my @proxy_methods = qw( children number_of_children
                         ancestors has_ancestor descendants item_descendants
-                        export update_parent
+                        export update_parent dates full_title children_sketch
                       );
 
 sub setup_object {
@@ -46,42 +46,6 @@ sub setup_object {
     );
 }
 
-
-=head2 full_title
-
-A concatenation of the object's number, title, and dates.
-
-=cut
-
-sub full_title {
-    my $self = shift;
-
-    my $number_title = join " ", $self->number, $self->title;
-    if ( my $dates = $self->dates ) {
-        return "$number_title, $dates";
-    }
-    return $number_title;
-}
-
-=head2 dates
-
-The date or dates of an object, as a single string.
-
-=cut
-
-sub dates {
-    my $self = shift;
-
-    if ( my $from = $self->date_from ) {
-        my $to = $self->date_to;
-        if ( $to && $to ne $from ) {
-            return "$from&ndash;$to";
-        }
-        else {
-            return $from;
-        }
-    }
-}
 
 sub _delete_proxy_fields {
     my ( $fields ) = @_;

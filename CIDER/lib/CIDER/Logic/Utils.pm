@@ -4,8 +4,55 @@ use strict;
 use warnings;
 
 use base qw( Exporter );
-our @EXPORT    = qw( iso_8601_date );
-our @EXPORT_OK = qw( iso_8601_date );
+our @EXPORT    = qw( iso_8601_date $OBJECT_SKETCH_SEARCH_ATTRIBUTES );
+our @EXPORT_OK = qw( iso_8601_date $OBJECT_SKETCH_SEARCH_ATTRIBUTES );
+
+use Readonly;
+
+# $OBJECT_SKETCH_SEARCH_ATTRIBUTES is a hashref suitable for passing as the second arg
+# to a DBIC ResultSet's search() method. It returns a "sketch" of a list of objects in
+# one table, allowing other templates to build a detailed visual representation of this
+# object-list without having to run any additional DB queries to fetch more object info.
+Readonly our $OBJECT_SKETCH_SEARCH_ATTRIBUTES =>
+        {
+            distinct => 1,
+            join => [
+                { item => [ qw( file_folders containers bound_volumes
+                        three_dimensional_objects audio_visual_media documents
+                        physical_images digital_objects browsing_objects ) ] },
+                  'objects',
+            ],
+            columns => [
+                'me.id', 'me.number', 'me.date_from', 'me.date_to', 'me.parent', 'me.title',
+            ],
+            +select => [
+                { count => 'file_folders.id', -as => 'file_folders' },
+
+                { count => 'containers.id', -as => 'containers' },
+                { count => 'bound_volumes.id', -as => 'bound_volumes' },
+                { count => 'three_dimensional_objects.id', -as => 'three_dimensional_objects' },
+                { count => 'audio_visual_media.id', -as => 'audio_visual_media' },
+                { count => 'documents.id', -as => 'documents' },
+                { count => 'physical_images.id', -as => 'physical_images' },
+                { count => 'digital_objects.id', -as => 'digital_objects' },
+                { count => 'browsing_objects.id', -as => 'browsing_objects' },
+                { count => 'objects.id', -as => 'children' },
+            ],
+            +as => [
+                'is_file_folders',
+                'is_containers',
+                'is_bound_volumes',
+                'is_three_dimensional_objects',
+                'is_audio_visual_media',
+                'is_documents',
+                'is_physical_images',
+                'is_digital_objects',
+                'is_browsing_objects',
+                'number_of_children',
+            ],
+            prefetch => [ 'collection', 'item', 'series', ],
+            order_by => [ 'me.number', ],
+        };
 
 =head1 FUNCTIONS
 

@@ -8,7 +8,7 @@
 
 
 [% FOREACH object = objects %]
-[% INCLUDE display_object.tt %]
+[% INCLUDE display_basic_object.tt %]
 [% END %]
 
 

@@ -126,10 +126,10 @@ format.
 <h3 data-toggle="collapse" data-target="#children"><a href="#">Children</a><i class="icon-chevron-right collapse-icon"></i></h3>
 <div id="children" class="collapsable">
 
-[% IF object.children %] 
-  <p>This object contains these objects as children:</p>
+[% IF object.number_of_children > 0 %] 
+  <p>This object contains these [% object.number_of_children %] objects as children:</p>
   <ul>
-  [% FOREACH child = object.children %]
+  [% FOREACH child = object.children_sketch.all %]  
     <li>[% INCLUDE display_object.tt object = child %]</li>
   [% END %]
   </ul>
