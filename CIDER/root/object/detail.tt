@@ -67,8 +67,8 @@
 
 <form action="[% c.uri_for_action( c.controller('Object').action_for('clone'), [ object.number ] ) %]" style="display:inline;">
 <input type="submit" class="btn" name="clone_button" style="margin-left:10px;" value="Copy" />
-[% INCLUDE object/delete_object_button.tt %]
 </form>
+[% INCLUDE object/delete_object_button.tt %]
 </div>
 
 <div class="span3">
@@ -186,3 +186,8 @@ as a child of this object. <input type="submit" class="btn clearfix" name="go" v
 
 
 [% INCLUDE object/set_up_autocomplete_fields.tt %]
+
+<script>
+// Set the click handler for all the repeating-element [-] buttons.
+set_up_repeatable_clear_buttons();
+</script>

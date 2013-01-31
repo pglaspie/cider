@@ -66,6 +66,11 @@ elements:
                   auto_id: "%n"
                   model_config:
                     delete_if_empty: 1
+                - type: Button
+                  value: "-"
+                  name: some_button
+                  attributes:
+                     class: "btn clear-button"
                 - type: Text
                   name: name_and_note
                   attributes:
@@ -146,6 +151,11 @@ elements:
                   auto_id: "%n"
                   model_config:
                     delete_if_empty: 1
+                - type: Button
+                  value: "-"
+                  name: some_button
+                  attributes:
+                     class: "btn clear-button"
                 - type: Text
                   name: name_and_note
                   attributes:
@@ -175,6 +185,11 @@ elements:
                   auto_id: "%n"
                   model_config:
                     delete_if_empty: 1
+                - type: Button
+                  value: "-"
+                  name: some_button
+                  attributes:
+                     class: "btn clear-button"
                 - type: Text
                   name: name_and_note
                   attributes:
@@ -204,6 +219,11 @@ elements:
                   auto_id: "%n"
                   model_config:
                     delete_if_empty: 1
+                - type: Button
+                  value: "-"
+                  name: some_button
+                  attributes:
+                     class: "btn clear-button"
                 - type: Text
                   name: name_and_note
                   attributes:
@@ -233,6 +253,11 @@ elements:
                   auto_id: "%n"
                   model_config:
                     delete_if_empty: 1
+                - type: Button
+                  value: "-"
+                  name: some_button
+                  attributes:
+                     class: "btn clear-button"
                 - type: Text
                   name: name_and_note
                   attributes:

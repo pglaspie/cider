@@ -121,21 +121,22 @@ $(function() {
     	    	if ( $(this).attr('id') ) {
     		        $(this).attr('id', $(this).attr('name') );
     	    	}
-	    });
+	        });
 
             var id = new_element.find('*[name$=".id"]');
             id.val('');
 	    
+    	    // Clear old value from cloned element
+    	    new_element.find('input[type="text"]').val('');
 	    
-	    // Clear old value from cloned element
-	    new_element.find('input[type="text"]').val('');
-	    
-	    fieldset.children('div').append(new_element);
+    	    fieldset.children('div').append(new_element);
 
             set_all_autocomplete_handlers(base_uri);
 
-    	});
-
+        	// Make sure all repeating elements (including this new one) have
+        	// the clear-button click handler set.
+        	set_up_repeatable_clear_buttons();
+      	});
     });
 });
 
@@ -172,7 +173,7 @@ var set_autocomplete_handler = function( uri_base, selector, action, field_name 
     // DB associations when the form is submitted.
      $(this).bind("propertychange keyup input cut paste", function( event ) {
          if ( $(this).val() == '' ) {
-             clear_autocomplete_fields( event, $(this), field_name );
+             clear_autocomplete_fields( $(this), field_name );
          }    
     
       } );
@@ -203,10 +204,27 @@ var set_autocomplete_fields = function( event, ui, object, field_name ) {
 
 // clear_autocomplete_fields: Clear all hidden fields related to the given text input,
 //                            such that the object'll be deleted on form submission.
-var clear_autocomplete_fields = function( event, object, field_name ) {
+var clear_autocomplete_fields = function( object, field_name ) {
     var textfield_name = object.attr('name');
+    
     var name_field_id = textfield_name.substr( 0, textfield_name.length - 13 ) + field_name;
     var name_field = document.getElementById( name_field_id );
     name_field.value = '';
-    console.log( name_field.value );
 }    
+
+// clear_sibling_inputs: Set on the [-] buttons accompanying repeating fields.
+//                       Clears the values from neighboring form elements.
+function clear_sibling_inputs( target ) {
+    var parent = target.parent().parent();
+    $.each( parent.find('.select select, .textarea textarea, input[type=text]'), function() {
+        $(this).val('');
+        $(this).trigger('propertychange');
+    });
+}
+
+
+// set_up_repeatable_clear_buttons: Makes sure all [-] buttons have a click
+//                                  handler attached.
+function set_up_repeatable_clear_buttons() {
+    $('.clear-button').click( function() { clear_sibling_inputs( $(this) ) } );
+}
