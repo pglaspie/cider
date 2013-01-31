@@ -27,7 +27,13 @@ sub index :Path( '' ) :Args( 0 ) {
     my ( $self, $c ) = @_;
 
     my $model = $c->model( 'CIDERDB::Location' );
-    my @locs = $model->search( undef, { order_by => 'barcode' } );
+    my @locs = $model->search(
+        undef,
+        {
+            prefetch => 'titles',
+            order_by => 'barcode',
+        }
+    );
     $c->stash->{ locs } = \@locs;
 }
 
