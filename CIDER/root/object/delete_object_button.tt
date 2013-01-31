@@ -13,7 +13,7 @@ from the database. Please confirm that you want to do this.
 </p>
 <p>
 <form action="[% c.uri_for_action( c.controller('Object').action_for('delete'), [ object.number ]) %]"><input type="submit" name="delete" class="btn btn-danger" value="Yes, delete this object[% IF number_of_descendants %], and delete its [% number_of_descendants %] descendant [% object_word %] too[% END %]" style="float:left;margin-left:20px;"/></form>
-<button class="btn" onClick="toggle_deletion_confirmation_visibility()" style="margin-left:20px">No, never mind, do not delete anything</button>
+<button class="btn" onClick="toggle_deletion_confirmation_visibility()" style="margin-left:20px; margin-top:-10px;" >No, never mind, do not delete anything</button>
 </p>
 </div> <!-- confirm-deletion -->
 
