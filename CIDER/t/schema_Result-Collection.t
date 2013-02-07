@@ -84,7 +84,7 @@ $items[1]->update_from_xml( elt <<END
 END
 );
 
-is( $collection->extent, '2.4 cubic feet, 1 bound volume, and 2 digital objects',
+is( $collection->extent, '2.4 cubic ft., 1 bound volume, 2 digital objects',
     'Derived extent is correct.' );
 is( $collection->extent->volume, 2.4,
     'Derived extent volume is correct.' );

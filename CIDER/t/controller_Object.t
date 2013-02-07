@@ -152,7 +152,7 @@ $mech->submit_form_ok( { with_fields => {
 } }, 'Added authority names.' );
 $mech->content_lacks( 'Sorry', 'Form submitted successfully.' );
 
-$mech->content_contains( '"selected">Test Name<', 'Names added.' );
+$mech->content_contains( 'value="Test Name"', 'Names added.' );
 
 $mech->submit_form_ok( { with_fields => {
     'file_folders_1.location' => 8,
