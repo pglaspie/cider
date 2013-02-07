@@ -42,7 +42,7 @@ requires 'Config::General';
 requires 'XML::LibXML';
 requires 'String::CamelCase';
 requires 'DateTime::Format::ISO8601';
-requires 'DBD::MySQL';
+requires 'DBD::mysql';
 requires 'Readonly' => '1.03';
 requires 'JSON::XS' => '2.32';
 test_requires 'Test::More' => '0.88';
