@@ -852,18 +852,31 @@ elements:
                           name: other_app_count
                         - type: Fieldset
                           legend: Other
+                          attributes:
+#                            class: repeatable
                           elements:
-                            - type: Repeatable
-                              nested_name: other_apps
-                              counter_name: other_app_count
-                              model_config:
-                                empty_rows: 1
+                            - type: Block
+                              id: other_apps
                               elements:
-                                 - name: application
-                                   attributes:
-                                      class: clearfix
-                                   model_config:
-                                      delete_if_empty: 1
+                              - type: Repeatable
+                                nested_name: other_apps
+                                counter_name: other_app_count
+                                model_config:
+                                  empty_rows: 1
+                                elements:
+                                   - type: Hidden
+                                     name: id
+                                     auto_id: "%n"
+                                   - type: Button
+                                     value: "-"
+                                     name: some_button
+                                     attributes:
+                                       class: "btn clear-button"
+                                   - name: application
+                                     attributes:
+                                        class: clearfix
+                                     model_config:
+                                        delete_if_empty: 1
 
                     - name: file_creation_date
                       label: File Creation Date
