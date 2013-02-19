@@ -21,13 +21,18 @@ Readonly our $OBJECT_SKETCH_SEARCH_ATTRIBUTES =>
                         three_dimensional_objects audio_visual_media documents
                         physical_images digital_objects browsing_objects ) ] },
                   'objects',
+                  'collection',
+                  'item',
+                  'series',
             ],
             columns => [
                 'me.id', 'me.number', 'me.date_from', 'me.date_to', 'me.parent', 'me.title',
             ],
             +select => [
+                { count => 'item.id', -as => 'items' },
+                { count => 'collection.id', -as => 'collections' },
+                { count => 'series.id', -as => 'serieses' },
                 { count => 'file_folders.id', -as => 'file_folders' },
-
                 { count => 'containers.id', -as => 'containers' },
                 { count => 'bound_volumes.id', -as => 'bound_volumes' },
                 { count => 'three_dimensional_objects.id', -as => 'three_dimensional_objects' },
@@ -39,6 +44,9 @@ Readonly our $OBJECT_SKETCH_SEARCH_ATTRIBUTES =>
                 { count => 'objects.id', -as => 'children' },
             ],
             +as => [
+                'is_item',
+                'is_collection',
+                'is_series',
                 'is_file_folders',
                 'is_containers',
                 'is_bound_volumes',
@@ -50,7 +58,6 @@ Readonly our $OBJECT_SKETCH_SEARCH_ATTRIBUTES =>
                 'is_browsing_objects',
                 'number_of_children',
             ],
-            prefetch => [ 'collection', 'item', 'series', ],
             order_by => [ 'me.number', ],
         };
 
