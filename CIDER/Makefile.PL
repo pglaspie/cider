@@ -45,6 +45,7 @@ requires 'DateTime::Format::ISO8601';
 requires 'DBD::mysql';
 requires 'Readonly' => '1.03';
 requires 'JSON::XS' => '2.32';
+requires 'FindBin::libs' => '1.63';
 test_requires 'Test::More' => '0.88';
 test_requires 'Test::Exception';
 catalyst;
