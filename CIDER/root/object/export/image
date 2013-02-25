@@ -1,7 +1,7 @@
 [% c.res.content_type = 'application/xml' -%]
 [% USE date(format = '%Y-%m-%d') -%]
 [% FOR object IN objects -%]
-  <input OBJID="tufts:[% object.number %]" LABEL="[% object.title.replace('"', '&quot;') %]" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.fedora.info/definitions/">
+  <input OBJID="[% digital_object.pid %]" LABEL="[% object.title.replace('"', '&quot;') %]" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.fedora.info/definitions/">
      <metadata>
        <metadata ID="DC">
           <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/">
@@ -101,18 +101,20 @@
 	  </dca_dc:dc>	    
 	</metadata>
      </metadata>
+     [% matches = digital_object.pid.match('tufts:(.*)') %]
+	   
     <datastreams>
-      <datastream ID="Archival.tif" xlink:href="http://bucket01.lib.tufts.edu/data05/tufts/central/dca/[% coll_no %]/archival_tif/[% object.number %].archival.tif" xlink:title="[% object.title.replace('"', '&quot;') %]"/>
-      <datastream ID="Advanced.jpg" xlink:href="http://bucket01.lib.tufts.edu/data05/tufts/central/dca/[% coll_no %]/advanced_jpg/[% object.number %].advanced.jpg" xlink:title="[% object.title.replace('"', '&quot;') %]"/>
-      <datastream ID="Basic.jpg" xlink:href="http://bucket01.lib.tufts.edu/data05/tufts/central/dca/[% coll_no %]/basic_jpg/[% object.number %].basic.jpg" xlink:title="[% object.title.replace('"', '&quot;') %]"/>
-      <datastream ID="Thumbnail.png" xlink:href="http://bucket01.lib.tufts.edu/data05/tufts/central/dca/[% coll_no %]/thumb_png/[% object.number %].thumb.png" xlink:title="[% object.title.replace('"', '&quot;') %]"/>
+      <datastream ID="Archival.tif" xlink:href="http://bucket01.lib.tufts.edu/data05/tufts/central/dca/[% coll_no %]/archival_tif/[% matches.0 %].archival.tif" xlink:title="[% object.title.replace('"', '&quot;') %]"/>
+      <datastream ID="Advanced.jpg" xlink:href="http://bucket01.lib.tufts.edu/data05/tufts/central/dca/[% coll_no %]/advanced_jpg/[% matches.0 %].advanced.jpg" xlink:title="[% object.title.replace('"', '&quot;') %]"/>
+      <datastream ID="Basic.jpg" xlink:href="http://bucket01.lib.tufts.edu/data05/tufts/central/dca/[% coll_no %]/basic_jpg/[% matches.0 %].basic.jpg" xlink:title="[% object.title.replace('"', '&quot;') %]"/>
+      <datastream ID="Thumbnail.png" xlink:href="http://bucket01.lib.tufts.edu/data05/tufts/central/dca/[% coll_no %]/thumb_png/[% matches.0 %].thumb.png" xlink:title="[% object.title.replace('"', '&quot;') %]"/>
 
       <datastream ID="RELS-EXT" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
         <xmlContent>
 	  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rel="info:fedora/fedora-system:def/relations-external#">
-	    <rdf:Description rdf:about="info:fedora/tufts:[% object.number %]">
+	    <rdf:Description rdf:about="info:fedora/[% digtial_object.pid %]">
 	      <fedora-model:hasModel rdf:resource="info:fedora/cm:Image.4DS" xmlns:fedora-model="info:fedora/fedora-system:def/model#"/>
-	      <itemID xmlns="http://www.openarchives.org/OAI/2.0/">oai:tufts:[% object.number %]</itemID>
+	      <itemID xmlns="http://www.openarchives.org/OAI/2.0/">oai:[% digital_object.pid %]</itemID>
 	      [% FOR digital_object IN object.digital_objects -%]
 	      [% FOR relationship IN digital_object.digital_object_relationships -%]
 	      <[% relationship.predicate %] rdf:resource="info:fedora/[% relationship.pid %]" />
