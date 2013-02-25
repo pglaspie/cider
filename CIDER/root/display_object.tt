@@ -44,7 +44,7 @@ object_id = object.id;
 
 
 <span class="class-labels pull-right">
-[% IF object.type == 'item' -%]
+[% IF object.get_column('is_item') -%]
 [% IF object.is_group %]
 <span class="label label-info" style="margin-left:3px;">group</span>
 [% END %]
@@ -53,10 +53,10 @@ object_id = object.id;
 <span class="label label-info" style="margin-left:3px;">[% classes.$class %]</span>
 [% END -%]
 [% END -%]
-[% ELSIF object.type == 'series' -%]
-<span class="label label-success">[% object.type %]</span>
+[% ELSIF object.get_column('is_series') -%]
+<span class="label label-success">series</span>
 [% ELSE -%]
-<span class="label label">[% object.type %]</span>
+<span class="label label">collection</span>
 [% END -%]
 </span>
 
