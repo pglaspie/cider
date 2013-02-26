@@ -1,7 +1,8 @@
 [% c.res.content_type = 'application/xml' -%]
 [% USE date(format = '%Y-%m-%d') -%]
 [% FOR object IN objects -%]
-  <input OBJID="[% digital_object.pid %]" LABEL="[% object.title.replace('"', '&quot;') %]" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.fedora.info/definitions/">
+   <input OBJID="[% object.digital_objects.pid %]" LABEL="[% object.title.replace('"', '&quot;') %]" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.fedora.info/definitions/">
+
      <metadata>
        <metadata ID="DC">
           <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/">
