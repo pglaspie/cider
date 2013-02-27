@@ -1,5 +1,6 @@
 [% c.res.content_type = 'text/plain' -%]
 Record Id,Collect Nbr,Item Nbr,Object Id
 [% FOR object IN objects -%]
-GARBAGE-IN,GARBAGE-OUT,GARBAGE-EVERYWHERE,[% object.digital_objects.pid %]
+[% matches = object.digital_objects.pid.match('tufts:(.*)') -%]
+GARBAGE-IN,GARBAGE-OUT,GARBAGE-EVERYWHERE,[% matches.0 %]
 [% END -%]
