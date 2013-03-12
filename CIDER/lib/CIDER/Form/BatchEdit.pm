@@ -232,9 +232,7 @@ has_field 'creator_name_and_note' => ( type => 'Text',
                          label => 'Add a new creator:',
                          element_class => [ 'authority_name' ],
                          );
-has_field 'creator_id' => ( type => 'Hidden',
-                            required_when => { field => 'creator' },
-                            );
+
 has_field 'creator_name' => ( type => 'Hidden',
                             required_when => { field => 'creator' },
                             );

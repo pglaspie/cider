@@ -259,7 +259,7 @@ sub batch_edit_creator :Private {
         my $item = $object->item or next;
         $item->add_to_creators(
             {
-                name => $c->stash->{ form }->field( 'creator_id' )->value,
+                id => $c->stash->{ form }->field( 'creator_name' )->value,
             }
         );
     }

@@ -129,9 +129,8 @@ is ( $item4->restrictions->id, '2',
 $mech->get( '/set/1/batch_edit' );
 $mech->submit_form_ok( { with_fields => {
     field      => 'creator',
-    creator_id => '1',
     creator_name_and_note => 'Some Guy',
-    creator_name          => 'Some Guy',
+    creator_name          => '1',
 } } );
 $item4->discard_changes;
 is ( $item4->creators, 1, 'Batch creator-add works' );
