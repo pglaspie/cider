@@ -366,6 +366,7 @@ sub init_schema {
         [
          [qw/id class name/],
          [1, 'digital_object', 'image/tiff'],
+         [2, 'digital_object', 'application/pdf'],
         ]
     );
 

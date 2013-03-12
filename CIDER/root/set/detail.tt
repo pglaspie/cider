@@ -6,6 +6,12 @@
 <h2>[% page.title %]</h2>
 </div>
 
+[% IF c.flash.batch_edit_successful %]
+<div class="success_message">
+<p>Batch-edit successfully applied to all this set's objects.</p>
+</div>
+[% END %]
+
 [% IF set.scalar.objects.count %]
 <p>This set contains the following objects:</p>
 <ul>
@@ -18,16 +24,8 @@
 [% END %]
 
 <div class="well">
-<h2>Batch-edit this set's objects</h2>
-[% IF !set.scalar.objects.count %]
-<p>This set doesn't contain any objects to edit, yet.</p>
-[% ELSIF !set.is_homogenous %]
-<p>You can't batch-edit the objects in this set, because it contains more than one kind of object.</p>
-[% ELSE %]
-[% INCLUDE set/batch_edit_fragment.tt %]
-<hr />
-[% INCLUDE set/search_and_replace_fragment.tt %]
-[% END %]
+<h2><a href="[% c.uri_for_action( c.controller('Set').action_for('batch_edit'), [set.id] ) %]">Batch-edit this set's objects</a></h2>
+
 </div>
 
 <div class="well">

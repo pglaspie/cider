@@ -33,8 +33,6 @@ $mech->follow_link_ok( { text => 'Sets' } );
 $mech->follow_link_ok( { text => 'Test Set 2' } );
 $mech->content_contains( 'Test Series 1' );
 $mech->content_contains( 'Test Item 2' );
-$mech->content_lacks( 'Set every' );
-$mech->content_lacks( 'In every' );
 
 use Text::CSV::Slurp;
 $mech->submit_form_ok( { with_fields => {
@@ -48,30 +46,124 @@ $mech->back;
 
 $mech->submit_form_ok( { form_number => 1 }, 'Remove the first item' );
 $mech->content_lacks( 'Test Series 2' );
-$mech->content_contains( 'Set every' );
 $mech->follow_link( text => 'Sets' );
 
 $mech->follow_link_ok( { text => 'Test Set 1' } );
 $mech->content_contains( 'Test Item 1' );
 $mech->content_contains( 'Test Item 2' );
 
+# Testing batch edits.
+
+$mech->get_ok( '/set/1/batch_edit' );
 $mech->submit_form_ok( { with_fields => {
-    field => 'title',
-    value => 'Same Title',
-} }, 'Submitted the batch-edit form' );
+    field      => 'title',
+    title_kind => 'replace',
+    title_new_title => 'Same Title',
+} } );
 $mech->content_like( qr/Same Title.*Same Title/s );
 $mech->content_lacks( 'Test Item' );
 
+$mech->get_ok( '/set/1/batch_edit' );
 $mech->submit_form_ok( { with_fields => {
     field => 'title',
-    old_value => 'Same',
-    new_value => 'Different',
-} }, 'Submitted the search-and-replace form' );
-$mech->content_contains( '2 items' );
-$mech->submit_form_ok( { form_number => 1 }, 'Hit the confirm button' );
-
+    title_kind => 'edit',
+    title_incorrect_text => 'Same',
+    title_corrected_text => 'Different',
+} } );
 $mech->content_like( qr/Different Title.*Different Title/s );
 $mech->content_lacks( 'Same Title' );
+
+$mech->get( '/set/1/batch_edit' );
+$mech->submit_form_ok( { with_fields => {
+    field      => 'description',
+    description_kind => 'replace',
+    description_new_description => 'A brand new description!',
+} } );
+
+my $item4 = $schema->resultset('Item')->find( 4 );
+is ( $item4->description, 'A brand new description!',
+                          'Batch description-replacement works' );
+
+$mech->get( '/set/1/batch_edit' );
+$mech->submit_form_ok( { with_fields => {
+    field      => 'description',
+    description_kind => 'edit',
+    description_incorrect_text => 'description',
+    description_corrected_text => 'inscription',
+} } );
+$item4->discard_changes;
+is ( $item4->description, 'A brand new inscription!',
+                          'Batch description-edit works' );
+
+my $numbers = $item4->accession_numbers;
+$mech->get( '/set/1/batch_edit' );
+$mech->submit_form_ok( { with_fields => {
+    field      => 'accession',
+    accession_kind => 'new',
+    accession_new_number => '2013.001',
+} } );
+$item4->discard_changes;
+is ( $item4->accession_number, '2011.004, 2013.001',
+                          'Batch add-accession-number works' );
+
+$mech->get( '/set/1/batch_edit' );
+$mech->submit_form_ok( { with_fields => {
+    field      => 'accession',
+    accession_kind => 'edit',
+    accession_incorrect_number => '2013.001',
+    accession_corrected_number => '2013.999',
+} } );
+$item4->discard_changes;
+is ( $item4->accession_number, '2011.004, 2013.999',
+                          'Batch edit-accession-number works' );
+
+$mech->get( '/set/1/batch_edit' );
+$mech->submit_form_ok( { with_fields => {
+    field      => 'restriction',
+    restriction => '2',
+} } );
+$item4->discard_changes;
+is ( $item4->restrictions->id, '2',
+                          'Batch restictions-change works' );
+
+$mech->get( '/set/1/batch_edit' );
+$mech->submit_form_ok( { with_fields => {
+    field      => 'creator',
+    creator_id => '1',
+    creator_name_and_note => 'Some Guy',
+    creator_name          => 'Some Guy',
+} } );
+$item4->discard_changes;
+is ( $item4->creators, 1, 'Batch creator-add works' );
+
+$mech->get( '/set/1/batch_edit' );
+$mech->submit_form_ok( { with_fields => {
+    field      => 'dc_type',
+    dc_type => '2',
+} } );
+$item4->discard_changes;
+is ( $item4->dc_type->id, '2',
+                          'Batch DC type-change works' );
+
+$mech->get( '/set/1/batch_edit' );
+$mech->submit_form_ok( { with_fields => {
+    field      => 'rights',
+    rights_class => 'digital_objects',
+    rights => 'Public Domain',
+} } );
+$item4->discard_changes;
+is ( ($item4->digital_objects)[0]->rights, 'Public Domain',
+                          'Batch rights-change works' );
+
+$mech->get( '/set/1/batch_edit' );
+$mech->submit_form_ok( { with_fields => {
+    field      => 'format',
+    format_class => 'digital_objects',
+    format => '2',
+} } );
+$item4->discard_changes;
+is ( ($item4->digital_objects)[0]->format, 'application/pdf',
+                          'Batch format-change works' );
 
 # Testing set deletion.
 # First, just try to delete this set, and make sure it vanishes from the list.

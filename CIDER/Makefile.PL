@@ -46,6 +46,7 @@ requires 'DBD::mysql';
 requires 'Readonly' => '1.03';
 requires 'JSON::XS' => '2.32';
 requires 'FindBin::libs' => '1.63';
+requires 'HTML::FormHandler' => '0.40013';
 test_requires 'Test::More' => '0.88';
 test_requires 'Test::Exception';
 catalyst;
