@@ -1,4 +1,10 @@
-[% page.title = set.name _ ' - Batch edit'%]
+[% page.title = set.name _ ' - Batch edit' %]
+
+<ul class="breadcrumb">
+  <li><a href="[% c.uri_for( c.controller('Set').action_for('detail'), [set.id] ) %]">[% set.name %]</a></li>
+</ul>
+
+<h2>[% set.name %] - Batch edit</h2>
 
 <form>
 [% form.field( 'field' ).render %]
@@ -64,6 +70,19 @@
 [% form.field( 'edit_button' ).render %]
 </div> <!-- #batch_edit_submit -->
 </form>
+
+</div>
+
+<div class="span3">
+<div class="well">
+<h3>Set contents</h3>
+<ul>
+  [% FOREACH object = set.contents %]
+  <li>[% INCLUDE display_basic_object.tt %]</li>
+  [% END %]
+</ul>
+</div>
+</div> <!-- .span3 -->
 
 <script>
 var selected_field;
