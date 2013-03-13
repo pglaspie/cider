@@ -57,17 +57,24 @@
 </div> <!-- #batch_edit_dc_type" -->
 
 <div id="batch_edit_rights" class="batch_edit_subdiv">
+[% INCLUDE set/class_warning.tt %]
 [% form.field( 'rights_class' ).render %]
 [% form.field( 'rights' ).render %]
 </div> <!-- #batch_edit_rights -->
 
 <div id="batch_edit_format" class="batch_edit_subdiv">
+[% INCLUDE set/class_warning.tt %]
 [% form.field( 'format_class' ).render %]
 [% form.field( 'format' ).render %]
 </div> <!-- #batch_edit_format -->
 
 <div id="batch_edit_submit" class="batch_edit_subdiv">
-[% form.field( 'edit_button' ).render %]
+<button type="button" id="delete" class="btn" style="margin-left:15px; vertical-align:top;" onClick="toggle_edit_confirmation_visibility()" >Apply changes</button>
+<div id="confirm_edit" style="display: none; margin-top: 20px">
+<p>This action will <em><strong>permanently and irrevocably</strong></em> apply this change to all [% set.count %] objects in this set. Please confirm that you want to do this.</p>
+<button type="submit" id="delete" class="btn btn-danger" style="margin-left:15px; vertical-align:top;" onClick="toggle_edit_confirmation_visibility()" >Yes, apply these changes across this whole set</button>
+<button type="button" class="btn" onClick="toggle_edit_confirmation_visibility()" style="margin-left:20px;" >No, do not change anything yet</button>
+</div> <!-- #confirm_edit -->
 </div> <!-- #batch_edit_submit -->
 </form>
 
@@ -157,6 +164,16 @@ function reveal_submit_controls_if_appropriate( object ) {
     var subdiv_count = jq_object.find( 'div.batch_edit_subdiv' ).length ;
     if ( subdiv_count == 0 ) {
         $( '#batch_edit_submit' ).css( 'display', 'block');
+    }
+}
+
+function toggle_edit_confirmation_visibility() {
+    var confirmation_div = $( '#confirm_edit' );
+    if ( confirmation_div.css( 'display' ) == 'none' ) {
+        confirmation_div.slideDown();
+    }
+    else {
+        confirmation_div.hide();
     }
 }
 
