@@ -47,7 +47,7 @@ requires 'Readonly' => '1.03';
 requires 'JSON::XS' => '2.32';
 requires 'FindBin::libs' => '1.63';
 requires 'HTML::FormHandler' => '0.40013';
-required 'HTML::FormHandler::Model::DBIC' => '0.23';
+requires 'HTML::FormHandler::Model::DBIC' => '0.23';
 test_requires 'Test::More' => '0.88';
 test_requires 'Test::Exception';
 catalyst;
