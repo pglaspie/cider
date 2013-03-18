@@ -280,7 +280,7 @@ sub options_format {
                      ->resultset( 'Format' )
                      ->search(
                         undef,
-                        { order_by => 'class, name', },
+                        { order_by => [ qw/ class name / ] },
                      )
                      ->all ) {
         my $class_attribute = _pluralize( $format->class );
