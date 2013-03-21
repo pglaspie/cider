@@ -167,7 +167,7 @@ as a child of this object. <input type="submit" class="btn clearfix" name="go" v
 
 [% IF held_set %]
 <hr />
-<form class="form-stacked" method="post" action="[% c.uri_for_action( c.controller('Set').action_for('batch_move'), [ set.id ], object.id ) %]">
+<form class="form-stacked" method="post" action="[% c.uri_for_action( c.controller('Set').action_for('batch_move'), [ held_set.id ], object.id ) %]">
 <p><button type="button" onClick="toggle_edit_confirmation_visibility()" class="btn">Make all members of [% held_set.name %] children of this object</button></p>
 <div id="confirm_edit" style="display: none;">
 <p>Really set the parent of all [% held_set.count %] objects within [% held_set.name %] to this object? There is no way to undo this action.</p>
