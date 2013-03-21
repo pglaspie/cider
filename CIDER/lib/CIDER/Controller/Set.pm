@@ -211,8 +211,13 @@ sub batch_edit_accession :Private {
         for my $object ( $set->objects ) {
             my $item = $object->item or next;
             my $accession_numbers = $item->accession_number;
+            if ( defined( $accession_numbers) && $accession_numbers =~ /\S/ ) {
+                $accession_numbers = "$accession_numbers, ";
+            }
+            else {
+                $accession_numbers = '';
+            }
             $item->accession_number( $accession_numbers
-                                       . ', '
                                        . $c->stash->{ form }
                                         ->field( 'accession_new_number' )
                                         ->value

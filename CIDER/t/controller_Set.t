@@ -95,7 +95,6 @@ $item4->discard_changes;
 is ( $item4->description, 'A brand new inscription!',
                           'Batch description-edit works' );
 
-my $numbers = $item4->accession_numbers;
 $mech->get( '/set/1/batch_edit' );
 $mech->submit_form_ok( { with_fields => {
     field      => 'accession',
@@ -116,6 +115,18 @@ $mech->submit_form_ok( { with_fields => {
 $item4->discard_changes;
 is ( $item4->accession_number, '2011.004, 2013.999',
                           'Batch edit-accession-number works' );
+
+$item4->accession_number( '' );
+eval { $item4->update; };
+$mech->get( '/set/1/batch_edit' );
+$mech->submit_form_ok( { with_fields => {
+    field      => 'accession',
+    accession_kind => 'new',
+    accession_new_number => '2013.001',
+} } );
+$item4->discard_changes;
+is ( $item4->accession_number, '2013.001',
+                          'Batch add-accession-number (to empty list) works' );
 
 $mech->get( '/set/1/batch_edit' );
 $mech->submit_form_ok( { with_fields => {
