@@ -167,15 +167,6 @@ function reveal_submit_controls_if_appropriate( object ) {
     }
 }
 
-function toggle_edit_confirmation_visibility() {
-    var confirmation_div = $( '#confirm_edit' );
-    if ( confirmation_div.css( 'display' ) == 'none' ) {
-        confirmation_div.slideDown();
-    }
-    else {
-        confirmation_div.hide();
-    }
-}
 
 </script>
 

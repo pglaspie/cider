@@ -195,6 +195,12 @@ $item4->discard_changes;
 is ( ($item4->digital_objects)[0]->format, 'application/pdf',
                           'Batch format-change works' );
 
+# Testing batch-move.
+$mech->get_ok( '/set/1/batch_move' );
+$mech->get_ok( '/set/1/batch_move/1' );
+$item4->discard_changes;
+is ( $item4->parent->number, 'n1', 'Batch-move works' );
+
 # Testing set deletion.
 # First, just try to delete this set, and make sure it vanishes from the list.
 # Then, navigate to a set with objects in it, and perform a recursive delete.

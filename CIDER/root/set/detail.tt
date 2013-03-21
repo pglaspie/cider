@@ -10,6 +10,16 @@
 <div class="success_message">
 <p>Batch-edit successfully applied to all this set's objects.</p>
 </div>
+[% ELSIF c.flash.we_just_picked_this_up %]
+<div class="success_message">
+<p>This set has been marked for moving to a new parent object. Navigate to any CIDER object's detail page, then click the button marked <em>"Make all members of [% set.name %] children of this object"</em>, found under the "Children" heading in the object's Utilities list.</p>
+
+<p>If you change your mind about moving this set, simply disregard this button.</p>
+</div>
+[% ELSIF c.flash.batch_move_successful %]
+<div class="success_message">
+<p>All members of this set are now the children of object [% c.flash.batch_move_successful %].</p>
+</div>
 [% END %]
 
 [% IF set.scalar.objects.count %]
@@ -31,6 +41,7 @@
 <div class="well">
 <h2>Batch edit</h2>
 <p><a href="[% c.uri_for_action( c.controller('Set').action_for('batch_edit'), [set.id] ) %]">Batch-edit this set's objects</a></p>
+<p><a href="[% c.uri_for_action( c.controller('Set').action_for('batch_move'), [set.id] ) %]">Move all set's objects to a new parent</a></p>
 </div>
 
 <div class="well">

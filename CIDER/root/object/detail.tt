@@ -153,7 +153,6 @@ format.
 <input type="submit" name="Take" class="btn clearfix" value="Move to a new parent." />
 </form>
 [% END %]
-
  
 <form method="post" class="form-stacked" action="[% c.uri_for_action( c.controller('Object').action_for('create') ) %]">
 <p>Create a new
@@ -165,6 +164,18 @@ format.
 as a child of this object. <input type="submit" class="btn clearfix" name="go" value="Go" /></p>
 <input type="hidden" name="parent_id" value="[% object.id %]" />
 </form>
+
+[% IF held_set %]
+<hr />
+<form class="form-stacked" method="post" action="[% c.uri_for_action( c.controller('Set').action_for('batch_move'), [ set.id ], object.id ) %]">
+<p><button type="button" onClick="toggle_edit_confirmation_visibility()" class="btn">Make all members of [% held_set.name %] children of this object</button></p>
+<div id="confirm_edit" style="display: none;">
+<p>Really set the parent of all [% held_set.count %] objects within [% held_set.name %] to this object? There is no way to undo this action.</p>
+<p><button type="submit" class="btn btn-danger" onClick="toggle_edit_confirmation_visibility()" >Yes, change the parent across the whole set</button></p>
+<p><button type="button" class="btn" onClick="toggle_edit_confirmation_visibility()" style="width:100%;" >No, do not change anything yet</button></p>
+</div> 
+</form>
+[% END %]
 
 </div>
 <h3 data-toggle="collapse" data-target="#changelog"><a href="#">History</a><i class="icon-chevron-right collapse-icon"></i></h3>

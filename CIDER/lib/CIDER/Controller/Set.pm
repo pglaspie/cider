@@ -317,6 +317,32 @@ sub batch_edit_format :Private {
     }
 }
 
+# batch_move: If no arg's supplied, set up this set for future moving.
+#             If there is an arg, then that's our new parent object.
+sub batch_move :Chained('set') {
+    my ( $self, $c, $new_parent_id ) = @_;
+
+    my $set = $c->stash->{ set };
+
+    if ( $new_parent_id ) {
+        for my $object ( $set->objects ) {
+            $object->parent( $new_parent_id );
+            $object->update;
+        }
+
+        delete $c->session->{ held_set_id };
+
+        my $new_parent = $c->model('CIDERDB::Object')->find( $new_parent_id );
+        $c->flash->{ batch_move_successful } = $new_parent->number;
+    }
+    else {
+        $c->session->{ held_set_id } = $set->id;
+        $c->flash->{ we_just_picked_this_up } = 1;
+    }
+
+    $c->res->redirect( $c->uri_for( $self->action_for( 'detail' ), [$set->id] ) );
+}
+
 =head1 AUTHOR
 
 Jason McIntosh, Doug Orleans
