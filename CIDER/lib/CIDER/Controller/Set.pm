@@ -162,7 +162,7 @@ sub batch_edit_title :Private {
                                    ->value;
             my $to_substring = $c->stash->{ form }
                                  ->field( 'title_corrected_text' )
-                                 ->value;
+                                 ->value || '';
             $title =~ s/$from_substring/$to_substring/gie;
             $object->title( $title );
             $object->update;
@@ -194,7 +194,7 @@ sub batch_edit_description :Private {
                                    ->value;
             my $to_substring = $c->stash->{ form }
                                  ->field( 'description_corrected_text' )
-                                 ->value;
+                                 ->value || '';
             $description =~ s/$from_substring/$to_substring/gie;
             $item->description( $description );
             $item->update;

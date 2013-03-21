@@ -70,8 +70,18 @@ $mech->submit_form_ok( { with_fields => {
     title_incorrect_text => 'Same',
     title_corrected_text => 'Different',
 } } );
-$mech->content_like( qr/Different Title.*Different Title/s );
+$mech->content_like( qr/Different Title.*Different Title/s,
+                     'Batch title-replacement works.' );
 $mech->content_lacks( 'Same Title' );
+
+$mech->get_ok( '/set/1/batch_edit' );
+$mech->submit_form_ok( { with_fields => {
+    field => 'title',
+    title_kind => 'edit',
+    title_incorrect_text => 'erent',
+} } );
+$mech->content_like( qr/Diff Title.*Diff Title/s,
+                     'Batch title-replacement works (with blank replacement).' );
 
 $mech->get( '/set/1/batch_edit' );
 $mech->submit_form_ok( { with_fields => {
@@ -94,6 +104,16 @@ $mech->submit_form_ok( { with_fields => {
 $item4->discard_changes;
 is ( $item4->description, 'A brand new inscription!',
                           'Batch description-edit works' );
+
+$mech->get( '/set/1/batch_edit' );
+$mech->submit_form_ok( { with_fields => {
+    field      => 'description',
+    description_kind => 'edit',
+    description_incorrect_text => 'nscription',
+} } );
+$item4->discard_changes;
+is ( $item4->description, 'A brand new i!',
+                          'Batch description-edit works (with blank replacement)' );
 
 $mech->get( '/set/1/batch_edit' );
 $mech->submit_form_ok( { with_fields => {

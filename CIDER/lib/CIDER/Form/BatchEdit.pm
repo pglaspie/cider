@@ -127,10 +127,6 @@ has_field 'title_incorrect_text' => ( type => 'Text',
                                     );
 has_field 'title_corrected_text' => ( type => 'Text',
                                       label => 'Text to replace it with',
-                                      required_when => {
-                                        title_kind => 'edit',
-                                        field => 'title',
-                                     },
                                      );
 has_field 'accession_kind' => ( type => 'Select',
                             widget => 'RadioGroup',
@@ -206,10 +202,6 @@ has_field 'description_incorrect_text' => ( type => 'Text',
                                     );
 has_field 'description_corrected_text' => ( type => 'Text',
                                       label => 'Text to replace it with',
-                                      required_when => {
-                                        description_kind => 'edit',
-                                        field => 'description',
-                                     },
                                      );
 
 has_field 'restriction' => ( type => 'Select',
