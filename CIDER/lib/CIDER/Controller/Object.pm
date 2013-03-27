@@ -41,6 +41,14 @@ sub set_up_held_object :Private {
             ->find( $held_object_id );
         $c->stash->{ held_object } = $held_object->type_object;
     }
+
+    # Also set up the held set, if there is one.
+    if ( my $held_set_id = $c->session->{ held_set_id } ) {
+        my $held_set = $c->model( 'CIDERDB::ObjectSet' )
+            ->find( $held_set_id );
+        $c->stash->{ held_set } = $held_set;
+    }
+
 }
 
 sub detail :Chained('object') :PathPart('') :Args(0) :Form {

@@ -1,0 +1,179 @@
+[% page.title = set.name _ ' - Batch edit' %]
+
+<ul class="breadcrumb">
+  <li><a href="[% c.uri_for( c.controller('Set').action_for('detail'), [set.id] ) %]">[% set.name %]</a></li>
+</ul>
+
+<h2>[% set.name %] - Batch edit</h2>
+
+<form>
+[% form.field( 'field' ).render %]
+
+<div id="batch_edit_title" class="batch_edit_subdiv">
+[% form.field( 'title_kind' ).render %]
+<div id="batch_edit_title_kind_replace" class="batch_edit_subdiv">
+[% form.field( 'title_new_title' ).render %]
+</div> <!-- #batch_edit_title_kind_replace -->
+<div id="batch_edit_title_kind_edit" class="batch_edit_subdiv">
+[% form.field( 'title_incorrect_text' ).render %]
+[% form.field( 'title_corrected_text' ).render %]
+</div> <!-- #batch_edit_title_kind_edit -->
+</div> <!-- #batch_edit_title -->
+
+<div id="batch_edit_accession" class="batch_edit_subdiv">
+[% form.field( 'accession_kind' ).render %]
+<div id="batch_edit_accession_kind_new" class="batch_edit_subdiv">
+[% form.field( 'accession_new_number' ).render %]
+</div> <!-- #batch_edit_accession_kind_replace -->
+<div id="batch_edit_accession_kind_edit" class="batch_edit_subdiv">
+[% form.field( 'accession_incorrect_number' ).render %]
+[% form.field( 'accession_corrected_number' ).render %]
+</div> <!-- #batch_edit_accession_kind_edit -->
+</div> <!-- #batch_edit_accession -->
+
+<div id="batch_edit_description" class="batch_edit_subdiv">
+[% form.field( 'description_kind' ).render %]
+<div id="batch_edit_description_kind_replace" class="batch_edit_subdiv">
+[% form.field( 'description_new_description' ).render %]
+</div> <!-- #batch_edit_description_kind_replace -->
+<div id="batch_edit_description_kind_edit" class="batch_edit_subdiv">
+[% form.field( 'description_incorrect_text' ).render %]
+[% form.field( 'description_corrected_text' ).render %]
+</div> <!-- #batch_edit_description_kind_edit -->
+</div> <!-- #batch_edit_description -->
+
+<div id="batch_edit_restriction" class="batch_edit_subdiv">
+[% form.field( 'restriction' ).render %]
+</div> <!-- #batch_edit_restriction" -->
+
+<div id="batch_edit_creator" class="batch_edit_subdiv">
+[% form.field( 'creator_name_and_note' ).render %]
+[% form.field( 'creator_id' ).render %]
+[% form.field( 'creator_name' ).render %]
+</div> <!-- #batch_edit_creator -->
+
+<div id="batch_edit_dc_type" class="batch_edit_subdiv">
+[% form.field( 'dc_type' ).render %]
+</div> <!-- #batch_edit_dc_type" -->
+
+<div id="batch_edit_rights" class="batch_edit_subdiv">
+[% INCLUDE set/class_warning.tt %]
+[% form.field( 'rights_class' ).render %]
+[% form.field( 'rights' ).render %]
+</div> <!-- #batch_edit_rights -->
+
+<div id="batch_edit_format" class="batch_edit_subdiv">
+[% INCLUDE set/class_warning.tt %]
+[% form.field( 'format_class' ).render %]
+[% form.field( 'format' ).render %]
+</div> <!-- #batch_edit_format -->
+
+<div id="batch_edit_submit" class="batch_edit_subdiv">
+<button type="button" id="delete" class="btn" style="margin-left:15px; vertical-align:top;" onClick="toggle_edit_confirmation_visibility()" >Apply changes</button>
+<div id="confirm_edit" style="display: none; margin-top: 20px">
+<p>This action will <em><strong>permanently and irrevocably</strong></em> apply this change to all [% set.count %] objects in this set. Please confirm that you want to do this.</p>
+<button type="submit" id="delete" class="btn btn-danger" style="margin-left:15px; vertical-align:top;" onClick="toggle_edit_confirmation_visibility()" >Yes, apply these changes across this whole set</button>
+<button type="button" class="btn" onClick="toggle_edit_confirmation_visibility()" style="margin-left:20px;" >No, do not change anything yet</button>
+</div> <!-- #confirm_edit -->
+</div> <!-- #batch_edit_submit -->
+</form>
+
+</div>
+
+<div class="span3">
+<div class="well">
+<h3>Set contents</h3>
+<ul>
+  [% FOREACH object = set.contents %]
+  <li>[% INCLUDE display_basic_object.tt %]</li>
+  [% END %]
+</ul>
+</div>
+</div> <!-- .span3 -->
+
+<script>
+var selected_field;
+$('#field').change( function () {
+    // Hide & clear all batch-edit subdivs, then reveal the salient one.
+    $( '.batch_edit_subdiv' ).hide();
+    $( '.batch_edit_subdiv').find( 'input[type=text], textarea' ).val('');
+    $( '.batch_edit_subdiv').find( 'input[type=radio], select' ).removeAttr( 'checked' ).removeAttr( 'selected' );
+    selected_field_name = $('#field').val();
+    var div_to_show = '#batch_edit_' + selected_field_name;
+    $(div_to_show).css( 'display', 'block' );
+    reveal_submit_controls_if_appropriate( $(div_to_show) );
+} );
+
+// Have all selects & radiobuttons advance to the next step when their
+// values change.
+$('div.batch_edit_subdiv select, div.batch_edit_subdiv input[type=radio]').change( function () {
+    reveal_next_batch_edit_step( this );
+} );
+
+// Have the format's class field listen to changes, so that it disables
+// incompatible format options.
+$( '#format_class' ).change( function() {
+    var selected_class = $( '#format_class' ).val();
+    $( '#format option' ).attr( 'disabled', '1' );
+    $( '#format option.' + selected_class )
+     .removeAttr( 'disabled' );
+} );
+
+// If the form's already been filled out, reveal what needs to be revealed now.
+if ( $('#field').val() ) {
+    selected_field_name = $('#field').val();
+    var div_to_show = '#batch_edit_' + selected_field_name;
+    $(div_to_show).css( 'display', 'block' );
+    reveal_submit_controls_if_appropriate( $(div_to_show) );    
+    
+    $(div_to_show).find( 'input[type=radio]' ).each( function() {
+        var radio = $(this);
+        if ( radio.attr( 'checked' ) ) {
+            reveal_next_batch_edit_step( this );
+        }
+    } );
+}
+
+function reveal_next_batch_edit_step( object ) {
+    // Hide all batch-edit subdivs underneath our current level.
+    jq_object = $( object );
+    var ancestor_subdiv = jq_object.closest( 'div.batch_edit_subdiv' );
+    ancestor_subdiv.find( 'div.batch_edit_subdiv' ).hide();
+    
+    // Clear any values that might have been entered there.
+    ancestor_subdiv.find( 'div.batch_edit_subdiv' ).find( 'input[type=text], textarea' ).val('');
+    ancestor_subdiv.find( 'div.batch_edit_subdiv' ).find( 'input[type=radio], select' ).removeAttr( 'checked' ).removeAttr( 'selected' );
+    
+    // Display the child div named after this form element's value.
+    console.log( "Hello I am " + object.getAttribute( 'value' ) );
+    var id_of_div_to_reveal = 'batch_edit_'
+                              + object.getAttribute( 'name' )
+                              + '_'
+                              + object.getAttribute( 'value' );
+    console.log( "So, display the div with ID " + id_of_div_to_reveal + " ?" );
+    var div_to_reveal = $( '#' + id_of_div_to_reveal );
+    div_to_reveal.css( 'display', 'block' );
+    reveal_submit_controls_if_appropriate( div_to_reveal );
+}
+
+function reveal_submit_controls_if_appropriate( object ) {
+    jq_object = $( object );
+    
+    // If the object has no further batch-edit subdivs, then let's reveal the
+    // submission controls.
+    var subdiv_count = jq_object.find( 'div.batch_edit_subdiv' ).length ;
+    if ( subdiv_count == 0 ) {
+        $( '#batch_edit_submit' ).css( 'display', 'block');
+    }
+}
+
+
+</script>
+
+<style>
+div.batch_edit_subdiv {
+display: none;
+}
+</style>
+
+[% INCLUDE object/set_up_autocomplete_fields.tt %]

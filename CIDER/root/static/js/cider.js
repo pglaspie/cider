@@ -228,3 +228,14 @@ function clear_sibling_inputs( target ) {
 function set_up_repeatable_clear_buttons() {
     $('.clear-button').click( function() { clear_sibling_inputs( $(this) ) } );
 }
+
+
+function toggle_edit_confirmation_visibility() {
+    var confirmation_div = $( '#confirm_edit' );
+    if ( confirmation_div.css( 'display' ) == 'none' ) {
+        confirmation_div.slideDown();
+    }
+    else {
+        confirmation_div.hide();
+    }
+}
