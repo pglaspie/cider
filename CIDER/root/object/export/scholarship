@@ -101,7 +101,7 @@
       <datastream ID="RELS-EXT" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
         <xmlContent>
 	  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rel="info:fedora/fedora-system:def/relations-external#">
-	    <rdf:Description rdf:about="info:fedora/[% digtial_object.pid %]">
+	    <rdf:Description rdf:about="info:fedora/[% digital_object.pid %]">
 	      <fedora-model:hasModel rdf:resource="info:fedora/cm:Text.FacPub" xmlns:fedora-model="info:fedora/fedora-system:def/model#"/>
 	      <itemID xmlns="http://www.openarchives.org/OAI/2.0/">oai:[% object.digital_objects.pid %]</itemID>
 	      [% FOR digital_object IN object.digital_objects -%]
