@@ -1,7 +1,7 @@
 [% c.res.content_type = 'application/xml' -%]
 [% USE date(format = '%Y-%m-%d') -%]
 [% FOR object IN objects -%]
-  <input OBJID="tufts:[% object.number %]" LABEL="[% object.title.replace('"', '&quot;') %]" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.fedora.info/definitions/">
+  <input OBJID="[% object.digital_objects.pid %]" LABEL="[% object.title.replace('"', '&quot;') %]" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.fedora.info/definitions/">
      <metadata>
        <metadata ID="DC">
           <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/">
@@ -11,7 +11,7 @@
  	    <dc:creator>[% creator.name %]</dc:creator>
 	    [% END -%]
 	    	    
-	    <dc:identifier>tufts:[% object.number %]</dc:identifier>
+	    <dc:identifier>[% object.digital_objects.pid %]</dc:identifier>
 	    <dc:date>[% object.audit_trail.date_created %]</dc:date>
 	    [% IF object.date_from %]
 	    <dc:date>[% object.date_from %]</dc:date>
@@ -95,14 +95,15 @@
 	  </dca_dc:dc>	    
 	</metadata>
      </metadata>
+     [% matches = digital_object.pid.match('tufts:(.*)') %]
     <datastreams>
-      <datastream ID="Archival.pdf" xlink:href="http://bucket01.lib.tufts.edu/data05/tufts/central/dca/[% coll_no %]/archival_pdf/[% object.number %].archival.pdf" xlink:title="[% object.title.replace('"', '&quot;') %]"/>
+      <datastream ID="Archival.pdf" xlink:href="http://bucket01.lib.tufts.edu/data05/tufts/central/dca/[% coll_no %]/archival_pdf/[% matches.0 %].archival.pdf" xlink:title="[% object.title.replace('"', '&quot;') %]"/>
       <datastream ID="RELS-EXT" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
         <xmlContent>
 	  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rel="info:fedora/fedora-system:def/relations-external#">
-	    <rdf:Description rdf:about="info:fedora/tufts:[% object.number %]">
+	    <rdf:Description rdf:about="info:fedora/[% digtial_object.pid %]">
 	      <fedora-model:hasModel rdf:resource="info:fedora/cm:Text.FacPub" xmlns:fedora-model="info:fedora/fedora-system:def/model#"/>
-	      <itemID xmlns="http://www.openarchives.org/OAI/2.0/">oai:tufts:[% object.number %]</itemID>
+	      <itemID xmlns="http://www.openarchives.org/OAI/2.0/">oai:[% object.digital_objects.pid %]</itemID>
 	      [% FOR digital_object IN object.digital_objects -%]
 	      [% FOR relationship IN digital_object.digital_object_relationships -%]
 	      <[% relationship.predicate %] rdf:resource="info:fedora/[% relationship.pid %]" />
