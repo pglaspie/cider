@@ -3,7 +3,7 @@
 
         <title>[% obj.title | html %]</title>
 
-        [% IF obj.creators.size != 0 %]
+        [% IF obj.creators.length %]
         <creators>
             [% FOREACH creator IN obj.creators %]
             <creator>
@@ -39,7 +39,7 @@
         <dcType>[% obj.dcType %]</dcType>
         [% END %]
         
-        [% IF obj.personalNames.size != 0 %]
+        [% IF obj.personalNames.length %]
         <personalNames>
             [% FOREACH name IN obj.personalNames %]
             <personalName>
@@ -49,7 +49,7 @@
         </personalNames>
         [% END %]
         
-        [% IF obj.corporateNames.size != 0 %]
+        [% IF obj.corporateNames.length %]
         <corporateNames>
             [% FOREACH name IN obj.corporateNames %]
             <corporateName>
@@ -59,7 +59,7 @@
         </corporateNames>
         [% END %]
         
-        [% IF obj.topicTerms.size != 0 %]
+        [% IF obj.topicTerms.length %]
         <topicTerms>
             [% FOREACH name IN obj.topicTerms %]
             <topicTerm>
@@ -69,7 +69,7 @@
         </topicTerms>
         [% END %]
         
-        [% IF obj.geographicTerms.size != 0 %]
+        [% IF obj.geographicTerms.length %]
         <geographicTerms>
             [% FOREACH name IN obj.geographicTerms %]
             <geographicTerm>
@@ -80,15 +80,7 @@
         [% END %]
         
         [% IF obj.description != "" %]
-            <description>[% obj.description | html %]</description>
-        [% END %]
-
-        [% IF  obj.volume != "" %]
-            <volume>[% obj.volume %]</volume>
-        [% END %]
-
-        [% IF  obj.issue != "" %]
-            <issue>[% obj.issue %]</issue>
+            <description>[% obj.description %]</description>
         [% END %]
         
         [% IF obj.abstract != "" %]
@@ -99,103 +91,94 @@
             <citation>[% obj.citation %]</citation>
         [% END %]
 
+        [% IF  obj.volume != "" %]
+            <volume>[% obj.volume %]</volume>
+        [% END %]
+
+        [% IF  obj.issue != "" %]
+            <issue>[% obj.issue %]</issue>
+        [% END %]
+
         <classes>
-            <[% obj.class %]>
+            [% FOREACH class IN obj.classes %]
+            <[% class.class %]>
 
-                [% IF obj.location != ""  %]
-                <location>[% obj.location %]</location>
-                [% END %]
-
-                [% IF obj.format != ""  %]
-                <format>[% obj.format %]</format>
-                [% END %]
-        
-                [% IF obj.class == "digitalObject" AND obj.pid != ""  %]
-                <pid>[% obj.pid %]</pid>
-                [% END %]
-        
-                [% IF obj.permanentURL != ""  %]
-                <permanentURL>[% obj.permanentURL %]</permanentURL>
-                [% END %]
-        
-                [% IF obj.notes != ""  %]
-                <notes>[% obj.notes | html %]</notes>
+                [% IF class.location != ""  %]
+                <location>[% class.location %]</location>
                 [% END %]
 
-                [% IF obj.dimensions != ""  %]
-                <dimensions>[% obj.dimensions %]</dimensions>
+                [% IF class.format != ""  %]
+                <format>[% class.format %]</format>
                 [% END %]
         
-                [% IF obj.rights != ""  %]
-                <rights>[% obj.rights %]</rights>
+                [% IF class.class == "digitalObject" AND class.pid != ""  %]
+                <pid>[% class.pid %]</pid>
                 [% END %]
         
-                [% IF obj.relationshipsPred != "" OR obj.class == "digitalObject" %]
-                <relationships>
-                    [% IF obj.relationshipsPred != ""  %]
-                    <relationship predicate="[% obj.relationshipsPred %]"><pid>[% obj.relationshipsPID %]</pid></relationship>
-                    [% END %]
-                    [% IF obj.class == "digitalObject" AND obj.collection != ""  %]
-                    <relationship predicate="rel:isMemberOf"><pid>tufts:UA069.001.DO.[% obj.collection %]</pid></relationship>
-                    <relationship predicate="rel:hasDescription"><pid>tufts:UA069.001.DO.[% obj.collection %]</pid></relationship>
-                    [% END %]
-                </relationships>
+                [% IF class.permanentURL != ""  %]
+                <permanentURL>[% class.permanentURL %]</permanentURL>
                 [% END %]
         
-                [% IF obj.checksum != ""  %]
-                <checksum>[% obj.checksum %]</checksum>
+                [% IF class.notes != ""  %]
+                <notes>[% class.notes | html %]</notes>
+                [% END %]
+
+                [% IF class.dimensions != ""  %]
+                <dimensions>[% class.dimensions %]</dimensions>
                 [% END %]
         
-                [% IF obj.fileExtension != ""  %]
-                <fileExtension>[% obj.fileExtension %]</fileExtension>
+                [% IF class.rights != ""  %]
+                <rights>[% class.rights %]</rights>
                 [% END %]
         
-                [% IF obj.originalFilename != ""  %]
-                <originalFilename>[% obj.originalFilename %]</originalFilename>
+                [% IF class.relationshipsPred != ""  %]
+                <relationships predicate="[% class.relationshipsPred %]">[% class.relationshipsPID %]</relationships>
                 [% END %]
         
-                [% IF obj.tableOfContents != ""  %]
-                <tableOfContents>[% obj.tableOfContents %]</tableOfContents>
+                [% IF class.checksum != ""  %]
+                <checksum>[% class.checksum %]</checksum>
                 [% END %]
         
-                [% IF obj.stabilizationBy.0 != ""  %]
+                [% IF class.fileExtension != ""  %]
+                <fileExtension>[% class.fileExtension %]</fileExtension>
+                [% END %]
+        
+                [% IF class.originalFilename != ""  %]
+                <originalFilename>[% class.originalFilename %]</originalFilename>
+                [% END %]
+        
+                [% IF class.tableOfContents != ""  %]
+                <tableOfContents>[% class.tableOfContents %]</tableOfContents>
+                [% END %]
+        
+                [% IF class.class == "digitalObject" AND class.stabilizationBy != ""  %]
                 <stabilization>
-                    <by>
-                    <firstName>[% obj.stabilizationBy.0 %]</firstName>
-                    <lastName>[% obj.stabilizationBy.1%]</lastName>
-                    </by>
-                    <date>[% obj.stabilizationDate %]</date>
-                    <procedure>[% obj.stabilizationProcedure %]</procedure>
-                    <notes>[% obj.stabilizationNotes %]</notes>
+                    <by><firstName>[% class.stabilizationBy.0 %]</firstName><lastName>[% class.stabilizationBy.1 %]</lastName></by>
+                    <date>[% class.stabilizationDate %]</date>
+                    <procedure>[% class.stabilizationProcedure %]</procedure>
+                    <notes>[% class.stabilizationNotes %]</notes>
                 </stabilization>
                 [% END %]
         
-                [% IF obj.applicationVirusCheck != "" OR obj.applicationChecksum != "" OR obj.applicationMediaImage != "" OR obj.applicationOther.size != 0 %]
+                [% IF class.applicationVirusCheck != "" OR class.applicationChecksum != "" OR class.applicationMediaImage != "" OR class.applicationOther.length %]
                 <applications>
-                    [% IF obj.applicationChecksum != ""  %]
-                        <checksum>[% obj.applicationChecksum %]</checksum>
+                    <checksum>[% class.applicationChecksum %]</checksum>
+                    <mediaImage>[% class.applicationMediaImage %]</mediaImage>
+                    <virusCheck>[% class.applicationVirusCheck %]</virusCheck>
+                    <other>
+                    [% FOREACH app IN class.applicationOther %]
+                    <application>[% app %]</application>
                     [% END %]
-                    [% IF obj.applicationMediaImage != ""  %]
-                        <mediaImage>[% obj.applicationMediaImage %]</mediaImage>
-                    [% END %]
-                    [% IF obj.applicationVirusCheck != ""  %]
-                        <virusCheck>[% obj.applicationVirusCheck %]</virusCheck>
-                    [% END %]
-                    [% IF obj.applicationOther.size != 0 %]
-                        <other>
-                        [% FOREACH app IN obj.applicationOther %]
-                        <application>[% app %]</application>
-                        [% END %]
-                        </other>
-                    [% END %]
+                    </other>
                 </applications>
                 [% END %]
         
-                [% IF obj.fileCreationDate != ""  %]
-                <fileCreationDate>[% obj.fileCreationDate %]</fileCreationDate>
+                [% IF class.fileCreationDate != ""  %]
+                <fileCreationDate>[% class.fileCreationDate %]</fileCreationDate>
                 [% END %]
         
-            </[% obj.class %]>
+            </[% class.class %]>
+           [% END %]
         </classes>
         
         </item>
