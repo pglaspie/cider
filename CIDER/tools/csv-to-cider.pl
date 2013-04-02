@@ -2,6 +2,9 @@
 
 # turn CSV files into CIDER import files
 
+use lib '/tdr/bin/lib/perl5/5.10.1';
+use lib '/tdr/bin/lib/perl5/site_perl/5.10.1';
+use lib '/tdr/bin/lib';
 use strict;
 use warnings;
 use Log::Log4perl qw(get_logger :levels);
@@ -16,7 +19,7 @@ use Template;
 # Set the program variables
 ######
 my ($program_name, $dirname) = fileparse($0);
-my $LOGFILE = "me)$program_name.log";
+my $LOGFILE = "$program_name.log";
 my $includesdir = "includes";
 
 ######
@@ -72,6 +75,9 @@ open my $out_fh, ">", $output
 print $out_fh qq{<?xml-model href="http://dca.lib.tufts.edu/schema/cider/cider-import.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>};
 print $out_fh "\n<import>\n";
 
+# Have a Broadly-scoped hash to hold additional classes
+my $extra_class = Text::CSV::Encoded->new({ encoding => "utf8" });
+
 # Set the names of the keys in the hash we are going to use to something
 # meaningful so the template is readable.
 $csv->column_names( $csv->getline ( $csv_fh ) );
@@ -81,6 +87,7 @@ until ( eof( $csv_fh ) ) {
     # Read each line of the CSV file and verify necessary values
     my $row_ref = $csv->getline_hr( $csv_fh );
     $row_ref =~ s/&(\s)/&amp;$1/g;
+    my @classes;
 
     if ( $row_ref ) {
         # set the name for the include file
@@ -106,7 +113,7 @@ until ( eof( $csv_fh ) ) {
 
         my @applicationOther = split(/\|/, $row_ref->{'applicationOther'});
         $row_ref->{'applicationOther'} = \@applicationOther;
-               
+
         my ($first, $last);
         ($first = $row_ref->{'stabilizationBy'}) =~ s/[^,]*, (.*)/$1/;
         ($last = $row_ref->{'stabilizationBy'}) =~ s/([^,]*), .*/$1/;
@@ -114,12 +121,101 @@ until ( eof( $csv_fh ) ) {
             $first, 
             $last,
         );
-        $row_ref->{'stabilizationBy'} = \@stabilizationBy;
 
-        # Pass the row of the csv file to template toolkit to create a single include file
-        my $vars = { obj => $row_ref };
-        $tt->process( $input, $vars, $out_fh )
-           or die $tt->error();
+        # build a hash to hold class info
+        
+        my $class = { class => $row_ref->{'class'},
+                      location => $row_ref->{'location'},
+                      format => $row_ref->{'format'},
+                      pid => $row_ref->{'pid'},
+                      permanentURL => $row_ref->{'permanentURL'},
+                      notes => $row_ref->{'notes'},
+                      dimensions => $row_ref->{'dimensions'},
+                      rights => $row_ref->{'rights'},
+                      relationshipsPred => $row_ref->{'relationshipsPred'},
+                      relationshipsPID => $row_ref->{'relationshipsPID'},
+                      checksum => $row_ref->{'checksum'},
+                      fileExtension => $row_ref->{'fileExtension'},
+                      originalFilename => $row_ref->{'originalFilename'},
+                      tableOfContents => $row_ref->{'tableOfContents'},
+                      stabilizationBy => \@stabilizationBy,
+                      stabilizationProcedure => $row_ref->{'stabilizationProcedure'},
+                      stabilizationDate => $row_ref->{'stabilizationDate'},
+                      stabilizationNotes => $row_ref->{'stabilizationNotes'},
+                      datefrom => $row_ref->{'datefrom'},
+                      dateto => $row_ref->{'dateto'},
+                      applicationChecksum => $row_ref->{'applicationChecksum'},
+                      applicationMediaImage => $row_ref->{'applicationMediaImage'},
+                      applicationVirusCheck => $row_ref->{'applicationVirusCheck'},
+                      applicationOther => $row_ref->{'applicationOther'},
+                      fileCreationDate => $row_ref->{'fileCreationDate'},
+                     };
+
+        push @classes, $class;
+
+        if ( $extra_class->{'class'} ) {
+             # sanity check
+             if ( $row_ref->{'ObjectID'} ne $extra_class->{'ObjectID'} ) {
+                die "Stored extra class has Object ID different from current row: \n"
+                    . "  " . $row_ref->{'ObjectID'} . " (current)\n"
+                    . "  " . $extra_class->{'ObjectID'} . " (extra)\n";
+             }
+
+     
+             my ($first, $last);
+             ($first = $extra_class->{'stabilizationBy'}) =~ s/[^,]*, (.*)/$1/;
+             ($last = $extra_class->{'stabilizationBy'}) =~ s/([^,]*), .*/$1/;
+             my @stabilizationBy = (
+                 $first, 
+                 $last,
+             );
+             $extra_class->{'stabilizationBy'} = \@stabilizationBy;
+
+             my $class = { class => $extra_class->{'class'},
+                           location => $extra_class->{'location'},
+                           format => $extra_class->{'format'},
+                           pid => $extra_class->{'pid'},
+                           permanentURL => $extra_class->{'permanentURL'},
+                           notes => $extra_class->{'notes'},
+                           dimensions => $extra_class->{'dimensions'},
+                           rights => $extra_class->{'rights'},
+                           relationshipsPred => $extra_class->{'relationshipsPred'},
+                           relationshipsPID => $extra_class->{'relationshipsPID'},
+                           checksum => $extra_class->{'checksum'},
+                           fileExtension => $extra_class->{'fileExtension'},
+                           originalFilename => $extra_class->{'originalFilename'},
+                           tableOfContents => $extra_class->{'tableOfContents'},
+                           stabilizationBy => $row_ref->{'stabilizationBy'},
+                           stabilizationProcedure => $row_ref->{'stabilizationProcedure'},
+                           stabilizationDate => $row_ref->{'stabilizationDate'},
+                           stabilizationNotes => $row_ref->{'stabilizationNotes'},
+                           datefrom => $extra_class->{'datefrom'},
+                           dateto => $extra_class->{'dateto'},
+                           stabilizationBy => $extra_class->{'stabilizationBy'},
+                           applicationVirusCheck => $extra_class->{'applicationVirusCheck'},
+                           applicationChecksum => $extra_class->{'applicationChecksum'},
+                           applicationMediaImage => $extra_class->{'applicationMediaImage'},
+                           applicationOther => $extra_class->{'applicationOther'},
+                           fileCreationDate => $extra_class->{'fileCreationDate'},
+                        };
+             push @classes, $class;
+             
+             # Clean out the class because this is a necesary indicator of usability
+             delete $extra_class->{'class'};
+        }
+
+        $row_ref->{'classes'} = \@classes;
+
+        if ( $row_ref->{'AdditionalClass'} =~ /(true|TRUE)/ ) {
+            # Don't process this one yet; save it as an extra class and
+            # move on to the next row
+            $extra_class = {%{$row_ref}};
+        } else {
+            # Pass the row of the csv file to template toolkit to create a single include file
+            my $vars = { obj => $row_ref };
+            $tt->process( $input, $vars, $out_fh )
+               or die $tt->error();
+        }
     } else {
        $logger->logwarn("row $. can't parse: $!\n");
     }
