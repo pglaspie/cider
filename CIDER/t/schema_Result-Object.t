@@ -195,6 +195,15 @@ $newer_item->update;
 $series->discard_changes;
 is ( $series->date_to, '2011-01-01', 'Parent object lowered its date-to ceiling.');
 
+foreach ( $newer_item, $older_item ) {
+    $_->date_to( undef );
+    $_->update;
+}
+$series->discard_changes;
+is ( $series->date_to, '2002-01-01',
+                       'Parent object with date_to-less children does the right thing.');
+
+
 $newer_item->delete;
 $older_item->delete;
 $series->discard_changes;

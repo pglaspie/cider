@@ -305,8 +305,6 @@ sub insert {
 #                (if it has one). Calls update() at the end, which in turn calls this
 #                method again, thus allowing for updates to bubble up the object's
 #                lineage.
-# XXX: These should ideally be performed by database triggers, not in Perl. Consider
-#      this a prototype behavior.
 sub update_parent {
     my $self = shift;
 
@@ -322,7 +320,9 @@ sub update_parent {
 
     my @siblings_date_to =
         grep { defined }
-        @{ $dbh->selectcol_arrayref('select date_to from object where parent = '
+        @{ $dbh->selectcol_arrayref('select case when date_to is not null then date_to '
+                                 . 'when date_to is null then date_from end from '
+                                 . 'object where parent = '
                                  . $parent->id ) };
 
     my @siblings_accession_numbers =
