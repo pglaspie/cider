@@ -187,7 +187,7 @@ sub update_from_xml {
     $self->update_text_from_xml_hashref(
         $hr, 'checksum' );
     $self->update_term_from_xml_hashref(
-        $hr, 'file_extension' );
+        $hr, 'file_extension', 'extension' );
     $self->update_text_from_xml_hashref(
         $hr, 'original_filename' );
     $self->update_text_from_xml_hashref(

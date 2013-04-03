@@ -85,4 +85,27 @@ END
 
 $mech->content_contains( 'invalid' );
 
+test_import( <<END
+<import>
+    <update>
+        <item number="n4">
+            <classes>
+                <digitalObject>
+                    <location>8002</location>
+                    <pid>somePid</pid>
+                    <fileExtension>.pdf</fileExtension>
+                </digitalObject>
+            </classes>
+        </item>
+    </update>
+</import>
+END
+);
+
+my $n4 = $schema->resultset( 'Item' )->find( 4 );
+is ( ($n4->digital_objects)[-1]->file_extension->extension,
+     '.pdf',
+     'After a batch update, DO file extension field changed as expected.'
+);
+
 done_testing();
