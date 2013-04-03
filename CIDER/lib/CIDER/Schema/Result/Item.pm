@@ -200,7 +200,6 @@ sub classes {
     my $self = shift;
 
     my @classes = (
-#        $self->groups,
         $self->file_folders,
         $self->containers,
         $self->bound_volumes,
@@ -369,18 +368,34 @@ sub update_from_xml {
         $hr, geographic_terms => 'term' );
 
     if ( exists $hr->{ classes } ) {
-        $_->delete for $self->classes;
+        # If <classes> doesn't contain a <group/> sub-element, this item will
+        # lose its group flag. So let's zero that out preemptively.
         $self->is_group( 0 );
-        my $schema = $self->result_source->schema;
         for my $class_elt ( @{ $hr->{ classes } } ) {
             if ( $class_elt->tagName eq 'group' ) {
+                # OK, so it is a group. Put the group-flag back up and continue
+                # to the next <classes> sub-element.
                 $self->is_group( 1 );
+                next;
             }
-            else {
-                my $rel = decamelize( $class_elt->tagName );
-                $rel = "${rel}s" unless $rel eq 'audio_visual_media';
+            # Look at the "action" attribute of each element under <classes>.
+            # If it's "create" (or absent), create a new class as described.
+            # If it's "update", update all same-type classes of this item.
+            my $action = $class_elt->getAttribute( 'action' );
+            my $rel = decamelize( $class_elt->tagName );
+            $rel = "${rel}s" unless $rel eq 'audio_visual_media';
+            if ( !$action or $action eq 'create' ) {
                 my $class = $self->new_related( $rel, { } );
                 $class->update_from_xml( $class_elt );
+            }
+            elsif ( $action eq 'update' ) {
+                my @classes = $self->$rel;
+                for my $class ( @classes ) {
+                    $class->update_from_xml( $class_elt );
+                }
+            }
+            else {
+                die "Don't know how to handle class action attribute '$action'.";
             }
         }
     }

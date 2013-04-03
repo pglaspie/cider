@@ -546,6 +546,7 @@
   </define>
   <define name="fileFolder">
     <element name="fileFolder">
+      <ref name="classAction" />
       <element name="location">
         <ref name="locationID"/>
       </element>
@@ -560,6 +561,7 @@
   </define>
   <define name="container">
     <element name="container">
+      <ref name="classAction" />
       <element name="location">
         <ref name="locationID"/>
       </element>
@@ -581,6 +583,7 @@
   </define>
   <define name="boundVolume">
     <element name="boundVolume">
+      <ref name="classAction" />
       <element name="location">
         <ref name="locationID"/>
       </element>
@@ -609,6 +612,7 @@
   </define>
   <define name="threeDimensionalObject">
     <element name="threeDimensionalObject">
+      <ref name="classAction" />
       <element name="location">
         <ref name="locationID"/>
       </element>
@@ -637,6 +641,7 @@
   </define>
   <define name="audioVisualMedia">
     <element name="audioVisualMedia">
+      <ref name="classAction" />
       <element name="location">
         <ref name="locationID"/>
       </element>
@@ -665,6 +670,7 @@
   </define>
   <define name="document">
     <element name="document">
+      <ref name="classAction" />
       <element name="location">
         <ref name="locationID"/>
       </element>
@@ -693,6 +699,7 @@
   </define>
   <define name="physicalImage">
     <element name="physicalImage">
+      <ref name="classAction" />
       <element name="location">
         <ref name="locationID"/>
       </element>
@@ -721,6 +728,7 @@
   </define>
   <define name="digitalObject">
     <element name="digitalObject">
+      <ref name="classAction" />
       <element name="location">
         <ref name="locationID"/>
       </element>
@@ -871,6 +879,7 @@
   </define>
   <define name="browsingObject">
     <element name="browsingObject">
+      <ref name="classAction" />
       <optional>
         <element name="format">
           <optional>
@@ -1114,6 +1123,16 @@
       <value>Audio-visual media</value>
       <value>Digital objects</value>
     </choice>
+  </define>
+  <define name="classAction">
+    <optional>
+      <attribute name="action">
+        <choice>
+          <value>create</value>
+          <value>update</value>
+        </choice>
+      </attribute>
+    </optional>
   </define>
   <!--
     Datatypes

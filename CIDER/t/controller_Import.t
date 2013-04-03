@@ -85,4 +85,119 @@ END
 
 $mech->content_contains( 'invalid' );
 
+# Testing class batch-updates.
+# At this point in the test, item 'n4' possesses one digital object class.
+# Item 'n5' has no classes at all.
+my $n4 = $schema->resultset( 'Item' )->find( 4 );
+is ( $n4->classes, 1, 'Item n4 begins with one class' );
+
+test_import ( <<END
+<import>
+    <update>
+        <item number="n4">
+            <classes>
+                <boundVolume action="create">
+                    <location>9003</location>
+                </boundVolume>
+            </classes>
+        </item>
+    </update>
+</import>
+END
+);
+$n4->discard_changes;
+is ( $n4->classes, 2, 'Added a new class to an item via batch-update' );
+
+test_import ( <<END
+<import>
+    <update>
+        <item number="n5">
+            <classes>
+                <digitalObject action="update">
+                    <location>8002</location>
+                    <pid>somePid</pid>
+                </digitalObject>
+            </classes>
+        </item>
+    </update>
+</import>
+END
+);
+my $n5 = $schema->resultset( 'Item' )->find( 5 );
+is ( $n5->classes, 0, 'Replacing classes on a classless item is a no-op' );
+
+test_import ( <<END
+<import>
+    <update>
+        <item number="n4">
+            <classes>
+                <digitalObject action="update">
+                    <location>8002</location>
+                    <pid>somePid</pid>
+                </digitalObject>
+            </classes>
+        </item>
+    </update>
+</import>
+END
+);
+$n4->discard_changes;
+is ( $n4->digital_objects, 1,
+     "After replacing DOs, n4 still has only one DO." );
+is ( $n4->bound_volumes, 1,
+     "After replacing DOs, n4 still has one browsing object." );
+is ( ( $n4->digital_objects )[0]->location->barcode, '8002',
+      "The DO's location changed as expected." );
+
+test_import ( <<END
+<import>
+    <update>
+        <item number="n4">
+            <classes>
+                <digitalObject action="create">
+                    <location>9003</location>
+                    <pid>somePid</pid>
+                    <notes>Hello there.</notes>
+                </digitalObject>
+            </classes>
+        </item>
+    </update>
+</import>
+END
+);
+$n4->discard_changes;
+
+is ( $n4->digital_objects, 2, "After adding a new DO, n4 has two of them." );
+is ( $n4->bound_volumes, 1, "Adding a new DO didn't kill n4's bound volume." );
+is ( ( $n4->digital_objects )[0]->location->barcode, '8002',
+       "First DO's location is correct." );
+is ( ( $n4->digital_objects )[1]->location->barcode, '9003',
+       "Second DO's (different) location is correct." );
+
+test_import ( <<END
+<import>
+    <update>
+        <item number="n4">
+            <classes>
+                <digitalObject action="update">
+                    <location>8002</location>
+                    <pid>somePid</pid>
+                </digitalObject>
+            </classes>
+        </item>
+    </update>
+</import>
+END
+);
+$n4->discard_changes;
+is ( $n4->digital_objects, 2, 'After updating DOs, n4 still has only two DOs.' );
+is ( $n4->bound_volumes, 1, "Replacing DOs didn't kill n4's bound volume." );
+is ( ( $n4->digital_objects )[0]->location->barcode, '8002',
+       "First DO's location barcode matches the new value." );
+is ( ( $n4->digital_objects )[1]->location->barcode, '8002',
+       "Second DO's location barcode matches the new value." );
+is ( ( $n4->digital_objects )[1]->notes, 'Hello there.', "Notes are left untouched." );
+is ( ( $n4->bound_volumes )[0]->location->barcode, '9003',
+       "Bound Volume's location barcode left untouched." );
+
 done_testing();
